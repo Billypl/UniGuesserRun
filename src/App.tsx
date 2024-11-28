@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -14,9 +14,23 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Component to handle map click events
+const LocationMarker: React.FC<{
+  setClickedLatLng: React.Dispatch<React.SetStateAction<[number, number] | null>>;
+}> = ({ setClickedLatLng }) => {
+  useMapEvents({
+    click(e) {
+      const { lat, lng } = e.latlng;
+      setClickedLatLng([lat, lng]);
+    },
+  });
+  return null;
+};
+
 const App: React.FC = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [clickedLatLng, setClickedLatLng] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const getCoordinates = () => {
@@ -50,20 +64,34 @@ const App: React.FC = () => {
       {/* Map Section */}
       <div style={{ height: '500px', marginTop: '20px' }}>
         {latitude !== null && longitude !== null ? (
-          <MapContainer center={[latitude, longitude]} zoom={13} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Marker position={[latitude, longitude]}>
-              <Popup>
-                You are here: <br />
-                Latitude: {latitude.toFixed(6)}, Longitude: {longitude.toFixed(6)}
-              </Popup>
-            </Marker>
+          <MapContainer 
+            center={[latitude, longitude]} 
+            zoom={13} 
+            scrollWheelZoom={true} 
+            style={{ height: '100%', width: '100%' }}
+          >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={[latitude, longitude]}>
+            <Popup>
+              You are here: <br />
+              Latitude: {latitude.toFixed(6)}, Longitude:{longitude.toFixed(6)}
+            </Popup>
+          </Marker>
+          {clickedLatLng && (
+              <Marker position={clickedLatLng}>
+                <Popup>
+                  Clicked Location: <br />
+                  Latitude: {clickedLatLng[0].toFixed(6)}, Longitude: {clickedLatLng[1].toFixed(6)}
+                </Popup>
+              </Marker>
+            )}
+          <LocationMarker setClickedLatLng={setClickedLatLng} />
           </MapContainer>
         ) : (
-          <p>Click "Get Coordinates" to see your location on the absurdly stupid map.</p>
+          <p>Click "Get Coordinates" to see your location on the map.</p>
         )}
       </div>
     </div>
