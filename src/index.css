@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.leaflet-pane.leaflet-marker-pane,
+.leaflet-pane.leaflet-shadow-pane {
+  margin-left: -12px;
+  margin-top: -41px;
+}
+
+.leaflet-pane.leaflet-popup-pane{
+  margin-top: -41px;
+}

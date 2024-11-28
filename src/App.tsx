@@ -6,9 +6,15 @@ import L from 'leaflet';
 // Fix for missing default icon in Leaflet
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import userMarkerIcon from '../src/assets/images/user-marker-icon.png';
 
 const DefaultIcon = L.icon({
   iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+const UserIcon = L.icon({
+  iconUrl: userMarkerIcon,
   shadowUrl: markerShadow,
 });
 
@@ -74,14 +80,14 @@ const App: React.FC = () => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[latitude, longitude]}>
+          <Marker position={[latitude, longitude]} >
             <Popup>
               You are here: <br />
               Latitude: {latitude.toFixed(6)}, Longitude:{longitude.toFixed(6)}
             </Popup>
           </Marker>
           {clickedLatLng && (
-              <Marker position={clickedLatLng}>
+              <Marker position={clickedLatLng} icon={UserIcon}>
                 <Popup>
                   Clicked Location: <br />
                   Latitude: {clickedLatLng[0].toFixed(6)}, Longitude: {clickedLatLng[1].toFixed(6)}
