@@ -3,6 +3,7 @@ using PartyGame;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PartyGame.Entities;
 using PartyGame.Services;
 
 
@@ -47,12 +48,22 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<Seeder>();
+
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+builder.Services.AddDbContext<PlacesDbContext>();
+
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
+    seeder.Seed();
+}
 
 app.UseCors("AllowSpecificOrigins");
 

@@ -20,13 +20,15 @@ namespace PartyGame.Services
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IMapper _mapper;
+        private readonly PlacesDbContext _dbContext;
         private static readonly Dictionary<string, GameSession> GameSessions = new();
         private readonly List<Place> _places;
 
-        public GameService(IOptions<AuthenticationSettings> authenticationSettings, IMapper mapper)
+        public GameService(IOptions<AuthenticationSettings> authenticationSettings, IMapper mapper,PlacesDbContext dbContext)
         {
             _authenticationSettings = authenticationSettings.Value;
             _mapper = mapper;
+            _dbContext = dbContext;
             _places = new List<Place>
             {
                 new Place
@@ -60,9 +62,10 @@ namespace PartyGame.Services
 
         private Place GetRandomPlace()
         {
-            var random = new Random();
-            int index = random.Next(_places.Count);
-            return _places[index];
+            var randomPlace = _dbContext.Places
+                .OrderBy(r => Guid.NewGuid())
+                .FirstOrDefault(); 
+            return randomPlace;
         }
 
         public StartDataDto StartNewGame()
