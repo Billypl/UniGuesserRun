@@ -30,6 +30,9 @@ namespace PartyGame.Controllers
         [Authorize]
         public ActionResult checkGuess([FromBody]  GuessDataDto guessData)
         {
+            var authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+            guessData.Token = token;
             var result = _gameService.CheckGuess(guessData);
             
             return Ok(result);

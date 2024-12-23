@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PartyGame.Entities;
 using PartyGame.Services;
+using MongoDB.Driver;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    var connectionString = "mongodb://localhost:27017";
+    return new MongoClient(connectionString);
+});
+
+builder.Services.AddScoped<PlacesDbContext>();
 
 builder.Services.AddAutoMapper(typeof(PlacesMappingProfile));
 builder.Services.AddAutoMapper(builder.GetType().Assembly);
@@ -54,7 +62,7 @@ builder.Services.AddScoped<Seeder>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<PlacesDbContext>();
+
 
 
 var app = builder.Build();

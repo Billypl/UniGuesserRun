@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PartyGame.Entities;
 using PartyGame.Models;
+using MongoDB.Driver;
 
 namespace PartyGame.Services
 {
@@ -22,49 +23,31 @@ namespace PartyGame.Services
         private readonly IMapper _mapper;
         private readonly PlacesDbContext _dbContext;
         private static readonly Dictionary<string, GameSession> GameSessions = new();
-        private readonly List<Place> _places;
 
         public GameService(IOptions<AuthenticationSettings> authenticationSettings, IMapper mapper,PlacesDbContext dbContext)
         {
             _authenticationSettings = authenticationSettings.Value;
             _mapper = mapper;
             _dbContext = dbContext;
-            _places = new List<Place>
-            {
-                new Place
-                {
-                    Id = 1,
-                    Name = "Wydział Elektroniki, Telekomunikacji i Informatyki",
-                    Description = "Wydział Elektroniki, Telekomunikacji i Informatyki (ETI) Politechniki Gdańskiej " +
-                                  "(PG) jest jednym z czołowych wydziałów uczelni, oferującym kształcenie na kierunkach ",
-                    Coordinates = new Coordinates { Latitude = 54.37170, Longitude = 18.61242 },
-                    ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/4/41/FOT_1171-ETI.jpg"
-                },
-                new Place
-                { 
-                    Id = 2,
-                    Name = "Gmach Główny",
-                    Description = "Zabytkowy budynek w Gdańsku. Mieści się we Wrzeszczu przy ul. Narutowicza 11/12. ",
-                    Coordinates = new Coordinates { Latitude = 54.371437068881185, Longitude = 18.619219721970538 },
-                    ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Politechnika_gdanska_2012.tif/lossy-page1-800px-Politechnika_gdanska_2012.tif.jpg"
-                },
-                new Place
-                { 
-                    Id = 3,
-                    Name = "Centrum Sportu Akademickiego",
-                    Description = "Centralnym obiektem jest zbudowany w 1962 roku kompleks Akademickiego Ośrodka Sportowego PG.",
-                    Coordinates = new Coordinates { Latitude = 54.3693814546564, Longitude = 18.6313515818974 },
-                    ImageUrl = "https://pg.edu.pl/files/csa/styles/large/public/2021-07/DSC_0564.jpg?itok=bQFL7JLl"
-                }
-            };
+
         }
 
 
-        private Place GetRandomPlace()
+        private async Task<Place> GetRandomPlace()
         {
-            var randomPlace = _dbContext.Places
-                .OrderBy(r => Guid.NewGuid())
-                .FirstOrDefault(); 
+            var count = await _dbContext.Places.CountDocumentsAsync(_ => true);
+
+            if (count == 0)
+                return null;
+
+            var randomIndex = new Random().Next(0, (int)count);
+
+            var randomPlace = await _dbContext.Places
+                .Find(_ => true)
+                .Skip(randomIndex)
+                .Limit(1)
+                .FirstOrDefaultAsync();
+
             return randomPlace;
         }
 
@@ -73,19 +56,19 @@ namespace PartyGame.Services
             // gameID unikalne ID dla danej gry
             // Przydane jesli bedziemy miec historie gier
 
-
-            
-
             var gameID = new Random().Next(1,10000);
             var token = GenerateSessionToken(gameID);
             var place = GetRandomPlace();
+          
 
             var gameSession = new GameSession
             {
                 Id = gameID,
                 Token = token,
-                Place = place
+                Place = place.Result
             };
+
+            GameSessions.Add(token,gameSession);
 
             return _mapper.Map<StartDataDto>(gameSession);
         }

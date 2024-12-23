@@ -1,27 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using MongoDB.Driver;
 
 namespace PartyGame.Entities
 {
-    public class PlacesDbContext:DbContext
+    public class PlacesDbContext
     {
-        public DbSet<Place> Places { get; set; }
-        public DbSet<GameSession> GameSessions { get; set; }
+        private readonly IMongoDatabase _database;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public PlacesDbContext(IMongoClient mongoClient)
         {
-            modelBuilder.Entity<Place>()
-                .Property(p => p.Id)
-                .IsRequired();
-
-            modelBuilder.Entity<Place>()
-                .OwnsOne(p => p.Coordinates);  
-
+            _database = mongoClient.GetDatabase("PartyGame"); // Nazwa bazy danych
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=9090;Database=PartyGame;Username=postgres;Password=1234");
-        }
+        public IMongoCollection<Place> Places => _database.GetCollection<Place>("Places");
+        public IMongoCollection<GameSession> GameSessions => _database.GetCollection<GameSession>("GameSessions");
     }
 }

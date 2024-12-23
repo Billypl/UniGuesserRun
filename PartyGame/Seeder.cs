@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PartyGame.Entities;
 using System.Text.Json;
+using MongoDB.Driver;
 
 namespace PartyGame
 {
@@ -8,30 +9,28 @@ namespace PartyGame
     {
         private readonly PlacesDbContext _dbContext;
         private string _filePath;
-        public Seeder(PlacesDbContext dbContext )
+        public Seeder(PlacesDbContext dbContext)
         {
             _dbContext = dbContext;
             _filePath = "Data/Places.json";
         }
 
-
-        public void Seed()
+        public async Task Seed()
         {
-            if (_dbContext.Database.CanConnect())
+            var placeCount = await _dbContext.Places.CountDocumentsAsync(Builders<Place>.Filter.Empty);
+
+            if (placeCount == 0)
             {
-                if (!_dbContext.Places.Any())
+                var places = GetPlaces();
+                if (places != null)
                 {
-                    var places = GetPlaces();
-                    _dbContext.Places.AddRange( places );
-                    _dbContext.SaveChanges();
+                    await _dbContext.Places.InsertManyAsync(places);
                 }
             }
         }
 
-
-        private IEnumerable<Place> GetPlaces()
+        private IEnumerable<Place>? GetPlaces()
         {
-            
             string jsonString = File.ReadAllText(_filePath);
 
             var places = JsonSerializer.Deserialize<List<Place>>(jsonString, new JsonSerializerOptions
@@ -41,5 +40,5 @@ namespace PartyGame
 
             return places;
         }
-    }   
+    }
 }
