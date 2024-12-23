@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using PartyGame.Models;
 using PartyGame.Services;
@@ -26,6 +27,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpPost("check")]
+        [Authorize]
         public ActionResult checkGuess([FromBody]  GuessDataDto guessData)
         {
             var result = _gameService.CheckGuess(guessData);

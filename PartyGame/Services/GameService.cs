@@ -87,8 +87,6 @@ namespace PartyGame.Services
                 Place = place
             };
 
-            GameSessions[token] = gameSession;
-
             return _mapper.Map<StartDataDto>(gameSession);
         }
 
@@ -106,7 +104,7 @@ namespace PartyGame.Services
 
             var token = new JwtSecurityToken(
                 issuer: _authenticationSettings.JwtIssuer,
-                audience: "GameClient",
+                audience: _authenticationSettings.JwtIssuer,
                 claims: claims,
                 expires: expiration,
                 signingCredentials: creds
@@ -115,10 +113,10 @@ namespace PartyGame.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+       
         public GuessResultDto? CheckGuess(GuessDataDto guessData)
         {
-            if (GameSessions.ContainsKey(guessData.Token))
-            {
+            
                 var session = GameSessions[guessData.Token];
                 var placeCoordinates = session.Place.Coordinates;
 
@@ -137,9 +135,7 @@ namespace PartyGame.Services
 
                 GameSessions.Remove(guessData.Token);
                 return result;
-            }
-
-            return null;
+                
         }
     }
 }

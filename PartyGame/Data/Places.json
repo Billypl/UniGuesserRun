@@ -1,0 +1,59 @@
+[
+  {
+    "Id": 1,
+    "Name": "Wydzia� Elektroniki, Telekomunikacji i Informatyki",
+    "Description": "Wydzia� Elektroniki, Telekomunikacji i Informatyki (ETI) Politechniki Gda�skiej (PG) jest jednym z czo�owych wydzia��w uczelni, oferuj�cym kszta�cenie na kierunkach ",
+    "Coordinates": {
+      "Latitude": 54.37170,
+      "Longitude": 18.61242
+    },
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/FOT_1171-ETI.jpg",
+    "Difficulty": 1
+  },
+  {
+    "Id": 2,
+    "Name": "Gmach G��wny",
+    "Description": "Zabytkowy budynek w Gda�sku. Mie�ci si� we Wrzeszczu przy ul. Narutowicza 11/12. ",
+    "Coordinates": {
+      "Latitude": 54.371437068881185,
+      "Longitude": 18.619219721970538
+    },
+    "ImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Politechnika_gdanska_2012.tif/lossy-page1-800px-Politechnika_gdanska_2012.tif.jpg",
+    "Difficulty": 1
+  },
+  {
+    "Id": 3,
+    "Name": "Centrum Sportu Akademickiego",
+    "Description": "Centralnym obiektem jest zbudowany w 1962 roku kompleks Akademickiego O�rodka Sportowego PG.",
+    "Coordinates": {
+      "Latitude": 54.3693814546564,
+      "Longitude": 18.6313515818974
+    },
+    "ImageUrl": "https://pg.edu.pl/files/csa/styles/large/public/2021-07/DSC_0564.jpg?itok=bQFL7JLl",
+    "Difficulty": 1
+  },
+  {
+    "Id": 4,
+    "Name": "Armata do chlania",
+    "Description": "Miejsce Spirytystyczne, centrum spotkan PG.",
+    "Coordinates": {
+      "Latitude": 54.36926817335802,
+      "Longitude": 18.60690680682784
+    },
+    "ImageUrl": "https://static.wixstatic.com/media/b39d67_32f4e23c49814f2abc2e10c2f114358a~mv2.jpg/v1/fill/w_740,h_987,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/b39d67_32f4e23c49814f2abc2e10c2f114358a~mv2.jpg",
+    "Difficulty": 1
+  },
+  {
+    "Id": 5,
+    "Name": "Bar Akademicki",
+    "Description": "G��wne miejsce spo�ywania posi�k�w przez student�w.",
+    "Coordinates": {
+      "Latitude": 54.37641098076587,
+      "Longitude": 18.6135769517974
+    },
+    "ImageUrl": "https://d-art.ppstatic.pl/kadry/k/r/1/1e/de/57fcc3fe10c2d_o_xlarge.jpg",
+    "Difficulty": 1
+  }
+]
+
+ 
