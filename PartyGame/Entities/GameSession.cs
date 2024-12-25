@@ -7,6 +7,7 @@ namespace PartyGame.Entities
         [BsonId]
         public long Id { get; set; }
         public string Token { get; set; }
-        public Place Place { get; set; }
+        public List<int> IDsPlaces { get; set; }
+        public int ActualRoundNumber { get; set; }
     }
 }

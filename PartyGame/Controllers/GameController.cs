@@ -19,24 +19,33 @@ namespace PartyGame.Controllers
 
         // TODO: add middleware 
         [HttpGet("start")]
-        public StartDataDto startGame()
+        public ActionResult StartGame()
         {
-            var result = _gameService.StartNewGame();
+            var resultToken = _gameService.StartNewGame();
 
-            return result;
+            return Ok(new
+            {
+                Token = resultToken,
+                Message = "Game generated successfully"
+            });
         }
 
         [HttpPost("check")]
         [Authorize]
-        public ActionResult checkGuess([FromBody]  GuessDataDto guessData)
+        public ActionResult CheckGuess([FromBody]  Coordinates guessingCoordinates)
         {
-            var authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-            guessData.Token = token;
-            var result = _gameService.CheckGuess(guessData);
+            var result = _gameService.CheckGuess(guessingCoordinates);
             
             return Ok(result);
         }
+
+        [HttpGet("round/{roundNumber}")]
+        [Authorize]
+        public GuessingPlaceDto GetGuessingPlace([FromRoute] int roundNumber)
+        {
+            return _gameService.GetPlaceToGuess(roundNumber);
+        }
+
 
 
     }

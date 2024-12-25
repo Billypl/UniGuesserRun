@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿
+
+using AutoMapper;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,69 +10,99 @@ using PartyGame.Entities;
 using PartyGame.Models;
 using MongoDB.Driver;
 
+
+
 namespace PartyGame.Services
 {
+  
     public interface IGameService
     {
-        StartDataDto StartNewGame();
+        string StartNewGame();
         string GenerateSessionToken(long gameId);
-        GuessResultDto? CheckGuess(GuessDataDto guessData);
+        RoundResultDto? CheckGuess(Coordinates guessingCoordinates);
+
+        public GuessingPlaceDto GetPlaceToGuess(int roundsNumber);
     }
 
     public class GameService : IGameService
     {
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
         private readonly PlacesDbContext _dbContext;
         private static readonly Dictionary<string, GameSession> GameSessions = new();
 
-        public GameService(IOptions<AuthenticationSettings> authenticationSettings, IMapper mapper,PlacesDbContext dbContext)
+        const int ROUNDS_NUMBER = 5;
+
+        public GameService(IOptions<AuthenticationSettings> authenticationSettings, IHttpContextAccessor httpContextAccessor
+            , IMapper mapper,PlacesDbContext dbContext)
         {
             _authenticationSettings = authenticationSettings.Value;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _dbContext = dbContext;
 
         }
 
+        private string GetTokenFromHeader()
+        {
+            var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+            return token;
+        }
 
-        private async Task<Place> GetRandomPlace()
+        private async Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake)
         {
             var count = await _dbContext.Places.CountDocumentsAsync(_ => true);
 
             if (count == 0)
                 return null;
 
-            var randomIndex = new Random().Next(0, (int)count);
+            numberOfRoundsToTake = Math.Min(numberOfRoundsToTake, (int)count);
 
-            var randomPlace = await _dbContext.Places
-                .Find(_ => true)
-                .Skip(randomIndex)
-                .Limit(1)
-                .FirstOrDefaultAsync();
+            var randomIndexes = new HashSet<int>();
+            var random = new Random();
+            while (randomIndexes.Count < numberOfRoundsToTake)
+            {
+                randomIndexes.Add(random.Next(0, (int)count));
+            }
 
-            return randomPlace;
+            var randomPlaces = new List<int>();
+            foreach (var index in randomIndexes)
+            {
+                var place = await _dbContext.Places
+                    .Find(_ => true)
+                    .Skip(index)
+                    .Limit(1)
+                    .FirstOrDefaultAsync();
+
+                if (place != null)
+                {
+                    randomPlaces.Add(place.Id);
+                }
+            }
+
+            return randomPlaces;
         }
 
-        public StartDataDto StartNewGame()
+
+        public string StartNewGame()
         {
-            // gameID unikalne ID dla danej gry
-            // Przydane jesli bedziemy miec historie gier
 
             var gameID = new Random().Next(1,10000);
             var token = GenerateSessionToken(gameID);
-            var place = GetRandomPlace();
-          
-
+            var place = GetRandomIDsOfPlaces(ROUNDS_NUMBER); // TODO: Need to get this value from appsettgins.json
+            
             var gameSession = new GameSession
             {
                 Id = gameID,
                 Token = token,
-                Place = place.Result
+                IDsPlaces = place.Result
             };
 
             GameSessions.Add(token,gameSession);
 
-            return _mapper.Map<StartDataDto>(gameSession);
+            return token;
         }
 
         public string GenerateSessionToken(long gameId)
@@ -96,29 +128,80 @@ namespace PartyGame.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-       
-        public GuessResultDto? CheckGuess(GuessDataDto guessData)
+        // TODO: DRY - 2 similiar instructions in below functions 
+        public GuessingPlaceDto GetPlaceToGuess(int roundsNumber)
         {
-            
-                var session = GameSessions[guessData.Token];
-                var placeCoordinates = session.Place.Coordinates;
+            string token = GetTokenFromHeader();
+            var session = GameSessions[token]; 
 
-                var latitudeDifference = Math.Abs(placeCoordinates.Latitude - guessData.Coordinates.Latitude);
-                var longitudeDifference = Math.Abs(placeCoordinates.Longitude - guessData.Coordinates.Longitude);
+            if (session.ActualRoundNumber != ROUNDS_NUMBER)
+                throw new InvalidOperationException(
+                    $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
 
-                var result = new GuessResultDto
-                {
-                    DistanceDifference = new Coordinates
-                    {
-                        Latitude = latitudeDifference,
-                        Longitude = longitudeDifference
-                    },
-                    OriginalPlace = session.Place
-                };
+            var guessingPlace = GetPlaceById(session.IDsPlaces[roundsNumber]).Result;
 
-                GameSessions.Remove(guessData.Token);
-                return result;
-                
+
+            return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
+
+        public RoundResultDto? CheckGuess(Coordinates guessingCoordinates)
+        {
+
+            string token = GetTokenFromHeader();
+            var session = GameSessions[token]; 
+
+            if (session.ActualRoundNumber >= ROUNDS_NUMBER)
+                throw new InvalidOperationException($"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
+
+            var guessingPlace = GetPlaceById(session.IDsPlaces[session.ActualRoundNumber]).Result;
+            var distanceDifference = CalculateDistanceBetweenCords(guessingPlace.Coordinates, guessingCoordinates);
+
+            var result = new RoundResultDto
+            {
+                DistanceDifference = distanceDifference,
+                OriginalPlace = guessingPlace,
+                RoundNumber = session.ActualRoundNumber
+            };
+
+
+            return result;
+        }
+
+        private double CalculateDistanceBetweenCords(Coordinates first, Coordinates second)
+        {
+            const double EarthRadiusMeters = 6371000.0; 
+
+            double ConvertToRadians(double degrees) => degrees * Math.PI / 180.0;
+
+            double deltaLatitude = ConvertToRadians(second.Latitude - first.Latitude);
+            double deltaLongitude = ConvertToRadians(second.Longitude - first.Longitude);
+
+            double firstLatitudeRadians = ConvertToRadians(first.Latitude);
+            double secondLatitudeRadians = ConvertToRadians(second.Latitude);
+
+            double a = Math.Sin(deltaLatitude / 2) * Math.Sin(deltaLatitude / 2) +
+                       Math.Cos(firstLatitudeRadians) * Math.Cos(secondLatitudeRadians) *
+                       Math.Sin(deltaLongitude / 2) * Math.Sin(deltaLongitude / 2);
+
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+            return EarthRadiusMeters * c;
+
+        }
+
+        public async Task<Place> GetPlaceById(int id)
+        {
+            var place = await _dbContext.Places
+                .Find(p => p.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (place == null)
+            {
+                throw new KeyNotFoundException($"Place with ID {id} was not found.");
+            }
+
+            return place;
+        }
+
     }
 }

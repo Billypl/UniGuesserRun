@@ -10,7 +10,7 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
 
@@ -26,6 +26,7 @@ builder.Services.AddAutoMapper(typeof(PlacesMappingProfile));
 builder.Services.AddAutoMapper(builder.GetType().Assembly);
 
 builder.Services.Configure<AuthenticationSettings>(builder.Configuration.GetSection("Authentication"));
+
 builder.Services.AddAuthentication(option =>
 {
     option.DefaultAuthenticateScheme = "Bearer";
@@ -70,7 +71,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
-    seeder.Seed();
+    await seeder.Seed();
 }
 
 app.UseCors("AllowSpecificOrigins");
