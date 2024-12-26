@@ -22,6 +22,8 @@ namespace PartyGame.Services
         RoundResultDto? CheckGuess(Coordinates guessingCoordinates);
 
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber);
+
+        public SummarizeGameDto FinishGame();
     }
 
     public class GameService : IGameService
@@ -90,19 +92,32 @@ namespace PartyGame.Services
 
             var gameID = new Random().Next(1,100000);
             var token = GenerateSessionToken(gameID);
-            var place = GetRandomIDsOfPlaces(ROUNDS_NUMBER);
-            
+            var places = GetRandomIDsOfPlaces(ROUNDS_NUMBER).Result;
+
+            List<Round> GameRounds = new List<Round>();
+
+            for (int i = 0; i < ROUNDS_NUMBER; i++)
+            {
+                var newRound = new Round
+                {
+                    IDPlaceToGuess = places[i],
+                    GuessedCoordinates = new Coordinates(),
+                    Score = 0
+                };
+
+                GameRounds.Add(newRound);
+            }
+
             var gameSession = new GameSession
             {
                 Id = gameID,
                 Token = token,
-                IDsPlaces = place.Result,
+                Rounds = GameRounds,
                 ActualRoundNumber = 0,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(15)
 
             };
 
-            //GameSessions.Add(token,gameSession);
             _dbContext.GameSessions.InsertOneAsync(gameSession);
 
             return token;
@@ -137,11 +152,11 @@ namespace PartyGame.Services
             string token = GetTokenFromHeader();
             var session = GetSessionByToken(token).Result;
 
-            if (session.ActualRoundNumber != ROUNDS_NUMBER)
+            if (session.ActualRoundNumber != roundsNumber)
                 throw new InvalidOperationException(
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
 
-            var guessingPlace = GetPlaceById(session.IDsPlaces[roundsNumber]).Result;
+            var guessingPlace = GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess).Result;
 
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
@@ -155,7 +170,7 @@ namespace PartyGame.Services
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
                 throw new InvalidOperationException($"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
 
-            var guessingPlace = GetPlaceById(session.IDsPlaces[session.ActualRoundNumber]).Result;
+            var guessingPlace = GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess).Result;
             var distanceDifference = CalculateDistanceBetweenCords(guessingPlace.Coordinates, guessingCoordinates);
 
             var result = new RoundResultDto
@@ -164,6 +179,12 @@ namespace PartyGame.Services
                 OriginalPlace = guessingPlace,
                 RoundNumber = session.ActualRoundNumber
             };
+
+            session.Rounds[session.ActualRoundNumber].Score = distanceDifference;
+            session.Rounds[session.ActualRoundNumber].GuessedCoordinates = guessingCoordinates;
+            session.ActualRoundNumber++;
+
+            UpdateSessionRound(session);
 
             return result;
         }
@@ -218,6 +239,69 @@ namespace PartyGame.Services
         }
 
 
+        public SummarizeGameDto FinishGame()
+        {
+
+            string token = GetTokenFromHeader();
+
+            if (token == null)
+            {
+                throw new KeyNotFoundException($"Token was not found");
+            }
+
+            var session = GetSessionByToken(token).Result;
+
+            if (session == null)
+            {
+                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
+            }
+
+            SummarizeGameDto summarize = CreateSummarize(session);
+
+            DeleteSessionByToken(token);
+
+            return summarize;
+        }
+
+        private SummarizeGameDto CreateSummarize(GameSession session)
+        {
+            SummarizeGameDto summarize = new SummarizeGameDto();
+
+
+            summarize.Rounds = session.Rounds;
+ 
+            foreach (Round round in session.Rounds)
+            {
+                summarize.Score += round.Score;
+            }
+
+            return summarize;
+        }
+
+        public async void DeleteSessionByToken(string token)
+        {
+            var deleteResult = await _dbContext.GameSessions.DeleteOneAsync(gs => gs.Token == token);
+
+            if (deleteResult.DeletedCount == 0)
+            {
+                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
+            }
+        }
+
+        public async void UpdateSessionRound(GameSession session)
+        {
+            var filter = Builders<GameSession>.Filter.Eq(s => s.Id, session.Id);
+            var update = Builders<GameSession>.Update
+                .Set(s => s.Rounds, session.Rounds)
+                .Set(s => s.ActualRoundNumber, session.ActualRoundNumber);
+
+            var updateResult = await _dbContext.GameSessions.UpdateOneAsync(filter, update);
+
+            if (updateResult.MatchedCount == 0)
+            {
+                throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
+            }
+        }
 
     }
 }

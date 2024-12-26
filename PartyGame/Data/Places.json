@@ -8,7 +8,8 @@
       "Longitude": 18.61242
     },
     "ImageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/FOT_1171-ETI.jpg",
-    "Difficulty": 1
+    "Alt": "Zdjęcie przedstawiające budynek Wydziału Elektroniki, Telekomunikacji i Informatyki Politechniki Gdańskiej"
+    
   },
   {
     "Id": 2,
@@ -19,7 +20,8 @@
       "Longitude": 18.619219721970538
     },
     "ImageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Politechnika_gdanska_2012.tif/lossy-page1-800px-Politechnika_gdanska_2012.tif.jpg",
-    "Difficulty": 1
+    "Alt":  "Zdjęcie przedstawiające gmach Główny Politechniki Gdańskiej"
+
   },
   {
     "Id": 3,
@@ -30,7 +32,7 @@
       "Longitude": 18.6313515818974
     },
     "ImageUrl": "https://pg.edu.pl/files/csa/styles/large/public/2021-07/DSC_0564.jpg?itok=bQFL7JLl",
-    "Difficulty": 1
+    "Alt": "Zdjęcie przedstawiające Centrum Sportu Akademickiego Politechniki Gdańskiej"
   },
   {
     "Id": 4,
@@ -41,7 +43,7 @@
       "Longitude": 18.60690680682784
     },
     "ImageUrl": "https://static.wixstatic.com/media/b39d67_32f4e23c49814f2abc2e10c2f114358a~mv2.jpg/v1/fill/w_740,h_987,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/b39d67_32f4e23c49814f2abc2e10c2f114358a~mv2.jpg",
-    "Difficulty": 1
+    "Alt": "Zdjęcie przedstawiające Armate do chlania Politechniki Gdańskiej"
   },
   {
     "Id": 5,
@@ -52,7 +54,8 @@
       "Longitude": 18.6135769517974
     },
     "ImageUrl": "https://d-art.ppstatic.pl/kadry/k/r/1/1e/de/57fcc3fe10c2d_o_xlarge.jpg",
-    "Difficulty": 1
+    "Alt": "Zdjęcie przedstawiające Bar Akademicki Politechniki Gdańskiej"
+
   }
 ]
 

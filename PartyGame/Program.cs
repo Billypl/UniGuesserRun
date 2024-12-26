@@ -51,7 +51,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") // Adres frontendu
+            policy.WithOrigins("http://localhost:5173") // Adres frontendu
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });

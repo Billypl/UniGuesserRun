@@ -9,9 +9,8 @@ namespace PartyGame
     {
         public PlacesMappingProfile()
         {
-
-
             CreateMap<Place, GuessingPlaceDto>();
+            CreateMap<GameSession, SummarizeGameDto>();
         }
     }
 }
