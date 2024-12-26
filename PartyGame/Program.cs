@@ -20,7 +20,7 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     return new MongoClient(connectionString);
 });
 
-builder.Services.AddScoped<PlacesDbContext>();
+builder.Services.AddScoped<GameDbContext>();
 
 builder.Services.AddAutoMapper(typeof(PlacesMappingProfile));
 builder.Services.AddAutoMapper(builder.GetType().Assembly);
@@ -56,6 +56,8 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
         });
 });
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IPlaceService,PlaceService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<Seeder>();
 

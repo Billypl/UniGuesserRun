@@ -9,7 +9,7 @@ using PartyGame.Entities;
 
 namespace PartyGame.Migrations
 {
-    [DbContext(typeof(PlacesDbContext))]
+    [DbContext(typeof(GameDbContext))]
     partial class PlacesDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

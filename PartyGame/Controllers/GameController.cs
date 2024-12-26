@@ -46,7 +46,7 @@ namespace PartyGame.Controllers
             return _gameService.GetPlaceToGuess(roundNumber);
         }
 
-        [HttpPatch("round/finish")]
+        [HttpPatch("finish")]
         [Authorize]
         public ActionResult FinishGame()
         {

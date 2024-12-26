@@ -31,17 +31,23 @@ namespace PartyGame.Services
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
-        private readonly PlacesDbContext _dbContext;
+        private readonly GameDbContext _gameDbContext;
+
+        private readonly IPlaceService _placeService;
+        private readonly ISessionService _sessionService;
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
         public GameService(IOptions<AuthenticationSettings> authenticationSettings, IHttpContextAccessor httpContextAccessor
-            , IMapper mapper,PlacesDbContext dbContext)
+            , IMapper mapper,GameDbContext gameDbContext,PlaceService placeService,
+            SessionService sessionService)
         {
             _authenticationSettings = authenticationSettings.Value;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
-            _dbContext = dbContext;
+            _gameDbContext = gameDbContext;
+            _placeService = placeService;
+            _sessionService = sessionService;
 
         }
 
@@ -54,7 +60,7 @@ namespace PartyGame.Services
 
         private async Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake)
         {
-            var count = await _dbContext.Places.CountDocumentsAsync(_ => true);
+            var count = await _gameDbContext.Places.CountDocumentsAsync(_ => true);
 
             if (count == 0)
                 return null;
@@ -71,7 +77,7 @@ namespace PartyGame.Services
             var randomPlaces = new List<int>();
             foreach (var index in randomIndexes)
             {
-                var place = await _dbContext.Places
+                var place = await _gameDbContext.Places
                     .Find(_ => true)
                     .Skip(index)
                     .Limit(1)
@@ -89,7 +95,6 @@ namespace PartyGame.Services
 
         public string StartNewGame()
         {
-
             var gameID = new Random().Next(1,100000);
             var token = GenerateSessionToken(gameID);
             var places = GetRandomIDsOfPlaces(ROUNDS_NUMBER).Result;
@@ -107,7 +112,6 @@ namespace PartyGame.Services
 
                 GameRounds.Add(newRound);
             }
-
             var gameSession = new GameSession
             {
                 Id = gameID,
@@ -118,7 +122,7 @@ namespace PartyGame.Services
 
             };
 
-            _dbContext.GameSessions.InsertOneAsync(gameSession);
+            _gameDbContext.GameSessions.InsertOneAsync(gameSession);
 
             return token;
         }
@@ -150,13 +154,13 @@ namespace PartyGame.Services
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber)
         {
             string token = GetTokenFromHeader();
-            var session = GetSessionByToken(token).Result;
+            var session = _sessionService.GetSessionByToken(token).Result;
 
             if (session.ActualRoundNumber != roundsNumber)
                 throw new InvalidOperationException(
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
 
-            var guessingPlace = GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess).Result;
+            var guessingPlace = _placeService.GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess).Result;
 
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
@@ -165,12 +169,12 @@ namespace PartyGame.Services
         {
 
             string token = GetTokenFromHeader();
-            var session = GetSessionByToken(token).Result;
+            var session = _sessionService.GetSessionByToken(token).Result;
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
                 throw new InvalidOperationException($"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
 
-            var guessingPlace = GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess).Result;
+            var guessingPlace = _placeService.GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess).Result;
             var distanceDifference = CalculateDistanceBetweenCords(guessingPlace.Coordinates, guessingCoordinates);
 
             var result = new RoundResultDto
@@ -184,7 +188,7 @@ namespace PartyGame.Services
             session.Rounds[session.ActualRoundNumber].GuessedCoordinates = guessingCoordinates;
             session.ActualRoundNumber++;
 
-            UpdateSessionRound(session);
+            _sessionService.UpdateSessionRound(session);
 
             return result;
         }
@@ -211,37 +215,9 @@ namespace PartyGame.Services
 
         }
 
-        public async Task<Place> GetPlaceById(int id)
-        {
-            var place = await _dbContext.Places
-                .Find(p => p.Id == id)
-                .FirstOrDefaultAsync();
-
-            if (place == null)
-            {
-                throw new KeyNotFoundException($"Place with ID {id} was not found.");
-            }
-
-            return place;
-        }
-
-        public async Task<GameSession> GetSessionByToken(string token)
-        {
-            var gameSession = await _dbContext.GameSessions
-                .Find(gs => gs.Token == token)
-                .FirstOrDefaultAsync();
-            if (gameSession == null)
-            {
-                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
-            }
-
-            return gameSession;
-        }
-
 
         public SummarizeGameDto FinishGame()
         {
-
             string token = GetTokenFromHeader();
 
             if (token == null)
@@ -249,7 +225,7 @@ namespace PartyGame.Services
                 throw new KeyNotFoundException($"Token was not found");
             }
 
-            var session = GetSessionByToken(token).Result;
+            var session = _sessionService.GetSessionByToken(token).Result;
 
             if (session == null)
             {
@@ -258,7 +234,7 @@ namespace PartyGame.Services
 
             SummarizeGameDto summarize = CreateSummarize(session);
 
-            DeleteSessionByToken(token);
+            _sessionService.DeleteSessionByToken(token);
 
             return summarize;
         }
@@ -266,7 +242,6 @@ namespace PartyGame.Services
         private SummarizeGameDto CreateSummarize(GameSession session)
         {
             SummarizeGameDto summarize = new SummarizeGameDto();
-
 
             summarize.Rounds = session.Rounds;
  
@@ -276,31 +251,6 @@ namespace PartyGame.Services
             }
 
             return summarize;
-        }
-
-        public async void DeleteSessionByToken(string token)
-        {
-            var deleteResult = await _dbContext.GameSessions.DeleteOneAsync(gs => gs.Token == token);
-
-            if (deleteResult.DeletedCount == 0)
-            {
-                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
-            }
-        }
-
-        public async void UpdateSessionRound(GameSession session)
-        {
-            var filter = Builders<GameSession>.Filter.Eq(s => s.Id, session.Id);
-            var update = Builders<GameSession>.Update
-                .Set(s => s.Rounds, session.Rounds)
-                .Set(s => s.ActualRoundNumber, session.ActualRoundNumber);
-
-            var updateResult = await _dbContext.GameSessions.UpdateOneAsync(filter, update);
-
-            if (updateResult.MatchedCount == 0)
-            {
-                throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
-            }
         }
 
     }

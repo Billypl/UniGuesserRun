@@ -2,11 +2,11 @@
 
 namespace PartyGame.Entities
 {
-    public class PlacesDbContext
+    public class GameDbContext
     {
         private readonly IMongoDatabase _database;
 
-        public PlacesDbContext(IMongoClient mongoClient)
+        public GameDbContext(IMongoClient mongoClient)
         {
             _database = mongoClient.GetDatabase("PartyGame"); 
 

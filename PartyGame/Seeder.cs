@@ -7,24 +7,24 @@ namespace PartyGame
 {
     public class Seeder
     {
-        private readonly PlacesDbContext _dbContext;
+        private readonly GameDbContext _gameDbContext;
         private string _filePath;
-        public Seeder(PlacesDbContext dbContext)
+        public Seeder(GameDbContext gameDbContext)
         {
-            _dbContext = dbContext;
+            _gameDbContext = gameDbContext;
             _filePath = "Data/Places.json";
         }
 
         public async Task Seed()
         {
-            var placeCount = await _dbContext.Places.CountDocumentsAsync(Builders<Place>.Filter.Empty);
+            var placeCount = await _gameDbContext.Places.CountDocumentsAsync(Builders<Place>.Filter.Empty);
 
             if (placeCount == 0)
             {
                 var places = GetPlaces();
                 if (places != null)
                 {
-                    await _dbContext.Places.InsertManyAsync(places);
+                    await _gameDbContext.Places.InsertManyAsync(places);
                 }
             }
         }
