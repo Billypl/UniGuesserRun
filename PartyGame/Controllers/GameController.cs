@@ -30,7 +30,7 @@ namespace PartyGame.Controllers
             });
         }
 
-        [HttpPost("check")]
+        [HttpPatch("check")]
         [Authorize]
         public ActionResult CheckGuess([FromBody]  Coordinates guessingCoordinates)
         {

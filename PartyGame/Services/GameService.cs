@@ -30,9 +30,8 @@ namespace PartyGame.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
         private readonly PlacesDbContext _dbContext;
-        private static readonly Dictionary<string, GameSession> GameSessions = new();
 
-        const int ROUNDS_NUMBER = 5;
+        const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
         public GameService(IOptions<AuthenticationSettings> authenticationSettings, IHttpContextAccessor httpContextAccessor
             , IMapper mapper,PlacesDbContext dbContext)
@@ -89,25 +88,29 @@ namespace PartyGame.Services
         public string StartNewGame()
         {
 
-            var gameID = new Random().Next(1,10000);
+            var gameID = new Random().Next(1,100000);
             var token = GenerateSessionToken(gameID);
-            var place = GetRandomIDsOfPlaces(ROUNDS_NUMBER); // TODO: Need to get this value from appsettgins.json
+            var place = GetRandomIDsOfPlaces(ROUNDS_NUMBER);
             
             var gameSession = new GameSession
             {
                 Id = gameID,
                 Token = token,
-                IDsPlaces = place.Result
+                IDsPlaces = place.Result,
+                ActualRoundNumber = 0,
+                ExpirationDate = DateTime.UtcNow.AddMinutes(15)
+
             };
 
-            GameSessions.Add(token,gameSession);
+            //GameSessions.Add(token,gameSession);
+            _dbContext.GameSessions.InsertOneAsync(gameSession);
 
             return token;
         }
 
         public string GenerateSessionToken(long gameId)
         {
-            var expiration = DateTime.UtcNow.AddDays(_authenticationSettings.JwtExpireDays);
+            var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireMinutes);
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, gameId.ToString()),
@@ -132,14 +135,13 @@ namespace PartyGame.Services
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber)
         {
             string token = GetTokenFromHeader();
-            var session = GameSessions[token]; 
+            var session = GetSessionByToken(token).Result;
 
             if (session.ActualRoundNumber != ROUNDS_NUMBER)
                 throw new InvalidOperationException(
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
 
             var guessingPlace = GetPlaceById(session.IDsPlaces[roundsNumber]).Result;
-
 
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
@@ -148,7 +150,7 @@ namespace PartyGame.Services
         {
 
             string token = GetTokenFromHeader();
-            var session = GameSessions[token]; 
+            var session = GetSessionByToken(token).Result;
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
                 throw new InvalidOperationException($"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
@@ -162,7 +164,6 @@ namespace PartyGame.Services
                 OriginalPlace = guessingPlace,
                 RoundNumber = session.ActualRoundNumber
             };
-
 
             return result;
         }
@@ -202,6 +203,21 @@ namespace PartyGame.Services
 
             return place;
         }
+
+        public async Task<GameSession> GetSessionByToken(string token)
+        {
+            var gameSession = await _dbContext.GameSessions
+                .Find(gs => gs.Token == token)
+                .FirstOrDefaultAsync();
+            if (gameSession == null)
+            {
+                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
+            }
+
+            return gameSession;
+        }
+
+
 
     }
 }

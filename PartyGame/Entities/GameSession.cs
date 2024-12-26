@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Runtime.InteropServices.JavaScript;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace PartyGame.Entities
 {
@@ -9,5 +10,7 @@ namespace PartyGame.Entities
         public string Token { get; set; }
         public List<int> IDsPlaces { get; set; }
         public int ActualRoundNumber { get; set; }
+
+        public DateTime ExpirationDate { get; set;}
     }
 }
