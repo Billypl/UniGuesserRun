@@ -39,8 +39,8 @@ namespace PartyGame.Services
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
         public GameService(IOptions<AuthenticationSettings> authenticationSettings, IHttpContextAccessor httpContextAccessor
-            , IMapper mapper,GameDbContext gameDbContext,PlaceService placeService,
-            SessionService sessionService)
+            , IMapper mapper,GameDbContext gameDbContext,IPlaceService placeService,
+            ISessionService sessionService)
         {
             _authenticationSettings = authenticationSettings.Value;
             _httpContextAccessor = httpContextAccessor;

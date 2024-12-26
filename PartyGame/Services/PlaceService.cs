@@ -3,11 +3,16 @@ using PartyGame.Entities;
 
 namespace PartyGame.Services
 {
-    public class PlaceService
+    public interface IPlaceService
+    {
+        Task<Place> GetPlaceById(int id);
+    }
+
+    public class PlaceService : IPlaceService
     {
         private readonly GameDbContext _gameDbContext;
 
-        PlaceService(GameDbContext gameDbContext)
+        public PlaceService(GameDbContext gameDbContext)
         {
             _gameDbContext = gameDbContext;
         }

@@ -10,7 +10,7 @@ using PartyGame.Entities;
 
 namespace PartyGame.Migrations
 {
-    [DbContext(typeof(PlacesDbContext))]
+    [DbContext(typeof(GameDbContext))]
     [Migration("20241223183117_WithDifficulty")]
     partial class WithDifficulty
     {

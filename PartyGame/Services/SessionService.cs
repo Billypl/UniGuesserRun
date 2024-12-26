@@ -15,7 +15,7 @@ namespace PartyGame.Services
     {
         private readonly GameDbContext _gameDbContext;
 
-        SessionService(GameDbContext dbContext)
+        public SessionService(GameDbContext dbContext)
         {
             _gameDbContext = dbContext;
         }
