@@ -55,6 +55,12 @@ namespace PartyGame.Services
         {
             var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
             var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+            if (token == null)
+            {
+                throw new KeyNotFoundException("Token was not found in db");
+            }
+
             return token;
         }
 
@@ -99,6 +105,11 @@ namespace PartyGame.Services
             var token = GenerateSessionToken(gameID);
             var places = GetRandomIDsOfPlaces(ROUNDS_NUMBER).Result;
 
+            if (places == null || places.Count < ROUNDS_NUMBER)
+            {
+                throw new InvalidOperationException("Not enough places was got from db.");
+            }
+
             List<Round> GameRounds = new List<Round>();
 
             for (int i = 0; i < ROUNDS_NUMBER; i++)
@@ -117,7 +128,7 @@ namespace PartyGame.Services
                 Token = token,
                 Rounds = GameRounds,
                 ActualRoundNumber = 0,
-                ExpirationDate = DateTime.UtcNow.AddMinutes(15)
+                ExpirationDate = DateTime.UtcNow.AddMinutes(30)
 
             };
 
@@ -156,8 +167,10 @@ namespace PartyGame.Services
             var session = _sessionService.GetSessionByToken(token).Result;
 
             if (session.ActualRoundNumber != roundsNumber)
+            {
                 throw new InvalidOperationException(
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
+            }
 
             var guessingPlace = _placeService.GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess).Result;
 
@@ -171,7 +184,10 @@ namespace PartyGame.Services
             var session = _sessionService.GetSessionByToken(token).Result;
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
-                throw new InvalidOperationException($"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
+            {
+                throw new InvalidOperationException(
+                    $"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
+            }
 
             var guessingPlace = _placeService.GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess).Result;
             var distanceDifference = CalculateDistanceBetweenCords(guessingPlace.Coordinates, guessingCoordinates);
@@ -220,17 +236,7 @@ namespace PartyGame.Services
         {
             string token = GetTokenFromHeader();
 
-            if (token == null)
-            {
-                throw new KeyNotFoundException($"Token was not found");
-            }
-
             var session = _sessionService.GetSessionByToken(token).Result;
-
-            if (session == null)
-            {
-                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
-            }
 
             SummarizeGameDto summarize = CreateSummarize(session);
 
@@ -248,6 +254,8 @@ namespace PartyGame.Services
 
             return summarize;
         }
+
+
 
     }
 }

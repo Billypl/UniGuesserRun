@@ -41,6 +41,11 @@ namespace PartyGame.Services
         {
             var places = await _gameDbContext.Places.Find(FilterDefinition<Place>.Empty).ToListAsync();
 
+            if (places == null)
+            {
+                throw new KeyNotFoundException($"There is no places in db");
+            }
+
             return places;
         }
 
