@@ -114,7 +114,6 @@ namespace PartyGame.Services
             }
             var gameSession = new GameSession
             {
-                Id = gameID,
                 Token = token,
                 Rounds = GameRounds,
                 ActualRoundNumber = 0,
@@ -187,6 +186,7 @@ namespace PartyGame.Services
             session.Rounds[session.ActualRoundNumber].Score = distanceDifference;
             session.Rounds[session.ActualRoundNumber].GuessedCoordinates = guessingCoordinates;
             session.ActualRoundNumber++;
+            session.GameScore += distanceDifference;
 
             _sessionService.UpdateSessionRound(session);
 
@@ -234,7 +234,7 @@ namespace PartyGame.Services
 
             SummarizeGameDto summarize = CreateSummarize(session);
 
-            _sessionService.DeleteSessionByToken(token);
+            // _sessionService.DeleteSessionByToken(token);
 
             return summarize;
         }
@@ -244,11 +244,7 @@ namespace PartyGame.Services
             SummarizeGameDto summarize = new SummarizeGameDto();
 
             summarize.Rounds = session.Rounds;
- 
-            foreach (Round round in session.Rounds)
-            {
-                summarize.Score += round.Score;
-            }
+            summarize.Score = session.GameScore;
 
             return summarize;
         }

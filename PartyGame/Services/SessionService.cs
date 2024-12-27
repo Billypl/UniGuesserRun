@@ -48,7 +48,8 @@ namespace PartyGame.Services
             var filter = Builders<GameSession>.Filter.Eq(s => s.Id, session.Id);
             var update = Builders<GameSession>.Update
                 .Set(s => s.Rounds, session.Rounds)
-                .Set(s => s.ActualRoundNumber, session.ActualRoundNumber);
+                .Set(s => s.ActualRoundNumber, session.ActualRoundNumber)
+                .Set(s => s.GameScore, session.GameScore);
 
             var updateResult = await _gameDbContext.GameSessions.UpdateOneAsync(filter, update);
 

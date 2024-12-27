@@ -16,7 +16,6 @@ namespace PartyGame.Controllers
             _placeService = placeService;
         }
 
-
         [HttpGet]
         public ActionResult GetAllPlaces(IPlaceService placeService)
         {

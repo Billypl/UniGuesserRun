@@ -56,11 +56,12 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
         });
 });
+
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IPlaceService, PlaceService>();
+builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<Seeder>();
-
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();

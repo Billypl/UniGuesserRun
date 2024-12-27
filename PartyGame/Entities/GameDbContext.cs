@@ -26,5 +26,6 @@ namespace PartyGame.Entities
 
         public IMongoCollection<Place> Places => _database.GetCollection<Place>("Places");
         public IMongoCollection<GameSession> GameSessions => _database.GetCollection<GameSession>("GameSessions");
+        public IMongoCollection<FinishedGame> GameResults => _database.GetCollection<FinishedGame>("GameResults");
     }
 }

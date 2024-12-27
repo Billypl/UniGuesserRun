@@ -39,9 +39,9 @@ namespace PartyGame.Services
 
         public async Task<List<Place>> GetAllPlaces()
         {
-            var test = await _gameDbContext.Places.Find(FilterDefinition<Place>.Empty).ToListAsync();
+            var places = await _gameDbContext.Places.Find(FilterDefinition<Place>.Empty).ToListAsync();
 
-            return test;
+            return places;
         }
 
         public async Task<int> AddNewPlace(NewPlaceDto newPlace)
