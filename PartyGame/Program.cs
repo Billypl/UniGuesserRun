@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Services.AddScoped<ISessionService, SessionService>();
-builder.Services.AddScoped<IPlaceService,PlaceService>();
+builder.Services.AddScoped<IPlaceService, PlaceService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<Seeder>();
 

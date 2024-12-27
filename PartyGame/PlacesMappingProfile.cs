@@ -11,6 +11,9 @@ namespace PartyGame
         {
             CreateMap<Place, GuessingPlaceDto>();
             CreateMap<GameSession, SummarizeGameDto>();
+            CreateMap<NewPlaceDto, Place>();
         }
+
+
     }
 }
