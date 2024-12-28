@@ -87,7 +87,8 @@ namespace PartyGame.Services
 
         public async void AddNewGameSession(GameSession session)
         {
-            if (GetGameSessionByToken().Result == session)
+            var result = _gameSessionRepository.GetGameSessionByToken(session.Token).Result;
+            if (result != null)
             {
                 throw new InvalidOperationException("A session with the same token already exists.");
             }

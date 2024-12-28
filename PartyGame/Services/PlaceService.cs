@@ -11,6 +11,8 @@ namespace PartyGame.Services
         Task<Place> GetPlaceById(int id);
         Task<List<Place>> GetAllPlaces();
         void AddNewPlace(NewPlaceDto newPlace);
+        Task<int> GetPlacesCount();
+        Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake);
     }
 
     public class PlaceService : IPlaceService
@@ -60,6 +62,35 @@ namespace PartyGame.Services
         {
             var count = await _placesRepository.GetPlacesCount();
             return (int)count;
+        }
+
+        public async Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake)
+        {
+            var count = await _placesRepository.GetPlacesCount();
+            if (count == 0)
+                return null;
+
+            numberOfRoundsToTake = Math.Min(numberOfRoundsToTake, (int)count);
+
+            var randomIndexes = new HashSet<int>();
+            var random = new Random();
+            while (randomIndexes.Count < numberOfRoundsToTake)
+            {
+                randomIndexes.Add(random.Next(0, (int)count));
+            }
+
+            var randomPlaces = new List<int>();
+            foreach (var index in randomIndexes)
+            {
+                var place = await _placesRepository.GetPlaceByIndex(index);
+
+                if (place != null)
+                {
+                    randomPlaces.Add(place.Id);
+                }
+            }
+
+            return randomPlaces;
         }
 
 

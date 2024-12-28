@@ -31,7 +31,6 @@ namespace PartyGame.Services
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IMapper _mapper;
-        private readonly GameDbContext _gameDbContext;
 
         private readonly IPlaceService _placeService;
         private readonly IGameSessionService _gameSessionService;
@@ -44,53 +43,17 @@ namespace PartyGame.Services
         {
             _authenticationSettings = authenticationSettings.Value;
             _mapper = mapper;
-            _gameDbContext = gameDbContext;
             _placeService = placeService;
             _gameSessionService = gameSessionService;
 
         }
 
-        private async Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake)
-        {
-            var count = await _gameDbContext.Places.CountDocumentsAsync(_ => true);
-
-            if (count == 0)
-                return null;
-
-            numberOfRoundsToTake = Math.Min(numberOfRoundsToTake, (int)count);
-
-            var randomIndexes = new HashSet<int>();
-            var random = new Random();
-            while (randomIndexes.Count < numberOfRoundsToTake)
-            {
-                randomIndexes.Add(random.Next(0, (int)count));
-            }
-
-            var randomPlaces = new List<int>();
-            foreach (var index in randomIndexes)
-            {
-                var place = await _gameDbContext.Places
-                    .Find(_ => true)
-                    .Skip(index)
-                    .Limit(1)
-                    .FirstOrDefaultAsync();
-
-                if (place != null)
-                {
-                    randomPlaces.Add(place.Id);
-                }
-            }
-
-            return randomPlaces;
-        }
-
-
         public string StartNewGame()
         {
             var gameID = new Random().Next(1,100000);
             var token = GenerateSessionToken(gameID);
-            var places = GetRandomIDsOfPlaces(ROUNDS_NUMBER).Result;
-
+            var places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER).Result;
+            
             if (places == null || places.Count < ROUNDS_NUMBER)
             {
                 throw new InvalidOperationException("Not enough places was got from db.");
@@ -163,7 +126,6 @@ namespace PartyGame.Services
 
         public RoundResultDto? CheckGuess(Coordinates guessingCoordinates)
         {
-
             var session = _gameSessionService.GetSessionByToken().Result;
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
@@ -229,11 +191,9 @@ namespace PartyGame.Services
 
             return summarize;
         }
-
         public void DeleteGame()
         {
             _gameSessionService.DeleteSessionByToken();
         }
-
     }
 }

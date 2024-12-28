@@ -10,6 +10,7 @@ namespace PartyGame.Repositories
         Task<List<Place>> GetAllPlaces();
         void AddNewPlace(Place newPlace);
         Task<long> GetPlacesCount();
+        Task<Place> GetPlaceByIndex(int index);
     }
 
     public class PlacesRepository : IPlacesRepository
@@ -42,6 +43,15 @@ namespace PartyGame.Repositories
         public async Task<long> GetPlacesCount()
         {
             return await _gameDbContext.Places.CountDocumentsAsync(FilterDefinition<Place>.Empty);
+        }
+
+        public async Task<Place> GetPlaceByIndex(int index)
+        {
+            return await _gameDbContext.Places
+                .Find(_ => true)
+                .Skip(index)
+                .Limit(1)
+                .FirstOrDefaultAsync();
         }
 
 
