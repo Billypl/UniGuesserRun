@@ -7,6 +7,7 @@ using PartyGame.Entities;
 using PartyGame.Services;
 using MongoDB.Driver;
 using PartyGame.Middleware;
+using PartyGame.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +70,10 @@ void ConfigureServices(WebApplicationBuilder builder)
 
     // Serwisy
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
-    builder.Services.AddScoped<ISessionService, SessionService>();
+    builder.Services.AddScoped<IScoreboardRepository,ScoreboardRepository>();
+    builder.Services.AddScoped<IGameSessionRepository, GameSessionRepository>();
+    builder.Services.AddScoped<IPlacesRepository, PlacesRepository>();
+    builder.Services.AddScoped<IGameSessionService, GameSessionService>();
     builder.Services.AddScoped<IPlaceService, PlaceService>();
     builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
     builder.Services.AddScoped<IGameService, GameService>();

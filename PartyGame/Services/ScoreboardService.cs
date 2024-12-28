@@ -1,51 +1,52 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using PartyGame.Entities;
+using PartyGame.Repositories;
 
 namespace PartyGame.Services
 {
     public interface IScoreboardService
     {
-        string GetTokenFromHeader();
-        Task<int> AddNewGame(string nickname);
+        void AddNewGame(string nickname);
         Task<List<FinishedGame>> GetAllGames();
     }
 
     public class ScoreboardService : IScoreboardService
     {
-        private readonly GameDbContext _gameDbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ISessionService _sessionService;
+        private readonly IGameSessionRepository _gameSessionRepository;
+        private readonly IScoreboardRepository _scoreboardRepository;
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
-
-        public ScoreboardService(GameDbContext gameDbContext,
+        public ScoreboardService(
             IHttpContextAccessor httpContextAccessor,
-            ISessionService sessionService)
+            IGameSessionRepository gameSessionRepository,
+            IScoreboardRepository scoreboardRepository)
         {
-            _gameDbContext = gameDbContext;
             _httpContextAccessor = httpContextAccessor;
-            _sessionService = sessionService;
+            _gameSessionRepository = gameSessionRepository;
+            _scoreboardRepository = scoreboardRepository;
         }
 
-        public string GetTokenFromHeader()
+        private string GetTokenFromHeader()
         {
             var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
             var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-            return token;
-        }
 
-
-        public async Task<int> AddNewGame(string nickname)
-        {
-            var token = GetTokenFromHeader();
             if (token == null)
             {
                 throw new KeyNotFoundException($"Token was not found");
             }
 
-            var session =_sessionService.GetSessionByToken(token).Result;
+            return token;
+        }
+
+        public void AddNewGame(string nickname)
+        {
+
+            var token = GetTokenFromHeader();
+            var session =_gameSessionRepository.GetSessionByToken(token).Result;
 
             if (session == null)
             {
@@ -64,14 +65,17 @@ namespace PartyGame.Services
                 Rounds = session.Rounds,
             };
 
-            _gameDbContext.GameResults.InsertOneAsync(newFinishedGame);
-
-            return 1;
+            _scoreboardRepository.AddNewGame(newFinishedGame);
         }
 
         public async Task<List<FinishedGame>> GetAllGames()
         {
-            var games = await _gameDbContext.GameResults.Find(FilterDefinition<FinishedGame>.Empty).ToListAsync();
+            var games = await _scoreboardRepository.GetAllGames();
+
+            if (games == null)
+            {
+                throw new KeyNotFoundException($"There no games in history");
+            }
 
             return games;
         }

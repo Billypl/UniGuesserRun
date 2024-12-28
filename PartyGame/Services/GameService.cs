@@ -18,50 +18,36 @@ namespace PartyGame.Services
     public interface IGameService
     {
         string StartNewGame();
-        string GenerateSessionToken(long gameId);
         RoundResultDto? CheckGuess(Coordinates guessingCoordinates);
 
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber);
 
         public SummarizeGameDto FinishGame();
+
+        public void DeleteGame();
     }
 
     public class GameService : IGameService
     {
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
         private readonly GameDbContext _gameDbContext;
 
         private readonly IPlaceService _placeService;
-        private readonly ISessionService _sessionService;
+        private readonly IGameSessionService _gameSessionService;
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
-        public GameService(IOptions<AuthenticationSettings> authenticationSettings, IHttpContextAccessor httpContextAccessor
+        public GameService(IOptions<AuthenticationSettings> authenticationSettings
             , IMapper mapper,GameDbContext gameDbContext,IPlaceService placeService,
-            ISessionService sessionService)
+            IGameSessionService gameSessionService)
         {
             _authenticationSettings = authenticationSettings.Value;
-            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _gameDbContext = gameDbContext;
             _placeService = placeService;
-            _sessionService = sessionService;
+            _gameSessionService = gameSessionService;
 
-        }
-
-        private string GetTokenFromHeader()
-        {
-            var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-
-            if (token == null)
-            {
-                throw new KeyNotFoundException("Token was not found in db");
-            }
-
-            return token;
         }
 
         private async Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake)
@@ -132,12 +118,11 @@ namespace PartyGame.Services
 
             };
 
-            _gameDbContext.GameSessions.InsertOneAsync(gameSession);
-
+            _gameSessionService.AddNewGameSession(gameSession);
             return token;
         }
 
-        public string GenerateSessionToken(long gameId)
+        private string GenerateSessionToken(long gameId)
         {
             var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireMinutes);
             var claims = new[]
@@ -163,8 +148,7 @@ namespace PartyGame.Services
         // TODO: DRY - 2 similiar instructions in below functions 
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber)
         {
-            string token = GetTokenFromHeader();
-            var session = _sessionService.GetSessionByToken(token).Result;
+            var session = _gameSessionService.GetSessionByToken().Result;
 
             if (session.ActualRoundNumber != roundsNumber)
             {
@@ -173,15 +157,14 @@ namespace PartyGame.Services
             }
 
             var guessingPlace = _placeService.GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess).Result;
-
+           
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
 
         public RoundResultDto? CheckGuess(Coordinates guessingCoordinates)
         {
 
-            string token = GetTokenFromHeader();
-            var session = _sessionService.GetSessionByToken(token).Result;
+            var session = _gameSessionService.GetSessionByToken().Result;
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
             {
@@ -204,11 +187,10 @@ namespace PartyGame.Services
             session.ActualRoundNumber++;
             session.GameScore += distanceDifference;
 
-            _sessionService.UpdateSessionRound(session);
+            _gameSessionService.UpdateGameSession(session);
 
             return result;
         }
-
         private double CalculateDistanceBetweenCords(Coordinates first, Coordinates second)
         {
             const double EarthRadiusMeters = 6371000.0; 
@@ -231,18 +213,13 @@ namespace PartyGame.Services
 
         }
 
-
         public SummarizeGameDto FinishGame()
         {
-            var token = GetTokenFromHeader();
-            var session = _sessionService.GetSessionByToken(token).Result;
-
+            var session = _gameSessionService.GetSessionByToken().Result;
             var summarize = CreateSummarize(session);
-
 
             return summarize;
         }
-
         private SummarizeGameDto CreateSummarize(GameSession session)
         {
             SummarizeGameDto summarize = new SummarizeGameDto();
@@ -253,7 +230,10 @@ namespace PartyGame.Services
             return summarize;
         }
 
-
+        public void DeleteGame()
+        {
+            _gameSessionService.DeleteSessionByToken();
+        }
 
     }
 }

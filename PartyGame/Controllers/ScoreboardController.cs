@@ -20,8 +20,12 @@ namespace PartyGame.Controllers
         [Authorize]
         public ActionResult PostNewScore([FromBody] NicknameDto nickname)
         {
-            var result = _scoreboardService.AddNewGame(nickname.Nickname).Result;
-            return Ok(result);
+             _scoreboardService.AddNewGame(nickname.Nickname);
+            return Ok(
+                new
+                {
+                    Message = "Score successfully added"
+                });
         }
 
         [HttpGet]

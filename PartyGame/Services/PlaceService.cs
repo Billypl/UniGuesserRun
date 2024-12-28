@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using PartyGame.Entities;
 using PartyGame.Models;
+using PartyGame.Repositories;
 
 namespace PartyGame.Services
 {
@@ -14,20 +15,18 @@ namespace PartyGame.Services
 
     public class PlaceService : IPlaceService
     {
-        private readonly GameDbContext _gameDbContext;
+        private readonly IPlacesRepository _placesRepository;
         private readonly IMapper _mapper;
 
-        public PlaceService(GameDbContext gameDbContext,IMapper mapper)
+        public PlaceService(IPlacesRepository placesRepository,IMapper mapper)
         {
-            _gameDbContext = gameDbContext;
+            _placesRepository = placesRepository;
             _mapper = mapper;
         }
 
         public async Task<Place> GetPlaceById(int id)
         {
-            var place = await _gameDbContext.Places
-                .Find(p => p.Id == id)
-                .FirstOrDefaultAsync();
+            var place = await _placesRepository.GetPlaceById(id);
 
             if (place == null)
             {
@@ -39,7 +38,7 @@ namespace PartyGame.Services
 
         public async Task<List<Place>> GetAllPlaces()
         {
-            var places = await _gameDbContext.Places.Find(FilterDefinition<Place>.Empty).ToListAsync();
+            var places = await _placesRepository.GetAllPlaces();
 
             if (places == null)
             {
@@ -49,17 +48,17 @@ namespace PartyGame.Services
             return places;
         }
 
-        public async void AddNewPlace(NewPlaceDto newPlace)
+        public void AddNewPlace(NewPlaceDto newPlace)
         {
             Place place = new Place();
             _mapper.Map(newPlace, place);
             place.Id = GetPlacesCount().Result;
-
-            await _gameDbContext.Places.InsertOneAsync(place); 
+            
+            _placesRepository.AddNewPlace(place);
         }
         public async Task<int> GetPlacesCount()
         {
-            var count = await _gameDbContext.Places.CountDocumentsAsync(FilterDefinition<Place>.Empty);
+            var count = await _placesRepository.GetPlacesCount();
             return (int)count;
         }
 

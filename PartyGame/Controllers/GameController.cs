@@ -53,5 +53,18 @@ namespace PartyGame.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("delete_session")]
+        [Authorize]
+        public ActionResult DeleteGame()
+        {
+            _gameService.DeleteGame();
+            return Ok(new
+                {
+                    Message = "Game successfully deleted"
+                }
+                );
+        }
+
+
     }
 }
