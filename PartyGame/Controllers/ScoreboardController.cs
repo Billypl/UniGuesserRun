@@ -18,10 +18,9 @@ namespace PartyGame.Controllers
 
         [HttpPost("saveScore")]
         [Authorize]
-        public ActionResult PostNewScore([FromBody] string nickname)
+        public ActionResult PostNewScore([FromBody] NicknameDto nickname)
         {
-            var result = _scoreboardService.AddNewGame(nickname).Result;
-
+            var result = _scoreboardService.AddNewGame(nickname.Nickname).Result;
             return Ok(result);
         }
 

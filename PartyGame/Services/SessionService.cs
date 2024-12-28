@@ -25,6 +25,7 @@ namespace PartyGame.Services
             var gameSession = await _gameDbContext.GameSessions
                 .Find(gs => gs.Token == token)
                 .FirstOrDefaultAsync();
+
             if (gameSession == null)
             {
                 throw new KeyNotFoundException($"GameSession with token {token} was not found.");

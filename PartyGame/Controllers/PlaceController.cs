@@ -33,8 +33,14 @@ namespace PartyGame.Controllers
         [HttpPost]
         public ActionResult AddNewPlace([FromBody] NewPlaceDto newPlace)
         {
-            var result = _placeService.AddNewPlace(newPlace);
-            return Ok();
+            _placeService.AddNewPlace(newPlace);
+            return Ok(
+                new
+                {
+                    Message = "Place successfully added to db"
+                }
+            );
+
         }
 
     }

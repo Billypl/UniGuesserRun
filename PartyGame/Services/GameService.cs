@@ -234,13 +234,11 @@ namespace PartyGame.Services
 
         public SummarizeGameDto FinishGame()
         {
-            string token = GetTokenFromHeader();
-
+            var token = GetTokenFromHeader();
             var session = _sessionService.GetSessionByToken(token).Result;
 
-            SummarizeGameDto summarize = CreateSummarize(session);
+            var summarize = CreateSummarize(session);
 
-            // _sessionService.DeleteSessionByToken(token);
 
             return summarize;
         }

@@ -17,7 +17,6 @@ namespace PartyGame.Controllers
             _gameService = gameService;
         }
 
-        // TODO: add middleware 
         [HttpGet("start")]
         public ActionResult StartGame()
         {

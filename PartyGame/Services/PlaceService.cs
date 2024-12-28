@@ -9,7 +9,7 @@ namespace PartyGame.Services
     {
         Task<Place> GetPlaceById(int id);
         Task<List<Place>> GetAllPlaces();
-        Task<int> AddNewPlace(NewPlaceDto newPlace);
+        void AddNewPlace(NewPlaceDto newPlace);
     }
 
     public class PlaceService : IPlaceService
@@ -49,15 +49,13 @@ namespace PartyGame.Services
             return places;
         }
 
-        public async Task<int> AddNewPlace(NewPlaceDto newPlace)
+        public async void AddNewPlace(NewPlaceDto newPlace)
         {
             Place place = new Place();
             _mapper.Map(newPlace, place);
             place.Id = GetPlacesCount().Result;
 
             await _gameDbContext.Places.InsertOneAsync(place); 
-
-            return 1; 
         }
         public async Task<int> GetPlacesCount()
         {

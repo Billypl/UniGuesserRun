@@ -12,30 +12,30 @@ namespace PartyGame.Middleware
             }
             catch (MongoWriteException ex)
             {
-                context.Response.StatusCode = 400; // Bad Request
+                context.Response.StatusCode = 400;
                 await context.Response.WriteAsync($"Database write error: {ex.Message}");
             }
             catch (MongoConnectionException ex)
             {
-                context.Response.StatusCode = 500; // Internal Server Error
+                context.Response.StatusCode = 500;
                 await context.Response.WriteAsync($"Database connection error: {ex.Message}");
             }
             catch (InvalidOperationException ex)
             {
-                context.Response.StatusCode = 500; // Internal Server Error
-                await context.Response.WriteAsync($"Data operation error: {ex.Message}");
+                context.Response.StatusCode = 500;
+                await context.Response.WriteAsync(ex.Message);
             }
             catch (KeyNotFoundException ex)
             {
-                context.Response.StatusCode = 404; // Not Found
+                context.Response.StatusCode = 404;
                 await context.Response.WriteAsync($"Resource not found: {ex.Message}");
             }
             catch (Exception ex)
             {
-                // General exception handling
-                context.Response.StatusCode = 500; // Internal Server Error
+                context.Response.StatusCode = 500;
                 await context.Response.WriteAsync($"Unexpected error occurred: {ex.Message}");
             }
+
         }
     }
 }
