@@ -17,7 +17,7 @@ namespace PartyGame.Services
   
     public interface IGameService
     {
-        string StartNewGame();
+        string StartNewGame(StartDataDto startData);
         RoundResultDto? CheckGuess(Coordinates guessingCoordinates);
 
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber);
@@ -48,13 +48,14 @@ namespace PartyGame.Services
 
         }
 
-        public string StartNewGame()
+        public string StartNewGame(StartDataDto startData)
         {
             var gameID = new Random().Next(1,100000);
             var token = GenerateSessionToken(gameID);
-            var places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER).Result;
+            // NOW ONLY WORKS FOR EASY DIFFICULTY
+            var places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER,startData.Difficulty).Result;
             
-            if (places == null || places.Count < ROUNDS_NUMBER)
+            if (places.Count < ROUNDS_NUMBER)
             {
                 throw new InvalidOperationException("Not enough places was got from db.");
             }
@@ -77,8 +78,9 @@ namespace PartyGame.Services
                 Token = token,
                 Rounds = GameRounds,
                 ActualRoundNumber = 0,
-                ExpirationDate = DateTime.UtcNow.AddMinutes(30)
-
+                ExpirationDate = DateTime.UtcNow.AddMinutes(30),
+                Nickname = startData.Nickname,
+                DifficultyLevel = startData.Difficulty
             };
 
             _gameSessionService.AddNewGameSession(gameSession);
@@ -108,7 +110,6 @@ namespace PartyGame.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        // TODO: DRY - 2 similiar instructions in below functions 
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber)
         {
             var session = _gameSessionService.GetSessionByToken().Result;

@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using PartyGame;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -66,7 +67,12 @@ void ConfigureServices(WebApplicationBuilder builder)
             policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
         });
     });
-
+    // Konwersja poziomu trudnosci JSON string -> enum 
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
     // Serwisy
     builder.Services.AddScoped<ErrorHandlingMiddleware>();

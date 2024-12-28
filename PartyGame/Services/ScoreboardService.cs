@@ -7,7 +7,7 @@ namespace PartyGame.Services
 {
     public interface IScoreboardService
     {
-        void AddNewGame(string nickname);
+        void AddNewGame();
         Task<List<FinishedGame>> GetAllGames();
     }
 
@@ -42,7 +42,7 @@ namespace PartyGame.Services
             return token;
         }
 
-        public void AddNewGame(string nickname)
+        public void AddNewGame()
         {
 
             var token = GetTokenFromHeader();
@@ -55,14 +55,15 @@ namespace PartyGame.Services
 
             if (session.ActualRoundNumber != ROUNDS_NUMBER)
             {
-                throw new Exception($"Game was not finished");
+                throw new Exception($"Game was not finished and cannot be saved");
             }
 
             FinishedGame newFinishedGame = new FinishedGame
             {
-                Nickname = nickname,
+                Nickname = session.Nickname,
                 FinalScore = session.GameScore,
                 Rounds = session.Rounds,
+                DifficultyLevel = session.DifficultyLevel
             };
 
             _scoreboardRepository.AddNewGame(newFinishedGame);

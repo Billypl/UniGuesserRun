@@ -11,6 +11,7 @@ namespace PartyGame.Repositories
         void AddNewPlace(Place newPlace);
         Task<long> GetPlacesCount();
         Task<Place> GetPlaceByIndex(int index);
+        Task<List<Place>> GetPlacesByDifficulty(DifficultyLevel difficultyLevel);
     }
 
     public class PlacesRepository : IPlacesRepository
@@ -54,6 +55,11 @@ namespace PartyGame.Repositories
                 .FirstOrDefaultAsync();
         }
 
-
+        public async Task<List<Place>> GetPlacesByDifficulty(DifficultyLevel difficultyLevel)
+        {
+            return await _gameDbContext.Places
+                .Find(p => p.DifficultyLevel == difficultyLevel)
+                .ToListAsync();
+        }
     }
 }

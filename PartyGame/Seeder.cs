@@ -2,6 +2,7 @@
 using PartyGame.Entities;
 using System.Text.Json;
 using MongoDB.Driver;
+using System.Text.Json.Serialization;
 
 namespace PartyGame
 {
@@ -35,7 +36,7 @@ namespace PartyGame
 
             var places = JsonSerializer.Deserialize<List<Place>>(jsonString, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                Converters = { new JsonStringEnumConverter() }
             });
 
             return places;

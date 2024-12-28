@@ -8,6 +8,7 @@ namespace PartyGame.Entities
         public string Nickname { get; set; }
         public double FinalScore { get; set; }
         public List<Round> Rounds { get; set; }
+        public DifficultyLevel DifficultyLevel { get; set; }
 
     }
 }

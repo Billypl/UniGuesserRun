@@ -12,7 +12,7 @@ namespace PartyGame.Services
         Task<List<Place>> GetAllPlaces();
         void AddNewPlace(NewPlaceDto newPlace);
         Task<int> GetPlacesCount();
-        Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake);
+        Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
     }
 
     public class PlaceService : IPlaceService
@@ -64,31 +64,28 @@ namespace PartyGame.Services
             return (int)count;
         }
 
-        public async Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake)
+        public async Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel)
         {
-            var count = await _placesRepository.GetPlacesCount();
-            if (count == 0)
-                return null;
+   
+            var placesWithDifficulty = await _placesRepository.GetPlacesByDifficulty(difficultyLevel);
+            if (!placesWithDifficulty.Any())
+            {
+                return new List<int>();
+            }
 
-            numberOfRoundsToTake = Math.Min(numberOfRoundsToTake, (int)count);
+            numberOfRoundsToTake = Math.Min(numberOfRoundsToTake, placesWithDifficulty.Count);
 
             var randomIndexes = new HashSet<int>();
             var random = new Random();
+
             while (randomIndexes.Count < numberOfRoundsToTake)
             {
-                randomIndexes.Add(random.Next(0, (int)count));
+                randomIndexes.Add(random.Next(0, placesWithDifficulty.Count));
             }
 
-            var randomPlaces = new List<int>();
-            foreach (var index in randomIndexes)
-            {
-                var place = await _placesRepository.GetPlaceByIndex(index);
-
-                if (place != null)
-                {
-                    randomPlaces.Add(place.Id);
-                }
-            }
+            var randomPlaces = randomIndexes
+                .Select(index => placesWithDifficulty[index].Id)
+                .ToList();
 
             return randomPlaces;
         }

@@ -71,21 +71,7 @@ namespace PartyGame.Services
             }
         }
 
-        public async Task<GameSession> GetGameSessionByToken()
-        {
-            var token = GetTokenFromHeader();
-
-            var gameSession = await _gameSessionRepository.GetGameSessionByToken(token);
-
-            if (gameSession == null)
-            {
-                throw new KeyNotFoundException($"Session with token ${token} was not found");
-            }
-
-            return gameSession;
-        }
-
-        public async void AddNewGameSession(GameSession session)
+        public void AddNewGameSession(GameSession session)
         {
             var result = _gameSessionRepository.GetGameSessionByToken(session.Token).Result;
             if (result != null)

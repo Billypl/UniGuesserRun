@@ -18,9 +18,9 @@ namespace PartyGame.Controllers
         }
 
         [HttpGet("start")]
-        public ActionResult StartGame()
+        public ActionResult StartGame(StartDataDto startData)
         {
-            var resultToken = _gameService.StartNewGame();
+            var resultToken = _gameService.StartNewGame(startData);
 
             return Ok(new
             {

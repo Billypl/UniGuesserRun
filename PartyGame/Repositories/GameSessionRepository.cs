@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
 using PartyGame.Entities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PartyGame.Repositories
 {
@@ -43,7 +42,8 @@ namespace PartyGame.Repositories
                 .Set(s => s.GameScore, session.GameScore)
                 .Set(s => s.ExpirationDate, session.ExpirationDate)
                 .Set(s => s.Token, session.Token)
-                .Set(s => s.Id, session.Id);
+                .Set(s => s.Id, session.Id)
+                .Set(s => s.DifficultyLevel, session.DifficultyLevel);
             
             return await _gameDbContext.GameSessions.UpdateOneAsync(filter, update);
         }

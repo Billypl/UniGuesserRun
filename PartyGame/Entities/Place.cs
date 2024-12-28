@@ -11,5 +11,6 @@ namespace PartyGame.Entities
         public Coordinates Coordinates { get; set; }
         public string ImageUrl { get; set; } 
         public string Alt { get; set; }
+        public DifficultyLevel DifficultyLevel { get; set; }
     }
 }
