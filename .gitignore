@@ -1,0 +1,70 @@
+# .NET build folders
+bin/
+obj/
+
+# Rider specific files
+.idea/
+.idea_modules/
+*.sln.iml
+*.sln.rider
+*.DotSettings.user
+out/
+
+# Rider Workspace
+.idea/*workspace.xml
+
+# Visual Studio specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build artifacts
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.log
+*.dSYM
+*.userprefs
+
+# Resharper
+_ReSharper.Caches/
+
+# Backup & Temporary files
+*.bak
+*.swp
+*~.nib
+*.tmp
+*.temp
+
+# Logs
+*.log
+*.tlog
+*.vscode/
+
+# Rider log files
+.idea/*/*/vcs.xml
+.idea/*/*/workspace.xml
+.idea/*/*/modules.xml
+
+# Visual Studio Code files
+.vscode/
+
+# macOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+desktop.ini
+
+# Rider cache files
+.idea/*tasks.xml
+
+# Generated files
+*.sln.ide
