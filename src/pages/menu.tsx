@@ -19,6 +19,7 @@ const Menu: React.FC = () => {
         <h1>Main Menu</h1>
         <div>
             <ul>
+                <li>Username: <input type="text"></input></li>
                 <li className="menu-option" onClick={startGame}>Start game</li>
                 {/* <li className="menu-option">Settings</li> */}
                 <li className="menu-option" onClick={showScoreboard}>Scoreboard</li>

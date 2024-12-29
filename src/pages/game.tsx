@@ -1,14 +1,14 @@
-import React, { useEffect, useState} from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import axios from "axios";
 
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import userMarkerIcon from '../assets/images/user-marker-icon.png';
-import targetMarkerIcon from '../assets/images/target-marker-icon.png';
-import { start } from 'repl';
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import userMarkerIcon from "../assets/images/user-marker-icon.png";
+import targetMarkerIcon from "../assets/images/target-marker-icon.png";
+import gameService, { StartGameData } from "../services/api/gameService";
 
 const PlayerIcon = L.icon({
   iconUrl: markerIcon,
@@ -40,16 +40,18 @@ const LocationMarker: React.FC<{
   return null; // No visual output; marker functionality only
 };
 
-const DisplayMarker = ({ latlng, icon, label }: { latlng: [number, number] | null, icon: L.Icon, label: string }) => {
-  return latlng && (
-    <Marker position={latlng} icon={icon}>
-      <Popup>
-        {label} <br />
-        Latitude: {latlng[0].toFixed(6)}, Longitude:{latlng[1].toFixed(6)}
-      </Popup>
-    </Marker>
+const DisplayMarker = ({ latlng, icon, label }: { latlng: [number, number] | null; icon: L.Icon; label: string }) => {
+  return (
+    latlng && (
+      <Marker position={latlng} icon={icon}>
+        <Popup>
+          {label} <br />
+          Latitude: {latlng[0].toFixed(6)}, Longitude:{latlng[1].toFixed(6)}
+        </Popup>
+      </Marker>
+    )
   );
-}
+};
 
 // Latitude: 54.371513, Longitude: 18.619164 <- GG
 const Game: React.FC = () => {
@@ -70,12 +72,15 @@ const Game: React.FC = () => {
 
     try {
       // Send the GET request
-      const response = await axios.get('https://localhost:7157/api/game/start');
-      console.log('Response data token', response.data.token);
-      setToken(response.data.token);
+      const startData: StartGameData = {
+        nickname: "test",
+        difficulty: "easy",
+      };
+      const responseData = await gameService.startGame(startData);
+      setToken(responseData.token);
     } catch (err: any) {
-      setError('Failed to fetch data. Please try again later.');
-      console.error('Error fetching data:', err);
+      setError("Failed to fetch data. Please try again later.");
+      console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
     }
@@ -87,8 +92,8 @@ const Game: React.FC = () => {
     try {
       // Send the GET request
       //console.log('Authorization:', `Bearer ${token}`);
-      const getUrl = 'https://localhost:7157/api/game/round/' + roundNumber;
-      const bearerString = 'Bearer ' + token;
+      const getUrl = "https://localhost:7157/api/game/round/" + roundNumber;
+      const bearerString = "Bearer " + token;
       const response = await axios.get(getUrl, {
         headers: {
           Authorization: bearerString,
@@ -96,8 +101,8 @@ const Game: React.FC = () => {
       });
       setImage(response.data.imageUrl);
     } catch (err: any) {
-      setError('Failed to fetch data. Please try again later.');
-      console.error('Error fetching data:', err);
+      setError("Failed to fetch data. Please try again later.");
+      console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
     }
@@ -106,11 +111,11 @@ const Game: React.FC = () => {
   const startRound = (round: number) => {
     setRoundNumber(round);
     fetchGuessingPlace();
-  }
+  };
 
   const nextRound = () => {
     startRound(roundNumber + 1);
-  }
+  };
 
   useEffect(() => {
     fetchStart();
@@ -118,15 +123,14 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     // Only start round if the token is fetched
-    console.log('Response token', token);
     if (token) {
       startRound(0);
     }
   }, [token]);
 
   const getCoordinates = () => {
-    if (!('geolocation' in navigator)) {
-      setError('Geolocation is not supported by your browser.');
+    if (!("geolocation" in navigator)) {
+      setError("Geolocation is not supported by your browser.");
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -135,11 +139,11 @@ const Game: React.FC = () => {
         setError(null);
       },
       (error) => {
-        setError('Unable to retrieve location. Please enable location services.');
+        setError("Unable to retrieve location. Please enable location services.");
         console.error(error);
       },
       {
-        enableHighAccuracy: true
+        enableHighAccuracy: true,
       }
     );
   };
@@ -170,27 +174,16 @@ const Game: React.FC = () => {
     return (
       <div>
         <h1>Round {roundNumber + 1}</h1>
-        <img src={imageUrl!}/>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <img src={imageUrl!} />
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <button onClick={getCoordinates}>Get Coordinates</button>
-        {clickedLatLng && !playerChoiceConfirmed && (
-          <button onClick={confirmPlayerChoice}>Confirm choice</button>
-        )}
-        {clickedLatLng && playerChoiceConfirmed && (
-          <button onClick={nextRound}>Next round</button>
-        )}
-        {guessDistance && (
-          <h1>Guess distance: {guessDistance.toFixed(2)}</h1>
-        )}
+        {clickedLatLng && !playerChoiceConfirmed && <button onClick={confirmPlayerChoice}>Confirm choice</button>}
+        {clickedLatLng && playerChoiceConfirmed && <button onClick={nextRound}>Next round</button>}
+        {guessDistance && <h1>Guess distance: {guessDistance.toFixed(2)}</h1>}
 
         {/* Map Section */}
-        <div style={{ height: '500px', marginTop: '20px' }}>
-          <MapContainer
-            center={mapCenter}
-            zoom={13}
-            scrollWheelZoom={true}
-            style={{ height: '100%', width: '100%' }}
-          >
+        <div style={{ height: "500px", marginTop: "20px" }}>
+          <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -202,21 +195,21 @@ const Game: React.FC = () => {
               <>
                 <DisplayMarker latlng={getTargetLocation()} icon={TargetIcon} label="Target location:" />
                 <Polyline
-                  pathOptions={{ color: 'black', dashArray: '1 5', weight: 2 }}
-                  positions={[clickedLatLng, getTargetLocation()]} />
+                  pathOptions={{ color: "black", dashArray: "1 5", weight: 2 }}
+                  positions={[clickedLatLng, getTargetLocation()]}
+                />
               </>
             )}
 
             <LocationMarker selectLocation={selectLocation} />
           </MapContainer>
-
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+    <div style={{ textAlign: "center", marginTop: "20px" }}>
       {loading && <h1>Loading...</h1>}
       {token && imageUrl && displayGame()}
     </div>

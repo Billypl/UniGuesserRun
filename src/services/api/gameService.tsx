@@ -1,11 +1,16 @@
 import axios, { AxiosInstance } from 'axios';
 
-const API_URL = 'http://localhost:3000/api/game';
+const API_URL = 'https://localhost:7157/api/game';
 
 // Define types for the request and response data
 export interface Coordinates {
   x: number;
   y: number;
+}
+
+export interface StartGameData {
+  nickname: string;
+  difficulty: string;
 }
 
 export interface StartGameResponse {
@@ -32,11 +37,11 @@ export class GameService {
   }
 
   // Start a new game
-  async startGame(): Promise<StartGameResponse> {
-    const response = await this.axiosInstance.get<StartGameResponse>('/start');
+  async startGame(startData: StartGameData): Promise<StartGameResponse> {
+    const response = await this.axiosInstance.post<StartGameResponse>('/start', startData);
     return response.data;
   }
-
+  
   // Check a guess
   async checkGuess(guessingCoordinates: Coordinates): Promise<any> {
     const response = await this.axiosInstance.patch('/check', guessingCoordinates);
