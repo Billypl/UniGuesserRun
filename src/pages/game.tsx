@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import axios from "axios";
 
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import userMarkerIcon from "../assets/images/user-marker-icon.png";
 import targetMarkerIcon from "../assets/images/target-marker-icon.png";
-import gameService, { StartGameData } from "../services/api/gameService";
+import gameService, { Coordinates, StartGameResponse } from "../services/api/gameService";
+import { SelectMapLocation } from "../components/SelectMapLocation";
+import { LocationMarker } from "../components/LocationMarker";
+import { useGameContext } from "../hooks/useGameContext";
 
 const PlayerIcon = L.icon({
   iconUrl: markerIcon,
@@ -27,62 +29,36 @@ const TargetIcon = L.icon({
 
 L.Marker.prototype.options.icon = PlayerIcon;
 
-// Component to handle map click events
-const LocationMarker: React.FC<{
-  selectLocation: (location: [number, number]) => void;
-}> = ({ selectLocation }) => {
-  useMapEvents({
-    click(e) {
-      const { lat, lng } = e.latlng;
-      selectLocation([lat, lng]); // Call your custom function
-    },
-  });
-  return null; // No visual output; marker functionality only
-};
-
-const DisplayMarker = ({ latlng, icon, label }: { latlng: [number, number] | null; icon: L.Icon; label: string }) => {
-  return (
-    latlng && (
-      <Marker position={latlng} icon={icon}>
-        <Popup>
-          {label} <br />
-          Latitude: {latlng[0].toFixed(6)}, Longitude:{latlng[1].toFixed(6)}
-        </Popup>
-      </Marker>
-    )
-  );
-};
-
-// Latitude: 54.371513, Longitude: 18.619164 <- GG
+// Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
+  const { nickname, setNickname, difficulty, setDifficulty } = useGameContext();
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [roundNumber, setRoundNumber] = useState<number | null>(null);
+  const [imageUrl, setImage] = useState<string | null>(null);
+
   const [playerLatLng, setPlayerLatLng] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [clickedLatLng, setClickedLatLng] = useState<[number, number] | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
   const [guessDistance, setGuessDistance] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [token, setToken] = useState<string | null>(null);
-  const [roundNumber, setRoundNumber] = useState<number>(0);
-  const [imageUrl, setImage] = useState<string | null>(null);
+
+  const mapCenter: [number, number] = [54.371513, 18.619164];
 
   // Function to make a GET request
-  const fetchStart = async () => {
+  const startGame = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Send the GET request
-      const startData: StartGameData = {
-        nickname: "test",
-        difficulty: "easy",
-      };
-      const responseData = await gameService.startGame(startData);
-      setToken(responseData.token);
+      const startData = await gameService.startGame(nickname, difficulty);
+      window.sessionStorage.setItem("token", startData.token);
     } catch (err: any) {
       setError("Failed to fetch data. Please try again later.");
       console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
+      startRound(0);
     }
   };
 
@@ -90,16 +66,8 @@ const Game: React.FC = () => {
     setError(null);
 
     try {
-      // Send the GET request
-      //console.log('Authorization:', `Bearer ${token}`);
-      const getUrl = "https://localhost:7157/api/game/round/" + roundNumber;
-      const bearerString = "Bearer " + token;
-      const response = await axios.get(getUrl, {
-        headers: {
-          Authorization: bearerString,
-        },
-      });
-      setImage(response.data.imageUrl);
+      const guessingPlace = await gameService.getGuessingPlace(roundNumber!);
+      setImage(guessingPlace.imageUrl);
     } catch (err: any) {
       setError("Failed to fetch data. Please try again later.");
       console.error("Error fetching data:", err);
@@ -109,24 +77,29 @@ const Game: React.FC = () => {
   };
 
   const startRound = (round: number) => {
+    console.log("setting round number: " + round);
     setRoundNumber(round);
-    fetchGuessingPlace();
   };
+
+  useEffect(() => {
+    console.log("starting round: " + roundNumber + ", " + sessionStorage.getItem("token"));
+    if (roundNumber != null && sessionStorage.getItem("token")) {
+      fetchGuessingPlace();
+    }
+  }, [roundNumber]);
 
   const nextRound = () => {
-    startRound(roundNumber + 1);
+    resetGameState();
+    startRound(roundNumber! + 1);
   };
 
   useEffect(() => {
-    fetchStart();
-  }, []);
-
-  useEffect(() => {
-    // Only start round if the token is fetched
-    if (token) {
-      startRound(0);
+    console.log(sessionStorage.getItem("token"));
+    if (!sessionStorage.getItem("token")) {
+      console.log("starting game");
+      startGame();
     }
-  }, [token]);
+  }, []);
 
   const getCoordinates = () => {
     if (!("geolocation" in navigator)) {
@@ -148,11 +121,18 @@ const Game: React.FC = () => {
     );
   };
 
-  const mapCenter: [number, number] = [54.371513, 18.619164];
-
   const confirmPlayerChoice = () => {
     setPlayerChoiceConfirmed(true);
-    setGuessDistance(L.latLng(clickedLatLng!).distanceTo(getTargetLocation()));
+    checkPlayerChoice();
+  };
+
+  const checkPlayerChoice = async () => {
+    const coords: Coordinates = {
+      latitude: clickedLatLng![0],
+      longitude: clickedLatLng![1],
+    };
+    const roundResult = await gameService.checkGuess(coords);
+    setGuessDistance(roundResult.distanceDifference);
   };
 
   const getTargetLocation = (): [number, number] => {
@@ -173,7 +153,7 @@ const Game: React.FC = () => {
   const displayGame = () => {
     return (
       <div>
-        <h1>Round {roundNumber + 1}</h1>
+        <h1>Round {roundNumber! + 1}</h1>
         <img src={imageUrl!} />
         {error && <p style={{ color: "red" }}>{error}</p>}
         <button onClick={getCoordinates}>Get Coordinates</button>
@@ -189,11 +169,11 @@ const Game: React.FC = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <DisplayMarker latlng={playerLatLng} icon={PlayerIcon} label="Your location:" />
-            <DisplayMarker latlng={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />
+            <LocationMarker latlng={playerLatLng} icon={PlayerIcon} label="Your location:" />
+            <LocationMarker latlng={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />
             {playerChoiceConfirmed && clickedLatLng && (
               <>
-                <DisplayMarker latlng={getTargetLocation()} icon={TargetIcon} label="Target location:" />
+                <LocationMarker latlng={getTargetLocation()} icon={TargetIcon} label="Target location:" />
                 <Polyline
                   pathOptions={{ color: "black", dashArray: "1 5", weight: 2 }}
                   positions={[clickedLatLng, getTargetLocation()]}
@@ -201,7 +181,7 @@ const Game: React.FC = () => {
               </>
             )}
 
-            <LocationMarker selectLocation={selectLocation} />
+            <SelectMapLocation selectLocationFunction={selectLocation} />
           </MapContainer>
         </div>
       </div>
@@ -211,7 +191,7 @@ const Game: React.FC = () => {
   return (
     <div style={{ textAlign: "center", marginTop: "20px" }}>
       {loading && <h1>Loading...</h1>}
-      {token && imageUrl && displayGame()}
+      {imageUrl && displayGame()}
     </div>
   );
 };

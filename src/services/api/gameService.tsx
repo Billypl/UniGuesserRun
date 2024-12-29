@@ -1,11 +1,11 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from "axios";
 
-const API_URL = 'https://localhost:7157/api/game';
+const API_URL = "https://localhost:7157/api/game";
 
 // Define types for the request and response data
 export interface Coordinates {
-  x: number;
-  y: number;
+  longitude: number;
+  latitude: number;
 }
 
 export interface StartGameData {
@@ -19,9 +19,13 @@ export interface StartGameResponse {
 }
 
 export interface GuessingPlaceDto {
-  id: number;
-  description: string;
-  coordinates: Coordinates;
+  imageUrl: string;
+}
+
+export interface RoundResultDto {
+  // TODO: original place
+  distanceDifference: number;
+  roundNumber: number;
 }
 
 export class GameService {
@@ -31,32 +35,44 @@ export class GameService {
     this.axiosInstance = axios.create({
       baseURL: API_URL,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
   }
 
   // Start a new game
-  async startGame(startData: StartGameData): Promise<StartGameResponse> {
-    const response = await this.axiosInstance.post<StartGameResponse>('/start', startData);
+  async startGame(nickname: string, difficulty: string): Promise<StartGameResponse> {
+    const startData: StartGameData = {
+      nickname: nickname,
+      difficulty: difficulty,
+    };
+    const response = await this.axiosInstance.post<StartGameResponse>("/start", startData);
     return response.data;
   }
-  
+
   // Check a guess
-  async checkGuess(guessingCoordinates: Coordinates): Promise<any> {
-    const response = await this.axiosInstance.patch('/check', guessingCoordinates);
+  async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
+    const response = await this.axiosInstance.patch<RoundResultDto>("/check", guessingCoordinates, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    });
     return response.data;
   }
 
   // Get the guessing place for a specific round
   async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
-    const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`);
+    const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    });
     return response.data;
   }
 
   // Finish the game
   async finishGame(): Promise<any> {
-    const response = await this.axiosInstance.patch('/finish');
+    const response = await this.axiosInstance.patch("/finish");
     return response.data;
   }
 }
