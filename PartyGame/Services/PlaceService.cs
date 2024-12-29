@@ -87,7 +87,7 @@ namespace PartyGame.Services
                 .Select(index => placesWithDifficulty[index].Id)
                 .ToList();
 
-            return randomPlaces;
+             return randomPlaces;
         }
 
 
