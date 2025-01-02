@@ -22,8 +22,14 @@ export interface GuessingPlaceDto {
   imageUrl: string;
 }
 
+interface Place {
+  coordinates: Coordinates;
+  //imageUrl: string;
+  //alt: string;
+}
+
 export interface RoundResultDto {
-  // TODO: original place
+  originalPlace: Place;
   distanceDifference: number;
   roundNumber: number;
 }

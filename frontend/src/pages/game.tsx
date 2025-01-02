@@ -41,6 +41,7 @@ const Game: React.FC = () => {
   const [playerLatLng, setPlayerLatLng] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [clickedLatLng, setClickedLatLng] = useState<[number, number] | null>(null);
+  const [targetLatLng, setTargetLatLng] = useState<[number, number] | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
   const [guessDistance, setGuessDistance] = useState<number | null>(null);
 
@@ -145,11 +146,13 @@ const Game: React.FC = () => {
       longitude: clickedLatLng![1],
     };
     const roundResult = await gameService.checkGuess(coords);
+    console.log([roundResult.originalPlace.coordinates.latitude, roundResult.originalPlace.coordinates.longitude]);
+    setTargetLatLng([roundResult.originalPlace.coordinates.latitude, roundResult.originalPlace.coordinates.longitude]);
     setGuessDistance(roundResult.distanceDifference);
   };
 
   const getTargetLocation = (): [number, number] => {
-    return [54.371513, 18.619164]; // TODO: replace with GET request
+    return targetLatLng!;
   };
 
   const selectLocation = (latlng: [number, number] | null) => {
@@ -193,7 +196,7 @@ const Game: React.FC = () => {
 
             <LocationMarker latlng={playerLatLng} icon={PlayerIcon} label="Your location:" />
             <LocationMarker latlng={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />
-            {playerChoiceConfirmed && clickedLatLng && (
+            {playerChoiceConfirmed && clickedLatLng && targetLatLng && (
               <>
                 <LocationMarker latlng={getTargetLocation()} icon={TargetIcon} label="Target location:" />
                 <Polyline
