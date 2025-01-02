@@ -22,10 +22,21 @@ export interface GuessingPlaceDto {
   imageUrl: string;
 }
 
+interface Place {
+  coordinates: Coordinates;
+  //imageUrl: string;
+  //alt: string;
+}
+
 export interface RoundResultDto {
-  // TODO: original place
+  originalPlace: Place;
   distanceDifference: number;
   roundNumber: number;
+}
+
+export interface SummarizeGameDto {
+  // TODO: round list
+  score: number;
 }
 
 export class GameService {
@@ -40,7 +51,6 @@ export class GameService {
     });
   }
 
-  // Start a new game
   async startGame(nickname: string, difficulty: string): Promise<StartGameResponse> {
     const startData: StartGameData = {
       nickname: nickname,
@@ -50,7 +60,6 @@ export class GameService {
     return response.data;
   }
 
-  // Check a guess
   async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
     const response = await this.axiosInstance.patch<RoundResultDto>("/check", guessingCoordinates, {
       headers: {
@@ -60,7 +69,6 @@ export class GameService {
     return response.data;
   }
 
-  // Get the guessing place for a specific round
   async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
     const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
       headers: {
@@ -70,10 +78,22 @@ export class GameService {
     return response.data;
   }
 
-  // Finish the game
-  async finishGame(): Promise<any> {
-    const response = await this.axiosInstance.patch("/finish");
+  async finishGame(): Promise<SummarizeGameDto> {
+    const response = await this.axiosInstance.patch<SummarizeGameDto>("/finish", "", {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    });
     return response.data;
+  }
+
+  deleteSession() {
+    this.axiosInstance.delete("/delete_session", {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    });
+    window.sessionStorage.removeItem("token");
   }
 }
 

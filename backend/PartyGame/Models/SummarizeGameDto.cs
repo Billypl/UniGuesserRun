@@ -5,6 +5,6 @@ namespace PartyGame.Models
     public class SummarizeGameDto
     {
         public List<Round> Rounds { get; set; }
-        public double Score;
+        public double Score { get; set; }
     }
 }
