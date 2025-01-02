@@ -93,6 +93,7 @@ export class GameService {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     });
+    window.sessionStorage.removeItem("token");
   }
 }
 

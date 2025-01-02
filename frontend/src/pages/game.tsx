@@ -32,7 +32,7 @@ L.Marker.prototype.options.icon = PlayerIcon;
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
-  const { nickname, setNickname, difficulty, setDifficulty } = useGameContext();
+  const { nickname, setNickname, difficulty, setDifficulty, score, setScore } = useGameContext();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null);
@@ -48,7 +48,7 @@ const Game: React.FC = () => {
   const MAP_CENTER: [number, number] = [54.371513, 18.619164];
   const ROUND_NUMBER = 5;
   const navigate = useNavigate();
-  
+
   // Function to make a GET request
   const startGame = async () => {
     setLoading(true);
@@ -101,9 +101,11 @@ const Game: React.FC = () => {
     startRound(currentRoundNumber! + 1);
   };
 
-  const finishGame = () => {
+  const finishGame = async () => {
     console.log("finishing game");
-    gameService.finishGame();
+    const response = await gameService.finishGame();
+    console.log(response.score);
+    setScore(response.score);
     navigate("/game_results");
   }
 
