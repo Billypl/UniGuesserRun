@@ -1,6 +1,5 @@
 import { URL } from "node:url";
 import React from "react";
-import { GameService } from "../services/api/gameService";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../hooks/useGameContext";
 
@@ -9,6 +8,7 @@ const Menu: React.FC = () => {
   const { nickname, setNickname, difficulty, setDifficulty } = useGameContext();
 
   const startGame = () => {
+    window.sessionStorage.removeItem("token");
     navigate("/game");
   };
 
