@@ -1,53 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import userMarkerIcon from "../assets/images/user-marker-icon.png";
-import targetMarkerIcon from "../assets/images/target-marker-icon.png";
-import gameService, { Coordinates, StartGameResponse } from "../services/api/gameService";
-import { SelectMapLocation } from "../components/SelectMapLocation";
-import { LocationMarker } from "../components/LocationMarker";
+import gameService, { Coordinates } from "../services/api/gameService";
 import { useGameContext } from "../hooks/useGameContext";
 import { useNavigate } from "react-router-dom";
 
-const PlayerIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
-
-const ClickedIcon = L.icon({
-  iconUrl: userMarkerIcon,
-  shadowUrl: markerShadow,
-});
-
-const TargetIcon = L.icon({
-  iconUrl: targetMarkerIcon,
-  shadowUrl: markerShadow,
-});
-
-L.Marker.prototype.options.icon = PlayerIcon;
+import GameInterface from "./game_interface";
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
-  const { nickname, setNickname, difficulty, setDifficulty, score, setScore } = useGameContext();
+  const { nickname, difficulty, setScore } = useGameContext();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null);
-  const [imageUrl, setImage] = useState<string | null>(null);
-
-  const [playerLatLng, setPlayerLatLng] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [clickedLatLng, setClickedLatLng] = useState<[number, number] | null>(null);
+
+  const [imageUrl, setImage] = useState<string | null>(null);
+  const [playerLatLng, setPlayerLatLng] = useState<[number, number] | null>(null);
   const [targetLatLng, setTargetLatLng] = useState<[number, number] | null>(null);
-  const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
   const [guessDistance, setGuessDistance] = useState<number | null>(null);
 
-  const MAP_CENTER: [number, number] = [54.371513, 18.619164];
-  const ROUND_NUMBER = 5;
+  const ROUND_NUMBER: number = 5;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("token")) {
+      startGame();
+    }
+  }, []);
 
   // Function to make a GET request
   const startGame = async () => {
@@ -66,6 +46,16 @@ const Game: React.FC = () => {
     }
   };
 
+  const startRound = (round: number) => {
+    setCurrentRoundNumber(round);
+  };
+
+  useEffect(() => {
+    if (currentRoundNumber != null && sessionStorage.getItem("token")) {
+      fetchGuessingPlace();
+    }
+  }, [currentRoundNumber]);
+
   const fetchGuessingPlace = async () => {
     setError(null);
 
@@ -80,21 +70,23 @@ const Game: React.FC = () => {
     }
   };
 
-  const startRound = (round: number) => {
-    console.log("setting round number: " + round);
-    setCurrentRoundNumber(round);
+  const confirmPlayerChoice = (clickedLatLng: [number, number]) => {
+    checkPlayerChoice(clickedLatLng);
   };
 
-  useEffect(() => {
-    console.log("starting round: " + currentRoundNumber + ", " + sessionStorage.getItem("token"));
-    if (currentRoundNumber != null && sessionStorage.getItem("token")) {
-      fetchGuessingPlace();
-    }
-  }, [currentRoundNumber]);
+  const checkPlayerChoice = async (clickedLatLng: [number, number]) => {
+    const coords: Coordinates = {
+      latitude: clickedLatLng[0],
+      longitude: clickedLatLng[1],
+    };
+    const roundResult = await gameService.checkGuess(coords);
+    setTargetLatLng([roundResult.originalPlace.coordinates.latitude, roundResult.originalPlace.coordinates.longitude]);
+    setGuessDistance(roundResult.distanceDifference);
+  };
 
   const isLastRound = (currentRoundNumber: number): boolean => {
-    return currentRoundNumber == ROUND_NUMBER - 1;
-  }
+    return currentRoundNumber === ROUND_NUMBER - 1;
+  };
 
   const nextRound = () => {
     resetGameState();
@@ -102,20 +94,14 @@ const Game: React.FC = () => {
   };
 
   const finishGame = async () => {
-    console.log("finishing game");
     const response = await gameService.finishGame();
-    console.log(response.score);
     setScore(response.score);
     navigate("/game_results");
-  }
+  };
 
-  useEffect(() => {
-    console.log(sessionStorage.getItem("token"));
-    if (!sessionStorage.getItem("token")) {
-      console.log("starting game");
-      startGame();
-    }
-  }, []);
+  const resetGameState = () => {
+    setGuessDistance(null);
+  };
 
   const getCoordinates = () => {
     if (!("geolocation" in navigator)) {
@@ -137,88 +123,22 @@ const Game: React.FC = () => {
     );
   };
 
-  const confirmPlayerChoice = () => {
-    setPlayerChoiceConfirmed(true);
-    checkPlayerChoice();
-  };
-
-  const checkPlayerChoice = async () => {
-    const coords: Coordinates = {
-      latitude: clickedLatLng![0],
-      longitude: clickedLatLng![1],
-    };
-    const roundResult = await gameService.checkGuess(coords);
-    console.log([roundResult.originalPlace.coordinates.latitude, roundResult.originalPlace.coordinates.longitude]);
-    setTargetLatLng([roundResult.originalPlace.coordinates.latitude, roundResult.originalPlace.coordinates.longitude]);
-    setGuessDistance(roundResult.distanceDifference);
-  };
-
-  const getTargetLocation = (): [number, number] => {
-    return targetLatLng!;
-  };
-
-  const selectLocation = (latlng: [number, number] | null) => {
-    if (playerChoiceConfirmed) return; // cant move the marker after confirming your choice
-    setClickedLatLng(latlng);
-  };
-
-  const resetGameState = () => {
-    setClickedLatLng(null);
-    setPlayerChoiceConfirmed(false);
-    setGuessDistance(null);
-  };
-
-  const endRoundButton = (currentRoundNumber: number) => {
-    return (
-      isLastRound(currentRoundNumber!) ?
-        <button onClick={finishGame}>Finish game</button> 
-        : 
-        <button onClick={nextRound}>Next round</button>
-    );
-  };
-
-  const displayGame = () => {
-    return (
-      <div>
-        <h1>Round {currentRoundNumber! + 1}</h1>
-        <img src={imageUrl!} />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button onClick={getCoordinates}>Get Coordinates</button>
-        {clickedLatLng && !playerChoiceConfirmed && <button onClick={confirmPlayerChoice}>Confirm choice</button>}
-        {clickedLatLng && playerChoiceConfirmed && endRoundButton(currentRoundNumber!)}
-        {guessDistance && <h1>Guess distance: {guessDistance.toFixed(2)}</h1>}
-
-        {/* Map Section */}
-        <div style={{ height: "500px", marginTop: "20px" }}>
-          <MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-
-            <LocationMarker latlng={playerLatLng} icon={PlayerIcon} label="Your location:" />
-            <LocationMarker latlng={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />
-            {playerChoiceConfirmed && clickedLatLng && targetLatLng && (
-              <>
-                <LocationMarker latlng={getTargetLocation()} icon={TargetIcon} label="Target location:" />
-                <Polyline
-                  pathOptions={{ color: "black", dashArray: "1 5", weight: 2 }}
-                  positions={[clickedLatLng, getTargetLocation()]}
-                />
-              </>
-            )}
-
-            <SelectMapLocation selectLocationFunction={selectLocation} />
-          </MapContainer>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div style={{ textAlign: "center", marginTop: "20px" }}>
       {loading && <h1>Loading...</h1>}
-      {imageUrl && displayGame()}
+      {imageUrl && currentRoundNumber != null && (
+        <GameInterface
+          error={error}
+          currentRoundNumber={currentRoundNumber}
+          isLastRound={isLastRound(currentRoundNumber)}
+          imageUrl={imageUrl}
+          guessDistance={guessDistance}
+          targetLatLng={targetLatLng}
+          onConfirmPlayerChoice={confirmPlayerChoice}
+          onNextRound={nextRound}
+          onFinishGame={finishGame}
+        />
+      )}
     </div>
   );
 };

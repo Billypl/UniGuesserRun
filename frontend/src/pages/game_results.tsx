@@ -5,7 +5,7 @@ import { useGameContext } from "../hooks/useGameContext";
 
 const GameResults: React.FC = () => {
     const navigate = useNavigate();
-    const { nickname, setNickname, difficulty, setDifficulty, score, setScore } = useGameContext();
+    const { nickname, difficulty,  score } = useGameContext();
 
     const returnToMenu = () => {
         gameService.deleteSession();
@@ -15,7 +15,9 @@ const GameResults: React.FC = () => {
     return (
     <div>
         <h1>GAME RESULTS</h1>
+        <p>Congratulations {nickname}!</p>
         <p>Your score: {score.toFixed(2)}</p>
+        <p>On {difficulty} difficulty</p>
         <button onClick={returnToMenu}>Back to menu</button>
     </div>
     );
