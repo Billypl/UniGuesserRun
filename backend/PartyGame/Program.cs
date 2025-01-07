@@ -11,30 +11,33 @@ using PartyGame.Middleware;
 using PartyGame.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
-
 ConfigureServices(builder);
 
 var app = builder.Build();
-
 await SeedDatabase(app);
-
 ConfigureMiddleware(app);
-
 app.Run();
 
-// Rejestracja us³ug
+// Rejestracja usï¿½ug
 void ConfigureServices(WebApplicationBuilder builder)
 {
+    builder.Services.AddLogging(logging =>
+    {
+        logging.AddConsole();
+        logging.SetMinimumLevel(LogLevel.Debug);
+    });
+
     // dodanie bazy
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddControllers();
     builder.Services.AddSingleton<IMongoClient>(sp =>
     {
-        var connectionString = "mongodb://localhost:27017";
+        // var connectionString = "mongodb://localhost:27017";
+        var connectionString = "mongodb://root:example@mongo:27017";
         return new MongoClient(connectionString);
     });
     builder.Services.AddScoped<GameDbContext>();
-    
+
     // mapper
     builder.Services.AddAutoMapper(typeof(PlacesMappingProfile));
     builder.Services.AddAutoMapper(builder.GetType().Assembly);
@@ -58,7 +61,7 @@ void ConfigureServices(WebApplicationBuilder builder)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
         };
     });
-    
+
     // Cors
     builder.Services.AddCors(options =>
     {
@@ -76,7 +79,7 @@ void ConfigureServices(WebApplicationBuilder builder)
 
     // Serwisy
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
-    builder.Services.AddScoped<IScoreboardRepository,ScoreboardRepository>();
+    builder.Services.AddScoped<IScoreboardRepository, ScoreboardRepository>();
     builder.Services.AddScoped<IGameSessionRepository, GameSessionRepository>();
     builder.Services.AddScoped<IPlacesRepository, PlacesRepository>();
     builder.Services.AddScoped<IGameSessionService, GameSessionService>();
