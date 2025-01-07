@@ -35,3 +35,15 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=admin
       - ASPNETCORE_ENVIROMENT=Development
     command: bash -c "cd app && dotnet watch run --launch-profile https"
+
+  frontend:
+    depends_on:
+      - backend
+    container_name: frontend
+    image: node:23.5.0-alpine
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "cd app && npm install && npm start"
