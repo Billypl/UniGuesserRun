@@ -22,9 +22,6 @@
 # ENTRYPOINT ["dotnet", "YourProjectName.dll"]
 
 
-
-
-
 # ----------------------
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -38,8 +35,7 @@ EXPOSE 7157
 # CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:7157"]
 CMD ["dotnet","run", "--launch-profile", "https"]
 
-
-# # -----------------------
+# -----------------------
 
 # FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS build
 # WORKDIR /src
