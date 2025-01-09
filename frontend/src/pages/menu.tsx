@@ -3,6 +3,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../hooks/useGameContext";
 
+import styles from "../styles/Menu.module.scss";
+
 const Menu: React.FC = () => {
   const navigate = useNavigate();
   const { nickname, setNickname, difficulty, setDifficulty } = useGameContext();

@@ -16,7 +16,7 @@ namespace PartyGame.Controllers
             _scoreboardService = scoreboardService;
         }
 
-        [HttpPost("saveScore")]
+        [HttpPost("save_score")]
         [Authorize]
         public ActionResult PostNewScore()
         {
@@ -31,7 +31,7 @@ namespace PartyGame.Controllers
         [HttpGet]
         public ActionResult GetScores()
         {
-            var scores = _scoreboardService.GetAllGames();
+            var scores = _scoreboardService.GetAllGames().Result;
             return Ok(scores);
         }
 
