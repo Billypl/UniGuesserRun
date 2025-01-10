@@ -21,8 +21,6 @@ namespace PartyGame.Controllers
         [HttpPost("start")]
         public ActionResult StartGame([FromBody]  StartDataDto startData)
         {
-          
-
             string token = _gameService.StartNewGame(startData);
 
             return Ok(new
