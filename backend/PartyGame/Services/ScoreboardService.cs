@@ -13,40 +13,27 @@ namespace PartyGame.Services
 
     public class ScoreboardService : IScoreboardService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessorService _httpContextAccessorService;
         private readonly IGameSessionRepository _gameSessionRepository;
         private readonly IScoreboardRepository _scoreboardRepository;
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
         public ScoreboardService(
-            IHttpContextAccessor httpContextAccessor,
+            IHttpContextAccessorService httpContextAccessorService,
             IGameSessionRepository gameSessionRepository,
             IScoreboardRepository scoreboardRepository)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _httpContextAccessorService = httpContextAccessorService;
             _gameSessionRepository = gameSessionRepository;
             _scoreboardRepository = scoreboardRepository;
-        }
-
-        private string GetTokenFromHeader()
-        {
-            var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-
-            if (token == null)
-            {
-                throw new KeyNotFoundException($"Token was not found");
-            }
-
-            return token;
         }
 
         public void AddNewGame()
         {
 
-            var token = GetTokenFromHeader();
-            var session =_gameSessionRepository.GetSessionByToken(token).Result;
+            string token = _httpContextAccessorService.GetTokenFromHeader();
+            GameSession session =_gameSessionRepository.GetSessionByToken(token).Result;
 
             if (session == null)
             {
@@ -71,7 +58,7 @@ namespace PartyGame.Services
 
         public async Task<List<FinishedGame>> GetAllGames()
         {
-            var games = await _scoreboardRepository.GetAllGames();
+            List<FinishedGame> games = await _scoreboardRepository.GetAllGames();
 
             if (games == null)
             {
@@ -80,6 +67,8 @@ namespace PartyGame.Services
 
             return games;
         }
+
+       
 
     }
 }

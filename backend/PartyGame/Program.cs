@@ -1,5 +1,7 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using PartyGame;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +10,7 @@ using PartyGame.Entities;
 using PartyGame.Services;
 using MongoDB.Driver;
 using PartyGame.Middleware;
+using PartyGame.Models;
 using PartyGame.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,8 +35,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddControllers();
     builder.Services.AddSingleton<IMongoClient>(sp =>
     {
-        // var connectionString = "mongodb://localhost:27017";
-        var connectionString = "mongodb://root:example@mongo:27017";
+         var connectionString = "mongodb://localhost:27017";
+        //var connectionString = "mongodb://root:example@mongo:27017";
         return new MongoClient(connectionString);
     });
     builder.Services.AddScoped<GameDbContext>();
@@ -86,8 +89,14 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddScoped<IPlaceService, PlaceService>();
     builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
     builder.Services.AddScoped<IGameService, GameService>();
+    builder.Services.AddScoped<IHttpContextAccessorService, HttpContextAccessorService>();
+
     builder.Services.AddScoped<Seeder>();
     builder.Services.AddSwaggerGen();
+
+    // Walidatory
+    builder.Services.AddFluentValidationAutoValidation();
+    builder.Services.AddValidatorsFromAssemblyContaining<StartDataValidator>();
 }
 
 // Seedowanie bazy danych

@@ -19,14 +19,14 @@ namespace PartyGame.Controllers
         [HttpGet]
         public ActionResult GetAllPlaces(IPlaceService placeService)
         {
-            var places = _placeService.GetAllPlaces().Result;
+            List<Place> places = _placeService.GetAllPlaces().Result;
             return Ok(places);
         }
 
         [HttpGet("{placeID}")]
         public ActionResult GetPlace([FromRoute] int placeId)
         {
-            var place = _placeService.GetPlaceById(placeId).Result;
+            Place place = _placeService.GetPlaceById(placeId).Result;
             return Ok(place);
         }
 

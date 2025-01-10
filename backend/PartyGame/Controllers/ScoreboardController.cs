@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PartyGame.Entities;
 using PartyGame.Models;
 using PartyGame.Services;
 
@@ -31,7 +32,7 @@ namespace PartyGame.Controllers
         [HttpGet]
         public ActionResult GetScores()
         {
-            var scores = _scoreboardService.GetAllGames().Result;
+            List<FinishedGame> scores = _scoreboardService.GetAllGames().Result;
             return Ok(scores);
         }
 
