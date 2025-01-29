@@ -3,6 +3,7 @@ using PartyGame.Entities;
 using System.Text.Json;
 using MongoDB.Driver;
 using System.Text.Json.Serialization;
+using System.Data;
 
 namespace PartyGame
 {
@@ -28,6 +29,41 @@ namespace PartyGame
                     await _gameDbContext.Places.InsertManyAsync(places);
                 }
             }
+
+            var roleCount = await _gameDbContext.Roles.CountDocumentsAsync(Builders<Role>.Filter.Empty);
+
+            if (roleCount == 0)
+            {
+                var roles = GetRoles();
+                if (roles != null)
+                {
+                    await _gameDbContext.Roles.InsertManyAsync(roles);
+                }
+            }
+        }
+
+
+
+        private IEnumerable<Role> GetRoles()
+        {
+            var roles = new List<Role>()
+            {
+                new Role()
+                {
+                    Name = "User"
+                },
+                new Role()
+                {
+                    Name = "Moderator"
+                }
+                ,
+                new Role()
+                {
+                    Name = "Admin"
+                }
+            };
+
+            return roles;
         }
 
         private IEnumerable<Place>? GetPlaces()

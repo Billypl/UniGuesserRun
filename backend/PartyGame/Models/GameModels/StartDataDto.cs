@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Models
+﻿namespace PartyGame.Models.GameModels
 {
     public class StartDataDto
     {

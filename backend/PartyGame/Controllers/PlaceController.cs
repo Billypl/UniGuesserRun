@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PartyGame.Entities;
-using PartyGame.Models;
+using PartyGame.Models.GameModels;
 using PartyGame.Services;
 
 namespace PartyGame.Controllers

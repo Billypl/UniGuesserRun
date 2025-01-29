@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Models
+﻿namespace PartyGame.Models.ScoreBoardModels
 {
     public class PagedResult<T>
     {
@@ -17,7 +17,7 @@
             ItemsTo = ItemFrom + pageSize - 1;
             TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            if (pageSize <= 0 || pageNumber <= 0) 
+            if (pageSize <= 0 || pageNumber <= 0)
             {
                 // Brak paginacji 
                 ItemFrom = 1;

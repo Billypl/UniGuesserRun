@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
 using PartyGame.Entities;
-using PartyGame.Models;
+using PartyGame.Models.GameModels;
 using PartyGame.Repositories;
 
 namespace PartyGame.Services
