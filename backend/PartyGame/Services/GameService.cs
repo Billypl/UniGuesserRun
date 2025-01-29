@@ -7,14 +7,14 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PartyGame.Entities;
-using PartyGame.Models;
 using MongoDB.Driver;
+using PartyGame.Models.GameModels;
 
 
 
 namespace PartyGame.Services
 {
-  
+
     public interface IGameService
     {
         string StartNewGame(StartDataDto startData);
@@ -27,7 +27,7 @@ namespace PartyGame.Services
 
     public class GameService : IGameService
     {
-        private readonly AuthenticationSettings _authenticationSettings;
+        private readonly AuthenticationGameSettings _authenticationSettings;
         private readonly IMapper _mapper;
 
         private readonly IPlaceService _placeService;
@@ -35,7 +35,7 @@ namespace PartyGame.Services
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
-        public GameService(IOptions<AuthenticationSettings> authenticationSettings
+        public GameService(IOptions<AuthenticationGameSettings> authenticationSettings
             , IMapper mapper,GameDbContext gameDbContext,IPlaceService placeService,
             IGameSessionService gameSessionService)
         {

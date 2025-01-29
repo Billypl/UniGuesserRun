@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using PartyGame.Entities;
-using PartyGame.Models;
-using SortDirection = PartyGame.Models.SortDirection;
+using PartyGame.Models.ScoreboardModels;
+using SortDirection = PartyGame.Models.ScoreboardModels.SortDirection;
 
 namespace PartyGame.Repositories
 {

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PartyGame.Entities;
-using PartyGame.Models;
+using PartyGame.Models.ScoreboardModels;
+using PartyGame.Models.ScoreBoardModels;
 using PartyGame.Services;
 
 namespace PartyGame.Controllers

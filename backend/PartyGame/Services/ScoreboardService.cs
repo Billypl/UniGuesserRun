@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using PartyGame.Entities;
-using PartyGame.Models;
+using PartyGame.Models.ScoreboardModels;
+using PartyGame.Models.ScoreBoardModels;
 using PartyGame.Repositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 

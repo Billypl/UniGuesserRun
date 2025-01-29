@@ -1,6 +1,6 @@
 ﻿namespace PartyGame
 {
-    public class AuthenticationSettings
+    public class AuthenticationGameSettings
     {
         public string JwtKey { get; set; }
         public int JwtExpireMinutes { get; set; }
