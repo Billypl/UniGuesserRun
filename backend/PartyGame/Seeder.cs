@@ -4,6 +4,8 @@ using System.Text.Json;
 using MongoDB.Driver;
 using System.Text.Json.Serialization;
 using System.Data;
+using PartyGame.Models.AccountModels;
+using PartyGame.Services;
 
 namespace PartyGame
 {
@@ -11,10 +13,13 @@ namespace PartyGame
     {
         private readonly GameDbContext _gameDbContext;
         private string _filePath;
-        public Seeder(GameDbContext gameDbContext)
+        private readonly IAccountService _accountService;
+
+        public Seeder(GameDbContext gameDbContext, IAccountService contextAccessorService)
         {
             _gameDbContext = gameDbContext;
             _filePath = "Data/Places.json";
+            _accountService = contextAccessorService;
         }
 
         public async Task Seed()
@@ -29,42 +34,47 @@ namespace PartyGame
                     await _gameDbContext.Places.InsertManyAsync(places);
                 }
             }
-
-            var roleCount = await _gameDbContext.Roles.CountDocumentsAsync(Builders<Role>.Filter.Empty);
-
-            if (roleCount == 0)
+            var userCount = await _gameDbContext.Users.CountDocumentsAsync(Builders<User>.Filter.Empty);
+            if (userCount == 0)
             {
-                var roles = GetRoles();
-                if (roles != null)
-                {
-                    await _gameDbContext.Roles.InsertManyAsync(roles);
-                }
+                AddUsers();
             }
         }
+     
 
-
-
-        private IEnumerable<Role> GetRoles()
+        private void AddUsers()
         {
-            var roles = new List<Role>()
-            {
-                new Role()
-                {
-                    Name = "User"
-                },
-                new Role()
-                {
-                    Name = "Moderator"
-                }
-                ,
-                new Role()
-                {
-                    Name = "Admin"
-                }
-            };
 
-            return roles;
+           var admin = new RegisterUserDto
+            {
+                Nickname = "Admin",
+                Password = "AdminAdmin",
+                ConfirmPassword = "AdminAdmin",
+                Email = "Admin@Admin.com",
+            };
+           
+           _accountService.RegisterUser(admin,"Admin");
+
+           var moderator = new RegisterUserDto
+           {
+               Nickname = "Moderator",
+               Password = "ModeratorModerator",
+               ConfirmPassword = "ModeratorModerator",
+               Email = "Moderator@Moderator.com"
+           };
+
+           _accountService.RegisterUser(moderator, "Moderator");
+
+           var user = new RegisterUserDto
+           {
+               Nickname = "User",
+               Password = "UserUser",
+               ConfirmPassword = "UserUser",
+               Email = "User@User.com"
+           };
+           _accountService.RegisterUser(user, "User");
         }
+       
 
         private IEnumerable<Place>? GetPlaces()
         {

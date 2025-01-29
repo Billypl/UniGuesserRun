@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
+using PartyGame.Entities;
 using System;
+using System.Security.Claims;
+using PartyGame.Models.AccountModels;
 
 namespace PartyGame.Services
 {
     public interface IHttpContextAccessorService
     {
         string GetTokenFromHeader();
+        AccountDetailsFromTokenDto GetProfileInformation();
     }
 
     public class HttpContextAccessorService : IHttpContextAccessorService
@@ -34,6 +38,29 @@ namespace PartyGame.Services
             }
 
             return token;
+        }
+
+        public AccountDetailsFromTokenDto GetProfileInformation()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            if (user == null || !user.Identity.IsAuthenticated)
+            {
+                throw new UnauthorizedAccessException("User is not authenticated.");
+            }
+
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var email = user.FindFirst(ClaimTypes.Email)?.Value;
+            var role = user.FindFirst(ClaimTypes.Role)?.Value;
+            var nickname = user.FindFirst(ClaimTypes.Name)?.Value;
+
+            return new AccountDetailsFromTokenDto
+            {
+                UserId = userId ?? throw new KeyNotFoundException("User ID not found in claims."),
+                Email = email ?? throw new KeyNotFoundException("Email not found in claims."),
+                Role = role ?? throw new KeyNotFoundException("Role not found in claims."),
+                Nickname = nickname ?? throw new KeyNotFoundException("Nickname not found in claims.")
+            };
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Models.ScoreBoardModels
+﻿namespace PartyGame.Models.ScoreboardModels
 {
     public class PagedResult<T>
     {

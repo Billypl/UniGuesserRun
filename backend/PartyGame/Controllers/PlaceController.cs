@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PartyGame.Entities;
-using PartyGame.Models.GameModels;
+using PartyGame.Models.PlaceModels;
 using PartyGame.Services;
 
 namespace PartyGame.Controllers
 {
     [Route("api/place")]
     [ApiController]
+    [Authorize(Roles = "Admin,Moderator")]
     public class PlaceController : ControllerBase
     {
         private readonly IPlaceService _placeService;
@@ -30,6 +32,20 @@ namespace PartyGame.Controllers
             return Ok(place);
         }
 
+        [AllowAnonymous]
+        [Authorize(Roles = "Admin,Moderator,User")]
+        [HttpPost("to_check")]
+        public ActionResult AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
+        {
+            _placeService.AddNewPlaceToQueue(newPlace);
+            return Ok(
+                new
+                {
+                    Message = "Place successfully added to db"
+                }
+            );
+        }
+
         [HttpPost]
         public ActionResult AddNewPlace([FromBody] NewPlaceDto newPlace)
         {
@@ -40,8 +56,8 @@ namespace PartyGame.Controllers
                     Message = "Place successfully added to db"
                 }
             );
-
         }
 
+        
     }
 }

@@ -21,7 +21,7 @@ namespace PartyGame.Controllers
         [HttpPut("register")]
         public IActionResult AddNewUser([FromBody] RegisterUserDto registerUserDto)
         {
-            _accountService.RegisterUser(registerUserDto);
+            _accountService.RegisterUser(registerUserDto,"User");
 
             return Ok(new
                 {
@@ -30,6 +30,9 @@ namespace PartyGame.Controllers
             );
         }
 
+
+       
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginUserDto loginUserDto)
         {
@@ -37,7 +40,6 @@ namespace PartyGame.Controllers
 
            return Ok(token);
         }
-
 
 
     }

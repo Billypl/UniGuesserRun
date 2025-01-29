@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PartyGame.Entities;
 using PartyGame.Models.GameModels;
+using PartyGame.Models.PlaceModels;
 
 namespace PartyGame
 {

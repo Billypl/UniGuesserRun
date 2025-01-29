@@ -14,7 +14,5 @@ namespace PartyGame.Models.AccountModels
         [Required]
         public string ConfirmPassword { get; set; }
 
-        public string? Role { get; set; } = "User";
-
     }
 }

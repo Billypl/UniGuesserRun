@@ -27,7 +27,7 @@ namespace PartyGame.Services
 
     public class GameService : IGameService
     {
-        private readonly AuthenticationGameSettings _authenticationSettings;
+        private readonly AuthenticationSettings _authenticationSettings;
         private readonly IMapper _mapper;
 
         private readonly IPlaceService _placeService;
@@ -35,7 +35,7 @@ namespace PartyGame.Services
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
-        public GameService(IOptions<AuthenticationGameSettings> authenticationSettings
+        public GameService(IOptions<AuthenticationSettings> authenticationSettings
             , IMapper mapper,GameDbContext gameDbContext,IPlaceService placeService,
             IGameSessionService gameSessionService)
         {
@@ -89,7 +89,7 @@ namespace PartyGame.Services
 
         private string GenerateSessionToken(StartDataDto startDataDto)
         {
-            var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireMinutes);
+            var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame);
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, startDataDto.Nickname),

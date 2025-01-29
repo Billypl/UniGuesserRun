@@ -3,6 +3,7 @@ using PartyGame.Entities;
 using PartyGame.Models.ScoreboardModels;
 using SortDirection = PartyGame.Models.ScoreboardModels.SortDirection;
 
+
 namespace PartyGame.Repositories
 {
     public interface IScoreboardRepository

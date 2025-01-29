@@ -2,9 +2,9 @@
 using MongoDB.Driver;
 using PartyGame.Entities;
 using PartyGame.Models.ScoreboardModels;
-using PartyGame.Models.ScoreBoardModels;
 using PartyGame.Repositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 
 namespace PartyGame.Services
 {

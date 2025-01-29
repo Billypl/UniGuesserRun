@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
 using PartyGame.Entities;
-using PartyGame.Models.GameModels;
+using PartyGame.Models.AccountModels;
+using PartyGame.Models.PlaceModels;
 using PartyGame.Repositories;
 
 namespace PartyGame.Services
@@ -13,17 +14,27 @@ namespace PartyGame.Services
         void AddNewPlace(NewPlaceDto newPlace);
         Task<int> GetPlacesCount();
         Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
+
+        //
+
+        void AddNewPlaceToQueue(NewPlaceDto newPlace);
+
     }
 
     public class PlaceService : IPlaceService
     {
         private readonly IPlacesRepository _placesRepository;
         private readonly IMapper _mapper;
+        private readonly IPlacesToCheckRepository _placesToCheckRepository;
+        private readonly IHttpContextAccessorService _httpContextAccessorService;
 
-        public PlaceService(IPlacesRepository placesRepository,IMapper mapper)
+        public PlaceService(IPlacesRepository placesRepository,IMapper mapper,
+            IHttpContextAccessorService httpContextAccessorService, IPlacesToCheckRepository placesToCheckRepository)
         {
             _placesRepository = placesRepository;
             _mapper = mapper;
+            _httpContextAccessorService = httpContextAccessorService;
+            _placesToCheckRepository = placesToCheckRepository;
         }
 
         public async Task<Place> GetPlaceById(int id)
@@ -54,7 +65,7 @@ namespace PartyGame.Services
         {
             Place place = new Place();
             _mapper.Map(newPlace, place);
-            place.Id = GetPlacesCount().Result;
+            place.Id = GetPlacesCount().Result + 1;
             
             _placesRepository.AddNewPlace(place);
         }
@@ -90,6 +101,21 @@ namespace PartyGame.Services
              return randomPlaces;
         }
 
+
+        public void AddNewPlaceToQueue(NewPlaceDto newPlace)
+        {
+            AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetProfileInformation();
+
+            PlaceToCheck newPlaceToCheck = new PlaceToCheck
+            {
+                AuthorId = authorData.UserId,
+                CreatedAt = DateTime.Now,
+                NewPlace = newPlace
+            };
+
+            _placesToCheckRepository.AddNewPlace(newPlaceToCheck);
+
+        }
 
     }
 }

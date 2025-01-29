@@ -1,6 +1,4 @@
-﻿using PartyGame.Entities;
-
-namespace PartyGame.Models.GameModels
+﻿namespace PartyGame.Models.GameModels
 {
     public class SummarizeGameDto
     {

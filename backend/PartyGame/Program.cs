@@ -39,8 +39,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddControllers();
     builder.Services.AddSingleton<IMongoClient>(sp =>
     { 
-        //var connectionString = "mongodb://localhost:27017";
-        var connectionString = "mongodb://root:example@mongo:27017";
+        var connectionString = "mongodb://localhost:27017";
+        //var connectionString = "mongodb://root:example@mongo:27017";
         return new MongoClient(connectionString);
     });
     builder.Services.AddScoped<GameDbContext>();
@@ -50,14 +50,29 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddAutoMapper(builder.GetType().Assembly);
 
 
+    var authenticationSettings = new AuthenticationSettings();
 
+    builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 
     // Rejestracja konfiguracji tokenów
-    builder.Services.Configure<AuthenticationGameSettings>(builder.Configuration.GetSection("AuthenticationGameSettings"));
-    builder.Services.Configure<AuthenticationAccountSettings>(builder.Configuration.GetSection("AuthenticationAccountSettings"));
-    builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AuthenticationAccountSettings>>().Value);
-    builder.Services.AddScoped<IAccountService, AccountService>();
-    AuthenticationExtensions.AddJwtAuthentication(builder.Services);
+    authenticationSettings = builder.Configuration.GetSection("Authentication").Get<AuthenticationSettings>();
+    builder.Services.Configure<AuthenticationSettings>(builder.Configuration.GetSection("Authentication"));
+    builder.Services.AddAuthentication(option =>
+    {
+        option.DefaultAuthenticateScheme = "Bearer";
+        option.DefaultScheme = "Bearer";
+        option.DefaultChallengeScheme = "Bearer";
+    }).AddJwtBearer(cfg =>
+    {
+        cfg.RequireHttpsMetadata = false;
+        cfg.SaveToken = true;
+        cfg.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = authenticationSettings.JwtIssuer,
+            ValidAudience = authenticationSettings.JwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
+        };
+    });
 
 
     // Cors
@@ -82,6 +97,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddScoped<IGameSessionRepository, GameSessionRepository>();
     builder.Services.AddScoped<IPlacesRepository, PlacesRepository>();
     builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+    builder.Services.AddScoped<IPlacesToCheckRepository, PlacesToCheckRepository>();
+
     builder.Services.AddScoped<IGameSessionService, GameSessionService>();
     builder.Services.AddScoped<IPlaceService, PlaceService>();
     builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
