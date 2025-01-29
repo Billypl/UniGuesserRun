@@ -93,7 +93,7 @@ namespace PartyGame.Services
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, startDataDto.Nickname),
-                new Claim(JwtRegisteredClaimNames.Sub, startDataDto.Difficulty.ToString()),
+                new Claim("difficulty", startDataDto.Difficulty), 
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString())
             };
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using PartyGame.Entities;
+using PartyGame.Models;
 using PartyGame.Repositories;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PartyGame.Services
 {
@@ -9,6 +11,7 @@ namespace PartyGame.Services
     {
         void AddNewGame();
         Task<List<FinishedGame>> GetAllGames();
+        Task<PagedResult<FinishedGame>> GetGames(ScoreboardQuery scoreboardQuery);
     }
 
     public class ScoreboardService : IScoreboardService
@@ -68,7 +71,14 @@ namespace PartyGame.Services
             return games;
         }
 
-       
+        public async Task<PagedResult<FinishedGame>> GetGames(ScoreboardQuery scoreboardQuery)
+        {
+            List<FinishedGame> games = await _scoreboardRepository.GetGames(scoreboardQuery);
+            int totalScores =  _scoreboardRepository.GetAllGames().Result.Count;
+
+            var result = new PagedResult<FinishedGame>(games,totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
+            return result;
+        }
 
     }
 }

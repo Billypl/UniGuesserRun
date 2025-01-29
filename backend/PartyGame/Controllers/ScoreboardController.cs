@@ -29,10 +29,19 @@ namespace PartyGame.Controllers
                 });
         }
 
+
+
         [HttpGet]
-        public ActionResult GetScores()
+        public ActionResult GetScores([FromQuery] ScoreboardQuery scoreboardQuery)
         {
-            List<FinishedGame> scores = _scoreboardService.GetAllGames().Result;
+            // Rezultat:
+            //Items → lista elementów: ["Element11", "Element12", ..., "Element20"]
+            //TotalItemsCount → Ilość wyników w bazie
+            //ItemFrom → 11(pierwszy element na stronie)
+            //ItemsTo → 20(ostatni element na stronie)
+            //TotalPages → 3(liczba stron)
+
+            PagedResult<FinishedGame> scores = _scoreboardService.GetGames(scoreboardQuery).Result;
             return Ok(scores);
         }
 
