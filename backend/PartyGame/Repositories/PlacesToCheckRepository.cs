@@ -9,6 +9,7 @@ namespace PartyGame.Repositories
     {
         Task<List<PlaceToCheck>> GetAllPlaces();
         void AddNewPlace(PlaceToCheck newPlace);
+        Task<PlaceToCheck> GetPlaceToCheckById(string id);
     }
 
     public class PlacesToCheckRepository : IPlacesToCheckRepository
@@ -35,6 +36,12 @@ namespace PartyGame.Repositories
             return await _gameDbContext.PlacesToCheck
                 .Find(p => p.Id == ObjectId.Parse(id))
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task RemovePlaceToCheckById(string id)
+        { 
+            var filter = Builders<PlaceToCheck>.Filter.Eq(s => s.Id, ObjectId.Parse(id));
+            await _gameDbContext.PlacesToCheck.DeleteOneAsync(filter);
         }
     }
 }

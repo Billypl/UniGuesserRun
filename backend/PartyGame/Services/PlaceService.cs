@@ -15,9 +15,11 @@ namespace PartyGame.Services
         Task<int> GetPlacesCount();
         Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
 
-        //
-
         void AddNewPlaceToQueue(NewPlaceDto newPlace);
+
+        void AcceptPlace(string PlaceToCheckId);
+
+        void RejectPlace(string PlaceToRejectId);
 
     }
 
@@ -114,7 +116,32 @@ namespace PartyGame.Services
             };
 
             _placesToCheckRepository.AddNewPlace(newPlaceToCheck);
+        }
 
+        public void AcceptPlace(string PlaceToCheckId)
+        {
+            PlaceToCheck placeToAccept = _placesToCheckRepository.GetPlaceToCheckById(PlaceToCheckId).Result;
+
+            if (placeToAccept == null)
+            {
+                throw new KeyNotFoundException("Place you want to add to game doesn't exist");
+
+            }
+
+            Place newPlace = _mapper.Map<Place>(placeToAccept.NewPlace);
+
+            _placesRepository.AddNewPlace(newPlace);
+        }
+
+        public void RejectPlace(string PlaceToRejectId)
+        {
+            PlaceToCheck placeToAccept = _placesToCheckRepository.GetPlaceToCheckById(PlaceToRejectId).Result;
+
+            if (placeToAccept == null)
+            {
+                throw new KeyNotFoundException("Place you want to add to game doesn't exist");
+
+            }
         }
 
     }

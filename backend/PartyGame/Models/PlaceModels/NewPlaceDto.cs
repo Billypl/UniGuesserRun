@@ -1,4 +1,6 @@
-﻿namespace PartyGame.Models.PlaceModels
+﻿using PartyGame.Models.GameModels;
+
+namespace PartyGame.Models.PlaceModels
 {
     public class NewPlaceDto
     {

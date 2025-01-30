@@ -58,6 +58,31 @@ namespace PartyGame.Controllers
             );
         }
 
-        
+
+        [HttpDelete("to_check/reject")]
+        public ActionResult RejectPlaceToCheck([FromQuery] string placeId)
+        {
+            _placeService.RejectPlace(placeId);
+            return Ok(
+                new
+                {
+                    Message = "Place successfully rejected"
+                }
+                );
+        }
+
+
+        [HttpPost("to_check/approve")]
+        public ActionResult AcceptPlaceToCheck([FromQuery] string placeId)
+        {
+            _placeService.RejectPlace(placeId);
+            return Ok(
+                new
+                {
+                    Message = "Place successfully rejected"
+                }
+            );
+        }
+
     }
 }

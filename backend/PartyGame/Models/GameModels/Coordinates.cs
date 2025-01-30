@@ -1,4 +1,4 @@
-﻿namespace PartyGame
+﻿namespace PartyGame.Models.GameModels
 {
     public class Coordinates
     {
