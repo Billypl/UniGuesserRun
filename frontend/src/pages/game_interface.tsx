@@ -8,6 +8,8 @@ import { LocationMarker } from "../components/LocationMarker";
 import { TargetIcon, ClickedIcon } from "../components/MarkerIcons";
 import { TargetMarker } from "../components/TargetMarker";
 
+import styles from "../styles/Game.module.scss";
+
 interface GameInterfaceProps {
   error: string | null;
   currentRoundNumber: number;
@@ -54,7 +56,9 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   return (
     <div>
       <h1>Round {props.currentRoundNumber + 1}</h1>
-      <img src={props.imageUrl!} />
+      <div className={styles.image_container}>
+        <img src={props.imageUrl!} />
+      </div>
 
       {props.error && <p style={{ color: "red" }}>{props.error}</p>}
 

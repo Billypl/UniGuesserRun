@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Entities
+﻿namespace PartyGame.Models.GameModels
 {
     public class Round
     {
@@ -6,5 +6,5 @@
         public Coordinates GuessedCoordinates { get; set; }
         public double Score { get; set; }
     }
-        
+
 }

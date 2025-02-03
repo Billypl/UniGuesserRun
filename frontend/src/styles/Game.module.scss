@@ -1,0 +1,12 @@
+.image_container {
+    background-color: #272727;
+    display: flex;
+    justify-content: center;
+    margin-top: 10vh;
+
+    img {
+        width: 100%;
+        max-width: fit-content;
+        height: 50vh;
+    }
+}

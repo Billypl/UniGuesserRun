@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PartyGame.Models;
+using PartyGame.Entities;
+using PartyGame.Models.ScoreboardModels;
 using PartyGame.Services;
+
 
 namespace PartyGame.Controllers
 {
@@ -16,7 +18,7 @@ namespace PartyGame.Controllers
             _scoreboardService = scoreboardService;
         }
 
-        [HttpPost("saveScore")]
+        [HttpPost("save_score")]
         [Authorize]
         public ActionResult PostNewScore()
         {
@@ -28,10 +30,19 @@ namespace PartyGame.Controllers
                 });
         }
 
+
+
         [HttpGet]
-        public ActionResult GetScores()
+        public ActionResult GetScores([FromQuery] ScoreboardQuery scoreboardQuery)
         {
-            var scores = _scoreboardService.GetAllGames();
+            // Rezultat:
+            //Items → lista elementów: ["Element11", "Element12", ..., "Element20"]
+            //TotalItemsCount → Ilość wyników w bazie
+            //ItemFrom → 11(pierwszy element na stronie)
+            //ItemsTo → 20(ostatni element na stronie)
+            //TotalPages → 3(liczba stron)
+
+            PagedResult<FinishedGame> scores = _scoreboardService.GetGames(scoreboardQuery).Result;
             return Ok(scores);
         }
 

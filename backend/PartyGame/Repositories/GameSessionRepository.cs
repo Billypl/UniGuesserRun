@@ -17,7 +17,7 @@ namespace PartyGame.Repositories
     {
         private readonly GameDbContext _gameDbContext;
 
-        public GameSessionRepository(GameDbContext gameDbContext, IMapper mapper)
+        public GameSessionRepository(GameDbContext gameDbContext)
         {
             _gameDbContext = gameDbContext;
         }

@@ -46,4 +46,6 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    command: sh -c "cd app && npm install && npm start"
+    environment:
+      WATCHPACK_POLLING: "true"
+    command: sh -c "cd app && npm install && npm run start"

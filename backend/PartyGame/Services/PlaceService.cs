@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using MongoDB.Driver;
 using PartyGame.Entities;
-using PartyGame.Models;
+using PartyGame.Models.AccountModels;
+using PartyGame.Models.PlaceModels;
 using PartyGame.Repositories;
 
 namespace PartyGame.Services
@@ -13,17 +14,29 @@ namespace PartyGame.Services
         void AddNewPlace(NewPlaceDto newPlace);
         Task<int> GetPlacesCount();
         Task<List<int>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
+
+        void AddNewPlaceToQueue(NewPlaceDto newPlace);
+
+        void AcceptPlace(string PlaceToCheckId);
+
+        void RejectPlace(string PlaceToRejectId);
+
     }
 
     public class PlaceService : IPlaceService
     {
         private readonly IPlacesRepository _placesRepository;
         private readonly IMapper _mapper;
+        private readonly IPlacesToCheckRepository _placesToCheckRepository;
+        private readonly IHttpContextAccessorService _httpContextAccessorService;
 
-        public PlaceService(IPlacesRepository placesRepository,IMapper mapper)
+        public PlaceService(IPlacesRepository placesRepository,IMapper mapper,
+            IHttpContextAccessorService httpContextAccessorService, IPlacesToCheckRepository placesToCheckRepository)
         {
             _placesRepository = placesRepository;
             _mapper = mapper;
+            _httpContextAccessorService = httpContextAccessorService;
+            _placesToCheckRepository = placesToCheckRepository;
         }
 
         public async Task<Place> GetPlaceById(int id)
@@ -54,7 +67,7 @@ namespace PartyGame.Services
         {
             Place place = new Place();
             _mapper.Map(newPlace, place);
-            place.Id = GetPlacesCount().Result;
+            place.Id = GetPlacesCount().Result + 1;
             
             _placesRepository.AddNewPlace(place);
         }
@@ -90,6 +103,46 @@ namespace PartyGame.Services
              return randomPlaces;
         }
 
+
+        public void AddNewPlaceToQueue(NewPlaceDto newPlace)
+        {
+            AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetProfileInformation();
+
+            PlaceToCheck newPlaceToCheck = new PlaceToCheck
+            {
+                AuthorId = authorData.UserId,
+                CreatedAt = DateTime.Now,
+                NewPlace = newPlace
+            };
+
+            _placesToCheckRepository.AddNewPlace(newPlaceToCheck);
+        }
+
+        public void AcceptPlace(string PlaceToCheckId)
+        {
+            PlaceToCheck placeToAccept = _placesToCheckRepository.GetPlaceToCheckById(PlaceToCheckId).Result;
+
+            if (placeToAccept == null)
+            {
+                throw new KeyNotFoundException("Place you want to add to game doesn't exist");
+
+            }
+
+            Place newPlace = _mapper.Map<Place>(placeToAccept.NewPlace);
+
+            _placesRepository.AddNewPlace(newPlace);
+        }
+
+        public void RejectPlace(string PlaceToRejectId)
+        {
+            PlaceToCheck placeToAccept = _placesToCheckRepository.GetPlaceToCheckById(PlaceToRejectId).Result;
+
+            if (placeToAccept == null)
+            {
+                throw new KeyNotFoundException("Place you want to add to game doesn't exist");
+
+            }
+        }
 
     }
 }

@@ -95,6 +95,7 @@ export class GameService {
     });
     window.sessionStorage.removeItem("token");
   }
+
 }
 
 export default new GameService();

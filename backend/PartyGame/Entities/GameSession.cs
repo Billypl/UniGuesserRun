@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
+using PartyGame.Models.GameModels;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DifficultyLevel

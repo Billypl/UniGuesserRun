@@ -7,24 +7,22 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PartyGame.Entities;
-using PartyGame.Models;
 using MongoDB.Driver;
+using PartyGame.Models.GameModels;
 
 
 
 namespace PartyGame.Services
 {
-  
+
     public interface IGameService
     {
         string StartNewGame(StartDataDto startData);
         RoundResultDto? CheckGuess(Coordinates guessingCoordinates);
-
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber);
-
         public SummarizeGameDto FinishGame();
-
         public void DeleteGame();
+        public int GetActualRoundNumber();
     }
 
     public class GameService : IGameService
@@ -50,10 +48,12 @@ namespace PartyGame.Services
 
         public string StartNewGame(StartDataDto startData)
         {
-            var gameID = new Random().Next(1,100000);
-            var token = GenerateSessionToken(gameID);
+            DifficultyLevel difficulty =
+                (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startData.Difficulty, ignoreCase: true);
+
+            var token = GenerateSessionToken(startData);
             // NOW ONLY WORKS FOR EASY DIFFICULTY
-            var places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER,startData.Difficulty).Result;
+            var places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER, difficulty).Result;
             
             if (places.Count < ROUNDS_NUMBER)
             {
@@ -80,19 +80,20 @@ namespace PartyGame.Services
                 ActualRoundNumber = 0,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(30),
                 Nickname = startData.Nickname,
-                DifficultyLevel = startData.Difficulty
+                DifficultyLevel = difficulty
             };
 
             _gameSessionService.AddNewGameSession(gameSession);
             return token;
         }
 
-        private string GenerateSessionToken(long gameId)
+        private string GenerateSessionToken(StartDataDto startDataDto)
         {
-            var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireMinutes);
+            var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame);
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, gameId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, startDataDto.Nickname),
+                new Claim("difficulty", startDataDto.Difficulty), 
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString())
             };
 
@@ -195,6 +196,11 @@ namespace PartyGame.Services
         public void DeleteGame()
         {
             _gameSessionService.DeleteSessionByToken();
+        }
+
+        public int GetActualRoundNumber()
+        {
+            return _gameSessionService.GetSessionByToken().Result.ActualRoundNumber;
         }
     }
 }

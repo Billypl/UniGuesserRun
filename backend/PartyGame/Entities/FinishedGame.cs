@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using PartyGame.Models.GameModels;
 
 namespace PartyGame.Entities
 {
