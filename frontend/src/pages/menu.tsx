@@ -1,9 +1,6 @@
-import { URL } from "node:url";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../hooks/useGameContext";
-
-import styles from "../styles/Menu.module.scss";
 
 const Menu: React.FC = () => {
   const navigate = useNavigate();
@@ -18,9 +15,19 @@ const Menu: React.FC = () => {
     navigate("/scoreboard");
   };
 
+  const showLoginForm = () => {
+    navigate("/login");
+  };
+
+  const showRegisterForm = () => {
+    navigate("/register");
+  };
+
   return (
     <div>
       <h1>Main Menu</h1>
+      <div className="account-option" onClick={showLoginForm}>Login</div>
+      <div className="account-option" onClick={showRegisterForm}>Sign in</div>
       <div>
         <ul>
           <li>

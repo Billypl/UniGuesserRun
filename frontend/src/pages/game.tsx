@@ -35,8 +35,8 @@ const Game: React.FC = () => {
     setError(null);
 
     try {
-      const startData = await gameService.startGame(nickname, difficulty);
-      window.sessionStorage.setItem("token", startData.token);
+      await gameService.startGame(nickname, difficulty);
+      //window.sessionStorage.setItem("token", startData.token);
     } catch (err: any) {
       setError("Failed to fetch data. Please try again later.");
       console.error("Error fetching data:", err);

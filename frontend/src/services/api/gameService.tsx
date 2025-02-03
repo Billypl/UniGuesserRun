@@ -51,13 +51,13 @@ export class GameService {
     });
   }
 
-  async startGame(nickname: string, difficulty: string): Promise<StartGameResponse> {
+  async startGame(nickname: string, difficulty: string){
     const startData: StartGameData = {
       nickname: nickname,
       difficulty: difficulty,
     };
     const response = await this.axiosInstance.post<StartGameResponse>("/start", startData);
-    return response.data;
+    window.sessionStorage.setItem("token", response.data.token);
   }
 
   async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
