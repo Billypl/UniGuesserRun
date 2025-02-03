@@ -135,7 +135,9 @@ namespace PartyGame.Services
 
             Place newPlace = _mapper.Map<Place>(placeToAccept.NewPlace);
 
+           
             _placesRepository.AddNewPlace(newPlace);
+            _placesToCheckRepository.RemovePlaceToCheckById(PlaceToCheckId);
         }
 
         public void RejectPlace(string PlaceToRejectId)
