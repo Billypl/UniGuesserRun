@@ -45,6 +45,12 @@ namespace PartyGame.Services
             {
                 throw new BadHttpRequestException("Nickname is already used");
             }
+
+            if (_accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Email).Result is not null)
+            {
+                throw new BadHttpRequestException("Email is already used");
+            }
+
             var newUser = new User()
             {
                 Email = registerUserDto.Email,

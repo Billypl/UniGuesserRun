@@ -46,6 +46,14 @@ namespace PartyGame.Controllers
             );
         }
 
+        [HttpGet("to_check")]
+        public ActionResult GetAllPlacesInQueue()
+        {
+            List<PlaceToCheckDto> placesToCheck = _placeService.GetAllPlacesInQueue().Result;
+
+            return Ok(placesToCheck);
+        }
+
         [HttpPost]
         public ActionResult AddNewPlace([FromBody] NewPlaceDto newPlace)
         {
@@ -75,11 +83,11 @@ namespace PartyGame.Controllers
         [HttpPost("to_check/approve")]
         public ActionResult AcceptPlaceToCheck([FromQuery] string placeId)
         {
-            _placeService.RejectPlace(placeId);
+            _placeService.AcceptPlace(placeId);
             return Ok(
                 new
                 {
-                    Message = "Place successfully rejected"
+                    Message = "Place successfully added to places"
                 }
             );
         }

@@ -30,9 +30,6 @@ namespace PartyGame.Controllers
             );
         }
 
-
-       
-
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginUserDto loginUserDto)
         {
