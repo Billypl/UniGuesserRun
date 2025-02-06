@@ -5,6 +5,7 @@ import Scoreboard from './pages/scoreboard';
 import GameResults from './pages/game_results';
 import { GameContextProvider } from './components/GameContext';
 import Register from './pages/register';
+import Login from './pages/login';
 
 const App = () => {
     return (
@@ -16,7 +17,7 @@ const App = () => {
 
                 <Route path="/scoreboard" element={<Scoreboard />} />
                 <Route path="/register" element={<Register />} />
-                {/* <Route path="/login" element={<Login />} /> */}
+                <Route path="/login" element={<Login />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

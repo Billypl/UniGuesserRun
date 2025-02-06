@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
 const API_URL = "https://localhost:7157/api/game";
-
+const GAME_TOKEN_KEY = "game_token";
 // Define types for the request and response data
 export interface Coordinates {
   longitude: number;
@@ -57,13 +57,13 @@ export class GameService {
       difficulty: difficulty,
     };
     const response = await this.axiosInstance.post<StartGameResponse>("/start", startData);
-    window.sessionStorage.setItem("token", response.data.token);
+    window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token);
   }
 
   async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
     const response = await this.axiosInstance.patch<RoundResultDto>("/check", guessingCoordinates, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
     return response.data;
@@ -72,7 +72,7 @@ export class GameService {
   async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
     const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
     return response.data;
@@ -81,7 +81,7 @@ export class GameService {
   async finishGame(): Promise<SummarizeGameDto> {
     const response = await this.axiosInstance.patch<SummarizeGameDto>("/finish", "", {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
     return response.data;
@@ -90,10 +90,10 @@ export class GameService {
   deleteSession() {
     this.axiosInstance.delete("/delete_session", {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
-    window.sessionStorage.removeItem("token");
+    window.sessionStorage.removeItem(GAME_TOKEN_KEY);
   }
 
 }
