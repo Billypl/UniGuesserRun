@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
 using PartyGame.Entities;
+using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.PlaceModels;
 
@@ -18,7 +19,10 @@ namespace PartyGame
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
 
             CreateMap<PlaceToCheckDto, PlaceToCheck>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => ObjectId.Parse(src.Id))); 
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => ObjectId.Parse(src.Id)));
+
+            CreateMap<User, AccountDetailsDto>();
+            CreateMap<AccountDetailsDto,User>();
         }
 
 

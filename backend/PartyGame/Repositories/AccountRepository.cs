@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using PartyGame.Entities;
 
@@ -10,6 +11,7 @@ namespace PartyGame.Repositories
         void DeleteUser(User existingUser);
         void AddNewUsers(IEnumerable<User> newUsers);
         Task<User> GetUserByNicknameOrEmailAsync(string nicknameOrEmail);
+        Task<User> GetUserById(string Id);
     }
 
     public class AccountRepository : IAccountRepository
@@ -41,6 +43,15 @@ namespace PartyGame.Repositories
             var filter = Builders<User>.Filter.Or(
                 Builders<User>.Filter.Eq(u => u.Nickname, nicknameOrEmail),
                 Builders<User>.Filter.Eq(u => u.Email, nicknameOrEmail)
+            );
+
+            return await _gameDbContext.Users.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetUserById(string id)
+        {
+            var filter = Builders<User>.Filter.Or(
+                Builders<User>.Filter.Eq(u => u.Id, ObjectId.Parse(id))
             );
 
             return await _gameDbContext.Users.Find(filter).FirstOrDefaultAsync();

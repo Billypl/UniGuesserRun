@@ -16,6 +16,8 @@ namespace PartyGame.Services
         void RegisterUser(RegisterUserDto registerUserDto, string Role); 
         string Login(LoginUserDto loginUserDto);
 
+        AccountDetailsDto GetAccountDetails();
+
     }
 
     public class AccountService : IAccountService
@@ -105,7 +107,17 @@ namespace PartyGame.Services
             var tokenHandler = new JwtSecurityTokenHandler();
 
             return tokenHandler.WriteToken(token);
+        }
 
+        public AccountDetailsDto GetAccountDetails()
+        {
+            AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetProfileInformation();
+
+            User account = _accountRepository.GetUserById(tokenData.UserId).Result;
+
+            AccountDetailsDto accountDetailsDto = _mapper.Map<AccountDetailsDto>(account);
+
+            return accountDetailsDto;
         }
 
 

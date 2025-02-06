@@ -38,6 +38,14 @@ namespace PartyGame.Controllers
            return Ok(token);
         }
 
+        [Authorize(Roles = "Admin,Moderator,User")]
+        [HttpGet]
+        public IActionResult GetUserData()
+        {
+            AccountDetailsDto accountDetailsDto = _accountService.GetAccountDetails();
+            return Ok(accountDetailsDto);
+        }
+
 
     }
 }
