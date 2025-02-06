@@ -3,6 +3,7 @@ import gameService from '../services/api/gameService';
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../hooks/useGameContext";
 import scoreboardService from '../services/api/scoreboardService';
+import { MENU_ROUTE } from '../Constants';
 
 const GameResults: React.FC = () => {
     const navigate = useNavigate();
@@ -11,7 +12,7 @@ const GameResults: React.FC = () => {
 
     const returnToMenu = () => {
         gameService.deleteSession();
-        navigate("/menu");           
+        navigate(MENU_ROUTE);           
     }
 
     const saveGameScore = () => {

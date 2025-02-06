@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from "axios";
+import { GAME_API_URL, GAME_TOKEN_KEY } from "../../Constants";
 
-const API_URL = "https://localhost:7157/api/game";
-const GAME_TOKEN_KEY = "game_token";
 // Define types for the request and response data
 export interface Coordinates {
   longitude: number;
@@ -44,7 +43,7 @@ export class GameService {
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: API_URL,
+      baseURL: GAME_API_URL,
       headers: {
         "Content-Type": "application/json",
       },
@@ -96,6 +95,9 @@ export class GameService {
     window.sessionStorage.removeItem(GAME_TOKEN_KEY);
   }
 
+  hasToken(): boolean {
+    return !!window.sessionStorage.getItem(GAME_TOKEN_KEY);
+  }
 }
 
 export default new GameService();

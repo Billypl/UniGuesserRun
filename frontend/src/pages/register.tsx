@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import accountService from "../services/api/accountService";
 import FormField from "../components/FormField";
+import Logo from "../components/Logo";
+import { LOGIN_ROUTE } from "../Constants";
 
 interface RegisterFormInputs {
   username: string;
@@ -20,17 +22,14 @@ const Register: React.FC = () => {
     formState: { errors },
   } = useForm<RegisterFormInputs>();
 
-  const showLogin = () => {
-    navigate("/login");
-  };
-
   const registerUser = (data: RegisterFormInputs) => {
     accountService.addNewUser(data.username, data.email, data.password, data.confirmPassword);
-    showLogin();
+    navigate(LOGIN_ROUTE);
   }
 
   return (
     <>
+    <Logo />
     <form onSubmit={handleSubmit(registerUser)} className="registration-form">
       <h2 className="form-header">Register</h2>
 
@@ -68,7 +67,7 @@ const Register: React.FC = () => {
 
       <button type="submit" className="register-form-button">Register</button>
     </form>
-    <button onClick={() => showLogin}>Already have an account</button> 
+    <button onClick={() => navigate(LOGIN_ROUTE)}>Already have an account</button> 
     </>
   );
 };

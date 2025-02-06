@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
-
 import gameService, { Coordinates } from "../services/api/gameService";
 import { useGameContext } from "../hooks/useGameContext";
 import { useNavigate } from "react-router-dom";
-
-import GameInterface from "./game_interface";
+import GameInterface from "../components/GameInterface";
+import { GAME_RESULTS_ROUTE } from "../Constants";
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
@@ -24,7 +23,7 @@ const Game: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!sessionStorage.getItem("token")) {
+    if (!gameService.hasToken()) {
       startGame();
     }
   }, []);
@@ -51,7 +50,7 @@ const Game: React.FC = () => {
   };
 
   useEffect(() => {
-    if (currentRoundNumber != null && sessionStorage.getItem("token")) {
+    if (currentRoundNumber != null && gameService.hasToken()) {
       fetchGuessingPlace();
     }
   }, [currentRoundNumber]);
@@ -96,7 +95,7 @@ const Game: React.FC = () => {
   const finishGame = async () => {
     const response = await gameService.finishGame();
     setScore(response.score);
-    navigate("/game_results");
+    navigate(GAME_RESULTS_ROUTE);
   };
 
   const resetGameState = () => {

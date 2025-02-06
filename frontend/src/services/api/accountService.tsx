@@ -1,7 +1,5 @@
 import axios, { AxiosInstance } from "axios"
-
-const API_URL = "https://localhost:7157/api/account"
-const ACCOUNT_TOKEN_KEY = "account_token"
+import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY } from "../../Constants";
 
 export interface RegisterUserDto {
     nickname: string;
@@ -27,7 +25,7 @@ export class AccountService {
 
 	constructor() {
 		this.axiosInstance = axios.create({
-			baseURL: API_URL,
+			baseURL: ACCOUNT_API_URL,
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -73,6 +71,11 @@ export class AccountService {
             role: "user",
         }
         return response;
+    }
+
+    isLoggedIn(): boolean {
+        console.log(window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null);
+        return window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null;
     }
 }
 
