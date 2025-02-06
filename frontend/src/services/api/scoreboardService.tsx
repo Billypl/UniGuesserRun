@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-
-const API_URL = 'https://localhost:7157/api/scoreboard'
+import { SCOREBOARD_API_URL, GAME_TOKEN_KEY } from '../../Constants'
 
 export interface FinishedGame {
 	id: number
@@ -23,7 +22,7 @@ export class ScoreboardService {
 
 	constructor() {
 		this.axiosInstance = axios.create({
-			baseURL: API_URL,
+			baseURL: SCOREBOARD_API_URL,
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -33,7 +32,7 @@ export class ScoreboardService {
 	saveScore() {
 		return this.axiosInstance.post('/save_score', '', {
 			headers: {
-				Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
 			},
 		})
 	}
