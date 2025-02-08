@@ -5,6 +5,7 @@ import accountService from "../services/api/accountService";
 import FormField from "../components/FormField";
 import Logo from "../components/Logo";
 import { MENU_ROUTE, REGISTER_ROUTE } from "../Constants";
+import index from "../Index.module.scss";
 
 interface LoginFormInputs {
   nicknameOrEmail: string;
