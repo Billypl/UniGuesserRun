@@ -1,7 +1,13 @@
+@import "Mixins";
+
 .logo {
+    @include clickable;
+    display: flex;
     align-items: right;
 
     img {
         height: 10vh;
+        max-height: 20vw;
+        padding: 10px;
     }
 }

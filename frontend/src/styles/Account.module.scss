@@ -1,8 +1,21 @@
+@import "Mixins";
 .account {
     display: flex;
     justify-content: space-between;
 
     .nav_item {
-        margin: auto 10px 10px 10px;
+        @include clickable;
+        margin: 10px 10px 10px 10px;
+        padding: 10px;
+        background-color: #003767;
+        text-transform: uppercase;
+        border-radius: 1rem;
+        width: 8em;
+        text-align: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: #002b51; 
+        }
     }
 }
