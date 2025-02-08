@@ -74,7 +74,6 @@ export class AccountService {
     }
 
     isLoggedIn(): boolean {
-        console.log(window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null);
         return window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null;
     }
 }

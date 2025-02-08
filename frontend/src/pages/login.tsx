@@ -5,7 +5,7 @@ import accountService from "../services/api/accountService";
 import FormField from "../components/FormField";
 import Logo from "../components/Logo";
 import { MENU_ROUTE, REGISTER_ROUTE } from "../Constants";
-import index from "../Index.module.scss";
+import { useUserContext } from "../hooks/useUserContext";
 
 interface LoginFormInputs {
   nicknameOrEmail: string;
@@ -14,6 +14,7 @@ interface LoginFormInputs {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { setUsername } = useUserContext();
 
   const {
     register: login,
@@ -22,7 +23,13 @@ const Login: React.FC = () => {
   } = useForm<LoginFormInputs>();
 
   const loginUser = async(data: LoginFormInputs) => {
+    //TODO: sprawdzenie w przypadku błędnych danych
     await accountService.login(data.nicknameOrEmail, data.password);
+
+    const user = await accountService.getLoggedInUser();
+
+    setUsername(user.nickname);
+
     navigate(MENU_ROUTE);
   }
 
