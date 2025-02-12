@@ -1,11 +1,14 @@
+@import "styles/Colors";
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Segoe UI', 'Oxygen', 
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #1f1f1f;
-  color: white;
+  background-color: $white;
+  color: $dark-blue;
+  margin: 0;
 }
 
 code {

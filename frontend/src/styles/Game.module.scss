@@ -1,5 +1,7 @@
+@import "Colors";
+
 .image_container {
-    background-color: #272727;
+    background-color: $light-grey;
     display: flex;
     justify-content: center;
     margin-top: 10vh;

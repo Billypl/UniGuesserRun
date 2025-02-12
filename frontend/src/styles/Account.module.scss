@@ -1,21 +1,20 @@
 @import "Mixins";
+@import "Colors";
+
 .account {
     display: flex;
     justify-content: space-between;
+    column-gap: 20px;
 
     .nav_item {
         @include clickable;
-        margin: 10px 10px 10px 10px;
+        @include button;
         padding: 10px;
-        background-color: #003767;
+        background-color: $dark-blue;
         text-transform: uppercase;
         border-radius: 1rem;
         width: 8em;
         text-align: center;
         justify-content: center;
-
-        &:hover {
-            background-color: #002b51; 
-        }
     }
 }

@@ -16,18 +16,18 @@ const Menu: React.FC = () => {
 
   return (
     <>
-    <Header />
-    <div className={styles.main_menu}>
-      <div className={styles.menu_option}>
-        Username: <input type="text" onChange={(e) => setNickname(e.target.value)}></input>
+      <Header />
+      <div className={styles.main_menu}>
+        <div className={styles.menu_option}>
+          Username: <input type="text" onChange={(e) => setNickname(e.target.value)}></input>
+        </div>
+        <div className={styles.menu_option} onClick={startGame}>
+          Start game
+        </div>
+        <div className={styles.menu_option} onClick={() => navigate(SCOREBOARD_ROUTE)}>
+          Scoreboard
+        </div>
       </div>
-      <div className={styles.menu_option} onClick={startGame}>
-        Start game
-      </div>
-      <div className={styles.menu_option} onClick={() => navigate(SCOREBOARD_ROUTE)}>
-        Scoreboard
-      </div>
-    </div>
     </>
   );
 };
