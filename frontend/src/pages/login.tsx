@@ -6,6 +6,7 @@ import FormField from "../components/FormField";
 import Logo from "../components/Logo";
 import { MENU_ROUTE, REGISTER_ROUTE } from "../Constants";
 import { useUserContext } from "../hooks/useUserContext";
+import styles from "../styles/AccountForm.module.scss";
 
 interface LoginFormInputs {
   nicknameOrEmail: string;
@@ -34,10 +35,11 @@ const Login: React.FC = () => {
   }
 
   return (
-    <>
-    <Logo />
-    <form onSubmit={handleSubmit(loginUser)} className="login-form">
-      <h2 className="form-header">Login</h2>
+    <div className={styles.form_container}>
+      <Logo />
+      <form onSubmit={handleSubmit(loginUser)} 
+    className={styles.form}>
+      <h2 className={styles.header}>Sign in to UniGuesser</h2>
 
       <FormField
         label="Nickname or Email"
@@ -55,10 +57,10 @@ const Login: React.FC = () => {
         error={errors.password?.message}
       />
 
-      <button type="submit" className="login-form-button">Login</button>
+      <button type="submit" className={styles.submit_button}>Login</button>
     </form>
-    <button onClick={() => navigate(REGISTER_ROUTE)}>New to UniGuesser? Sign up</button> 
-    </>
+    <p onClick={() => navigate(REGISTER_ROUTE)} className={styles.link}>New to UniGuesser? Sign up</p> 
+    </div>
   );
 };
 

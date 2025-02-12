@@ -8,7 +8,17 @@
     filter: brightness(0.8);
 }
 
+@mixin link {
+    @include clickable;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 @mixin button {
+    @include clickable;
+    
     background-color: $dark-blue;
     color: $white;
     border-radius: 5px;
