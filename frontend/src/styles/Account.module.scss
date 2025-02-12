@@ -7,7 +7,6 @@
     column-gap: 20px;
 
     .nav_item {
-        @include clickable;
         @include button;
         padding: 10px;
         background-color: $dark-blue;

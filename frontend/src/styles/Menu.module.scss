@@ -12,7 +12,6 @@
     row-gap: 20px;
 
     .menu_option {
-        @include clickable;
         @include button;
         font-size: 1.5em;
         padding: 10px;
