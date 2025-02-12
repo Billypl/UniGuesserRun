@@ -1,3 +1,20 @@
+@import "Colors";
+
 @mixin clickable {
     cursor: pointer;
+}
+
+@mixin darken {
+    filter: brightness(0.8);
+}
+
+@mixin button {
+    background-color: $dark-blue;
+    color: $white;
+    border-radius: 5px;
+    border: none;
+
+    &:hover {
+        @include darken;
+    }
 }

@@ -1,3 +1,5 @@
+@import "Colors";
+
 .scoreboard {
     text-align: center;
     margin: 5rem;
@@ -7,5 +9,5 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid $light-grey;
 }

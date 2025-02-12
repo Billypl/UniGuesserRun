@@ -53,7 +53,7 @@ export class AccountService {
 	}
 
     logout() {
-        // remove session token from backend?
+        // TODO: remove session token from backend?
         window.sessionStorage.removeItem(ACCOUNT_TOKEN_KEY);
     }
 

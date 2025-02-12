@@ -4,10 +4,10 @@
     @include clickable;
     display: flex;
     align-items: right;
+    margin: 10px;
 
     img {
-        height: 10vh;
-        max-height: 20vw;
-        padding: 10px;
+        height: 3em;
+        width: 3em;
     }
 }
