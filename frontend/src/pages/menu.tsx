@@ -4,12 +4,16 @@ import { useGameContext } from "../hooks/useGameContext";
 import Header from "../components/Header";
 import { GAME_ROUTE, GAME_TOKEN_KEY, LOGIN_ROUTE, REGISTER_ROUTE, SCOREBOARD_ROUTE } from "../Constants";
 import styles from "../styles/Menu.module.scss"
+import accountService from "../services/api/accountService";
 
 const Menu: React.FC = () => {
   const navigate = useNavigate();
   const { nickname, setNickname, difficulty, setDifficulty } = useGameContext();
 
   const startGame = () => {
+    if (!accountService.isLoggedIn()) {
+      return;
+    }
     window.sessionStorage.removeItem(GAME_TOKEN_KEY);
     navigate(GAME_ROUTE);
   };
@@ -21,9 +25,17 @@ const Menu: React.FC = () => {
         <div className={styles.menu_option}>
           Username: <input type="text" onChange={(e) => setNickname(e.target.value)}></input>
         </div>
-        <div className={styles.menu_option} onClick={startGame}>
-          Start game
-        </div>
+        
+        {accountService.isLoggedIn() ?
+          <div className={styles.menu_option} onClick={startGame}>
+            Start game
+          </div>
+          :
+          <div className={styles.menu_option} onClick={() => navigate(LOGIN_ROUTE)}>
+            Login to play
+          </div>
+        }
+        
         <div className={styles.menu_option} onClick={() => navigate(SCOREBOARD_ROUTE)}>
           Scoreboard
         </div>
