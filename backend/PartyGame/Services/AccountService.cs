@@ -82,7 +82,7 @@ namespace PartyGame.Services
 
             if (result == PasswordVerificationResult.Failed)
             {
-                throw new KeyNotFoundException("Invalid username or password");
+                throw new KeyNotFoundException("Invalid nickname or password");
             }
 
             var claims = new List<Claim>()
@@ -119,7 +119,6 @@ namespace PartyGame.Services
 
             return accountDetailsDto;
         }
-
 
     }
 }
