@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-import { SelectMapLocation } from "../components/SelectMapLocation";
-import { LocationMarker } from "../components/LocationMarker";
+import { SelectMapLocation } from "./SelectMapLocation";
+import { LocationMarker } from "./LocationMarker";
 
-import { TargetIcon, ClickedIcon } from "../components/MarkerIcons";
-import { TargetMarker } from "../components/TargetMarker";
+import { TargetIcon, ClickedIcon } from "./MarkerIcons";
+import { TargetMarker } from "./TargetMarker";
 
 import styles from "../styles/Game.module.scss";
 

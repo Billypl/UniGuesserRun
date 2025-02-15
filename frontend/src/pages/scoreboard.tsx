@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import scoreboardService, { FinishedGame, ScoreboardService } from '../services/api/scoreboardService';
-
 import styles from "../styles/Scoreboard.module.scss";
+import { MENU_ROUTE } from '../Constants';
 
 const Scoreboard: React.FC = () => {
     const navigate = useNavigate();
@@ -35,10 +35,6 @@ const Scoreboard: React.FC = () => {
         requestSent = true;
     }
 
-    const returnToMenu = () => {
-        navigate("/menu");           
-    }
-
     useEffect(() => {
         if(requestSent) return;
         getAllRecords();
@@ -50,7 +46,7 @@ const Scoreboard: React.FC = () => {
         <div className="records-list">
             {showAllRecords()}
         </div>
-        <button onClick={returnToMenu}>Back to menu</button>
+        <button onClick={() => navigate(MENU_ROUTE)}>Back to menu</button>
     </div>
     );
 };

@@ -1,41 +1,46 @@
-import { URL } from "node:url";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../hooks/useGameContext";
-
-import styles from "../styles/Menu.module.scss";
+import Header from "../components/Header";
+import { GAME_ROUTE, GAME_TOKEN_KEY, LOGIN_ROUTE, REGISTER_ROUTE, SCOREBOARD_ROUTE } from "../Constants";
+import styles from "../styles/Menu.module.scss"
+import accountService from "../services/api/accountService";
 
 const Menu: React.FC = () => {
   const navigate = useNavigate();
   const { nickname, setNickname, difficulty, setDifficulty } = useGameContext();
 
   const startGame = () => {
-    window.sessionStorage.removeItem("token");
-    navigate("/game");
-  };
-
-  const showScoreboard = () => {
-    navigate("/scoreboard");
+    if (!accountService.isLoggedIn()) {
+      return;
+    }
+    window.sessionStorage.removeItem(GAME_TOKEN_KEY);
+    navigate(GAME_ROUTE);
   };
 
   return (
-    <div>
-      <h1>Main Menu</h1>
-      <div>
-        <ul>
-          <li>
-            Username: <input type="text" onChange={(e) => setNickname(e.target.value)}></input>
-          </li>
-          <li className="menu-option" onClick={startGame}>
+    <>
+      <Header />
+      <div className={styles.main_menu}>
+        <div className={styles.menu_option}>
+          Username: <input type="text" onChange={(e) => setNickname(e.target.value)}></input>
+        </div>
+        
+        {accountService.isLoggedIn() ?
+          <div className={styles.menu_option} onClick={startGame}>
             Start game
-          </li>
-          {/* <li className="menu-option">Settings</li> */}
-          <li className="menu-option" onClick={showScoreboard}>
-            Scoreboard
-          </li>
-        </ul>
+          </div>
+          :
+          <div className={styles.menu_option} onClick={() => navigate(LOGIN_ROUTE)}>
+            Login to play
+          </div>
+        }
+        
+        <div className={styles.menu_option} onClick={() => navigate(SCOREBOARD_ROUTE)}>
+          Scoreboard
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

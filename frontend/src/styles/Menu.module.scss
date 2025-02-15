@@ -1,0 +1,30 @@
+@import "Mixins";
+@import "Colors";
+
+.main_menu {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-basis: auto;
+    row-gap: 20px;
+
+    .menu_option {
+        @include button;
+        font-size: 1.5em;
+        padding: 10px;
+        background-color: $dark-blue;
+        text-transform: uppercase;
+        border-radius: 1rem;
+        width: 12em;
+        max-width: 90vw;
+        text-align: center;
+
+        &:hover {
+            @include darken;
+            //transform: scale(1.05);
+        }
+    }
+}

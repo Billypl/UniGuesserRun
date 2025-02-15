@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-
-const API_URL = "https://localhost:7157/api/game";
+import { GAME_API_URL, GAME_TOKEN_KEY } from "../../Constants";
 
 // Define types for the request and response data
 export interface Coordinates {
@@ -44,26 +43,26 @@ export class GameService {
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: API_URL,
+      baseURL: GAME_API_URL,
       headers: {
         "Content-Type": "application/json",
       },
     });
   }
 
-  async startGame(nickname: string, difficulty: string): Promise<StartGameResponse> {
+  async startGame(nickname: string, difficulty: string){
     const startData: StartGameData = {
       nickname: nickname,
       difficulty: difficulty,
     };
     const response = await this.axiosInstance.post<StartGameResponse>("/start", startData);
-    return response.data;
+    window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token);
   }
 
   async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
     const response = await this.axiosInstance.patch<RoundResultDto>("/check", guessingCoordinates, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
     return response.data;
@@ -72,7 +71,7 @@ export class GameService {
   async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
     const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
     return response.data;
@@ -81,7 +80,7 @@ export class GameService {
   async finishGame(): Promise<SummarizeGameDto> {
     const response = await this.axiosInstance.patch<SummarizeGameDto>("/finish", "", {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
     return response.data;
@@ -90,12 +89,15 @@ export class GameService {
   deleteSession() {
     this.axiosInstance.delete("/delete_session", {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
       },
     });
-    window.sessionStorage.removeItem("token");
+    window.sessionStorage.removeItem(GAME_TOKEN_KEY);
   }
 
+  hasToken(): boolean {
+    return !!window.sessionStorage.getItem(GAME_TOKEN_KEY);
+  }
 }
 
 export default new GameService();

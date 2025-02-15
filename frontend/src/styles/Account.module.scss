@@ -1,0 +1,19 @@
+@import "Mixins";
+@import "Colors";
+
+.account {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 20px;
+
+    .nav_item {
+        @include button;
+        padding: 10px;
+        background-color: $dark-blue;
+        text-transform: uppercase;
+        border-radius: 1rem;
+        width: 8em;
+        text-align: center;
+        justify-content: center;
+    }
+}

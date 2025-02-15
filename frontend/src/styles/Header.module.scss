@@ -1,0 +1,33 @@
+@import "Mixins";
+@import "Colors";
+
+.header {
+    flex-grow: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-bottom: 1px solid $light-grey;
+
+    .nav {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: center;
+        width: 100vw;
+        max-width: 100vw;
+        height: fit-content;
+        box-sizing: border-box;
+        padding: 0px 10px 0px 10px;
+        margin: 10px 0px 10px 0px;
+
+        .title {
+            @include clickable;
+            font-size: 40px;
+            margin-right: auto;
+            padding-bottom: 0.1em;
+            color: $dark-blue;
+            font-weight: bold;
+        }
+    }
+}

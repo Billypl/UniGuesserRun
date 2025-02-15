@@ -3,6 +3,8 @@ import gameService from '../services/api/gameService';
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../hooks/useGameContext";
 import scoreboardService from '../services/api/scoreboardService';
+import { MENU_ROUTE } from '../Constants';
+import styles from "../styles/GameResults.module.scss";
 
 const GameResults: React.FC = () => {
     const navigate = useNavigate();
@@ -11,7 +13,7 @@ const GameResults: React.FC = () => {
 
     const returnToMenu = () => {
         gameService.deleteSession();
-        navigate("/menu");           
+        navigate(MENU_ROUTE);           
     }
 
     const saveGameScore = () => {
@@ -20,11 +22,11 @@ const GameResults: React.FC = () => {
     }
 
     return (
-    <div>
+    <div className={styles.result_container}>
         <h1>GAME RESULTS</h1>
-        <p>Congratulations {nickname}!</p>
-        <p>Your score: {score.toFixed(2)}</p>
-        <p>On {difficulty} difficulty</p>
+        <h2>Congratulations {nickname}!</h2>
+        <p>Your score: <b>{score.toFixed(2)}</b></p>
+        <p>On <b>{difficulty}</b> difficulty</p>
         {scoreSaved && <button>Score saved!</button>}
         {!scoreSaved && <button onClick={saveGameScore}>Save score</button>}
         <br />
