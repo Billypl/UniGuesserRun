@@ -57,25 +57,25 @@ namespace PartyGame.Services
                 DifficultyLevel = session.DifficultyLevel
             };
 
-            _scoreboardRepository.AddNewGame(newFinishedGame);
+            _scoreboardRepository.CreateAsync(newFinishedGame);
         }
 
         public async Task<List<FinishedGame>> GetAllGames()
         {
-            List<FinishedGame> games = await _scoreboardRepository.GetAllGames();
+            IEnumerable<FinishedGame> games = await _scoreboardRepository.GetAllAsync();
 
             if (games == null)
             {
                 throw new KeyNotFoundException($"There no games in history");
             }
 
-            return games;
+            return games.ToList();
         }
 
         public async Task<PagedResult<FinishedGame>> GetGames(ScoreboardQuery scoreboardQuery)
         {
             List<FinishedGame> games = await _scoreboardRepository.GetGames(scoreboardQuery);
-            int totalScores =  _scoreboardRepository.GetAllGames().Result.Count;
+            int totalScores =  _scoreboardRepository.GetAllAsync().Result.Count();
 
             var result = new PagedResult<FinishedGame>(games,totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
             return result;

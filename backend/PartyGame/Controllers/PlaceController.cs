@@ -26,7 +26,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpGet("{placeID}")]
-        public ActionResult GetPlace([FromRoute] int placeId)
+        public ActionResult GetPlace([FromRoute] string placeId)
         {
             Place place = _placeService.GetPlaceById(placeId).Result;
             return Ok(place);

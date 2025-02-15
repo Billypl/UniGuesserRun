@@ -39,10 +39,12 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddControllers();
     builder.Services.AddSingleton<IMongoClient>(sp =>
     { 
-        var connectionString = "mongodb://localhost:27017";
-        //var connectionString = "mongodb://root:example@mongo:27017";
+        //var connectionString = "mongodb://localhost:27017";
+        var connectionString = "mongodb://root:example@mongo:27017";
         return new MongoClient(connectionString);
     });
+
+
     builder.Services.AddScoped<GameDbContext>();
 
     // mapper
@@ -93,6 +95,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     // Serwisy
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
+    builder.Services.AddScoped<IPlacesRepository, PlacesRepository>();
     builder.Services.AddScoped<IScoreboardRepository, ScoreboardRepository>();
     builder.Services.AddScoped<IGameSessionRepository, GameSessionRepository>();
     builder.Services.AddScoped<IPlacesRepository, PlacesRepository>();

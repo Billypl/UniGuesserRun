@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
 using PartyGame.Entities;
 using MongoDB.Driver;
 using PartyGame.Models.GameModels;
@@ -53,7 +54,7 @@ namespace PartyGame.Services
 
             var token = GenerateSessionToken(startData);
             // NOW ONLY WORKS FOR EASY DIFFICULTY
-            var places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER, difficulty).Result;
+            List<ObjectId> places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER, difficulty).Result;
             
             if (places.Count < ROUNDS_NUMBER)
             {
@@ -121,7 +122,7 @@ namespace PartyGame.Services
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
             }
 
-            var guessingPlace = _placeService.GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess).Result;
+            var guessingPlace = _placeService.GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess.ToString()).Result;
            
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
@@ -136,7 +137,7 @@ namespace PartyGame.Services
                     $"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
             }
 
-            var guessingPlace = _placeService.GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess).Result;
+            var guessingPlace = _placeService.GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess.ToString()).Result;
             var distanceDifference = CalculateDistanceBetweenCords(guessingPlace.Coordinates, guessingCoordinates);
 
             var result = new RoundResultDto

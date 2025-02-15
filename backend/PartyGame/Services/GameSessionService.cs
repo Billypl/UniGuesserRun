@@ -9,7 +9,7 @@ namespace PartyGame.Services
     {
         Task<GameSession> GetSessionByToken();
         void DeleteSessionByToken();
-        void UpdateGameSession(GameSession session);
+        Task UpdateGameSession(GameSession session);
         void AddNewGameSession(GameSession session);
     }
 
@@ -46,13 +46,16 @@ namespace PartyGame.Services
             }
         }
 
-        public async void UpdateGameSession(GameSession session)
+        public async Task UpdateGameSession(GameSession session)
         {
-            UpdateResult updateResult = await _gameSessionRepository.UpdateGameSession(session);
-            if (updateResult.MatchedCount == 0)
+            var existingSession = await _gameSessionRepository.GetAsync(session.Id);
+
+            if (existingSession == null)
             {
                 throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
             }
+
+            await _gameSessionRepository.UpdateAsync(session);
         }
 
         public void AddNewGameSession(GameSession session)
@@ -62,7 +65,7 @@ namespace PartyGame.Services
             {
                 throw new InvalidOperationException("A session with the same token already exists.");
             }
-            _gameSessionRepository.AddNewGameSession(session);
+            _gameSessionRepository.CreateAsync(session);
         }
 
 

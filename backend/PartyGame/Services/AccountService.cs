@@ -66,7 +66,7 @@ namespace PartyGame.Services
             newUser.PasswordHash = passwordHash;
 
 
-            _accountRepository.AddNewUser(newUser);
+            _accountRepository.CreateAsync(newUser);
         }
 
         public string Login(LoginUserDto loginUserDto)
@@ -113,7 +113,7 @@ namespace PartyGame.Services
         {
             AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetProfileInformation();
 
-            User account = _accountRepository.GetUserById(tokenData.UserId).Result;
+            User account = _accountRepository.GetAsync(tokenData.UserId).Result;
 
             AccountDetailsDto accountDetailsDto = _mapper.Map<AccountDetailsDto>(account);
 
