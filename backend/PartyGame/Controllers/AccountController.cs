@@ -45,7 +45,5 @@ namespace PartyGame.Controllers
             AccountDetailsDto accountDetailsDto = _accountService.GetAccountDetails();
             return Ok(accountDetailsDto);
         }
-
-
     }
 }

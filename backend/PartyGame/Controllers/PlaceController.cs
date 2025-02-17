@@ -8,7 +8,6 @@ namespace PartyGame.Controllers
 {
     [Route("api/place")]
     [ApiController]
-    [Authorize(Roles = "Admin,Moderator")]
     public class PlaceController : ControllerBase
     {
         private readonly IPlaceService _placeService;
@@ -32,8 +31,7 @@ namespace PartyGame.Controllers
             return Ok(place);
         }
 
-        [AllowAnonymous]
-        [Authorize(Roles = "Admin,Moderator,User")]
+        
         [HttpPost("to_check")]
         public ActionResult AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
         {

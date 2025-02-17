@@ -111,7 +111,7 @@ namespace PartyGame.Services
 
         public AccountDetailsDto GetAccountDetails()
         {
-            AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetProfileInformation();
+            AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetAuthenticatedUserProfile();
 
             User account = _accountRepository.GetAsync(tokenData.UserId).Result;
 

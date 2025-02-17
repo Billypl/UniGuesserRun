@@ -12,6 +12,7 @@ namespace PartyGame.Controllers
     public class GameController:ControllerBase
     {
         private readonly IGameService _gameService;
+        private readonly IGameSessionService _gameSessionService;
 
         public GameController(IGameService gameService)
         {
@@ -66,7 +67,7 @@ namespace PartyGame.Controllers
         [Authorize]
         public ActionResult DeleteGame()
         {
-            _gameService.DeleteGame();
+            _gameSessionService.DeleteSessionByHeader();
             return Ok(new
                 {
                     Message = "Game successfully deleted"

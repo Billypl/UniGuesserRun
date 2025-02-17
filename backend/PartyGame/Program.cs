@@ -39,8 +39,8 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddControllers();
     builder.Services.AddSingleton<IMongoClient>(sp =>
     { 
-        //var connectionString = "mongodb://localhost:27017";
-        var connectionString = "mongodb://root:example@mongo:27017";
+        var connectionString = "mongodb://localhost:27017";
+        //var connectionString = "mongodb://root:example@mongo:27017";
         return new MongoClient(connectionString);
     });
 

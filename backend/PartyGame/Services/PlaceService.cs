@@ -104,7 +104,7 @@ namespace PartyGame.Services
 
         public void AddNewPlaceToQueue(NewPlaceDto newPlace)
         {
-            AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetProfileInformation();
+            AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetAuthenticatedUserProfile();
 
             PlaceToCheck newPlaceToCheck = new PlaceToCheck
             {
