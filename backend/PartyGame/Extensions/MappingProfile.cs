@@ -5,12 +5,12 @@ using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.PlaceModels;
 
-namespace PartyGame
+namespace PartyGame.Extensions
 {
     // Konfiguracja AutoMappera
-    public class PlacesMappingProfile : Profile
+    public class MappingProfile : Profile
     {
-        public PlacesMappingProfile()
+        public MappingProfile()
         {
             CreateMap<Place, GuessingPlaceDto>();
             CreateMap<GameSession, SummarizeGameDto>();
@@ -22,7 +22,7 @@ namespace PartyGame
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => ObjectId.Parse(src.Id)));
 
             CreateMap<User, AccountDetailsDto>();
-            CreateMap<AccountDetailsDto,User>();
+            CreateMap<AccountDetailsDto, User>();
         }
 
 
