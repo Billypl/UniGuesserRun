@@ -11,7 +11,7 @@ await SeedDatabase(app);
 ConfigureMiddleware(app);
 app.Run();
 
-// Rejestracja us�ug
+// Rejestracja usług
 void ConfigureServices(WebApplicationBuilder builder)
 {
     builder.Services.AddApplicationDependencies(builder.Configuration);

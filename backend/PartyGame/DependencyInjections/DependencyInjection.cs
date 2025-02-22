@@ -13,7 +13,7 @@ namespace PartyGame.DependencyInjection
         {
             services
                 .AddDatabaseConfig(configuration)
-                .AddCorsConfiguration()
+                .AddCorsConfiguration(configuration)
                 .AddAuthenticationConfig(configuration)
                 .AddRepositories()
                 .AddServices()

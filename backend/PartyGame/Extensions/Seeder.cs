@@ -24,6 +24,8 @@ namespace PartyGame.Extensions
 
         public async Task Seed()
         {
+            await _gameDbContext.Places.DeleteManyAsync(Builders<Place>.Filter.Empty);
+
             var placeCount = await _gameDbContext.Places.CountDocumentsAsync(Builders<Place>.Filter.Empty);
 
             if (placeCount == 0)
@@ -75,8 +77,8 @@ namespace PartyGame.Extensions
             _accountService.RegisterUser(user, "User");
         }
 
-
         private IEnumerable<Place>? GetPlaces()
+
         {
             string jsonString = File.ReadAllText(_filePath);
 

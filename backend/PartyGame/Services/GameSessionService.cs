@@ -12,9 +12,7 @@ namespace PartyGame.Services
         Task<GameSession> GetSessionByToken(string token);
         Task<GameSession> GetSessionByHeader();
         Task UpdateGameSession(GameSession session);
-
         Task<bool> HasActiveGameSession(string token);
-
         void AddNewGameSession(GameSession session);
 
     }
