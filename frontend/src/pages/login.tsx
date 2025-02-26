@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import accountService from "../services/api/accountService";
@@ -16,6 +16,7 @@ interface LoginFormInputs {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const { setUsername } = useUserContext();
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register: login,
@@ -25,13 +26,13 @@ const Login: React.FC = () => {
 
   const loginUser = async(data: LoginFormInputs) => {
     //TODO: sprawdzenie w przypadku błędnych danych
-    await accountService.login(data.nicknameOrEmail, data.password);
-
-    const user = await accountService.getLoggedInUser();
-
-    setUsername(user.nickname);
-
-    navigate(MENU_ROUTE);
+    const errorMessage = await accountService.login(data.nicknameOrEmail, data.password);
+    setError(errorMessage);
+    if (!errorMessage) {
+      const user = await accountService.getLoggedInUser();
+      setUsername(user.nickname);
+      navigate(MENU_ROUTE);
+    }
   }
 
   return (
@@ -56,6 +57,8 @@ const Login: React.FC = () => {
         register={login}
         error={errors.password?.message}
       />
+
+      {error && <p className={styles.error}>{error}</p>}
 
       <button type="submit" className={styles.submit_button}>Login</button>
     </form>
