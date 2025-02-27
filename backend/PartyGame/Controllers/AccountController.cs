@@ -33,9 +33,8 @@ namespace PartyGame.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginUserDto loginUserDto)
         {
-           string token = _accountService.Login(loginUserDto);
-
-           return Ok(token);
+            LoginResultDto tokens = _accountService.Login(loginUserDto);
+            return Ok(tokens);
         }
 
         [Authorize(Roles = "Admin,Moderator,User")]

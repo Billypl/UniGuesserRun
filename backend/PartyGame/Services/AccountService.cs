@@ -14,9 +14,9 @@ namespace PartyGame.Services
     public interface IAccountService
     {
         void RegisterUser(RegisterUserDto registerUserDto, string Role); 
-        string Login(LoginUserDto loginUserDto);
-
+        LoginResultDto Login(LoginUserDto loginUserDto);
         AccountDetailsDto GetAccountDetails();
+        string RefreshSession();
 
     }
 
@@ -27,20 +27,20 @@ namespace PartyGame.Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IAccountTokenService _accountTokenService;
 
         public AccountService(IAccountRepository accountRepository, IPasswordHasher<User> passwordHasher,
             IHttpContextAccessorService contextAccessorService, IMapper mapper,
-            IOptions<AuthenticationSettings> authenticationSettings)
+            IOptions<AuthenticationSettings> authenticationSettings,
+            IAccountTokenService accountTokenService)
         {
             _accountRepository =accountRepository;
             _contextAccessorService = contextAccessorService;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings.Value;
-
+            _accountTokenService = accountTokenService;
         }
-
-
         public void RegisterUser(RegisterUserDto registerUserDto,string Role)
         {
             if (_accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Nickname).Result is not null)
@@ -69,7 +69,7 @@ namespace PartyGame.Services
             _accountRepository.CreateAsync(newUser);
         }
 
-        public string Login(LoginUserDto loginUserDto)
+        public LoginResultDto Login(LoginUserDto loginUserDto)
         {
             var user = _accountRepository.GetUserByNicknameOrEmailAsync(loginUserDto.NicknameOrEmail).Result;
 
@@ -85,28 +85,14 @@ namespace PartyGame.Services
                 throw new KeyNotFoundException("Invalid nickname or password");
             }
 
-            var claims = new List<Claim>()
+            string token = _accountTokenService.GenerateAccountToken(user);
+            string refreshToken = _accountTokenService.GenerateRefreshToken(user);
+
+            return new LoginResultDto
             {
-                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                new Claim(ClaimTypes.Email,$"{user.Email}"),
-                new Claim(ClaimTypes.Role,$"{user.Role}"),
-                new Claim(ClaimTypes.Name, $"{user.Nickname}")
+                Token = token,
+                RefreshToken = refreshToken
             };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(_authenticationSettings.JwtExpireAccount);
-
-            var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
-                _authenticationSettings.JwtIssuer,
-                claims,
-                expires: expires,
-                signingCredentials: cred
-            );
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            return tokenHandler.WriteToken(token);
         }
 
         public AccountDetailsDto GetAccountDetails()
@@ -120,5 +106,9 @@ namespace PartyGame.Services
             return accountDetailsDto;
         }
 
+        public string RefreshSession()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

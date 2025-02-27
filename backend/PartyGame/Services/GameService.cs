@@ -30,18 +30,18 @@ namespace PartyGame.Services
     {
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IMapper _mapper;
-
         private readonly IPlaceService _placeService;
         private readonly IGameSessionService _gameSessionService;
         private readonly IAccountService _accountService;
-
+        private readonly IGameTokenService _gameTokenService;
         private readonly IHttpContextAccessorService _httpContextAccessorService;
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
 
         public GameService(IOptions<AuthenticationSettings> authenticationSettings
             , IMapper mapper,GameDbContext gameDbContext,IPlaceService placeService,
-            IGameSessionService gameSessionService, IHttpContextAccessorService httpContextAccessorService, IAccountService accountService)
+            IGameSessionService gameSessionService, IHttpContextAccessorService httpContextAccessorService,
+            IAccountService accountService,IGameTokenService gameTokenService)
         {
             _authenticationSettings = authenticationSettings.Value;
             _mapper = mapper;
@@ -49,6 +49,7 @@ namespace PartyGame.Services
             _gameSessionService = gameSessionService;
             _httpContextAccessorService = httpContextAccessorService;
             _accountService = accountService;
+            _gameTokenService = gameTokenService;
 
         }
 
@@ -61,10 +62,12 @@ namespace PartyGame.Services
                 throw new AccessViolationException("Game for this token already exists");
             }
 
+
             DifficultyLevel difficulty =
                 (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startData.Difficulty, ignoreCase: true);
 
-            var newGameToken = _httpContextAccessorService.IsUserLoggedIn() ? _httpContextAccessorService.GetTokenFromHeader() : GenerateSessionToken(startData);
+            var newGameToken = _httpContextAccessorService.IsUserLoggedIn() ? _httpContextAccessorService.GetTokenFromHeader() 
+                : _gameTokenService.GenerateGuessSessionToken(startData);
             // NOW ONLY WORKS FOR EASY DIFFICULTY
             List<Round> gameRounds = GenerateRounds(difficulty);
 
@@ -109,29 +112,6 @@ namespace PartyGame.Services
             return gameRounds;
         }
 
-        private string GenerateSessionToken(StartDataDto startDataDto)
-        {
-            var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame);
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, startDataDto.Nickname),
-                new Claim("difficulty", startDataDto.Difficulty), 
-                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString())
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _authenticationSettings.JwtIssuer,
-                audience: _authenticationSettings.JwtIssuer,
-                claims: claims,
-                expires: expiration,
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
 
         public GuessingPlaceDto GetPlaceToGuess(int roundsNumber)
         {
