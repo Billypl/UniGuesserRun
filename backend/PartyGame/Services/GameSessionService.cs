@@ -13,7 +13,7 @@ namespace PartyGame.Services
         Task<GameSession> GetSessionByHeader();
         Task UpdateGameSession(GameSession session);
         Task<bool> HasActiveGameSession(string token);
-        void AddNewGameSession(GameSession session);
+        Task AddNewGameSession(GameSession session);
 
     }
 
@@ -97,14 +97,14 @@ namespace PartyGame.Services
             return true;
         }
 
-        public void AddNewGameSession(GameSession session)
+        public async Task AddNewGameSession(GameSession session)
         {
-            GameSession existedSession = _gameSessionRepository.GetGameSessionByToken(session.Token).Result;
+            GameSession existedSession = await _gameSessionRepository.GetGameSessionByToken(session.Token);
             if (existedSession != null)
             {
                 throw new InvalidOperationException("A session with the same token already exists.");
             }
-            _gameSessionRepository.CreateAsync(session);
+            await _gameSessionRepository.CreateAsync(session);
         }
 
 

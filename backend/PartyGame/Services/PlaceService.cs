@@ -15,11 +15,10 @@ namespace PartyGame.Services
         void AddNewPlace(NewPlaceDto newPlace);
         Task<int> GetPlacesCount();
         Task<List<ObjectId>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
-
-        void AddNewPlaceToQueue(NewPlaceDto newPlace);
+        Task AddNewPlaceToQueue(NewPlaceDto newPlace);
         Task<List<PlaceToCheckDto>> GetAllPlacesInQueue();
-        void AcceptPlace(string PlaceToCheckId);
-        void RejectPlace(string PlaceToRejectId);
+        Task AcceptPlace(string PlaceToCheckId);
+        Task RejectPlace(string PlaceToRejectId);
 
     }
 
@@ -102,7 +101,7 @@ namespace PartyGame.Services
         }
 
 
-        public void AddNewPlaceToQueue(NewPlaceDto newPlace)
+        public async Task AddNewPlaceToQueue(NewPlaceDto newPlace)
         {
             AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetAuthenticatedUserProfile();
 
@@ -113,7 +112,7 @@ namespace PartyGame.Services
                 NewPlace = newPlace
             };
 
-            _placesToCheckRepository.CreateAsync(newPlaceToCheck);
+           await _placesToCheckRepository.CreateAsync(newPlaceToCheck);
         }
 
         public async Task<List<PlaceToCheckDto>> GetAllPlacesInQueue()
@@ -122,7 +121,7 @@ namespace PartyGame.Services
             List<PlaceToCheckDto> placesDto = _mapper.Map<List<PlaceToCheckDto>>(placesTask);
             return placesDto; 
         }
-        public void AcceptPlace(string placeToCheckId)
+        public async Task AcceptPlace(string placeToCheckId)
         {
             PlaceToCheck placeToAccept = _placesToCheckRepository.GetAsync(placeToCheckId).Result;
 
@@ -138,7 +137,7 @@ namespace PartyGame.Services
             _placesToCheckRepository.DeleteAsync(placeToCheckId);
         }
 
-        public void RejectPlace(string placeToRejectId)
+        public async Task RejectPlace(string placeToRejectId)
         {
             PlaceToCheck placeToAccept = _placesToCheckRepository.GetAsync(placeToRejectId).Result;
 

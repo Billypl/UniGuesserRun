@@ -19,11 +19,11 @@ namespace PartyGame.Services
 
     public interface IGameService
     {
-        string StartNewGame(StartDataDto startData);
-        RoundResultDto? CheckGuess(Coordinates guessingCoordinates);
-        public GuessingPlaceDto GetPlaceToGuess(int roundsNumber);
-        public SummarizeGameDto FinishGame();
-        public int GetActualRoundNumber();
+        Task<string> StartNewGame(StartDataDto startData);
+        Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates);
+        Task<GuessingPlaceDto> GetPlaceToGuess(int roundsNumber);
+        Task<SummarizeGameDto> FinishGame();
+        Task<int> GetActualRoundNumber();
     }
 
     public class GameService : IGameService
@@ -54,10 +54,10 @@ namespace PartyGame.Services
         }
 
 
-        public string StartNewGame(StartDataDto startData)
+        public async Task<string> StartNewGame(StartDataDto startData)
         {
             if (_httpContextAccessorService.IsTokenExist() &&
-                _gameSessionService.HasActiveGameSession(_httpContextAccessorService.GetTokenFromHeader()).Result)
+                (await _gameSessionService.HasActiveGameSession(_httpContextAccessorService.GetTokenFromHeader())))
             {
                 throw new AccessViolationException("Game for this token already exists");
             }
@@ -69,7 +69,7 @@ namespace PartyGame.Services
             var newGameToken = _httpContextAccessorService.IsUserLoggedIn() ? _httpContextAccessorService.GetTokenFromHeader() 
                 : _gameTokenService.GenerateGuessSessionToken(startData);
             // NOW ONLY WORKS FOR EASY DIFFICULTY
-            List<Round> gameRounds = GenerateRounds(difficulty);
+            List<Round> gameRounds = await GenerateRounds(difficulty);
 
             var gameSession = new GameSession
             {
@@ -86,9 +86,9 @@ namespace PartyGame.Services
         }
 
 
-        private List<Round> GenerateRounds(DifficultyLevel difficulty)
+        private async Task<List<Round>> GenerateRounds(DifficultyLevel difficulty)
         {
-            List<ObjectId> places = _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER, difficulty).Result;
+            List<ObjectId> places = await _placeService.GetRandomIDsOfPlaces(ROUNDS_NUMBER, difficulty);
 
             if (places.Count() < ROUNDS_NUMBER)
             {
@@ -113,10 +113,10 @@ namespace PartyGame.Services
         }
 
 
-        public GuessingPlaceDto GetPlaceToGuess(int roundsNumber)
+        public async Task<GuessingPlaceDto> GetPlaceToGuess(int roundsNumber)
         {
             string token = _httpContextAccessorService.GetTokenFromHeader();
-            var session = _gameSessionService.GetSessionByToken(token).Result;
+            var session = await _gameSessionService.GetSessionByToken(token);
 
             if (session.ActualRoundNumber != roundsNumber)
             {
@@ -124,15 +124,15 @@ namespace PartyGame.Services
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
             }
 
-            var guessingPlace = _placeService.GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess.ToString()).Result;
+            var guessingPlace = await _placeService.GetPlaceById(session.Rounds[roundsNumber].IDPlaceToGuess.ToString());
            
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
 
-        public RoundResultDto? CheckGuess(Coordinates guessingCoordinates)
+        public async Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates)
         {
             var token = _httpContextAccessorService.GetTokenFromHeader();
-            var session = _gameSessionService.GetSessionByToken(token).Result;
+            var session = await _gameSessionService.GetSessionByToken(token);
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
             {
@@ -140,7 +140,7 @@ namespace PartyGame.Services
                     $"The actual round number ({session.ActualRoundNumber}) exceeds or equals the allowed number of rounds ({ROUNDS_NUMBER}).");
             }
 
-            var guessingPlace = _placeService.GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess.ToString()).Result;
+            var guessingPlace =  await _placeService.GetPlaceById(session.Rounds[session.ActualRoundNumber].IDPlaceToGuess.ToString());
             var distanceDifference = CalculateDistanceBetweenCords(guessingPlace.Coordinates, guessingCoordinates);
 
             var result = new RoundResultDto
@@ -181,10 +181,10 @@ namespace PartyGame.Services
 
         }
 
-        public SummarizeGameDto FinishGame()
+        public async Task<SummarizeGameDto> FinishGame()
         {
             var token = _httpContextAccessorService.GetTokenFromHeader();
-            GameSession session = _gameSessionService.GetSessionByToken(token).Result;
+            GameSession session = await _gameSessionService.GetSessionByToken(token);
             SummarizeGameDto summarize = CreateSummarize(session);
 
             return summarize;
@@ -200,10 +200,10 @@ namespace PartyGame.Services
             return summarize;
         }
 
-        public int GetActualRoundNumber()
+        public async Task<int> GetActualRoundNumber()
         {
             string token = _httpContextAccessorService.GetTokenFromHeader();
-            return _gameSessionService.GetSessionByToken(token).Result.ActualRoundNumber;
+            return (await _gameSessionService.GetSessionByToken(token)).ActualRoundNumber;
         }
 
     }

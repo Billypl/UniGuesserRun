@@ -14,8 +14,8 @@ namespace PartyGame.Services
     public interface IAccountService
     {
         void RegisterUser(RegisterUserDto registerUserDto, string Role); 
-        LoginResultDto Login(LoginUserDto loginUserDto);
-        AccountDetailsDto GetAccountDetails();
+        Task<LoginResultDto> Login(LoginUserDto loginUserDto);
+        Task<AccountDetailsDto> GetAccountDetails();
         string RefreshSession();
 
     }
@@ -41,14 +41,15 @@ namespace PartyGame.Services
             _authenticationSettings = authenticationSettings.Value;
             _accountTokenService = accountTokenService;
         }
-        public void RegisterUser(RegisterUserDto registerUserDto,string Role)
+        public async void RegisterUser(RegisterUserDto registerUserDto,string role)
         {
-            if (_accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Nickname).Result is not null)
+            if (await _accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Nickname) is not null)
             {
                 throw new BadHttpRequestException("Nickname is already used");
             }
 
-            if (_accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Email).Result is not null)
+
+            if (await _accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Email) is not null)
             {
                 throw new BadHttpRequestException("Email is already used");
             }
@@ -58,7 +59,7 @@ namespace PartyGame.Services
                 Email = registerUserDto.Email,
                 Nickname = registerUserDto.Nickname,
                 CreatedAt = DateTime.Now,
-                Role = Role,
+                Role = role,
 
             };
 
@@ -69,9 +70,9 @@ namespace PartyGame.Services
             _accountRepository.CreateAsync(newUser);
         }
 
-        public LoginResultDto Login(LoginUserDto loginUserDto)
+        public async Task<LoginResultDto> Login(LoginUserDto loginUserDto)
         {
-            var user = _accountRepository.GetUserByNicknameOrEmailAsync(loginUserDto.NicknameOrEmail).Result;
+            var user = await _accountRepository.GetUserByNicknameOrEmailAsync(loginUserDto.NicknameOrEmail);
 
             if (user is null)
             {
@@ -95,11 +96,11 @@ namespace PartyGame.Services
             };
         }
 
-        public AccountDetailsDto GetAccountDetails()
+        public async Task<AccountDetailsDto> GetAccountDetails()
         {
             AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetAuthenticatedUserProfile();
 
-            User account = _accountRepository.GetAsync(tokenData.UserId).Result;
+            User account = await _accountRepository.GetAsync(tokenData.UserId);
 
             AccountDetailsDto accountDetailsDto = _mapper.Map<AccountDetailsDto>(account);
 
