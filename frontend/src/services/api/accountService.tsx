@@ -82,7 +82,7 @@ export class AccountService {
                 return "Network error. Please check your connection.";
             }
             if (error.response.status === 404) {
-                return "User not found. Please check your email or sign up.";
+                return "User or password invalid";
             }
             if (error.response.status === 401) {
                 return "Incorrect password. Please try again.";
