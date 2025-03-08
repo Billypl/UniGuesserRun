@@ -1,27 +1,42 @@
-@import "Mixins";
-@import "Colors";
+@use "utilities/Mixins";
+@use "utilities/Colors";
 
 .form_container {
-    margin-top: 30px;
+    //height: 80vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    flex-basis: auto;
+    
+    margin-top: 20vh;
     width: auto;
+    
+    .header {
+        font-size: larger;
+    }
 
     .form {
+        margin: 15px 0 15px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        font-size: 20px;
 
-        div {
+        .field {
             display: flex;
             flex-direction: column;
-            width: 14rem;
-            margin-top: 5px;
+            width: 12em;
+            margin-top: 10px;
+
+            label {
+                font-size: smaller;
+            }
 
             input {
+                font-size: 20px;
                 border-radius: 5px;
-                border-color: $dark-grey;
+                border-color: Colors.$dark-grey;
                 border-style: solid;
                 border-width: 1px;
                 padding: 3px 5px 3px 5px;
@@ -33,12 +48,12 @@
             font-size: 0.7rem;
             margin-top: 2px;
             margin-bottom: 5px;
-            color: $light-grey;
+            color: Colors.$light-grey;
         }
 
         .error {
             font-size: 0.9rem;
-            color: $dark-red;
+            color: Colors.$dark-red;
             margin-top: 5px;
             margin-bottom: -5px;
             white-space: pre-wrap;
@@ -46,7 +61,7 @@
         }
 
         button {
-            @include button;
+            @include Mixins.button;
 
             width: 14rem;
             margin-top: 15px;
@@ -56,6 +71,6 @@
     }
 
     .link {
-        @include link;
+        @include Mixins.link;
     }
 }

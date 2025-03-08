@@ -38,9 +38,9 @@ const Login: React.FC = () => {
   return (
     <div className={styles.form_container}>
       <Logo />
+      <h2 className={styles.header}>Sign in to UniGuesser</h2>
       <form onSubmit={handleSubmit(loginUser)} 
     className={styles.form}>
-      <h2 className={styles.header}>Sign in to UniGuesser</h2>
 
       <FormField
         label="Nickname or Email"

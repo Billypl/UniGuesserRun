@@ -17,12 +17,12 @@ const Account: React.FC = () => {
     const displayGuestContent = () => {
         return (
             <div className={styles.account}>
-                <div className={styles.nav_item}>
-                    <a onClick={() => navigate(LOGIN_ROUTE)}>Login</a>
-                </div>
-                <div className={styles.nav_item}>
-                    <a onClick={() => navigate(REGISTER_ROUTE)}>Register</a>
-                </div>
+                <a className={styles.nav_item} onClick={() => navigate(LOGIN_ROUTE)}>
+                    Login
+                </a>
+                <a className={styles.nav_item} onClick={() => navigate(REGISTER_ROUTE)}>
+                    Register
+                </a>
             </div>
         )
     }
@@ -30,12 +30,12 @@ const Account: React.FC = () => {
     const displayUserContent = () => {
         return (
             <div className={styles.account}>
-                <div className={styles.nav_item}>
-                <a>{username}</a>
-                </div>
-                <div className={styles.nav_item}>
-                    <a onClick={handleLogout}>Logout</a>
-                </div>
+                <a className={styles.nav_item}>
+                    {username}
+                </a>
+                <a className={styles.logout} onClick={handleLogout}>
+                   Logout
+                </a>
             </div>
         )
     }

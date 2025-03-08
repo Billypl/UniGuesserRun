@@ -1,7 +1,7 @@
-@import "Mixins";
+@use "utilities/Mixins";
 
 .logo {
-    @include clickable;
+    @include Mixins.clickable;
     display: flex;
     align-items: right;
     margin: 10px;

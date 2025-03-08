@@ -1,11 +1,7 @@
-@import "Colors";
+@use "Colors";
 
 @mixin clickable {
     cursor: pointer;
-}
-
-@mixin darken {
-    filter: brightness(0.8);
 }
 
 @mixin link {
@@ -19,12 +15,12 @@
 @mixin button {
     @include clickable;
     
-    background-color: $dark-blue;
-    color: $white;
+    background-color: Colors.$dark-blue;
+    color: Colors.$white;
     border-radius: 5px;
     border: none;
 
     &:hover {
-        @include darken;
+        background-color: Colors.$darker-blue;
     }
 }
