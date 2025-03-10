@@ -92,7 +92,8 @@ namespace PartyGame.Services
             return new LoginResultDto
             {
                 Token = token,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                Nickname = user.Nickname
             };
         }
 
