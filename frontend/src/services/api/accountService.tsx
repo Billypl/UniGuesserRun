@@ -1,23 +1,31 @@
+import axios, { AxiosInstance } from 'axios'
+import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME } from '../../Constants'
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY } from "../../Constants";
 
 export interface RegisterUserDto {
-    nickname: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
+	nickname: string
+	email: string
+	password: string
+	confirmPassword: string
 }
 
 export interface LoginUserDto {
-    nicknameOrEmail: string;
-    password: string;
+	nicknameOrEmail: string
+	password: string
 }
 
 export interface AccountDetailsFromTokenDto {
-    userId: string;
-    nickname: string;
-    email: string;
-    role: string;
+	userId: string
+	nickname: string
+	email: string
+	role: string
+}
+
+export interface LoginResultDto {
+	token: string
+	refreshToken: string
+	nickname: string
 }
 
 export class AccountService {
@@ -32,6 +40,21 @@ export class AccountService {
         });
     }
 
+	addNewUser(nickname: string, email: string, password: string, confirmPassword: string) {
+		const registerUserDto: RegisterUserDto = {
+			nickname: nickname,
+			email: email,
+			password: password,
+			confirmPassword: confirmPassword,
+		}
+		this.axiosInstance.put('/register', registerUserDto)
+	}
+
+	async login(nicknameOrEmail: string, password: string) {
+		const loginUserDto: LoginUserDto = {
+			nicknameOrEmail: nicknameOrEmail,
+			password: password,
+		}
     async addNewUser(
         nickname: string,
         email: string,
@@ -74,6 +97,11 @@ export class AccountService {
                 password: password,
             };
 
+		const response = await this.axiosInstance.post<LoginResultDto>('/login', loginUserDto)
+		window.sessionStorage.setItem(ACCOUNT_TOKEN_KEY, response.data.token)
+		window.sessionStorage.setItem(REFRESH_TOKEN_KEY, response.data.refreshToken)
+		window.sessionStorage.setItem(USER_NICKNAME, response.data.nickname)
+	}
             const response = await this.axiosInstance.post<string>("/login", loginUserDto);
             window.sessionStorage.setItem(ACCOUNT_TOKEN_KEY, response.data);
         } catch (err) {
@@ -93,11 +121,28 @@ export class AccountService {
         return null;
     }
 
-    logout() {
-        // TODO: remove session token from backend?
-        window.sessionStorage.removeItem(ACCOUNT_TOKEN_KEY);
-    }
+	logout() {
+		// TODO: remove session token from backend?
+		window.sessionStorage.removeItem(ACCOUNT_TOKEN_KEY)
+		window.sessionStorage.removeItem(REFRESH_TOKEN_KEY)
+		window.sessionStorage.removeItem(USER_NICKNAME)
+	}
 
+	async getLoggedInUser(): Promise<AccountDetailsFromTokenDto> {
+		// const response = await this.axiosInstance.get<AccountDetailsFromTokenDto>('/user', {
+		//     headers: {
+		//       Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+		//     },
+		//   })
+		//return response.data;
+		const response: AccountDetailsFromTokenDto = {
+			userId: '123',
+			nickname: 'test',
+			email: 'test@wp.pl',
+			role: 'user',
+		}
+		return response
+	}
     async getLoggedInUser(): Promise<AccountDetailsFromTokenDto> {
         // const response = await this.axiosInstance.get<AccountDetailsFromTokenDto>('/user', {
         //     headers: {
@@ -114,9 +159,9 @@ export class AccountService {
         return response;
     }
 
-    isLoggedIn(): boolean {
-        return window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null;
-    }
+	isLoggedIn(): boolean {
+		return window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null
+	}
 }
 
 export default new AccountService();
