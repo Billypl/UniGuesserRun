@@ -8,7 +8,7 @@
     margin: 0 15px 0 15px;
 
     a {
-        @include Mixins.button;
+        @include Mixins.dark-button;
         text-transform: uppercase;
         border-radius: 5px;
         width: 6em;
@@ -18,13 +18,8 @@
     }
 
     .logout {
-        background-color: Colors.$white;
-        color: Colors.$dark-blue;
+        @include Mixins.light-button;
         border: solid 1px Colors.$dark-blue;
-
-        &:hover{
-            background-color: Colors.$lighter-grey;
-        }
     }
 
     .nav_item {

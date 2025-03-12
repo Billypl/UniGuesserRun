@@ -6,7 +6,7 @@
     align-items: center;
 
     button {
-        @include Mixins.button;
+        @include Mixins.dark-button;
 
         width: 12rem;
         margin-top: 15px;

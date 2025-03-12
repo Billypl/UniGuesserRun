@@ -7,7 +7,6 @@
     top: 0;
     left: 0;
     right: 0;
-    //border-bottom: 1px solid $lighter-grey;
     background-color: Colors.$white;
     box-shadow: 0 3px 15px Colors.$dark-grey;
 
@@ -30,6 +29,11 @@
             padding-bottom: 0.1em;
             color: Colors.$dark-blue;
             font-weight: bold;
+        }
+
+        img {
+            height: 48px;
+            width: 48px;
         }
     }
 }
