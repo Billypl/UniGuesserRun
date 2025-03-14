@@ -1,5 +1,5 @@
-@import "Mixins";
-@import "Colors";
+@use "utilities/Mixins";
+@use "utilities/Colors";
 
 .header {
     flex-grow: 0;
@@ -7,7 +7,8 @@
     top: 0;
     left: 0;
     right: 0;
-    border-bottom: 1px solid $lighter-grey;
+    background-color: Colors.$white;
+    box-shadow: 0 3px 15px Colors.$dark-grey;
 
     .nav {
         display: flex;
@@ -22,12 +23,23 @@
         margin: 10px 0px 10px 0px;
 
         .title {
-            @include clickable;
+            @include Mixins.clickable;
             font-size: 40px;
             margin-right: auto;
             padding-bottom: 0.1em;
-            color: $dark-blue;
+            color: Colors.$dark-blue;
             font-weight: bold;
         }
+
+        img {
+            height: 48px;
+            width: 48px;
+        }
+    }
+}
+
+@media (max-width: 650px) {
+    .title {
+        display:none;
     }
 }

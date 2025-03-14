@@ -20,26 +20,35 @@ const Menu: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <div className={styles.main_menu}>
-        <div className={styles.menu_option}>
+    <div className={styles.background}></div>
+    <Header />
+
+    <div className={styles.main_menu}>
+      <div className={styles.catchy_phrase}>
+        CZY ZNASZ TERENY SWOJEJ UCZELNI? <br/>
+        Sprawdź i się przekonaj!
+      </div>
+      <div className={styles.options}>
+        {/* <div className={styles.menu_option}>
           Username: <input type="text" onChange={(e) => setNickname(e.target.value)}></input>
-        </div>
-        
+        </div> */}
+
+
         {accountService.isLoggedIn() ?
-          <div className={styles.menu_option} onClick={startGame}>
-            Start game
-          </div>
+          <a className={styles.menu_option} onClick={startGame}>
+              Start game
+          </a>
           :
-          <div className={styles.menu_option} onClick={() => navigate(LOGIN_ROUTE)}>
+          <a className={styles.menu_option} onClick={() => navigate(LOGIN_ROUTE)}>
             Login to play
-          </div>
+          </a>
         }
         
-        <div className={styles.menu_option} onClick={() => navigate(SCOREBOARD_ROUTE)}>
+        <a className={styles.menu_option} onClick={() => navigate(SCOREBOARD_ROUTE)}>
           Scoreboard
-        </div>
+        </a>
       </div>
+    </div>
     </>
   );
 };

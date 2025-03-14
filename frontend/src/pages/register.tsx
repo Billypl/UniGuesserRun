@@ -56,9 +56,9 @@ const Register: React.FC = () => {
     return (
         <div className={styles.form_container}>
             <Logo />
+            <h2 className={styles.header}>Sign up to UniGuesser</h2>
             <form onSubmit={handleSubmit(registerUser)} className={styles.form}>
-                <h2 className={styles.header}>Sign up to UniGuesser</h2>
-
+                
                 <FormField
                     label="Username"
                     name="username"

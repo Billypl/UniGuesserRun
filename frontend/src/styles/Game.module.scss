@@ -1,7 +1,7 @@
-@import "Colors";
+@use "utilities/Colors";
 
 .image_container {
-    background-color: $lighter-grey;
+    background-color: Colors.$lighter-grey;
     display: flex;
     justify-content: center;
     margin-top: 10vh;

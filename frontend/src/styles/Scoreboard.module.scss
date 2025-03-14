@@ -1,4 +1,4 @@
-@import "Colors";
+@use "utilities/Colors";
 
 .scoreboard {
     text-align: center;
@@ -9,5 +9,5 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid $lighter-grey;
+    border-bottom: 1px solid Colors.$lighter-grey;
 }

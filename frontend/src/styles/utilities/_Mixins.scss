@@ -1,0 +1,39 @@
+@use "Colors";
+
+@mixin clickable {
+    cursor: pointer;
+}
+
+@mixin link {
+    @include clickable;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+@mixin dark-button {
+    @include clickable;
+    
+    background-color: Colors.$dark-blue;
+    color: Colors.$white;
+    border-radius: 5px;
+    border: none;
+
+    &:hover {
+        background-color: Colors.$darker-blue;
+    }
+}
+
+@mixin light-button {
+    @include clickable;
+    
+    background-color: Colors.$white;
+    color: Colors.$dark-blue;
+    border-radius: 5px;
+    border: none;
+
+    &:hover {
+        background-color: Colors.$lighter-grey;
+    }
+}
