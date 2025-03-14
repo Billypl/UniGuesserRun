@@ -8,7 +8,6 @@ import accountService from "../services/api/accountService";
 
 const Menu: React.FC = () => {
   const navigate = useNavigate();
-  const { nickname, setNickname, difficulty, setDifficulty } = useGameContext();
 
   const startGame = () => {
     if (!accountService.isLoggedIn()) {
@@ -29,11 +28,6 @@ const Menu: React.FC = () => {
         Sprawdź i się przekonaj!
       </div>
       <div className={styles.options}>
-        {/* <div className={styles.menu_option}>
-          Username: <input type="text" onChange={(e) => setNickname(e.target.value)}></input>
-        </div> */}
-
-
         {accountService.isLoggedIn() ?
           <a className={styles.menu_option} onClick={startGame}>
               Start game

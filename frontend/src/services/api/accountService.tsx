@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
-import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME } from "../../Constants";
+import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME_KEY } from "../../Constants";
 
 export interface RegisterUserDto {
     nickname: string;
@@ -83,7 +83,7 @@ export class AccountService {
             const response = await this.axiosInstance.post<LoginResultDto>("/login", loginUserDto);
             window.sessionStorage.setItem(ACCOUNT_TOKEN_KEY, response.data.token);
             window.sessionStorage.setItem(REFRESH_TOKEN_KEY, response.data.refreshToken);
-            window.sessionStorage.setItem(USER_NICKNAME, response.data.nickname);
+            window.sessionStorage.setItem(USER_NICKNAME_KEY, response.data.nickname);
 
         } catch (err) {
             const error = err as AxiosError;
@@ -103,10 +103,9 @@ export class AccountService {
     }
 
     logout() {
-        // TODO: remove session token from backend?
         window.sessionStorage.removeItem(ACCOUNT_TOKEN_KEY);
         window.sessionStorage.removeItem(REFRESH_TOKEN_KEY);
-        window.sessionStorage.removeItem(USER_NICKNAME);
+        window.sessionStorage.removeItem(USER_NICKNAME_KEY);
     }
 
     async getLoggedInUser(): Promise<AccountDetailsFromTokenDto> {
@@ -126,7 +125,13 @@ export class AccountService {
     }
 
     isLoggedIn(): boolean {
-        return window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null;
+        return window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY) !== null && 
+            window.sessionStorage.getItem(REFRESH_TOKEN_KEY) !== null && 
+            window.sessionStorage.getItem(USER_NICKNAME_KEY) !== null;
+    }
+
+    getCurrentUserNickname(): string | null {
+        return window.sessionStorage.getItem(USER_NICKNAME_KEY);
     }
 }
 

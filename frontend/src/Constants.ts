@@ -6,7 +6,7 @@ export const GAME_TOKEN_KEY = 'game_token'
 
 export const ACCOUNT_TOKEN_KEY = 'account_token'
 export const REFRESH_TOKEN_KEY = 'refresh_token'
-export const USER_NICKNAME = 'nickname'
+export const USER_NICKNAME_KEY = 'nickname'
 
 export const MENU_ROUTE = '/menu'
 export const LOGIN_ROUTE = '/login'

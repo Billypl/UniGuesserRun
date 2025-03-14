@@ -4,11 +4,11 @@ import gameService, { Coordinates } from "../services/api/gameService";
 import { useGameContext } from "../hooks/useGameContext";
 import { useNavigate } from "react-router-dom";
 import GameInterface from "../components/GameInterface";
-import { GAME_RESULTS_ROUTE } from "../Constants";
+import { GAME_RESULTS_ROUTE, USER_NICKNAME_KEY } from "../Constants";
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
-  const { nickname, difficulty, setScore } = useGameContext();
+  const { difficulty, setScore } = useGameContext();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null);
@@ -34,8 +34,11 @@ const Game: React.FC = () => {
     setError(null);
 
     try {
+      const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY);
+      if(!nickname){
+        throw new Error("User not logged in");
+      }
       await gameService.startGame(nickname, difficulty);
-      //window.sessionStorage.setItem("token", startData.token);
     } catch (err: any) {
       setError("Failed to fetch data. Please try again later.");
       console.error("Error fetching data:", err);
