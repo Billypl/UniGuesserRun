@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import accountService from '../services/api/accountService';
 import { LOGIN_ROUTE, MENU_ROUTE, REGISTER_ROUTE } from '../Constants';
 import styles from '../styles/Account.module.scss';
-import { useUserContext } from "../hooks/useUserContext";
 
 const Account: React.FC = () => {
     const navigate = useNavigate();
-    const { username } = useUserContext();
 
     const handleLogout = () => {
         accountService.logout();
@@ -31,7 +29,7 @@ const Account: React.FC = () => {
         return (
             <div className={styles.account}>
                 <a className={styles.nav_item}>
-                    {username}
+                    {accountService.getCurrentUserNickname()}
                 </a>
                 <a className={styles.logout} onClick={handleLogout}>
                    Logout

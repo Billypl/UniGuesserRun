@@ -5,10 +5,11 @@ import { useGameContext } from "../hooks/useGameContext";
 import scoreboardService from '../services/api/scoreboardService';
 import { MENU_ROUTE } from '../Constants';
 import styles from "../styles/GameResults.module.scss";
+import accountService from '../services/api/accountService';
 
 const GameResults: React.FC = () => {
     const navigate = useNavigate();
-    const { nickname, difficulty,  score } = useGameContext();
+    const { difficulty,  score } = useGameContext();
     const [scoreSaved, setScoreSaved] = useState<boolean>(false);
 
     const returnToMenu = () => {
@@ -24,7 +25,7 @@ const GameResults: React.FC = () => {
     return (
     <div className={styles.result_container}>
         <h1>GAME RESULTS</h1>
-        <h2>Congratulations {nickname}!</h2>
+        <h2>Congratulations {accountService.getCurrentUserNickname()}!</h2>
         <p>Your score: <b>{score.toFixed(2)}</b></p>
         <p>On <b>{difficulty}</b> difficulty</p>
         {scoreSaved && <button>Score saved!</button>}
