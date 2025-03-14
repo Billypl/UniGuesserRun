@@ -1,30 +1,9 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME_KEY } from "../../Constants";
-
-export interface RegisterUserDto {
-    nickname: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
-
-export interface LoginUserDto {
-    nicknameOrEmail: string;
-    password: string;
-}
-
-export interface AccountDetailsFromTokenDto {
-    userId: string;
-    nickname: string;
-    email: string;
-    role: string;
-}
-
-export interface LoginResultDto {
-    token: string;
-    refreshToken: string;
-    nickname: string;
-}
+import { RegisterUserDto } from "../../models/account/RegisterUserDto";
+import { LoginUserDto } from "../../models/account/LoginUserDto";
+import { AccountDetailsFromTokenDto } from "../../models/account/AccountDetailsFromTokenDto";
+import { LoginResultDto } from "../../models/account/LoginResultDto";
 
 export class AccountService {
     private axiosInstance: AxiosInstance;

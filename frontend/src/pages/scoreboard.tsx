@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import scoreboardService, { FinishedGame, ScoreboardService } from '../services/api/scoreboardService';
+import scoreboardService, { ScoreboardService } from '../services/api/scoreboardService';
+import { FinishedGame } from '../models/scoreboard/FinishedGame';
 import styles from "../styles/Scoreboard.module.scss";
 import { MENU_ROUTE } from '../Constants';
 

@@ -1,6 +1,8 @@
 export const GAME_API_URL = 'https://localhost:7157/api/game'
 export const SCOREBOARD_API_URL = 'https://localhost:7157/api/scoreboard'
 export const ACCOUNT_API_URL = 'https://localhost:7157/api/account'
+export const PLACE_API_URL = 'https://localhost:7157/api/place'
+
 
 export const GAME_TOKEN_KEY = 'game_token'
 
@@ -14,3 +16,4 @@ export const REGISTER_ROUTE = '/register'
 export const GAME_ROUTE = '/game'
 export const GAME_RESULTS_ROUTE = '/game_results'
 export const SCOREBOARD_ROUTE = '/scoreboard'
+export const ADD_PLACE_ROUTE = '/add_place'
