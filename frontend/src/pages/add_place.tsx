@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import FormField from "../components/FormField";
 import Logo from "../components/Logo";
-import { MENU_ROUTE } from "../Constants";
+import { MENU_ROUTE, USER_ROLE_ADMIN, USER_ROLE_MODERATOR } from "../Constants";
 import { useUserContext } from "../hooks/useUserContext";
 import styles from "../styles/AccountForm.module.scss";
 import placeService from "../services/api/placeService";
 import { useGeolocation } from "../hooks/useGeolocation";
+import accountService from "../services/api/accountService";
 
 interface AddPlaceFormInputs {
   name: string;
@@ -42,7 +43,8 @@ const AddPlace: React.FC = () => {
       coordinates,
       data.imageUrl,
       data.alt,
-      data.difficulty
+      data.difficulty,
+      canSkipQueue()
     );
 
     setError(errorMessage);
@@ -54,26 +56,22 @@ const AddPlace: React.FC = () => {
     }
   };
 
+  const canSkipQueue = (): boolean => {
+    const userRole = accountService.getCurrentUser()?.role;
+    return userRole === USER_ROLE_ADMIN || userRole === USER_ROLE_MODERATOR;
+  };
+
   return (
     <div className={styles.form_container}>
       <Logo />
       <h2 className={styles.header}>Add new place to UniGuesser</h2>
       <form onSubmit={handleSubmit(addNewPlace)} className={styles.form}>
-        
-        <p className={styles.error}>
-          {geolocationError && "Geolocation error: " + geolocationError}
-        </p>
+        <p className={styles.error}>{geolocationError && "Geolocation error: " + geolocationError}</p>
         <p className={styles.coordinates}>
           {coordinates && `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
         </p>
 
-        <FormField
-          label="Name"
-          name="name"
-          type="text"
-          register={add_place}
-          error={errors.name?.message}
-        />
+        <FormField label="Name" name="name" type="text" register={add_place} error={errors.name?.message} />
 
         <FormField
           label="Description"
@@ -83,21 +81,9 @@ const AddPlace: React.FC = () => {
           error={errors.description?.message}
         />
 
-        <FormField
-          label="imageUrl"
-          name="imageUrl"
-          type="text"
-          register={add_place}
-          error={errors.imageUrl?.message}
-        />
+        <FormField label="imageUrl" name="imageUrl" type="text" register={add_place} error={errors.imageUrl?.message} />
 
-        <FormField
-          label="alt"
-          name="alt"
-          type="text"
-          register={add_place}
-          error={errors.alt?.message}
-        />
+        <FormField label="alt" name="alt" type="text" register={add_place} error={errors.alt?.message} />
 
         <FormField
           label="difficulty"
@@ -110,7 +96,7 @@ const AddPlace: React.FC = () => {
         {error && <p className={styles.error}>{error}</p>}
 
         <button type="submit" className={styles.submit_button}>
-          Submit
+          {canSkipQueue() ? "Add place" : "Add place to queue"}
         </button>
       </form>
     </div>

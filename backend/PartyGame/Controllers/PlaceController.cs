@@ -39,7 +39,7 @@ namespace PartyGame.Controllers
             return Ok(
                 new
                 {
-                    Message = "Place successfully added to db"
+                    Message = "Place successfully added to queue"
                 }
             );
         }

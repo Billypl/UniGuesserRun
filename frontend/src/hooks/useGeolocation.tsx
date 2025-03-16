@@ -20,7 +20,11 @@ export const useGeolocation = () => {
                 setError(null);
             },
             (err) => {
-                setError(err.message);
+                if (err.code === 3) {
+                    console.warn("Geolocation timeout, retrying...");
+                } else {
+                    setError(err.message);
+                }
             },
             {
                 enableHighAccuracy: true,

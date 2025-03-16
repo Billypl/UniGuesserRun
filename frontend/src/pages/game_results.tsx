@@ -25,7 +25,7 @@ const GameResults: React.FC = () => {
     return (
     <div className={styles.result_container}>
         <h1>GAME RESULTS</h1>
-        <h2>Congratulations {accountService.getCurrentUserNickname()}!</h2>
+        <h2>Congratulations {accountService.getCurrentUser()?.nickname}!</h2>
         <p>Your score: <b>{score.toFixed(2)}</b></p>
         <p>On <b>{difficulty}</b> difficulty</p>
         {scoreSaved && <button>Score saved!</button>}

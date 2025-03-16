@@ -1,4 +1,4 @@
-import { Place } from "./Place";
+import { Place } from "../place/Place";
 
 export interface RoundResultDto {
   originalPlace: Place;
