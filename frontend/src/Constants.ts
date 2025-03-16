@@ -17,3 +17,5 @@ export const GAME_ROUTE = '/game'
 export const GAME_RESULTS_ROUTE = '/game_results'
 export const SCOREBOARD_ROUTE = '/scoreboard'
 export const ADD_PLACE_ROUTE = '/add_place'
+
+export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'

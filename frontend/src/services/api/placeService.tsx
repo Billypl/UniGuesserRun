@@ -3,6 +3,7 @@ import { PLACE_API_URL  } from "../../Constants";
 import { NewPlaceDto } from "../../models/place/NewPlaceDto";
 import { PlaceToCheckDto } from "../../models/place/PlaceToCheckDto";
 import { Place } from "../../models/place/Place";
+import { Coordinates } from "../../models/Coordinates";
 
 export class PlaceService {
     private axiosInstance: AxiosInstance;
@@ -27,7 +28,7 @@ export class PlaceService {
     async addNewPlaceToQueue (
         name: string,
         description: string,
-        coordinates: string,
+        coordinates: Coordinates,
         imageUrl: string,
         alt: string,
         difficulty: string
@@ -51,7 +52,7 @@ export class PlaceService {
     async addNewPlace (
         name: string,
         description: string,
-        coordinates: string,
+        coordinates: Coordinates,
         imageUrl: string,
         alt: string,
         difficulty: string

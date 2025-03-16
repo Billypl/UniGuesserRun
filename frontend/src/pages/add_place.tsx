@@ -7,11 +7,12 @@ import { MENU_ROUTE } from "../Constants";
 import { useUserContext } from "../hooks/useUserContext";
 import styles from "../styles/AccountForm.module.scss";
 import placeService from "../services/api/placeService";
+import { useGeolocation } from "../hooks/useGeolocation";
 
 interface AddPlaceFormInputs {
   name: string;
   description: string;
-  coordinates: string;
+  // coordinates: Coordinates;
   imageUrl: string;
   alt: string;
   difficulty: string;
@@ -21,18 +22,24 @@ const AddPlace: React.FC = () => {
   const navigate = useNavigate();
   const { setUsername } = useUserContext();
   const [error, setError] = useState<string | null>(null);
+  const { coordinates, geolocationError } = useGeolocation();
 
   const {
-    register: login,
+    register: add_place,
     handleSubmit,
     formState: { errors },
   } = useForm<AddPlaceFormInputs>();
 
   const addNewPlace = async (data: AddPlaceFormInputs) => {
+    if (!coordinates) {
+      setError("Coordinates not ready yet. Please try again.");
+      return;
+    }
+
     const errorMessage = await placeService.addNewPlace(
       data.name,
       data.description,
-      data.coordinates,
+      coordinates,
       data.imageUrl,
       data.alt,
       data.difficulty
@@ -43,8 +50,6 @@ const AddPlace: React.FC = () => {
     if (!errorMessage) {
       // TODO: ok and return to menu OR add another place
 
-      //const user = await accountService.getLoggedInUser();
-      //setUsername(user.nickname);
       navigate(MENU_ROUTE);
     }
   };
@@ -54,11 +59,19 @@ const AddPlace: React.FC = () => {
       <Logo />
       <h2 className={styles.header}>Add new place to UniGuesser</h2>
       <form onSubmit={handleSubmit(addNewPlace)} className={styles.form}>
+        
+        <p className={styles.error}>
+          {geolocationError && "Geolocation error: " + geolocationError}
+        </p>
+        <p className={styles.coordinates}>
+          {coordinates && `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
+        </p>
+
         <FormField
           label="Name"
           name="name"
           type="text"
-          register={login}
+          register={add_place}
           error={errors.name?.message}
         />
 
@@ -66,23 +79,15 @@ const AddPlace: React.FC = () => {
           label="Description"
           name="description"
           type="text"
-          register={login}
+          register={add_place}
           error={errors.description?.message}
-        />
-
-        <FormField
-          label="Coordinates"
-          name="coordinates"
-          type="text"
-          register={login}
-          error={errors.coordinates?.message}
         />
 
         <FormField
           label="imageUrl"
           name="imageUrl"
           type="text"
-          register={login}
+          register={add_place}
           error={errors.imageUrl?.message}
         />
 
@@ -90,7 +95,7 @@ const AddPlace: React.FC = () => {
           label="alt"
           name="alt"
           type="text"
-          register={login}
+          register={add_place}
           error={errors.alt?.message}
         />
 
@@ -98,7 +103,7 @@ const AddPlace: React.FC = () => {
           label="difficulty"
           name="difficulty"
           type="text"
-          register={login}
+          register={add_place}
           error={errors.difficulty?.message}
         />
 

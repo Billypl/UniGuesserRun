@@ -1,9 +1,10 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
-import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME_KEY } from "../../Constants";
+import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME_KEY, JWT_USER_ROLE_KEY } from "../../Constants";
 import { RegisterUserDto } from "../../models/account/RegisterUserDto";
 import { LoginUserDto } from "../../models/account/LoginUserDto";
 import { AccountDetailsFromTokenDto } from "../../models/account/AccountDetailsFromTokenDto";
 import { LoginResultDto } from "../../models/account/LoginResultDto";
+import { jwtDecode } from "jwt-decode";
 
 export class AccountService {
     private axiosInstance: AxiosInstance;
@@ -111,6 +112,20 @@ export class AccountService {
 
     getCurrentUserNickname(): string | null {
         return window.sessionStorage.getItem(USER_NICKNAME_KEY);
+    }
+
+    getCurrentUserRole(): string | null {
+        const token = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY);
+        if (!token) {
+            return null;
+        }
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded[JWT_USER_ROLE_KEY] || null;
+        } catch (error) {
+            console.error("Invalid token", error);
+            return null;
+        }
     }
 }
 
