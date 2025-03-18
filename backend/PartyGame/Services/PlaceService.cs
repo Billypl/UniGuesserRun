@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using PartyGame.Entities;
+using PartyGame.Extensions.Exceptions;
 using PartyGame.Models.AccountModels;
 using PartyGame.Models.PlaceModels;
 using PartyGame.Repositories;
@@ -44,7 +45,7 @@ namespace PartyGame.Services
 
             if (place == null)
             {
-                throw new KeyNotFoundException($"Place with ID {id} was not found.");
+                throw new NotFoundException($"Place with ID {id} was not found.");
             }
 
             return place;
@@ -56,7 +57,7 @@ namespace PartyGame.Services
 
             if (places == null)
             {
-                throw new KeyNotFoundException($"There is no places in db");
+                throw new NotFoundException($"There is no places in db");
             }
 
             return places.ToList();
@@ -127,7 +128,7 @@ namespace PartyGame.Services
 
             if (placeToAccept == null)
             {
-                throw new KeyNotFoundException("Place you want to add to game doesn't exist");
+                throw new NotFoundException("Place you want to add to game doesn't exist");
 
             }
 
@@ -143,7 +144,7 @@ namespace PartyGame.Services
 
             if (placeToAccept == null)
             {
-                throw new KeyNotFoundException("Place you want to reject doesn't exist");
+                throw new NotFoundException("Place you want to reject doesn't exist");
             }
 
             _placesToCheckRepository.DeleteAsync(placeToRejectId);

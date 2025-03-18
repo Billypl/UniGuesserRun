@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using PartyGame.Entities;
+using PartyGame.Extensions.Exceptions;
 using PartyGame.Models.ScoreboardModels;
 using PartyGame.Repositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -41,7 +42,7 @@ namespace PartyGame.Services
 
             if (session == null)
             {
-                throw new KeyNotFoundException($"Session was not found");
+                throw new NotFoundException($"Session was not found");
             }
 
             if (session.ActualRoundNumber != ROUNDS_NUMBER)
@@ -66,7 +67,7 @@ namespace PartyGame.Services
 
             if (games == null)
             {
-                throw new KeyNotFoundException($"There no games in history");
+                throw new NotFoundException($"There no games in history");
             }
 
             return games.ToList();

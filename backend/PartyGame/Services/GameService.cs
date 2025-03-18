@@ -11,6 +11,7 @@ using PartyGame.Entities;
 using MongoDB.Driver;
 using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
+using PartyGame.Extensions.Exceptions;
 
 
 
@@ -59,7 +60,7 @@ namespace PartyGame.Services
             if (_httpContextAccessorService.IsTokenExist() &&
                 (await _gameSessionService.HasActiveGameSession(_httpContextAccessorService.GetTokenFromHeader())))
             {
-                throw new AccessViolationException("Game for this token already exists");
+                throw new ForbidException("Game for this token already exists");
             }
 
 
@@ -120,7 +121,7 @@ namespace PartyGame.Services
 
             if (session.ActualRoundNumber != roundsNumber)
             {
-                throw new InvalidOperationException(
+                throw new ForbidException(
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
             }
 
