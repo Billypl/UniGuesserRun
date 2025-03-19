@@ -18,11 +18,13 @@ export class PlaceService {
   }
 
   async getAllPlaces(): Promise<Place[]> {
-    return await this.axiosInstance.get("");
+    const result = await this.axiosInstance.get("");
+    return result.data;
   }
 
   async getPlace(id: string): Promise<Place> {
-    return await this.axiosInstance.get(`/${id}`);
+    const result = await this.axiosInstance.get(`/${id}`);
+    return result.data;
   }
 
   async getAllPlacesInQueue(): Promise<PlaceToCheckDto[]> {
