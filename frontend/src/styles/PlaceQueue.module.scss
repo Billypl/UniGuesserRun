@@ -1,13 +1,27 @@
 @use "utilities/Colors";
 
-.place_queue {
-    text-align: center;
-    margin: 5rem;
-}
+.container {
+    margin-top: 100px;
 
-.record {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid Colors.$lighter-grey;
+    .place_queue {
+        text-align: center;
+        
+        .place_entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid Colors.$lighter-grey;
+        }
+    }
+
+    .place_details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        img {
+            max-width: 1000px;
+            height: 100%;
+            display: block;
+        }
+    }
 }

@@ -18,6 +18,7 @@ export const GAME_RESULTS_ROUTE = '/game_results'
 export const SCOREBOARD_ROUTE = '/scoreboard'
 export const ADD_PLACE_ROUTE = '/add_place'
 export const PLACE_QUEUE_ROUTE = '/place_queue'
+export const PLACE_REVIEW_ROUTE = '/place_review'
 
 export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
 export const JWT_USER_ID_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
