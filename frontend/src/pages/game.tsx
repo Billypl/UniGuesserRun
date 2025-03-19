@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
-import gameService, { Coordinates } from "../services/api/gameService";
+import gameService from "../services/api/gameService";
+import { Coordinates } from "../models/Coordinates";
 import { useGameContext } from "../hooks/useGameContext";
 import { useNavigate } from "react-router-dom";
 import GameInterface from "../components/GameInterface";

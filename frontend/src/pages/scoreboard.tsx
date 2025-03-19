@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import scoreboardService, { FinishedGame, ScoreboardService } from '../services/api/scoreboardService';
+import scoreboardService, { ScoreboardService } from "../services/api/scoreboardService";
+import { FinishedGame } from "../models/scoreboard/FinishedGame";
 import styles from "../styles/Scoreboard.module.scss";
-import { MENU_ROUTE } from '../Constants';
+import { MENU_ROUTE } from "../Constants";
 
 const Scoreboard: React.FC = () => {
     const navigate = useNavigate();
     const [records, setRecords] = useState<FinishedGame[]>([]);
-    let requestSent = false;
+    let requestSent = useRef(false);
 
     const showRecord = (record: FinishedGame) => {
         console.log("showRecord");
@@ -17,37 +18,31 @@ const Scoreboard: React.FC = () => {
                 <p>{record.finalScore}</p>
                 {/* <p>{record.difficultyLevel}</p> */}
             </div>
-        )
-    }
+        );
+    };
 
     const showAllRecords = () => {
-        return (
-            records.map((record) => (
-                showRecord(record)
-            ))        
-        );
-    }
+        return records.map((record) => showRecord(record));
+    };
 
     const getAllRecords = async () => {
         const result = await scoreboardService.getScores();
         console.log(result);
         setRecords(result);
-        requestSent = true;
-    }
+        requestSent.current = true;
+    };
 
     useEffect(() => {
-        if(requestSent) return;
+        if (requestSent.current) return;
         getAllRecords();
     }, []);
 
     return (
-    <div className="scoreboard">
-        <h1>SCOREBOARD</h1>
-        <div className="records-list">
-            {showAllRecords()}
+        <div className="scoreboard">
+            <h1>SCOREBOARD</h1>
+            <div className="records-list">{showAllRecords()}</div>
+            <button onClick={() => navigate(MENU_ROUTE)}>Back to menu</button>
         </div>
-        <button onClick={() => navigate(MENU_ROUTE)}>Back to menu</button>
-    </div>
     );
 };
 

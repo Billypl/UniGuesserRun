@@ -1,21 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { SCOREBOARD_API_URL, GAME_TOKEN_KEY } from '../../Constants'
-
-export interface FinishedGame {
-	id: number
-	nickname: string
-	finalScore: number
-	// rounds: Round[];
-	difficultyLevel: string
-}
-
-export interface PagedResult<FinishedGame> {
-	items: FinishedGame[]
-	totalPages: number
-	itemFrom: number
-	itemsTo: number
-	totalItemsCount: number
-}
+import { FinishedGame } from '../../models/scoreboard/FinishedGame'
+import { PagedResult } from '../../models/scoreboard/PagedResult'
 
 export class ScoreboardService {
 	private axiosInstance: AxiosInstance
