@@ -3,7 +3,9 @@ import Header from "../components/Header";
 import styles from "../styles/PlaceQueue.module.scss";
 import placeService from "../services/api/placeService";
 import { PlaceToCheckDto } from "../models/place/PlaceToCheckDto";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import accountService from "../services/api/accountService";
+import { MENU_ROUTE, USER_ROLE_ADMIN, USER_ROLE_MODERATOR } from "../Constants";
 
 const PlaceQueue: React.FC = () => {
   const navigate = useNavigate();
@@ -13,13 +15,11 @@ const PlaceQueue: React.FC = () => {
 
   const getAllPlaces = async () => {
     const result = await placeService.getAllPlacesInQueue();
-    console.log(JSON.stringify(result));
     setPlaces(result);
     requestSent.current = true;
   };
 
   const showPlace = (place: PlaceToCheckDto) => {
-    console.log("showPlace");
     return (
       <div className={styles.place_entry} key={place.id}>
         <p>{place.newPlace.name}</p>
@@ -75,6 +75,11 @@ const PlaceQueue: React.FC = () => {
     if (requestSent.current) return;
     getAllPlaces();
   }, []);
+
+  const currentUser = accountService.getCurrentUser();
+  if (currentUser === null || (currentUser.role !== USER_ROLE_ADMIN && currentUser.role !== USER_ROLE_MODERATOR)) {
+    return <Navigate to={MENU_ROUTE} />;
+  }
 
   return (
     <>
