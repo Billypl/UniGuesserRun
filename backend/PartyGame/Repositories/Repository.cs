@@ -11,7 +11,7 @@ namespace PartyGame.Repositories
         Task<T> GetAsync(ObjectId id);
         Task<IEnumerable<T>> GetAllAsync();
         Task UpdateAsync(T entity);
-        Task DeleteAsync(string id);
+        Task<DeleteResult> DeleteAsync(string id);
     }
 
     public abstract class Repository<T> : IRepository<T> where T : class
@@ -53,10 +53,10 @@ namespace PartyGame.Repositories
             await Collection.ReplaceOneAsync(filter, entity);
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<DeleteResult> DeleteAsync(string id)
         {
             var filter = Builders<T>.Filter.Eq("_id", new ObjectId(id));
-            await Collection.DeleteOneAsync(filter);
+            return await Collection.DeleteOneAsync(filter);
         }
     }
 

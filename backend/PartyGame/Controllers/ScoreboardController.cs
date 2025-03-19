@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PartyGame.Entities;
+using PartyGame.Models;
 using PartyGame.Models.ScoreboardModels;
 using PartyGame.Services;
 
@@ -19,18 +20,16 @@ namespace PartyGame.Controllers
         }
 
         [HttpPost("save_score")]
-        [Authorize]
-        public ActionResult PostNewScore()
+        [Authorize(Roles = "Admin,Moderator")]
+        public ActionResult PostNewScore([FromBody] FinishedGame finishedGame)
         {
-             _scoreboardService.AddNewGame();
+             _scoreboardService.SaveGame(finishedGame);
             return Ok(
                 new
                 {
                     Message = "Score successfully added"
                 });
         }
-
-
 
         [HttpGet]
         public ActionResult GetScores([FromQuery] ScoreboardQuery scoreboardQuery)
@@ -42,7 +41,7 @@ namespace PartyGame.Controllers
             //ItemsTo → 20(ostatni element na stronie)
             //TotalPages → 3(liczba stron)
 
-            PagedResult<FinishedGame> scores = _scoreboardService.GetGames(scoreboardQuery).Result;
+            PagedResult<FinishedGame> scores = _scoreboardService.GetFinishedGamesInScoreboard(scoreboardQuery).Result;
             return Ok(scores);
         }
 

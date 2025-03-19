@@ -24,7 +24,7 @@ namespace PartyGame.Extensions
 
         public async Task Seed()
         {
-            await _gameDbContext.Places.DeleteManyAsync(Builders<Place>.Filter.Empty);
+           // await _gameDbContext.Places.DeleteManyAsync(Builders<Place>.Filter.Empty);
 
             var placeCount = await _gameDbContext.Places.CountDocumentsAsync(Builders<Place>.Filter.Empty);
 

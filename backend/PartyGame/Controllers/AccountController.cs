@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using PartyGame.Models.AccountModels;
 using PartyGame.Services;
 
@@ -44,5 +42,7 @@ namespace PartyGame.Controllers
             AccountDetailsDto accountDetailsDto =  await _accountService.GetAccountDetails();
             return Ok(accountDetailsDto);
         }
+
+        
     }
 }

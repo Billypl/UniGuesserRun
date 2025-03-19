@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using PartyGame.Entities;
 using PartyGame.Models.PlaceModels;
 using PartyGame.Services;
@@ -17,25 +18,44 @@ namespace PartyGame.Controllers
             _placeService = placeService;
         }
 
+
+        // get places wont be authorize only for developing purpose 
         [HttpGet]
-        public ActionResult GetAllPlaces(IPlaceService placeService)
+        public async Task<IActionResult> GetAllPlaces(IPlaceService placeService)
         {
-            List<Place> places = _placeService.GetAllPlaces().Result;
+            List<ShowPlaceDto> places = await _placeService.GetAllPlaces();
             return Ok(places);
         }
 
         [HttpGet("{placeID}")]
-        public ActionResult GetPlace([FromRoute] string placeId)
+        public async  Task<IActionResult> GetPlace([FromRoute] string placeId)
         {
-            Place place = _placeService.GetPlaceById(placeId).Result;
+            ShowPlaceDto place = await _placeService.GetPlaceById(placeId);
             return Ok(place);
         }
 
-        
-        [HttpPost("to_check")]
-        public ActionResult AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
+        [HttpDelete("{placeId}")]
+        [Authorize(Roles = "Admin, Moderator")]
+        public async Task<IActionResult> DeletePlace([FromRoute] string placeId)
         {
-            _placeService.AddNewPlaceToQueue(newPlace);
+            await _placeService.DeletePlaceById(placeId);
+            return Ok(new { message = $"Place with id {placeId} deleted successfully" });
+        }
+
+        [HttpPut("{placeId}")]
+        [Authorize(Roles = "Admin, Moderator")]
+        public async Task<IActionResult> UpdatePlace([FromRoute] string placeId, [FromBody] UpdatePlaceDto updateDto)
+        {
+             await _placeService.UpdatePlaceById(placeId, updateDto);
+
+            return Ok(new { message = $"Place with id {placeId} updated successfully" });
+        }
+
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpPost]
+        public async Task<ActionResult> AddNewPlace([FromBody] NewPlaceDto newPlace)
+        {
+            await _placeService.AddNewPlace(newPlace);
             return Ok(
                 new
                 {
@@ -44,26 +64,27 @@ namespace PartyGame.Controllers
             );
         }
 
-        [HttpGet("to_check")]
-        public ActionResult GetAllPlacesInQueue()
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpPost("to_check")]
+        public async Task<IActionResult> AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
         {
-            List<PlaceToCheckDto> placesToCheck = _placeService.GetAllPlacesInQueue().Result;
+            await _placeService.AddNewPlaceToQueue(newPlace);
+            return Ok(
+                new
+                {
+                    Message = "Place successfully added to db"
+                }
+            );
+        }
+
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpGet("to_check")]
+        public async Task<ActionResult> GetAllPlacesInQueue()
+        {
+            List<PlaceToCheckDto> placesToCheck = await _placeService.GetAllPlacesInQueue();
 
             return Ok(placesToCheck);
         }
-
-        [HttpPost]
-        public ActionResult AddNewPlace([FromBody] NewPlaceDto newPlace)
-        {
-            _placeService.AddNewPlace(newPlace);
-            return Ok(
-                new
-                {
-                    Message = "Place successfully added to db"
-                }
-            );
-        }
-
 
         [HttpDelete("to_check/reject")]
         public ActionResult RejectPlaceToCheck([FromQuery] string placeId)

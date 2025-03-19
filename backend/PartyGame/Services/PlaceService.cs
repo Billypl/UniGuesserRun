@@ -11,9 +11,11 @@ namespace PartyGame.Services
 {
     public interface IPlaceService
     {
-        Task<Place> GetPlaceById(string id);
-        Task<List<Place>> GetAllPlaces();
-        void AddNewPlace(NewPlaceDto newPlace);
+        Task<ShowPlaceDto> GetPlaceById(string id);
+        Task DeletePlaceById(string id);
+        Task UpdatePlaceById(string id,UpdatePlaceDto updatePlaceDto);
+        Task<List<ShowPlaceDto>> GetAllPlaces();
+        Task AddNewPlace(NewPlaceDto newPlace);
         Task<int> GetPlacesCount();
         Task<List<ObjectId>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
         Task AddNewPlaceToQueue(NewPlaceDto newPlace);
@@ -39,35 +41,58 @@ namespace PartyGame.Services
             _placesToCheckRepository = placesToCheckRepository;
         }
 
-        public async Task<Place> GetPlaceById(string id)
+        public async Task<ShowPlaceDto> GetPlaceById(string id)
         {
-            var place = await _placesRepository.GetAsync(id);
+            Place place = await _placesRepository.GetAsync(id);
 
             if (place == null)
             {
                 throw new NotFoundException($"Place with ID {id} was not found.");
             }
 
-            return place;
+            return _mapper.Map<ShowPlaceDto>(place); 
+        }     
+        public async Task DeletePlaceById(string id)
+        {
+            DeleteResult deleteResult = await _placesRepository.DeleteAsync(id);
+
+            if (deleteResult.DeletedCount == 0)
+            {
+                throw new NotFoundException( $"Place with id {id} doesn't exist in the database" );
+            }   
         }
 
-        public async Task<List<Place>> GetAllPlaces()
+        public async Task UpdatePlaceById(string id,UpdatePlaceDto updatePlaceDto)
         {
-            var places = await _placesRepository.GetAllAsync();
+            Place place = await _placesRepository.GetAsync(id);
+            if (place == null)
+            {
+                throw new NotFoundException($"Place with id {id} doesn't exist in the database and cannot be updated");
+            }
+
+            _mapper.Map(updatePlaceDto, place);
+            await _placesRepository.UpdateAsync(place);
+        }
+
+        public async Task<List<ShowPlaceDto>> GetAllPlaces()
+        {
+            List<Place> places = (await _placesRepository.GetAllAsync()).ToList();
 
             if (places == null)
             {
                 throw new NotFoundException($"There is no places in db");
             }
 
-            return places.ToList();
+            List<ShowPlaceDto> placesToShow = _mapper.Map<List<ShowPlaceDto>>(places);
+
+            return placesToShow;
         }
 
-        public void AddNewPlace(NewPlaceDto newPlace)
+        public async Task AddNewPlace(NewPlaceDto newPlace)
         {
             Place place = new Place();
             _mapper.Map(newPlace, place);
-            _placesRepository.CreateAsync(place);
+            await _placesRepository.CreateAsync(place);
         }
         public async Task<int> GetPlacesCount()
         {
@@ -101,7 +126,6 @@ namespace PartyGame.Services
              return randomPlaces;
         }
 
-
         public async Task AddNewPlaceToQueue(NewPlaceDto newPlace)
         {
             AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetAuthenticatedUserProfile();
@@ -128,26 +152,24 @@ namespace PartyGame.Services
 
             if (placeToAccept == null)
             {
-                throw new NotFoundException("Place you want to add to game doesn't exist");
+                throw new NotFoundException("Place you want to add to the game doesn't exist");
 
             }
 
             Place newPlace = _mapper.Map<Place>(placeToAccept.NewPlace);
 
-            _placesRepository.CreateAsync(newPlace);
-            _placesToCheckRepository.DeleteAsync(placeToCheckId);
+            await _placesRepository.CreateAsync(newPlace);
+            await _placesToCheckRepository.DeleteAsync(placeToCheckId);
         }
 
         public async Task RejectPlace(string placeToRejectId)
         {
-            PlaceToCheck placeToAccept = _placesToCheckRepository.GetAsync(placeToRejectId).Result;
+            DeleteResult result = await _placesToCheckRepository.DeleteAsync(placeToRejectId);
 
-            if (placeToAccept == null)
+            if (result.DeletedCount == 0)
             {
                 throw new NotFoundException("Place you want to reject doesn't exist");
             }
-
-            _placesToCheckRepository.DeleteAsync(placeToRejectId);
         }
 
     }

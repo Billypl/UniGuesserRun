@@ -67,7 +67,7 @@ namespace PartyGame.Services
             newUser.PasswordHash = passwordHash;
 
 
-            _accountRepository.CreateAsync(newUser);
+            await _accountRepository.CreateAsync(newUser);
         }
 
         public async Task<LoginResultDto> Login(LoginUserDto loginUserDto)

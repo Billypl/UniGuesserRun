@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using PartyGame.Entities;
 using PartyGame.Models.GameModels;
+using PartyGame.Models.ScoreboardModels;
 using PartyGame.Services;
 
 namespace PartyGame.Controllers
@@ -14,15 +15,18 @@ namespace PartyGame.Controllers
         private readonly IGameService _gameService;
         private readonly IGameSessionService _gameSessionService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService,
+            IGameSessionService gameSessionService)
         {
             _gameService = gameService;
+            _gameSessionService = gameSessionService;
         }
 
-        [HttpPost("start")]
-        public async Task<ActionResult> StartGame([FromBody]  StartDataDto startData)
+        [HttpPost("start_logged")]
+        [Authorize(Roles ="Admin, Moderator, User")]
+        public async Task<ActionResult> StartLoggedGame([FromBody]  StartDataDto startData)
         {
-            string token = await _gameService.StartNewGame(startData);
+            string token = await _gameService.StartNewGameLogged(startData);
 
             return Ok(new
             {
@@ -31,12 +35,23 @@ namespace PartyGame.Controllers
             });
         }
 
-   
+        [HttpPost("start_unlogged")]
+        public async Task<ActionResult> StartUnloggedGame([FromBody] StartDataDto startData)
+        {
+            string token = await _gameService.StartNewGameUnlogged(startData);
+
+            return Ok(new
+            {
+                Token = token,
+                Message = "Game generated successfully"
+            });
+        }
 
         [HttpPatch("check")]
         [Authorize]
         public async Task<ActionResult> CheckGuess([FromBody]  Coordinates guessingCoordinates)
         { 
+
            RoundResultDto result = await _gameService.CheckGuess(guessingCoordinates);
            return Ok(result);
         }
@@ -59,12 +74,12 @@ namespace PartyGame.Controllers
         [Authorize]
         public async Task<ActionResult> FinishGame()
         {
-            SummarizeGameDto result = await _gameService.FinishGame();
+            FinishedGameDto result = await _gameService.FinishGame();
             return Ok(result);
         }
 
         [HttpDelete("delete_session")]
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult> DeleteGame()
         {
             await _gameSessionService.DeleteSessionByHeader();

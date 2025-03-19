@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using PartyGame.Entities;
 using PartyGame.Extensions.Exceptions;
+using PartyGame.Models;
+using PartyGame.Models.GameModels;
 using PartyGame.Models.ScoreboardModels;
 using PartyGame.Repositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -11,54 +14,27 @@ namespace PartyGame.Services
 {
     public interface IScoreboardService
     {
-        Task AddNewGame();
         Task<List<FinishedGame>> GetAllGames();
-        Task<PagedResult<FinishedGame>> GetGames(ScoreboardQuery scoreboardQuery);
+        Task<PagedResult<FinishedGame>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery);
+
+        Task SaveGame(FinishedGame finishedGameDto);
+        
     }
 
     public class ScoreboardService : IScoreboardService
     {
         private readonly IHttpContextAccessorService _httpContextAccessorService;
-        private readonly IGameSessionRepository _gameSessionRepository;
         private readonly IScoreboardRepository _scoreboardRepository;
-
-        const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
+        private readonly IScoreboardRepository _gameHistoryRepository;
 
         public ScoreboardService(
-            IHttpContextAccessorService httpContextAccessorService,
-            IGameSessionRepository gameSessionRepository,
-            IScoreboardRepository scoreboardRepository)
+        IHttpContextAccessorService httpContextAccessorService,
+        [FromKeyedServices("GameResults")] IScoreboardRepository scoreboardRepository,
+        [FromKeyedServices("GameHistory")] IScoreboardRepository gameHistoryRepository)
         {
             _httpContextAccessorService = httpContextAccessorService;
-            _gameSessionRepository = gameSessionRepository;
             _scoreboardRepository = scoreboardRepository;
-        }
-
-        public async Task AddNewGame()
-        {
-
-            string token = _httpContextAccessorService.GetTokenFromHeader();
-            GameSession session = await _gameSessionRepository.GetSessionByToken(token);
-
-            if (session == null)
-            {
-                throw new NotFoundException($"Session was not found");
-            }
-
-            if (session.ActualRoundNumber != ROUNDS_NUMBER)
-            {
-                throw new Exception($"Game was not finished and cannot be saved");
-            }
-
-            FinishedGame newFinishedGame = new FinishedGame
-            {
-                Nickname = session.Nickname,
-                FinalScore = session.GameScore,
-                Rounds = session.Rounds,
-                DifficultyLevel = session.DifficultyLevel
-            };
-
-            await _scoreboardRepository.CreateAsync(newFinishedGame);
+            _gameHistoryRepository = gameHistoryRepository;
         }
 
         public async Task<List<FinishedGame>> GetAllGames()
@@ -73,7 +49,7 @@ namespace PartyGame.Services
             return games.ToList();
         }
 
-        public async Task<PagedResult<FinishedGame>> GetGames(ScoreboardQuery scoreboardQuery)
+        public async Task<PagedResult<FinishedGame>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery)
         {
             List<FinishedGame> games = await _scoreboardRepository.GetGames(scoreboardQuery);
             int totalScores =  (await _scoreboardRepository.GetAllAsync()).Count();
@@ -81,6 +57,48 @@ namespace PartyGame.Services
             var result = new PagedResult<FinishedGame>(games,totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
             return result;
         }
+
+        public async Task SaveGame(FinishedGame finishedGame)
+        {
+            finishedGame.Id = ObjectId.GenerateNewId();
+
+            // Tworzenie zapytania w celu uzyskania najlepszej gry użytkownika z scoreboard
+            ScoreboardQuery scoreboardQuery = new ScoreboardQuery
+            {
+                DifficultyLevel = finishedGame.DifficultyLevel,
+                SortDirection = Models.ScoreboardModels.SortDirection.DESC,
+                PageNumber = 1,
+                PageSize = 5,
+                SearchNickname = finishedGame.Nickname
+            };
+
+            // Pobieranie najlepszej gry (najwyższy wynik) z tablicy wyników
+            var games = await _scoreboardRepository.GetGames(scoreboardQuery);
+            FinishedGame previousBest = games.FirstOrDefault();
+
+            await _gameHistoryRepository.CreateAsync(finishedGame);
+            await SaveBestGameInScoreboard(finishedGame, previousBest);
+            
+        }
+
+        private async Task SaveBestGameInScoreboard(FinishedGame finishedGame,FinishedGame? previousBest)
+        {
+            if (previousBest == null) // to znaczy ze gra jest 1 
+            {
+                await _scoreboardRepository.CreateAsync(finishedGame);
+            }
+            else if (finishedGame.FinalScore > previousBest.FinalScore)
+            {
+                await _scoreboardRepository.DeleteAsync(previousBest.Id.ToString());
+                await _scoreboardRepository.CreateAsync(finishedGame);
+            }
+        }
+
+
+
+
+
+
 
     }
 }

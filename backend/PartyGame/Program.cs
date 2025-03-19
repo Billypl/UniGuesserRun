@@ -34,7 +34,7 @@ void ConfigureMiddleware(WebApplication app)
     app.UseAuthentication();
     app.UseHttpsRedirection();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PartyGame API"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Uniguesser API"));
     app.UseAuthorization();
     app.MapControllers();
 }

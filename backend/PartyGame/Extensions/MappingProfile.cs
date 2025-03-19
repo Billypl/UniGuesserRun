@@ -4,6 +4,7 @@ using PartyGame.Entities;
 using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.PlaceModels;
+using PartyGame.Models.ScoreboardModels;
 
 namespace PartyGame.Extensions
 {
@@ -13,7 +14,6 @@ namespace PartyGame.Extensions
         public MappingProfile()
         {
             CreateMap<Place, GuessingPlaceDto>();
-            CreateMap<GameSession, SummarizeGameDto>();
             CreateMap<NewPlaceDto, Place>();
             CreateMap<PlaceToCheck, PlaceToCheckDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
@@ -23,6 +23,20 @@ namespace PartyGame.Extensions
 
             CreateMap<User, AccountDetailsDto>();
             CreateMap<AccountDetailsDto, User>();
+
+            CreateMap<UpdatePlaceDto, Place>();
+            CreateMap<Place, ShowPlaceDto>()
+                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString())); ;
+
+            CreateMap<GameSession, FinishedGame>()
+                .ForMember(dest => dest.FinalScore, opt => opt.MapFrom(src => src.GameScore));
+
+            CreateMap<FinishedGame,FinishedGameDto>()
+                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                  .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.ToString()))
+                  .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.DifficultyLevel.ToString()));
+
+            CreateMap<ShowPlaceDto, GuessingPlaceDto>();
         }
 
 

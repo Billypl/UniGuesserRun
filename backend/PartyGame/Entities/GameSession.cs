@@ -28,7 +28,7 @@ namespace PartyGame.Entities
         public int ActualRoundNumber { get; set; }
         public double GameScore { get; set; }
         public string Nickname { get; set; }
-        public DifficultyLevel DifficultyLevel { get; set; }
+        public string DifficultyLevel { get; set; }
 
     }
 }

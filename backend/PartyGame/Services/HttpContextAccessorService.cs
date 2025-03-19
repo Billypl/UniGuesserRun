@@ -4,6 +4,7 @@ using System;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using PartyGame.Models.AccountModels;
+using PartyGame.Extensions.Exceptions;
 
 namespace PartyGame.Services
 {
@@ -59,10 +60,10 @@ namespace PartyGame.Services
 
             return new AccountDetailsFromTokenDto
             {
-                UserId = userId ?? throw new KeyNotFoundException("User ID not found in claims."),
-                Email = email ?? throw new KeyNotFoundException("Email not found in claims."),
-                Role = role ?? throw new KeyNotFoundException("Role not found in claims."),
-                Nickname = nickname ?? throw new KeyNotFoundException("Nickname not found in claims.")
+                UserId = userId ?? throw new NotFoundException("User ID not found in claims."),
+                Email = email ?? throw new NotFoundException("Email not found in claims."),
+                Role = role ?? throw new NotFoundException("Role not found in claims."),
+                Nickname = nickname ?? throw new NotFoundException("Nickname not found in claims.")
             };
         }
 

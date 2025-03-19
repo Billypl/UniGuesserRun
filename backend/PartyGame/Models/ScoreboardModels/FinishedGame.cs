@@ -1,12 +1,12 @@
 ﻿using MongoDB.Bson;
 using PartyGame.Models.GameModels;
 
-namespace PartyGame.Entities
+namespace PartyGame.Models.ScoreboardModels
 {
-    public class FinishedGame
+    public class FinishedGameDto
     {
-        public ObjectId Id { get; set; }
-        public ObjectId UserId { get; set; }
+        public string Id { get; set; }
+        public string UserId { get; set; }
         public string Nickname { get; set; }
         public double FinalScore { get; set; }
         public List<Round> Rounds { get; set; }
