@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using PartyGame.Entities;
@@ -14,9 +15,9 @@ namespace PartyGame.Services
 {
     public interface IScoreboardService
     {
-        Task<List<FinishedGame>> GetAllGames();
-        Task<PagedResult<FinishedGame>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery);
-
+        Task<List<FinishedGameDto>> GetAllGames();
+        Task<PagedResult<FinishedGameDto>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery);
+        Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(GameHistoryQuery scoreboardQuery);
         Task SaveGame(FinishedGame finishedGameDto);
         
     }
@@ -26,18 +27,21 @@ namespace PartyGame.Services
         private readonly IHttpContextAccessorService _httpContextAccessorService;
         private readonly IScoreboardRepository _scoreboardRepository;
         private readonly IScoreboardRepository _gameHistoryRepository;
+        private readonly IMapper _mapper;
 
         public ScoreboardService(
         IHttpContextAccessorService httpContextAccessorService,
         [FromKeyedServices("GameResults")] IScoreboardRepository scoreboardRepository,
-        [FromKeyedServices("GameHistory")] IScoreboardRepository gameHistoryRepository)
+        [FromKeyedServices("GameHistory")] IScoreboardRepository gameHistoryRepository,
+        IMapper mapper)
         {
             _httpContextAccessorService = httpContextAccessorService;
             _scoreboardRepository = scoreboardRepository;
             _gameHistoryRepository = gameHistoryRepository;
+            _mapper = mapper;
         }
 
-        public async Task<List<FinishedGame>> GetAllGames()
+        public async Task<List<FinishedGameDto>> GetAllGames()
         {
             IEnumerable<FinishedGame> games = await _scoreboardRepository.GetAllAsync();
 
@@ -46,16 +50,29 @@ namespace PartyGame.Services
                 throw new NotFoundException($"There no games in history");
             }
 
-            return games.ToList();
+            return _mapper.Map<IEnumerable<FinishedGameDto>>(games).ToList();
         }
 
-        public async Task<PagedResult<FinishedGame>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery)
+        public async Task<PagedResult<FinishedGameDto>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery)
         {
             List<FinishedGame> games = await _scoreboardRepository.GetGames(scoreboardQuery);
             int totalScores =  (await _scoreboardRepository.GetAllAsync()).Count();
 
             var result = new PagedResult<FinishedGame>(games,totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
-            return result;
+            return _mapper.Map<PagedResult<FinishedGameDto>>(result);
+        }
+
+        public async Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(GameHistoryQuery scoreboardQuery)
+        {
+            ScoreboardQuery query = _mapper.Map<ScoreboardQuery>(scoreboardQuery);
+            query.SearchNickname = _httpContextAccessorService.GetAuthenticatedUserProfile().Nickname;
+
+            List<FinishedGame> games = await _gameHistoryRepository.GetGames(query);
+            int totalScores = (await _gameHistoryRepository.GetAllAsync()).Count();
+
+            var result = new PagedResult<FinishedGame>(games, totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
+            return _mapper.Map<PagedResult<FinishedGameDto>>(result);
+
         }
 
         public async Task SaveGame(FinishedGame finishedGame)
@@ -77,10 +94,10 @@ namespace PartyGame.Services
             FinishedGame previousBest = games.FirstOrDefault();
 
             await _gameHistoryRepository.CreateAsync(finishedGame);
-            await SaveBestGameInScoreboard(finishedGame, previousBest);
-            
+            await SaveBestGameInScoreboard(finishedGame, previousBest);        
         }
 
+      
         private async Task SaveBestGameInScoreboard(FinishedGame finishedGame,FinishedGame? previousBest)
         {
             if (previousBest == null) // to znaczy ze gra jest 1 

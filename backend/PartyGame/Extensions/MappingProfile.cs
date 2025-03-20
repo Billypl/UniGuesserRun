@@ -37,6 +37,9 @@ namespace PartyGame.Extensions
                   .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.DifficultyLevel.ToString()));
 
             CreateMap<ShowPlaceDto, GuessingPlaceDto>();
+
+            CreateMap<GameHistoryQuery,ScoreboardQuery>();
+        
         }
 
 

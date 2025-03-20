@@ -21,7 +21,7 @@ namespace PartyGame.Controllers
 
         [HttpPost("save_score")]
         [Authorize(Roles = "Admin,Moderator")]
-        public ActionResult PostNewScore([FromBody] FinishedGame finishedGame)
+        public IActionResult PostNewScore([FromBody] FinishedGame finishedGame)
         {
              _scoreboardService.SaveGame(finishedGame);
             return Ok(
@@ -32,7 +32,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetScores([FromQuery] ScoreboardQuery scoreboardQuery)
+        public async Task<IActionResult> GetScoreboardPage([FromQuery] ScoreboardQuery scoreboardQuery)
         {
             // Rezultat:
             //Items → lista elementów: ["Element11", "Element12", ..., "Element20"]
@@ -41,9 +41,20 @@ namespace PartyGame.Controllers
             //ItemsTo → 20(ostatni element na stronie)
             //TotalPages → 3(liczba stron)
 
-            PagedResult<FinishedGame> scores = _scoreboardService.GetFinishedGamesInScoreboard(scoreboardQuery).Result;
+            PagedResult<FinishedGameDto> scores = await _scoreboardService.GetFinishedGamesInScoreboard(scoreboardQuery);
             return Ok(scores);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Moderator, User")]
+        public async Task<IActionResult> GetHistoryPages([FromBody] GameHistoryQuery scoreboardQuery)
+        {
+
+            PagedResult<FinishedGameDto> scores = await _scoreboardService.GetGameHistoryPage(scoreboardQuery);
+            return Ok(scores);
+        }
+
+        
 
     }
 }
