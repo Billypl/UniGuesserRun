@@ -12,8 +12,9 @@ namespace PartyGame.Services
     {
         string GetTokenFromHeader();
         AccountDetailsFromTokenDto GetAuthenticatedUserProfile();
-        bool IsUserLoggedIn();
-        bool IsTokenExist();
+
+        string GetTokenType();
+     
     }
 
     public class HttpContextAccessorService : IHttpContextAccessorService
@@ -67,29 +68,17 @@ namespace PartyGame.Services
             };
         }
 
-        public bool IsUserLoggedIn()
+        public string GetTokenType()
         {
             var user = _httpContextAccessor.HttpContext?.User;
+            var tokenType = user.FindFirst("token_type")?.Value;
 
-            if (user == null || !user.Identity?.IsAuthenticated == true)
-            {
-                return false;
+            if (string.IsNullOrEmpty(tokenType))
+              { 
+                throw new NotFoundException("Token type in token is missing.");
             }
 
-            var role = user.FindFirst(ClaimTypes.Role)?.Value;
-            return !string.IsNullOrEmpty(role); 
-        }
-
-        public bool IsTokenExist()
-        {
-            var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-
-            if (authorizationHeader.IsNullOrEmpty())
-            {
-                return false;
-            }
-
-            return true;
+            return tokenType.ToString();
         }
 
     }

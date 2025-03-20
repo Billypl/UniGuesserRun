@@ -13,8 +13,7 @@ namespace PartyGame.DependencyInjection
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IHttpContextAccessorService, HttpContextAccessorService>();
-            services.AddScoped<IAccountTokenService, AccountTokenService>();
-            services.AddScoped<IGameTokenService, GameTokenService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }

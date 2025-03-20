@@ -30,27 +30,32 @@ namespace PartyGame.Services
         private readonly IMapper _mapper;
         private readonly IPlaceService _placeService;
         private readonly IGameSessionService _gameSessionService;
-        private readonly IGameTokenService _gameTokenService;
         private readonly IHttpContextAccessorService _httpContextAccessorService;
+        private readonly ITokenService _accountTokenService;
 
         private readonly IScoreboardService _scoreboardService;
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
         private readonly DateTime GAME_SESSION_EXPIRATION;
 
-        public GameService(IOptions<AuthenticationSettings> authenticationSettings
-            , IMapper mapper,GameDbContext gameDbContext,IPlaceService placeService,
-            IGameSessionService gameSessionService, IHttpContextAccessorService httpContextAccessorService,
-            IAccountService accountService,IGameTokenService gameTokenService,
-            IScoreboardService scoreboardService)
+        public GameService(
+            IOptions<AuthenticationSettings> authenticationSettings, 
+            IMapper mapper,
+            GameDbContext gameDbContext,
+            IPlaceService placeService,
+            IGameSessionService gameSessionService,
+            IHttpContextAccessorService httpContextAccessorService,
+            IAccountService accountService,
+            IScoreboardService scoreboardService,
+            ITokenService accountTokenService)
         {
             _authenticationSettings = authenticationSettings.Value;
             _mapper = mapper;
             _placeService = placeService;
             _gameSessionService = gameSessionService;
             _httpContextAccessorService = httpContextAccessorService;
-            _gameTokenService = gameTokenService;
             _scoreboardService = scoreboardService;
+            _accountTokenService = accountTokenService;
 
             GAME_SESSION_EXPIRATION = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame);
 
@@ -60,13 +65,13 @@ namespace PartyGame.Services
         {
             if (startDataDto.Nickname is null)
             {
-                throw new HttpRequestException("Null cannot be empty when you are not logged in");
+                throw new HttpRequestException("Nickname cannot be empty when you are not logged in");
             }
 
             DifficultyLevel difficulty =
               (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startDataDto.Difficulty, ignoreCase: true);
 
-            var newGameToken = _gameTokenService.GenerateGuessSessionToken(startDataDto);
+            var newGameToken = _accountTokenService.GenerateGuestToken(startDataDto);
 
             // NOW ONLY WORKS FOR EASY DIFFICULTY
             List<Round> gameRounds = await GenerateRounds(difficulty);
@@ -124,7 +129,7 @@ namespace PartyGame.Services
             {
                 var newRound = new Round
                 {
-                    IDPlaceToGuess = places[i],
+                    IDPlaceToGuess = places[i].ToString(),
                     GuessedCoordinates = new Coordinates(),
                     Score = 0
                 };
@@ -141,6 +146,11 @@ namespace PartyGame.Services
             string token = _httpContextAccessorService.GetTokenFromHeader();
             var session = await _gameSessionService.GetSessionByToken(token);
 
+            if (session is null)
+            {
+                throw new NotFoundException("Game session with attached token doesnt exist");
+            }
+
             if (session.ActualRoundNumber != roundsNumber)
             {
                 throw new ForbidException(
@@ -156,6 +166,11 @@ namespace PartyGame.Services
         {
             var token = _httpContextAccessorService.GetTokenFromHeader();
             var session = await _gameSessionService.GetSessionByToken(token);
+
+            if (session is null)
+            {
+                throw new NotFoundException("Game session with attached token doesnt exist");
+            }
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
             {
@@ -214,15 +229,20 @@ namespace PartyGame.Services
                 throw new NotFoundException("Game session with attached token doesnt exist");
             }
 
-            //if(session.ActualRoundNumber != ROUNDS_NUMBER)
-            //{ 
-            //    throw new Exception($"Game can be finished when you finished the game. {ROUNDS_NUMBER - session.ActualRoundNumber} rounds left")
-            //}
+            if (session.ActualRoundNumber != ROUNDS_NUMBER)
+            {
+                throw new Exception($"Game can be finished when you finished the game. {ROUNDS_NUMBER - session.ActualRoundNumber} rounds left");
+            } 
 
             FinishedGame finishedGame = _mapper.Map<FinishedGame>(session);
-            finishedGame.UserId = ObjectId.Parse(_httpContextAccessorService.GetAuthenticatedUserProfile().UserId);
 
-            await _scoreboardService.SaveGame(finishedGame);
+            string tokenType = _httpContextAccessorService.GetTokenType();
+
+            if (tokenType == "user")
+            {
+                finishedGame.UserId = ObjectId.Parse(_httpContextAccessorService.GetAuthenticatedUserProfile().UserId);
+                await _scoreboardService.SaveGame(finishedGame);
+            }            
             await _gameSessionService.DeleteSessionByToken(token);
 
             return _mapper.Map<FinishedGameDto>(finishedGame);
@@ -233,6 +253,7 @@ namespace PartyGame.Services
             string token = _httpContextAccessorService.GetTokenFromHeader();
             return (await _gameSessionService.GetSessionByToken(token)).ActualRoundNumber;
         }
+
 
     }
 }

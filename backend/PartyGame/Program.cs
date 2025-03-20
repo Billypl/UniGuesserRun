@@ -15,7 +15,6 @@ app.Run();
 void ConfigureServices(WebApplicationBuilder builder)
 {
     builder.Services.AddApplicationDependencies(builder.Configuration);
-
 }
 
 // Seedowanie bazy danych
