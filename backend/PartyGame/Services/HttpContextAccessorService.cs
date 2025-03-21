@@ -12,8 +12,9 @@ namespace PartyGame.Services
     {
         string GetTokenFromHeader();
         AccountDetailsFromTokenDto GetAuthenticatedUserProfile();
-
         string GetTokenType();
+        string? GetTokenTypeSafe();
+        string GetGameSessionIdFromHeader();
      
     }
 
@@ -32,14 +33,14 @@ namespace PartyGame.Services
 
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
             {
-                throw new KeyNotFoundException("Authorization header or token is missing.");
+                throw new NotFoundException("Authorization header or token is missing.");
             }
 
             string token = authorizationHeader.Substring("Bearer ".Length).Trim();
 
             if (string.IsNullOrEmpty(token))
             {
-                throw new KeyNotFoundException("Token was not found in the Authorization header.");
+                throw new NotFoundException("Token was not found in the Authorization header.");
             }
 
             return token;
@@ -74,11 +75,36 @@ namespace PartyGame.Services
             var tokenType = user.FindFirst("token_type")?.Value;
 
             if (string.IsNullOrEmpty(tokenType))
-              { 
+            {
                 throw new NotFoundException("Token type in token is missing.");
             }
 
             return tokenType.ToString();
+        }
+
+        public string GetTokenTypeSafe()
+        {
+            try
+            {
+                return GetTokenType();
+            }
+            catch (NotFoundException)
+            {
+                return ""; 
+            }
+        }
+
+        public string GetGameSessionIdFromHeader()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            var Id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(Id))
+            {
+                throw new NotFoundException("User ID not found in claims.");
+            }
+
+            return Id;
         }
 
     }

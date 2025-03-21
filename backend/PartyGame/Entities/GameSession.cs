@@ -21,8 +21,9 @@ namespace PartyGame.Entities
 {
     public class GameSession
     {
+        // id sesji == id uzytkownika grajacego
+        // lub tworzymy nowe id dla osób niezarejestrowanych
         public ObjectId Id { get; set; }
-        public string Token { get; set; }
         public List<Round> Rounds { get; set; }
         public DateTime ExpirationDate { get; set;}
         public int ActualRoundNumber { get; set; }

@@ -35,6 +35,13 @@ namespace PartyGame.Controllers
             return Ok(new { Token = token, Message = "Game generated successfully" });
         }
 
+        [HttpPost("start")]
+        public async Task<IActionResult> StartGame([FromBody] StartDataDto startData)
+        {
+            var token = await _gameService.StartNewGame(startData);
+            return Ok(new { Token = token, Message = "Game generated successfully" });
+        }
+
         [HttpPatch("check")]
         [Authorize]
         public async Task<IActionResult> CheckGuess([FromBody] Coordinates guessingCoordinates)

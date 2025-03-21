@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using PartyGame.Models.GameModels;
+using PartyGame.Models.TokenModels;
 
 namespace PartyGame.Services
 {
@@ -13,7 +14,7 @@ namespace PartyGame.Services
     {
         string GenerateAccountToken(User user);
         string GenerateRefreshToken(User user);
-        string GenerateGuestToken(StartDataDto startDataDto);
+        string GenerateGuestToken(GuestTokenDataDto guessTokenData);
     }
 
     public class TokenService : ITokenService
@@ -76,14 +77,15 @@ namespace PartyGame.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public string GenerateGuestToken(StartDataDto startDataDto)
+        public string GenerateGuestToken(GuestTokenDataDto guessTokenData)
         {
             var expiration = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, startDataDto.Nickname),
-                new Claim("difficulty", startDataDto.Difficulty),
+                new Claim(ClaimTypes.NameIdentifier,guessTokenData.GameSessionId),
+                new Claim(JwtRegisteredClaimNames.Sub, guessTokenData.Nickname),
+                new Claim("difficulty", guessTokenData.Difficulty),
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(expiration).ToUnixTimeSeconds().ToString()),
                 new Claim("token_type","guest"),
 
