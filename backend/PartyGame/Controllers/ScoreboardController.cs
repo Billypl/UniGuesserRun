@@ -49,7 +49,6 @@ namespace PartyGame.Controllers
         [Authorize(Roles = "Admin, Moderator, User")]
         public async Task<IActionResult> GetHistoryPages([FromBody] GameHistoryQuery scoreboardQuery)
         {
-
             PagedResult<FinishedGameDto> scores = await _scoreboardService.GetGameHistoryPage(scoreboardQuery);
             return Ok(scores);
         }

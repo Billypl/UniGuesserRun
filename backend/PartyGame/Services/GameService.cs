@@ -163,11 +163,6 @@ namespace PartyGame.Services
             string id = _httpContextAccessorService.GetGameSessionIdFromHeader();
             var session = await _gameSessionService.GetSessionById(id);
 
-            if (session is null)
-            {
-                throw new NotFoundException("Game session with attached token doesnt exist");
-            }
-
             if (session.ActualRoundNumber != roundsNumber)
             {
                 throw new ForbidException(
@@ -183,11 +178,6 @@ namespace PartyGame.Services
         {
             var gameId = _httpContextAccessorService.GetGameSessionIdFromHeader();
             var session = await _gameSessionService.GetSessionById(gameId);
-
-            if (session is null)
-            {
-                throw new NotFoundException("Game session with attached token doesnt exist");
-            }
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
             {
@@ -240,11 +230,6 @@ namespace PartyGame.Services
         {
             var gameId = _httpContextAccessorService.GetGameSessionIdFromHeader();
             GameSession session = await _gameSessionService.GetSessionById(gameId);
-
-            if(session is null)
-            {
-                throw new NotFoundException("Game session with attached token doesnt exist");
-            }
 
             if (session.ActualRoundNumber != ROUNDS_NUMBER)
             {

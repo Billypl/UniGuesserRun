@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using PartyGame.Authorization;
 using PartyGame.DependencyInjections;
 using PartyGame.Entities;
 using PartyGame.Extensions;
@@ -27,6 +29,16 @@ namespace PartyGame.DependencyInjection
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+
+
+            services.AddScoped<IAuthorizationHandler, HasGameSessionInDatabaseHandler>();
+          
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HasGameInDatabase", policy =>
+                    policy.Requirements.Add(new HasGameSessionInDatabase()));
+            });
+
 
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<ErrorHandlingMiddleware>();

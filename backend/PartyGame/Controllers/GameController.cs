@@ -20,21 +20,6 @@ namespace PartyGame.Controllers
             _gameSessionService = gameSessionService;
         }
 
-        [HttpPost("start_logged")]
-        [Authorize(Roles = "Admin, Moderator, User")]
-        public async Task<IActionResult> StartLoggedGame([FromBody] StartDataDto startData)
-        {
-            var token = await _gameService.StartNewGameLogged(startData);
-            return Ok(new { Token = token, Message = "Game generated successfully" });
-        }
-
-        [HttpPost("start_unlogged")]
-        public async Task<IActionResult> StartUnloggedGame([FromBody] StartDataDto startData)
-        {
-            var token = await _gameService.StartNewGameUnlogged(startData);
-            return Ok(new { Token = token, Message = "Game generated successfully" });
-        }
-
         [HttpPost("start")]
         public async Task<IActionResult> StartGame([FromBody] StartDataDto startData)
         {
@@ -43,7 +28,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpPatch("check")]
-        [Authorize]
+        [Authorize(Policy = "HasGameInDatabase")]
         public async Task<IActionResult> CheckGuess([FromBody] Coordinates guessingCoordinates)
         {
             var result = await _gameService.CheckGuess(guessingCoordinates);
@@ -51,7 +36,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpGet("round/{roundNumber}")]
-        [Authorize]
+        [Authorize(Policy = "HasGameInDatabase")]
         public async Task<IActionResult> GetGuessingPlace([FromRoute] int roundNumber)
         {
             var place = await _gameService.GetPlaceToGuess(roundNumber);
@@ -59,7 +44,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpGet("actual_round")]
-        [Authorize]
+        [Authorize(Policy = "HasGameInDatabase")]
         public async Task<IActionResult> GetActualRoundNumber()
         {
             var roundNumber = await _gameService.GetActualRoundNumber();
@@ -67,7 +52,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpPatch("finish")]
-        [Authorize]
+        [Authorize(Policy = "HasGameInDatabase")]
         public async Task<IActionResult> FinishGame()
         {
             var result = await _gameService.FinishGame();

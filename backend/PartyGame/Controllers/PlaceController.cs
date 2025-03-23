@@ -51,8 +51,9 @@ namespace PartyGame.Controllers
             return Ok(new { message = $"Place with id {placeId} updated successfully" });
         }
 
-        [Authorize(Roles = "Admin, Moderator")]
+       
         [HttpPost]
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<ActionResult> AddNewPlace([FromBody] NewPlaceDto newPlace)
         {
             await _placeService.AddNewPlace(newPlace);
@@ -64,7 +65,6 @@ namespace PartyGame.Controllers
             );
         }
 
-        [Authorize(Roles = "Admin, Moderator")]
         [HttpPost("to_check")]
         public async Task<IActionResult> AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
         {
@@ -86,8 +86,9 @@ namespace PartyGame.Controllers
             return Ok(placesToCheck);
         }
 
-        [HttpDelete("to_check/reject")]
-        public ActionResult RejectPlaceToCheck([FromQuery] string placeId)
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpDelete("to_check/reject/{placeId}")]
+        public ActionResult RejectPlaceToCheck([FromRoute] string placeId)
         {
             _placeService.RejectPlace(placeId);
             return Ok(
@@ -98,9 +99,9 @@ namespace PartyGame.Controllers
                 );
         }
 
-
-        [HttpPost("to_check/approve")]
-        public ActionResult AcceptPlaceToCheck([FromQuery] string placeId)
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpPost("to_check/approve/{placeId}")]
+        public ActionResult AcceptPlaceToCheck([FromRoute] string placeId)
         {
             _placeService.AcceptPlace(placeId);
             return Ok(
