@@ -15,6 +15,7 @@ namespace PartyGame.Services
         string GetTokenType();
         string? GetTokenTypeSafe();
         string GetGameSessionIdFromHeader();
+        string? GetGameSessionIdFromHeaderSafe();
      
     }
 
@@ -105,6 +106,18 @@ namespace PartyGame.Services
             }
 
             return Id;
+        }
+
+        public string? GetGameSessionIdFromHeaderSafe()
+        {
+            try
+            {
+                return GetGameSessionIdFromHeader();
+            }
+            catch (NotFoundException)
+            {
+                return "";
+            }
         }
 
     }

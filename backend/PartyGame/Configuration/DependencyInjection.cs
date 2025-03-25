@@ -43,6 +43,7 @@ namespace PartyGame.DependencyInjection
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<Seeder>();
+            services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
             return services;

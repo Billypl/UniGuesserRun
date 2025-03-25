@@ -13,10 +13,10 @@ namespace PartyGame.Repositories
        
     }
 
-    public class ScoreboardRepository :Repository<FinishedGame>,IScoreboardRepository
+    public class GameResultRepository :Repository<FinishedGame>,IScoreboardRepository
     {
   
-        public ScoreboardRepository(GameDbContext gameDbContext,string documentName):base(gameDbContext.Database,documentName )
+        public GameResultRepository(GameDbContext gameDbContext,string documentName):base(gameDbContext.Database,documentName )
         {
         }
 

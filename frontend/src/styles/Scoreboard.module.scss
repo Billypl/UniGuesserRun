@@ -1,13 +1,14 @@
-@use "utilities/Colors";
+@use 'utilities/Colors';
 
 .scoreboard {
-    text-align: center;
-    margin: 5rem;
+	text-align: center;
+	margin: 5rem;
 }
 
 .record {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid Colors.$lighter-grey;
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+	border-bottom: 1px solid Colors.$lighter-grey;
+	
 }

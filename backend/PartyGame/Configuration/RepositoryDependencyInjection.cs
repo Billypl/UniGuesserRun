@@ -9,16 +9,16 @@ namespace PartyGame.DependencyInjection
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IPlacesRepository, PlacesRepository>();
-            services.AddKeyedScoped<IScoreboardRepository, ScoreboardRepository>("GameResults", (provider, key) =>
+            services.AddKeyedScoped<IScoreboardRepository, GameResultRepository>("GameResults", (provider, key) =>
             {
                 var dbContext = provider.GetRequiredService<GameDbContext>();
-                return new ScoreboardRepository(dbContext, "GameResults");
+                return new GameResultRepository(dbContext, "GameResults");
             });
 
-            services.AddKeyedScoped<IScoreboardRepository, ScoreboardRepository>("GameHistory", (provider, key) =>
+            services.AddKeyedScoped<IScoreboardRepository, GameResultRepository>("GameHistory", (provider, key) =>
             {
                 var dbContext = provider.GetRequiredService<GameDbContext>();
-                return new ScoreboardRepository(dbContext, "GameHistory");
+                return new GameResultRepository(dbContext, "GameHistory");
             });
 
 

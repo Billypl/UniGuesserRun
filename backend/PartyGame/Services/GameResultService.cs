@@ -16,20 +16,21 @@ namespace PartyGame.Services
     public interface IScoreboardService
     {
         Task<List<FinishedGameDto>> GetAllGames();
-        Task<PagedResult<FinishedGameDto>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery);
-        Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(GameHistoryQuery scoreboardQuery);
+        Task<PagedResult<FinishedGameToTable>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery);
+        Task<PagedResult<FinishedGameToTable>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
         Task SaveGame(FinishedGame finishedGameDto);
+        Task<FinishedGameDto> GetGameResult(string repository);
         
     }
 
-    public class ScoreboardService : IScoreboardService
+    public class GameResultService : IScoreboardService
     {
         private readonly IHttpContextAccessorService _httpContextAccessorService;
         private readonly IScoreboardRepository _scoreboardRepository;
         private readonly IScoreboardRepository _gameHistoryRepository;
         private readonly IMapper _mapper;
 
-        public ScoreboardService(
+        public GameResultService(
         IHttpContextAccessorService httpContextAccessorService,
         [FromKeyedServices("GameResults")] IScoreboardRepository scoreboardRepository,
         [FromKeyedServices("GameHistory")] IScoreboardRepository gameHistoryRepository,
@@ -53,25 +54,26 @@ namespace PartyGame.Services
             return _mapper.Map<IEnumerable<FinishedGameDto>>(games).ToList();
         }
 
-        public async Task<PagedResult<FinishedGameDto>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery)
+        public async Task<PagedResult<FinishedGameToTable>> GetFinishedGamesInScoreboard(ScoreboardQuery scoreboardQuery)
         {
             List<FinishedGame> games = await _scoreboardRepository.GetGames(scoreboardQuery);
             int totalScores =  (await _scoreboardRepository.GetAllAsync()).Count();
 
-            var result = new PagedResult<FinishedGame>(games,totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
-            return _mapper.Map<PagedResult<FinishedGameDto>>(result);
+            var mappedGames = _mapper.Map<List<FinishedGameToTable>>(games);
+
+            var result = new PagedResult<FinishedGameToTable>(mappedGames,totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
+           
+            return result;
         }
 
-        public async Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(GameHistoryQuery scoreboardQuery)
+        public async Task<PagedResult<FinishedGameToTable>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery)
         {
-            ScoreboardQuery query = _mapper.Map<ScoreboardQuery>(scoreboardQuery);
-            query.SearchNickname = _httpContextAccessorService.GetAuthenticatedUserProfile().Nickname;
 
-            List<FinishedGame> games = await _gameHistoryRepository.GetGames(query);
+            List<FinishedGame> games = await _gameHistoryRepository.GetGames(scoreboardQuery);
             int totalScores = (await _gameHistoryRepository.GetAllAsync()).Count();
 
             var result = new PagedResult<FinishedGame>(games, totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
-            return _mapper.Map<PagedResult<FinishedGameDto>>(result);
+            return _mapper.Map<PagedResult<FinishedGameToTable>>(result);
 
         }
 
@@ -104,18 +106,23 @@ namespace PartyGame.Services
             {
                 await _scoreboardRepository.CreateAsync(finishedGame);
             }
-            else if (finishedGame.FinalScore > previousBest.FinalScore)
+            else if (finishedGame.FinalScore < previousBest.FinalScore)
             {
                 await _scoreboardRepository.DeleteAsync(previousBest.Id.ToString());
                 await _scoreboardRepository.CreateAsync(finishedGame);
             }
         }
 
+        public async Task<FinishedGameDto> GetGameResult(string gameId)
+        {
+            FinishedGame finishedGam = await _gameHistoryRepository.GetAsync(gameId);
 
+            if(finishedGam is null )
+            {
+                throw new NotFoundException($"There is no game in history with id: {gameId}");
+            }
 
-
-
-
-
+            return _mapper.Map<FinishedGameDto>(finishedGam);
+        }
     }
 }

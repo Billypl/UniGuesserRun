@@ -1,5 +1,4 @@
-﻿using MongoDB.Driver;
-
+﻿
 namespace PartyGame.Models.ScoreboardModels
 {
     public enum SortDirection

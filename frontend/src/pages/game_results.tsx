@@ -10,17 +10,11 @@ import accountService from '../services/api/accountService';
 const GameResults: React.FC = () => {
     const navigate = useNavigate();
     const { difficulty,  score } = useGameContext();
-    const [scoreSaved, setScoreSaved] = useState<boolean>(false);
 
     const returnToMenu = () => {
-        gameService.deleteSession();
         navigate(MENU_ROUTE);           
     }
 
-    const saveGameScore = () => {
-        scoreboardService.saveScore();
-        setScoreSaved(true);
-    }
 
     return (
     <div className={styles.result_container}>
@@ -28,8 +22,6 @@ const GameResults: React.FC = () => {
         <h2>Congratulations {accountService.getCurrentUser()?.nickname}!</h2>
         <p>Your score: <b>{score.toFixed(2)}</b></p>
         <p>On <b>{difficulty}</b> difficulty</p>
-        {scoreSaved && <button>Score saved!</button>}
-        {!scoreSaved && <button onClick={saveGameScore}>Save score</button>}
         <br />
         <button onClick={returnToMenu}>Back to menu</button>
     </div>

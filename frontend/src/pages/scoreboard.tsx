@@ -26,7 +26,7 @@ const Scoreboard: React.FC = () => {
     };
 
     const getAllRecords = async () => {
-        const result = await scoreboardService.getScores();
+        const result = (await scoreboardService.getScores(1,100)).items;
         console.log(result);
         setRecords(result);
         requestSent.current = true;

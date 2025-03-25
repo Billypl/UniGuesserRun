@@ -8,17 +8,18 @@ using PartyGame.Services;
 
 namespace PartyGame.Controllers
 {
-    [Route("api/scoreboard")]
+    [Route("api/game_results")]
     [ApiController]
-    public class ScoreboardController:ControllerBase
+    public class GameResultController:ControllerBase
     {
         private readonly IScoreboardService _scoreboardService;
 
-        public ScoreboardController(IScoreboardService scoreboardService)
+        public GameResultController(IScoreboardService scoreboardService)
         {
             _scoreboardService = scoreboardService;
         }
 
+        // for testing / checking purpose 
         [HttpPost("save_score")]
         [Authorize(Roles = "Admin,Moderator")]
         public IActionResult PostNewScore([FromBody] FinishedGame finishedGame)
@@ -31,7 +32,7 @@ namespace PartyGame.Controllers
                 });
         }
 
-        [HttpGet]
+        [HttpGet("scoreboard")]
         public async Task<IActionResult> GetScoreboardPage([FromQuery] ScoreboardQuery scoreboardQuery)
         {
             // Rezultat:
@@ -41,19 +42,24 @@ namespace PartyGame.Controllers
             //ItemsTo → 20(ostatni element na stronie)
             //TotalPages → 3(liczba stron)
 
-            PagedResult<FinishedGameDto> scores = await _scoreboardService.GetFinishedGamesInScoreboard(scoreboardQuery);
+            PagedResult<FinishedGameToTable> scores = await _scoreboardService.GetFinishedGamesInScoreboard(scoreboardQuery);
             return Ok(scores);
         }
 
-        [HttpGet]
+        [HttpGet("history")]
         [Authorize(Roles = "Admin, Moderator, User")]
-        public async Task<IActionResult> GetHistoryPages([FromBody] GameHistoryQuery scoreboardQuery)
+        public async Task<IActionResult> GetHistoryPages([FromQuery] ScoreboardQuery scoreboardQuery)
         {
-            PagedResult<FinishedGameDto> scores = await _scoreboardService.GetGameHistoryPage(scoreboardQuery);
+            PagedResult<FinishedGameToTable> scores = await _scoreboardService.GetGameHistoryPage(scoreboardQuery);
             return Ok(scores);
         }
 
-        
+        [HttpGet("{gameResultId}")]
+        public async Task<IActionResult> GetResultDetails([FromQuery] string gameResultId)
+        {
+            FinishedGameDto gameResult = await _scoreboardService.GetGameResult(gameResultId);
 
+            return Ok(gameResult);
+        }
     }
 }

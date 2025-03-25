@@ -18,7 +18,7 @@ namespace PartyGame.Services
 
     public interface IGameService
     {
-        Task<string> StartNewGame(StartDataDto startDataDto);
+        string StartNewGame(StartDataDto startDataDto);
         Task<string> StartNewGameLogged(StartDataDto startData);
         Task<string> StartNewGameUnlogged(StartDataDto startData);
         Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates);
@@ -65,13 +65,21 @@ namespace PartyGame.Services
 
         }
 
-        public async Task<string> StartNewGame(StartDataDto startDataDto)
+        public  string StartNewGame(StartDataDto startDataDto)
         {
-            string? tokenType = _httpContextAccessorService.GetTokenTypeSafe();
+            
 
+            string? tokenType = _httpContextAccessorService.GetTokenTypeSafe();
+            string? tokenId = _httpContextAccessorService.GetGameSessionIdFromHeaderSafe();
+
+            if (tokenId != null && ( _gameSessionService.HasActiveGameSession(tokenId).Result))
+            {
+                throw new InvalidOperationException($"Game for  id:{tokenId} already exists");
+            }
+            
             return tokenType == "user"
-         ? await StartNewGameLogged(startDataDto)
-         : await StartNewGameUnlogged(startDataDto);
+         ? StartNewGameLogged(startDataDto).Result
+         : StartNewGameUnlogged(startDataDto).Result;
         }
 
         public async Task<string> StartNewGameUnlogged(StartDataDto startDataDto)

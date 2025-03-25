@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MongoDB.Bson;
 using PartyGame.Entities;
+using PartyGame.Models;
 using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.PlaceModels;
@@ -36,10 +37,15 @@ namespace PartyGame.Extensions
                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.ToString()))
                   .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.DifficultyLevel.ToString()));
 
+            CreateMap<FinishedGame, FinishedGameToTable>()
+                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                  .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.ToString()))
+                  .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.DifficultyLevel.ToString()));
+
             CreateMap<ShowPlaceDto, GuessingPlaceDto>();
 
-            CreateMap<GameHistoryQuery,ScoreboardQuery>();
-        
+            CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
+
         }
 
 
