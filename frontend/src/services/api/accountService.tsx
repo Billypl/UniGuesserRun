@@ -1,30 +1,10 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
-import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME_KEY } from "../../Constants";
-
-export interface RegisterUserDto {
-    nickname: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
-
-export interface LoginUserDto {
-    nicknameOrEmail: string;
-    password: string;
-}
-
-export interface AccountDetailsFromTokenDto {
-    userId: string;
-    nickname: string;
-    email: string;
-    role: string;
-}
-
-export interface LoginResultDto {
-    token: string;
-    refreshToken: string;
-    nickname: string;
-}
+import { ACCOUNT_API_URL, ACCOUNT_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_NICKNAME_KEY, JWT_USER_ROLE_KEY, JWT_USER_ID_KEY, JWT_USER_NICKNAME_KEY, JWT_USER_EMAIL_KEY } from "../../Constants";
+import { RegisterUserDto } from "../../models/account/RegisterUserDto";
+import { LoginUserDto } from "../../models/account/LoginUserDto";
+import { AccountDetailsFromTokenDto } from "../../models/account/AccountDetailsFromTokenDto";
+import { LoginResultDto } from "../../models/account/LoginResultDto";
+import { jwtDecode } from "jwt-decode";
 
 export class AccountService {
     private axiosInstance: AxiosInstance;
@@ -130,8 +110,23 @@ export class AccountService {
             window.sessionStorage.getItem(USER_NICKNAME_KEY) !== null;
     }
 
-    getCurrentUserNickname(): string | null {
-        return window.sessionStorage.getItem(USER_NICKNAME_KEY);
+    getCurrentUser(): AccountDetailsFromTokenDto | null {
+        const token = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY);
+        if (!token) {
+            return null;
+        }
+        try {
+            const decoded: any = jwtDecode(token);
+            return {
+                userId: decoded[JWT_USER_ID_KEY],
+                nickname: decoded[JWT_USER_NICKNAME_KEY],
+                email: decoded[JWT_USER_EMAIL_KEY],
+                role: decoded[JWT_USER_ROLE_KEY],
+            };
+        } catch (error) {
+            console.error("Invalid token", error);
+            return null;
+        }
     }
 }
 

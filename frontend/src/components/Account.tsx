@@ -29,7 +29,7 @@ const Account: React.FC = () => {
         return (
             <div className={styles.account}>
                 <a className={styles.nav_item}>
-                    {accountService.getCurrentUserNickname()}
+                    {accountService.getCurrentUser()?.nickname}
                 </a>
                 <a className={styles.logout} onClick={handleLogout}>
                    Logout

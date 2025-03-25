@@ -1,42 +1,11 @@
 import axios, { AxiosInstance } from "axios";
 import { GAME_API_URL, GAME_TOKEN_KEY } from "../../Constants";
-
-// Define types for the request and response data
-export interface Coordinates {
-  longitude: number;
-  latitude: number;
-}
-
-export interface StartGameData {
-  nickname: string;
-  difficulty: string;
-}
-
-export interface StartGameResponse {
-  token: string;
-  message: string;
-}
-
-export interface GuessingPlaceDto {
-  imageUrl: string;
-}
-
-interface Place {
-  coordinates: Coordinates;
-  //imageUrl: string;
-  //alt: string;
-}
-
-export interface RoundResultDto {
-  originalPlace: Place;
-  distanceDifference: number;
-  roundNumber: number;
-}
-
-export interface SummarizeGameDto {
-  // TODO: round list
-  score: number;
-}
+import { Coordinates } from "../../models/Coordinates";
+import { StartGameData } from "../../models/game/StartGameData";
+import { StartGameResponse } from "../../models/game/StartGameResponse";
+import { GuessingPlaceDto } from "../../models/game/GuessingPlaceDto";
+import { RoundResultDto } from "../../models/game/RoundResultDto";
+import { SummarizeGameDto } from "../../models/game/SummarizeGameDto";
 
 export class GameService {
   private axiosInstance: AxiosInstance;
