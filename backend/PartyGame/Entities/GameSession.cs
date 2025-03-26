@@ -21,14 +21,15 @@ namespace PartyGame.Entities
 {
     public class GameSession
     {
+        // id sesji == id uzytkownika grajacego
+        // lub tworzymy nowe id dla osób niezarejestrowanych
         public ObjectId Id { get; set; }
-        public string Token { get; set; }
         public List<Round> Rounds { get; set; }
         public DateTime ExpirationDate { get; set;}
         public int ActualRoundNumber { get; set; }
         public double GameScore { get; set; }
         public string Nickname { get; set; }
-        public DifficultyLevel DifficultyLevel { get; set; }
+        public string DifficultyLevel { get; set; }
 
     }
 }

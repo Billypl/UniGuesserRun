@@ -4,6 +4,7 @@ using System;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using PartyGame.Models.AccountModels;
+using PartyGame.Extensions.Exceptions;
 
 namespace PartyGame.Services
 {
@@ -11,8 +12,11 @@ namespace PartyGame.Services
     {
         string GetTokenFromHeader();
         AccountDetailsFromTokenDto GetAuthenticatedUserProfile();
-        bool IsUserLoggedIn();
-        bool IsTokenExist();
+        string GetTokenType();
+        string? GetTokenTypeSafe();
+        string GetGameSessionIdFromHeader();
+        string? GetGameSessionIdFromHeaderSafe();
+     
     }
 
     public class HttpContextAccessorService : IHttpContextAccessorService
@@ -30,14 +34,14 @@ namespace PartyGame.Services
 
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
             {
-                throw new KeyNotFoundException("Authorization header or token is missing.");
+                throw new NotFoundException("Authorization header or token is missing.");
             }
 
             string token = authorizationHeader.Substring("Bearer ".Length).Trim();
 
             if (string.IsNullOrEmpty(token))
             {
-                throw new KeyNotFoundException("Token was not found in the Authorization header.");
+                throw new NotFoundException("Token was not found in the Authorization header.");
             }
 
             return token;
@@ -59,36 +63,61 @@ namespace PartyGame.Services
 
             return new AccountDetailsFromTokenDto
             {
-                UserId = userId ?? throw new KeyNotFoundException("User ID not found in claims."),
-                Email = email ?? throw new KeyNotFoundException("Email not found in claims."),
-                Role = role ?? throw new KeyNotFoundException("Role not found in claims."),
-                Nickname = nickname ?? throw new KeyNotFoundException("Nickname not found in claims.")
+                UserId = userId ?? throw new NotFoundException("User ID not found in claims."),
+                Email = email ?? throw new NotFoundException("Email not found in claims."),
+                Role = role ?? throw new NotFoundException("Role not found in claims."),
+                Nickname = nickname ?? throw new NotFoundException("Nickname not found in claims.")
             };
         }
 
-        public bool IsUserLoggedIn()
+        public string GetTokenType()
         {
             var user = _httpContextAccessor.HttpContext?.User;
+            var tokenType = user.FindFirst("token_type")?.Value;
 
-            if (user == null || !user.Identity?.IsAuthenticated == true)
+            if (string.IsNullOrEmpty(tokenType))
             {
-                return false;
+                throw new NotFoundException("Token type in token is missing.");
             }
 
-            var role = user.FindFirst(ClaimTypes.Role)?.Value;
-            return !string.IsNullOrEmpty(role); 
+            return tokenType.ToString();
         }
 
-        public bool IsTokenExist()
+        public string GetTokenTypeSafe()
         {
-            var authorizationHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-
-            if (authorizationHeader.IsNullOrEmpty())
+            try
             {
-                return false;
+                return GetTokenType();
+            }
+            catch (NotFoundException)
+            {
+                return ""; 
+            }
+        }
+
+        public string GetGameSessionIdFromHeader()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            var Id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(Id))
+            {
+                throw new NotFoundException("User ID not found in claims.");
             }
 
-            return true;
+            return Id;
+        }
+
+        public string? GetGameSessionIdFromHeaderSafe()
+        {
+            try
+            {
+                return GetGameSessionIdFromHeader();
+            }
+            catch (NotFoundException)
+            {
+                return "";
+            }
         }
 
     }

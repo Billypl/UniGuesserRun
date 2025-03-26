@@ -15,7 +15,6 @@ app.Run();
 void ConfigureServices(WebApplicationBuilder builder)
 {
     builder.Services.AddApplicationDependencies(builder.Configuration);
-
 }
 
 // Seedowanie bazy danych
@@ -34,7 +33,7 @@ void ConfigureMiddleware(WebApplication app)
     app.UseAuthentication();
     app.UseHttpsRedirection();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PartyGame API"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Uniguesser API"));
     app.UseAuthorization();
     app.MapControllers();
 }

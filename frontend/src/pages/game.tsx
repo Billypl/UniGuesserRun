@@ -98,7 +98,7 @@ const Game: React.FC = () => {
 
   const finishGame = async () => {
     const response = await gameService.finishGame();
-    setScore(response.score);
+    setScore(response.finalScore);
     navigate(GAME_RESULTS_ROUTE);
   };
 

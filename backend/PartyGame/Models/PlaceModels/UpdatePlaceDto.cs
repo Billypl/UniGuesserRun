@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PartyGame.Models.PlaceModels
 {
-    public class NewPlaceDto
+    public class UpdatePlaceDto
     {
         [Required]
         public string Name { get; set; }
@@ -17,5 +17,7 @@ namespace PartyGame.Models.PlaceModels
         public string Alt { get; set; }
         [Required]
         public string Difficulty { get; set; }
+        [Required]
+        public string? AuthorId { get; set; }
     }
 }

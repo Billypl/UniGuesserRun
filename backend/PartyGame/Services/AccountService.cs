@@ -27,12 +27,12 @@ namespace PartyGame.Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly IAccountTokenService _accountTokenService;
+        private readonly ITokenService _accountTokenService;
 
         public AccountService(IAccountRepository accountRepository, IPasswordHasher<User> passwordHasher,
             IHttpContextAccessorService contextAccessorService, IMapper mapper,
             IOptions<AuthenticationSettings> authenticationSettings,
-            IAccountTokenService accountTokenService)
+            ITokenService accountTokenService)
         {
             _accountRepository =accountRepository;
             _contextAccessorService = contextAccessorService;
@@ -67,7 +67,7 @@ namespace PartyGame.Services
             newUser.PasswordHash = passwordHash;
 
 
-            _accountRepository.CreateAsync(newUser);
+            await _accountRepository.CreateAsync(newUser);
         }
 
         public async Task<LoginResultDto> Login(LoginUserDto loginUserDto)

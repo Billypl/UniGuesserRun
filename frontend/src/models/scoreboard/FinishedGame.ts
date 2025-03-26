@@ -1,7 +1,7 @@
 export interface FinishedGame {
-	id: number;
+	id: string;
+	userId: string;
 	nickname: string;
 	finalScore: number;
-	// rounds: Round[];
 	difficultyLevel: string;
 }

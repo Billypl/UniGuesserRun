@@ -14,9 +14,11 @@ namespace PartyGame.Models.Validations
             RuleFor(u => u.Email)
                 .NotEmpty()
                 .EmailAddress();
+
             RuleFor(u => u.Nickname)
                 .NotEmpty()
-                .MinimumLength(3);
+                .MinimumLength(3)
+                .MaximumLength(25);
 
             RuleFor(u => u.Password)
                 .NotEmpty()

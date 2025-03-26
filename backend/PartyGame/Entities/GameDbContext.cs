@@ -28,6 +28,7 @@ namespace PartyGame.Entities
         public IMongoCollection<PlaceToCheck> PlacesToCheck => Database.GetCollection<PlaceToCheck>("PlacesToCheck");
         public IMongoCollection<GameSession> GameSessions => Database.GetCollection<GameSession>("GameSessions");
         public IMongoCollection<FinishedGame> GameResults => Database.GetCollection<FinishedGame>("GameResults");
+        public IMongoCollection<FinishedGame> GameHistory => Database.GetCollection<FinishedGame>("GameHistory");
         public IMongoCollection<User> Users => Database.GetCollection<User>("Users");
     }
 }

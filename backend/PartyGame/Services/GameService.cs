@@ -1,16 +1,15 @@
 ﻿
 
 using AutoMapper;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using PartyGame.Entities;
 using MongoDB.Driver;
-using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
+using PartyGame.Extensions.Exceptions;
+using PartyGame.Models.ScoreboardModels;
+using PartyGame.Models.AccountModels;
+using PartyGame.Models.TokenModels;
 
 
 
@@ -19,11 +18,14 @@ namespace PartyGame.Services
 
     public interface IGameService
     {
-        Task<string> StartNewGame(StartDataDto startData);
+        string StartNewGame(StartDataDto startDataDto);
+        Task<string> StartNewGameLogged(StartDataDto startData);
+        Task<string> StartNewGameUnlogged(StartDataDto startData);
         Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates);
         Task<GuessingPlaceDto> GetPlaceToGuess(int roundsNumber);
-        Task<SummarizeGameDto> FinishGame();
+        Task<FinishedGameDto> FinishGame();
         Task<int> GetActualRoundNumber();
+     
     }
 
     public class GameService : IGameService
@@ -32,59 +34,110 @@ namespace PartyGame.Services
         private readonly IMapper _mapper;
         private readonly IPlaceService _placeService;
         private readonly IGameSessionService _gameSessionService;
-        private readonly IAccountService _accountService;
-        private readonly IGameTokenService _gameTokenService;
         private readonly IHttpContextAccessorService _httpContextAccessorService;
+        private readonly ITokenService _accountTokenService;
+
+        private readonly IScoreboardService _scoreboardService;
 
         const int ROUNDS_NUMBER = 5; // TODO: Need to get this value from appsettgins.json
+        private readonly DateTime GAME_SESSION_EXPIRATION;
 
-        public GameService(IOptions<AuthenticationSettings> authenticationSettings
-            , IMapper mapper,GameDbContext gameDbContext,IPlaceService placeService,
-            IGameSessionService gameSessionService, IHttpContextAccessorService httpContextAccessorService,
-            IAccountService accountService,IGameTokenService gameTokenService)
+        public GameService(
+            IOptions<AuthenticationSettings> authenticationSettings, 
+            IMapper mapper,
+            GameDbContext gameDbContext,
+            IPlaceService placeService,
+            IGameSessionService gameSessionService,
+            IHttpContextAccessorService httpContextAccessorService,
+            IAccountService accountService,
+            IScoreboardService scoreboardService,
+            ITokenService accountTokenService)
         {
             _authenticationSettings = authenticationSettings.Value;
             _mapper = mapper;
             _placeService = placeService;
             _gameSessionService = gameSessionService;
             _httpContextAccessorService = httpContextAccessorService;
-            _accountService = accountService;
-            _gameTokenService = gameTokenService;
+            _scoreboardService = scoreboardService;
+            _accountTokenService = accountTokenService;
+
+            GAME_SESSION_EXPIRATION = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame);
 
         }
 
-
-        public async Task<string> StartNewGame(StartDataDto startData)
+        public  string StartNewGame(StartDataDto startDataDto)
         {
-            if (_httpContextAccessorService.IsTokenExist() &&
-                (await _gameSessionService.HasActiveGameSession(_httpContextAccessorService.GetTokenFromHeader())))
+            
+
+            string? tokenType = _httpContextAccessorService.GetTokenTypeSafe();
+            string? tokenId = _httpContextAccessorService.GetGameSessionIdFromHeaderSafe();
+
+            if (tokenId != null && ( _gameSessionService.HasActiveGameSession(tokenId).Result))
             {
-                throw new AccessViolationException("Game for this token already exists");
+                throw new InvalidOperationException($"Game for  id:{tokenId} already exists");
             }
+            
+            return tokenType == "user"
+         ? StartNewGameLogged(startDataDto).Result
+         : StartNewGameUnlogged(startDataDto).Result;
+        }
 
+        public async Task<string> StartNewGameUnlogged(StartDataDto startDataDto)
+        {
+            if (startDataDto.Nickname is null)
+            {
+                throw new HttpRequestException("Nickname cannot be empty when you are not logged in (invalid token)");
+            }
+         
+            DifficultyLevel difficulty =
+              (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startDataDto.Difficulty, ignoreCase: true);
 
+            ObjectId idForGuest = ObjectId.GenerateNewId();
+
+            GuestTokenDataDto guestTokenData = new GuestTokenDataDto
+            {
+                GameSessionId = idForGuest.ToString(),
+                Nickname = startDataDto.Nickname,
+                Difficulty = startDataDto.Difficulty
+            };
+
+            string newGameToken = _accountTokenService.GenerateGuestToken(guestTokenData);
+
+            List<Round> gameRounds = await GenerateRounds(difficulty);
+            GameSession gameSession = GenerateGameSession(idForGuest, gameRounds, startDataDto.Nickname, difficulty);
+
+            await _gameSessionService.AddNewGameSession(gameSession);
+            return newGameToken;
+
+        }
+
+        public async Task<string> StartNewGameLogged(StartDataDto startData)
+        {
+          
             DifficultyLevel difficulty =
                 (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startData.Difficulty, ignoreCase: true);
 
-            var newGameToken = _httpContextAccessorService.IsUserLoggedIn() ? _httpContextAccessorService.GetTokenFromHeader() 
-                : _gameTokenService.GenerateGuessSessionToken(startData);
-            // NOW ONLY WORKS FOR EASY DIFFICULTY
             List<Round> gameRounds = await GenerateRounds(difficulty);
 
-            var gameSession = new GameSession
-            {
-                Token = newGameToken,
-                Rounds = gameRounds,
-                ActualRoundNumber = 0,
-                ExpirationDate = DateTime.UtcNow.AddMinutes(30),
-                Nickname = startData.Nickname,
-                DifficultyLevel = difficulty
-            };
+            AccountDetailsFromTokenDto accountDetails = _httpContextAccessorService.GetAuthenticatedUserProfile();
+            GameSession gameSession = GenerateGameSession(ObjectId.Parse(accountDetails.UserId), gameRounds, accountDetails.Nickname, difficulty);
 
-            _gameSessionService.AddNewGameSession(gameSession);
-            return newGameToken;
+            await _gameSessionService.AddNewGameSession(gameSession);
+            return _httpContextAccessorService.GetTokenFromHeader();
         }
 
+        private GameSession GenerateGameSession(ObjectId id,List<Round> rounds,
+            string nickname,DifficultyLevel difficulty)
+        {
+            return new GameSession
+            {
+                Id = id,
+                Rounds = rounds,
+                ExpirationDate = GAME_SESSION_EXPIRATION,
+                Nickname = nickname,
+                DifficultyLevel = difficulty.ToString(),
+            };
+        }
 
         private async Task<List<Round>> GenerateRounds(DifficultyLevel difficulty)
         {
@@ -101,7 +154,7 @@ namespace PartyGame.Services
             {
                 var newRound = new Round
                 {
-                    IDPlaceToGuess = places[i],
+                    IDPlaceToGuess = places[i].ToString(),
                     GuessedCoordinates = new Coordinates(),
                     Score = 0
                 };
@@ -115,12 +168,12 @@ namespace PartyGame.Services
 
         public async Task<GuessingPlaceDto> GetPlaceToGuess(int roundsNumber)
         {
-            string token = _httpContextAccessorService.GetTokenFromHeader();
-            var session = await _gameSessionService.GetSessionByToken(token);
+            string id = _httpContextAccessorService.GetGameSessionIdFromHeader();
+            var session = await _gameSessionService.GetSessionById(id);
 
             if (session.ActualRoundNumber != roundsNumber)
             {
-                throw new InvalidOperationException(
+                throw new ForbidException(
                     $"The actual round number is ({session.ActualRoundNumber}) and getting other round number is not allowed");
             }
 
@@ -131,8 +184,8 @@ namespace PartyGame.Services
 
         public async Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates)
         {
-            var token = _httpContextAccessorService.GetTokenFromHeader();
-            var session = await _gameSessionService.GetSessionByToken(token);
+            var gameId = _httpContextAccessorService.GetGameSessionIdFromHeader();
+            var session = await _gameSessionService.GetSessionById(gameId);
 
             if (session.ActualRoundNumber >= ROUNDS_NUMBER)
             {
@@ -155,7 +208,7 @@ namespace PartyGame.Services
             session.ActualRoundNumber++;
             session.GameScore += distanceDifference;
 
-            _gameSessionService.UpdateGameSession(session);
+            await _gameSessionService.UpdateGameSession(session);
 
             return result;
         }
@@ -181,29 +234,34 @@ namespace PartyGame.Services
 
         }
 
-        public async Task<SummarizeGameDto> FinishGame()
+        public async Task<FinishedGameDto> FinishGame()
         {
-            var token = _httpContextAccessorService.GetTokenFromHeader();
-            GameSession session = await _gameSessionService.GetSessionByToken(token);
-            SummarizeGameDto summarize = CreateSummarize(session);
+            var gameId = _httpContextAccessorService.GetGameSessionIdFromHeader();
+            GameSession session = await _gameSessionService.GetSessionById(gameId);
 
-            return summarize;
-        }
+            if (session.ActualRoundNumber != ROUNDS_NUMBER)
+            {
+                throw new Exception($"Game can be finished when you finished the game. {ROUNDS_NUMBER - session.ActualRoundNumber} rounds left");
+            } 
 
-        private SummarizeGameDto CreateSummarize(GameSession session)
-        {
-            SummarizeGameDto summarize = new SummarizeGameDto();
+            FinishedGame finishedGame = _mapper.Map<FinishedGame>(session);
 
-            summarize.Rounds = session.Rounds;
-            summarize.Score = session.GameScore;
+            string tokenType = _httpContextAccessorService.GetTokenType();
 
-            return summarize;
+            if (tokenType == "user")
+            {
+                finishedGame.UserId = ObjectId.Parse(_httpContextAccessorService.GetAuthenticatedUserProfile().UserId);
+                await _scoreboardService.SaveGame(finishedGame);
+            }            
+            await _gameSessionService.DeleteSessionById(gameId);
+
+            return _mapper.Map<FinishedGameDto>(finishedGame);
         }
 
         public async Task<int> GetActualRoundNumber()
         {
             string token = _httpContextAccessorService.GetTokenFromHeader();
-            return (await _gameSessionService.GetSessionByToken(token)).ActualRoundNumber;
+            return (await _gameSessionService.GetSessionById(token)).ActualRoundNumber;
         }
 
     }

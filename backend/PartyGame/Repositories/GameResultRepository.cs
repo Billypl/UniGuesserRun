@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using PartyGame.Entities;
 using PartyGame.Models.ScoreboardModels;
 using SortDirection = PartyGame.Models.ScoreboardModels.SortDirection;
@@ -9,13 +10,13 @@ namespace PartyGame.Repositories
     public interface IScoreboardRepository : IRepository<FinishedGame>
     {
         Task<List<FinishedGame>> GetGames(ScoreboardQuery scoreboardQuery);
+       
     }
 
-    public class ScoreboardRepository :Repository<FinishedGame>,IScoreboardRepository
+    public class GameResultRepository :Repository<FinishedGame>,IScoreboardRepository
     {
-
   
-        public ScoreboardRepository(GameDbContext gameDbContext):base(gameDbContext.Database, "GameResults")
+        public GameResultRepository(GameDbContext gameDbContext,string documentName):base(gameDbContext.Database,documentName )
         {
         }
 
@@ -23,6 +24,12 @@ namespace PartyGame.Repositories
         {
             var filterBuilder = Builders<FinishedGame>.Filter;
             var filter = FilterDefinition<FinishedGame>.Empty;
+
+            // Filtracja po difficulty level
+            if (scoreboardQuery.DifficultyLevel is not null)
+            {
+                filter &= filterBuilder.Regex(r => r.DifficultyLevel, new MongoDB.Bson.BsonRegularExpression(scoreboardQuery.DifficultyLevel.ToString(), "i"));
+            }
 
             // Filtracja po SearchNickname
             if (!string.IsNullOrEmpty(scoreboardQuery.SearchNickname))

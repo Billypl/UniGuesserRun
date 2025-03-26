@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using PartyGame.Extensions.Exceptions;
 
 namespace PartyGame.Middleware
 {
@@ -25,10 +26,15 @@ namespace PartyGame.Middleware
                 context.Response.StatusCode = 500;
                 await context.Response.WriteAsync(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (ForbidException ex)
+            {
+                context.Response.StatusCode = 503;
+                await context.Response.WriteAsync($"The resources are forbidden: {ex.Message}");
+            }
+            catch (NotFoundException ex)
             {
                 context.Response.StatusCode = 404;
-                await context.Response.WriteAsync($"Resource not found: {ex.Message}");
+                await context.Response.WriteAsync($"Resource was not found: {ex.Message}");
             }
             catch (Exception ex)
             {

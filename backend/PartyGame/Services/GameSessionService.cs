@@ -7,13 +7,12 @@ namespace PartyGame.Services
 {
     public interface IGameSessionService
     {
-        Task DeleteSessionByToken(string token);
+        Task DeleteSessionById(string id);
         Task DeleteSessionByHeader();
-        Task<GameSession> GetSessionByToken(string token);
-        Task<GameSession> GetSessionByHeader();
+        Task<GameSession> GetSessionById(string id);
         Task UpdateGameSession(GameSession session);
-        Task<bool> HasActiveGameSession(string token);
         Task AddNewGameSession(GameSession session);
+        Task<bool> HasActiveGameSession(string token);
 
     }
 
@@ -29,46 +28,29 @@ namespace PartyGame.Services
         }
 
 
-        public async Task DeleteSessionByToken(string token)
+        public async Task DeleteSessionById(string id)
         {
-            DeleteResult deleteResult = await _gameSessionRepository.DeleteSessionByToken(token);
+            DeleteResult deleteResult = await _gameSessionRepository.DeleteAsync(id);
             if (deleteResult.DeletedCount == 0)
             {
-                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
+                throw new KeyNotFoundException($"GameSession with id {id} was not found.");
             }
         }
 
         public async Task DeleteSessionByHeader()
         {
-            string token = _httpContextAccessorService.GetTokenFromHeader();
+            string id = _httpContextAccessorService.GetGameSessionIdFromHeader();
 
-            DeleteResult deleteResult = await _gameSessionRepository.DeleteSessionByToken(token);
-            if (deleteResult.DeletedCount == 0)
-            {
-                throw new KeyNotFoundException($"GameSession with token {token} was not found.");
-            }
+            await DeleteSessionById(id);
         }
 
-        public async Task<GameSession> GetSessionByToken(string token)
+        public async Task<GameSession> GetSessionById(string id)
         {
-            GameSession gameSession = await _gameSessionRepository.GetGameSessionByToken(token);
+            GameSession gameSession = await _gameSessionRepository.GetAsync(id);
 
             if (gameSession is null)
             {
-                throw new KeyNotFoundException($"Game session with token {token} was not found");
-            }
-            return gameSession;
-        }
-
-        public async Task<GameSession> GetSessionByHeader()
-        {
-            string token =  _httpContextAccessorService.GetTokenFromHeader();
-
-            GameSession gameSession = await _gameSessionRepository.GetGameSessionByToken(token);
-
-            if (gameSession is null)
-            {
-                throw new KeyNotFoundException($"Game session with token {token} was not found");
+                throw new KeyNotFoundException($"Game session with token {id} was not found");
             }
             return gameSession;
         }
@@ -85,9 +67,19 @@ namespace PartyGame.Services
             await _gameSessionRepository.UpdateAsync(session);
         }
 
-        public async Task<bool> HasActiveGameSession(string token)
+        public async Task AddNewGameSession(GameSession session)
         {
-            var existingSession = await _gameSessionRepository.GetGameSessionByToken(token);
+            GameSession existedSession = await _gameSessionRepository.GetAsync(session.Id);
+            if (existedSession != null)
+            {
+                throw new InvalidOperationException("A session with the same token already exists.");
+            }
+            await _gameSessionRepository.CreateAsync(session);
+        }
+
+        public async Task<bool> HasActiveGameSession(string id)
+        {
+            var existingSession = await _gameSessionRepository.GetAsync(id);
 
             if (existingSession is null)
             {
@@ -96,17 +88,6 @@ namespace PartyGame.Services
 
             return true;
         }
-
-        public async Task AddNewGameSession(GameSession session)
-        {
-            GameSession existedSession = await _gameSessionRepository.GetGameSessionByToken(session.Token);
-            if (existedSession != null)
-            {
-                throw new InvalidOperationException("A session with the same token already exists.");
-            }
-            await _gameSessionRepository.CreateAsync(session);
-        }
-
 
     }
 
