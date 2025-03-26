@@ -1,3 +1,4 @@
+
 import axios, { AxiosInstance } from 'axios'
 import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY } from '../../Constants'
 import { Coordinates } from '../../models/Coordinates'
@@ -6,6 +7,7 @@ import { StartGameResponse } from '../../models/game/StartGameResponse'
 import { GuessingPlaceDto } from '../../models/game/GuessingPlaceDto'
 import { RoundResultDto } from '../../models/game/RoundResultDto'
 import { FinishedGameDto } from '../../models/game/SummarizeGameDto'
+
 
 export class GameService {
 	private axiosInstance: AxiosInstance

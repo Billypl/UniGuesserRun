@@ -1,3 +1,4 @@
+
 import { Coordinates } from "../Coordinates";
 
 export interface FinishedGameDto {
