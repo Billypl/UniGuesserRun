@@ -45,14 +45,12 @@
 	.options {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
 		flex-basis: auto;
 		row-gap: 20px;
 
 		.menu_option {
 			@include Mixins.light-button;
 			font-size: 25px;
-			padding: 1.25em;
 			background-color: Colors.$white;
 			color: Colors.$dark-blue;
 			border-radius: 100px;

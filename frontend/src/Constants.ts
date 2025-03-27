@@ -1,4 +1,4 @@
-import exp from "constants"
+import exp from 'constants'
 
 export const GAME_API_URL = 'https://localhost:7157/api/game'
 export const SCOREBOARD_API_URL = 'https://localhost:7157/api/game_results'
@@ -19,7 +19,7 @@ export const SCOREBOARD_ROUTE = '/scoreboard'
 export const ADD_PLACE_ROUTE = '/add_place'
 export const PLACE_QUEUE_ROUTE = '/place_queue'
 export const PLACES_ROUTE = '/places'
-
+export const GAME_STATE = '/game_state'
 
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'

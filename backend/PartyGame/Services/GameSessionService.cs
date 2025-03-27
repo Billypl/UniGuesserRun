@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using PartyGame.Entities;
+using PartyGame.Models.GameModels;
 using PartyGame.Repositories;
 
 namespace PartyGame.Services
@@ -14,17 +17,22 @@ namespace PartyGame.Services
         Task AddNewGameSession(GameSession session);
         Task<bool> HasActiveGameSession(string token);
 
+        Task<GameSessionStateDto> GetActualGameState();
+
     }
 
     public class GameSessionService : IGameSessionService
     {
         private readonly IGameSessionRepository _gameSessionRepository;
         private readonly IHttpContextAccessorService _httpContextAccessorService;
+        private readonly IMapper _mapper;
 
-        public GameSessionService(IGameSessionRepository gameSessionRepository,IHttpContextAccessorService httpContextAccessorService)
+        public GameSessionService(IGameSessionRepository gameSessionRepository,IHttpContextAccessorService httpContextAccessorService,
+            IMapper mapper)
         {
             _gameSessionRepository = gameSessionRepository;
             _httpContextAccessorService = httpContextAccessorService;
+            _mapper = mapper;
         }
 
 
@@ -87,6 +95,16 @@ namespace PartyGame.Services
             }
 
             return true;
+        }
+
+
+        public async Task<GameSessionStateDto> GetActualGameState()
+        {
+            string gameSessionId=_httpContextAccessorService.GetGameSessionIdFromHeader();
+
+            GameSession gameSession = await _gameSessionRepository.GetAsync(gameSessionId);
+
+            return _mapper.Map<GameSessionStateDto>(gameSession);
         }
 
     }

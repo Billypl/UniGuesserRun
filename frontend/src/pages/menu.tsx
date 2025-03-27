@@ -13,7 +13,7 @@ const Menu: React.FC = () => {
     if (!accountService.isLoggedIn()) {
       return;
     }
-    window.sessionStorage.removeItem(GAME_TOKEN_KEY);
+   // window.sessionStorage.removeItem(GAME_TOKEN_KEY);
     navigate(GAME_ROUTE);
   };
 
