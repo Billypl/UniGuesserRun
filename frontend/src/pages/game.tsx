@@ -27,11 +27,11 @@ const Game: React.FC = () => {
 		const controller = new AbortController()
 		const signal = controller.signal
 
-		if (!gameService.hasToken()) {
-			startGame(signal)
-		} else {
+		if (gameService.hasToken()) {
 			console.log('istnieje')
 			getGame(signal)
+		} else {
+			startGame(signal)
 		}
 
 		return () => {
@@ -48,11 +48,11 @@ const Game: React.FC = () => {
 			if (!nickname) {
 				throw new Error('User not logged in')
 			}
-			await gameService.startGame(nickname, difficulty, signal)
+			await gameService.startNewGameSession(nickname, difficulty, signal)
 			startRound(0)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
-				console.log('Request aborted by the abort conttoler (2nd fetch prevention')
+				console.error('Request aborted by the abort conttoler (2nd fetch prevention')
 			} else {
 				setError('Failed to fetch data. Please try again later.')
 				console.error('Error fetching data:', err.name)
@@ -67,23 +67,23 @@ const Game: React.FC = () => {
 		setError(null)
 
 		try {
-			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
-			if (!nickname) {
-				throw new Error('User not logged in')
-			}
 			const response = await gameService.checkGameState(signal)
 			startRound(response.actualRoundNumber)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
-				console.log('Request aborted by the abort controller (2nd fetch prevention)')
+				console.error('Request aborted by the abort controller (2nd fetch prevention)')
 				return
 			} else {
 				setError('Failed to fetch data. Please try again later.')
-				console.error('Error fetching data:', err)
+				//console.error('Error fetching data:', err)
+				console.log('nieudalo sie wczytac stanu gry, tworzymy nowa gre')
 				const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
-				if (nickname) {
-					await gameService.startGame(nickname, difficulty, signal)
+				const newController = new AbortController()
+				const newSignal = newController.signal
+				if (!nickname) {
+					throw new Error('User nickname is missing');
 				}
+				startGame(newSignal)
 			}
 		} finally {
 			setLoading(false)

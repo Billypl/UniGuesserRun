@@ -20,7 +20,7 @@ export class GameService {
 		})
 	}
 
-	async startGame(nickname: string, difficulty: string, signal?: AbortSignal) {
+	async startNewGameSession(nickname: string, difficulty: string, signal?: AbortSignal) {
 		const startData: StartGameData = {
 			nickname: nickname,
 			difficulty: difficulty,
