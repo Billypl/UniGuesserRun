@@ -14,6 +14,8 @@ import { LocationMarker } from "../components/LocationMarker";
 import { ClickedIcon } from "../components/MarkerIcons";
 import { SelectMapLocation } from "../components/SelectMapLocation";
 import { RecenterMap } from "../components/RecenterMap";
+import FormCamera from "../components/FormCamera";
+import Webcam from "react-webcam";
 
 interface AddPlaceFormInputs {
   name: string;
@@ -105,12 +107,16 @@ const AddPlace: React.FC = () => {
         Read GPS coordinates
       </button>
 
-      <form onSubmit={handleSubmit(addNewPlace)} className={styles.form}>
-        <p className={styles.error}>{geolocationError && "Geolocation error: " + geolocationError}</p>
-        <p className={styles.coordinates}>
-          {coordinates && `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
-        </p>
+      <p className={styles.error}>{geolocationError && "Geolocation error: " + geolocationError}</p>
+      <p className={styles.coordinates}>
+        {coordinates && `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
+      </p>
 
+      <div className={styles.camera_container}>
+        <FormCamera />
+      </div>
+
+      <form onSubmit={handleSubmit(addNewPlace)} className={styles.form}>
         <FormField label="Name" name="name" type="text" register={add_place} error={errors.name?.message} />
 
         <FormField
