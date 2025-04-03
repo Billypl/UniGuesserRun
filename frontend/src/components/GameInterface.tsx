@@ -9,6 +9,7 @@ import { TargetIcon, ClickedIcon } from "./MarkerIcons";
 import { TargetMarker } from "./TargetMarker";
 
 import styles from "../styles/Game.module.scss";
+import { MAP_CENTER } from "../Constants";
 
 interface GameInterfaceProps {
   error: string | null;
@@ -25,8 +26,6 @@ interface GameInterfaceProps {
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   const [clickedLatLng, setClickedLatLng] = useState<[number, number] | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
-
-  const MAP_CENTER: [number, number] = [54.371513, 18.619164];
 
   const selectLocation = (latlng: [number, number] | null) => {
     if (playerChoiceConfirmed) return; // cant move the marker after confirming your choice

@@ -1,6 +1,6 @@
 import React from "react";
 import { UseFormRegister, FieldValues } from "react-hook-form";
-import styles from "../styles/AccountForm.module.scss";
+import styles from "../styles/FormField.module.scss";
 
 interface FormFieldProps<T extends FieldValues> {
     label: string;
