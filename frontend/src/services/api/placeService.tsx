@@ -28,7 +28,11 @@ export class PlaceService {
   }
 
   async getAllPlacesInQueue(): Promise<PlaceToCheckDto[]> {
-    const result = await this.axiosInstance.get<PlaceToCheckDto[]>("/to_check");
+    const result = await this.axiosInstance.get<PlaceToCheckDto[]>("/to_check", {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
     return result.data;
   }
 
@@ -76,11 +80,21 @@ export class PlaceService {
   }
 
   async rejectPlaceToCheck(placeId: string) {
-    await this.axiosInstance.delete("/to_check/reject", { params: { placeId } });
+    await this.axiosInstance.delete("/to_check/reject", {
+      params: { placeId },
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
   }
 
   async acceptPlaceToCheck(placeId: string) {
-    await this.axiosInstance.post("/to_check/approve", '', { params: { placeId } });
+    await this.axiosInstance.post("/to_check/approve", "", {
+      params: { placeId },
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
   }
 }
 

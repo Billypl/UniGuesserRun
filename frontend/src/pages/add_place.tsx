@@ -16,6 +16,7 @@ import { SelectMapLocation } from "../components/SelectMapLocation";
 import { RecenterMap } from "../components/RecenterMap";
 import FormCamera from "../components/FormCamera";
 import Webcam from "react-webcam";
+import FormSelect from "../components/FormSelect";
 
 interface AddPlaceFormInputs {
   name: string;
@@ -131,10 +132,15 @@ const AddPlace: React.FC = () => {
 
         <FormField label="alt" name="alt" type="text" register={add_place} error={errors.alt?.message} />
 
-        <FormField
-          label="difficulty"
+        <FormSelect
+          label="Difficulty"
           name="difficulty"
-          type="text"
+          options={[
+            { value: "easy", label: "Easy" },
+            { value: "normal", label: "Normal" },
+            { value: "hard", label: "Hard" },
+            { value: "ultra-nightmare", label: "Ultra-Nightmare" },
+          ]}
           register={add_place}
           error={errors.difficulty?.message}
         />
