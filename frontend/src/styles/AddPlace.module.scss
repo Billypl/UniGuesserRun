@@ -26,8 +26,10 @@
   }
 
   .camera_container {
-    width: 80%;
-}
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
 
   .form {
     margin: 15px 0 15px;

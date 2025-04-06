@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import FormField from "../components/FormField";
 import Logo from "../components/Logo";
-import { MAP_CENTER, MENU_ROUTE, USER_ROLE_ADMIN, USER_ROLE_MODERATOR } from "../Constants";
+import {
+  MAP_CENTER,
+  MENU_ROUTE,
+  USER_ROLE_ADMIN,
+  USER_ROLE_MODERATOR,
+} from "../Constants";
 import { useUserContext } from "../hooks/useUserContext";
 import styles from "../styles/AddPlace.module.scss";
 import placeService from "../services/api/placeService";
@@ -14,7 +19,7 @@ import { LocationMarker } from "../components/LocationMarker";
 import { ClickedIcon } from "../components/MarkerIcons";
 import { SelectMapLocation } from "../components/SelectMapLocation";
 import { RecenterMap } from "../components/RecenterMap";
-import FormCamera from "../components/FormCamera";
+import FormImage from "../components/FormImage";
 import Webcam from "react-webcam";
 import FormSelect from "../components/FormSelect";
 
@@ -31,11 +36,15 @@ const AddPlace: React.FC = () => {
   const navigate = useNavigate();
   const { setUsername } = useUserContext();
   const [error, setError] = useState<string | null>(null);
-  const { coordinates, setCoordinates, readCoordinates, geolocationError } = useGeolocation();
+  const { coordinates, setCoordinates, readCoordinates, geolocationError } =
+    useGeolocation();
+  const [placeAdded, setPlaceAdded] = useState<boolean>(false);
+  const [image, setImage] = useState<string | null>(null);
 
   const {
-    register: add_place,
+    register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<AddPlaceFormInputs>();
 
@@ -59,10 +68,20 @@ const AddPlace: React.FC = () => {
 
     if (!errorMessage) {
       // TODO: ok and return to menu OR add another place
-
-      navigate(MENU_ROUTE);
+      setPlaceAdded(true);
+      
+      clearStates();
+      reset();
     }
   };
+
+
+  const clearStates = () => {
+    setUsername("");
+    setCoordinates(null);
+    setError(null);
+    setImage(null);
+  }
 
   const selectCoordinates = (latlng: [number, number] | null) => {
     if (latlng) {
@@ -75,7 +94,15 @@ const AddPlace: React.FC = () => {
     return userRole === USER_ROLE_ADMIN || userRole === USER_ROLE_MODERATOR;
   };
 
-  return (
+  return placeAdded ? (
+    <>
+      <p className={styles.success}>Place added successfully!</p>
+      <a className={styles.option} onClick={() => navigate(MENU_ROUTE)}>
+        <button>Go back to menu</button>
+      </a>
+      <button className={styles.option} onClick={() => setPlaceAdded(false)}>Add another place</button>
+    </>
+  ) : (
     <div className={styles.form_container}>
       <div className={styles.logo_container}>
         <Logo />
@@ -83,7 +110,12 @@ const AddPlace: React.FC = () => {
       <h2 className={styles.header}>Add new place to UniGuesser</h2>
 
       <div className={styles.map}>
-        <MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
+        <MapContainer
+          center={MAP_CENTER}
+          zoom={13}
+          scrollWheelZoom={true}
+          style={{ height: "100%", width: "100%" }}
+        >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -96,7 +128,9 @@ const AddPlace: React.FC = () => {
                 icon={ClickedIcon}
                 label="Clicked location:"
               />
-              <RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
+              <RecenterMap
+                location={[coordinates.latitude, coordinates.longitude]}
+              />
             </>
           )}
 
@@ -108,29 +142,54 @@ const AddPlace: React.FC = () => {
         Read GPS coordinates
       </button>
 
-      <p className={styles.error}>{geolocationError && "Geolocation error: " + geolocationError}</p>
+      <p className={styles.error}>
+        {geolocationError && "Geolocation error: " + geolocationError}
+      </p>
       <p className={styles.coordinates}>
-        {coordinates && `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
+        {coordinates &&
+          `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
       </p>
 
-      <div className={styles.camera_container}>
-        <FormCamera />
-      </div>
-
       <form onSubmit={handleSubmit(addNewPlace)} className={styles.form}>
-        <FormField label="Name" name="name" type="text" register={add_place} error={errors.name?.message} />
+        <div className={styles.camera_container}>
+          <FormImage 
+            setImage={setImage}
+            image={image}
+            register={register}
+          />
+        </div>
+
+        <FormField
+          label="Name"
+          name="name"
+          type="text"
+          register={register}
+          error={errors.name?.message}
+        />
 
         <FormField
           label="Description"
           name="description"
           type="text"
-          register={add_place}
+          register={register}
           error={errors.description?.message}
         />
 
-        <FormField label="imageUrl" name="imageUrl" type="text" register={add_place} error={errors.imageUrl?.message} />
+        <FormField
+          label="imageUrl"
+          name="imageUrl"
+          type="text"
+          register={register}
+          error={errors.imageUrl?.message}
+        />
 
-        <FormField label="alt" name="alt" type="text" register={add_place} error={errors.alt?.message} />
+        <FormField
+          label="alt"
+          name="alt"
+          type="text"
+          register={register}
+          error={errors.alt?.message}
+        />
 
         <FormSelect
           label="Difficulty"
@@ -141,7 +200,7 @@ const AddPlace: React.FC = () => {
             { value: "hard", label: "Hard" },
             { value: "ultra-nightmare", label: "Ultra-Nightmare" },
           ]}
-          register={add_place}
+          register={register}
           error={errors.difficulty?.message}
         />
 
