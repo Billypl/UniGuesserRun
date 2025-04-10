@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MongoDB.Bson;
 using PartyGame.Entities;
 using PartyGame.Models;
 using PartyGame.Models.AccountModels;
@@ -16,31 +15,25 @@ namespace PartyGame.Extensions
         {
             CreateMap<Place, GuessingPlaceDto>();
             CreateMap<NewPlaceDto, Place>();
-            CreateMap<PlaceToCheck, PlaceToCheckDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
-
-            CreateMap<PlaceToCheckDto, PlaceToCheck>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => ObjectId.Parse(src.Id)));
 
             CreateMap<User, AccountDetailsDto>();
             CreateMap<AccountDetailsDto, User>();
 
             CreateMap<UpdatePlaceDto, Place>();
             CreateMap<Place, ShowPlaceDto>()
-                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString())); ;
-
-            CreateMap<GameSession, FinishedGame>()
-                .ForMember(dest => dest.FinalScore, opt => opt.MapFrom(src => src.GameScore));
-
-            CreateMap<FinishedGame,FinishedGameDto>()
                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
-                  .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.ToString()))
-                  .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.DifficultyLevel.ToString()));
+                  .ForMember(dest => dest.Coordinates, opt => opt.MapFrom(src =>
+                  new Coordinates { Latitude = src.Latitude, Longitude = src.Longitude }))
+                  .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.AuthorId))
+                  .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.AuthorPlace.Nickname));
 
-            CreateMap<FinishedGame, FinishedGameToTable>()
-                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
-                  .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.ToString()))
-                  .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.DifficultyLevel.ToString()));
+            CreateMap<GameSession, FinishedGameDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId.ToString()))  // Map PublicId to Id as string
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.HasValue ? src.UserId.ToString() : null))  // Map nullable UserId to string
+            .ForMember(dest => dest.Nickname, opt => opt.MapFrom(src => src.Player != null ? src.Player.Nickname : null))  // Map nullable Player Nickname
+            .ForMember(dest => dest.FinalScore, opt => opt.MapFrom(src => src.GameScore))  // Map GameScore to FinalScore
+            .ForMember(dest => dest.Rounds, opt => opt.MapFrom(src => src.Rounds))  // Map Rounds
+            .ForMember(dest => dest.Difficulty, opt => opt.MapFrom(src => src.Difficulty));  // Map Difficulty
 
             CreateMap<ShowPlaceDto, GuessingPlaceDto>();
 
@@ -49,7 +42,5 @@ namespace PartyGame.Extensions
             CreateMap<GameSession, GameSessionStateDto>();
 
         }
-
-
     }
 }

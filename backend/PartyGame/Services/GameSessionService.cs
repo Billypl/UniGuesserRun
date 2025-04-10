@@ -1,23 +1,28 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Microsoft.AspNetCore.Http.HttpResults;
 using PartyGame.Entities;
+using PartyGame.Extensions.Exceptions;
+using PartyGame.Models;
 using PartyGame.Models.GameModels;
+using PartyGame.Models.ScoreboardModels;
 using PartyGame.Repositories;
 
 namespace PartyGame.Services
 {
     public interface IGameSessionService
     {
-        Task DeleteSessionById(string id);
+        Task DeleteSessionById(int id);
         Task DeleteSessionByHeader();
-        Task<GameSession> GetSessionById(string id);
+        Task<GameSession> GetSessionById(int id);
+        Task<GameSession> GetSessionByGuid(string guid);
         Task UpdateGameSession(GameSession session);
         Task AddNewGameSession(GameSession session);
-        Task<bool> HasActiveGameSession(string token);
-
+        Task<bool> HasActiveGameSession(string guid);
         Task<GameSessionStateDto> GetActualGameState();
+        Task FinishGame(string guid);
+        Task<FinishedGameDto> GetFinishedGame(string guid);
+        Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
+        Task<PagedResult<UserStats>> GetPagedUserStatsResult(ScoreboardQuery scoreboardQuery);
 
     }
 
@@ -36,30 +41,49 @@ namespace PartyGame.Services
         }
 
 
-        public async Task DeleteSessionById(string id)
+        public async Task DeleteSessionById(int id)
         {
-            DeleteResult deleteResult = await _gameSessionRepository.DeleteAsync(id);
-            if (deleteResult.DeletedCount == 0)
+            var deleteResult = await _gameSessionRepository.DeleteAsync(id);
+            if (deleteResult == false)
             {
-                throw new KeyNotFoundException($"GameSession with id {id} was not found.");
+                throw new NotFoundException($"GameSession with id {id} was not found.");
             }
         }
 
         public async Task DeleteSessionByHeader()
         {
-            string id = _httpContextAccessorService.GetGameSessionIdFromHeader();
+            string guid = _httpContextAccessorService.GetUserIdFromHeader();
 
-            await DeleteSessionById(id);
+            GameSession? session = await _gameSessionRepository.GetByPublicIdAsync(guid);
+
+            if (session is null)
+            {
+                throw new NotFoundException($"GameSession with id {guid} was not found.");
+            }
+
+            await DeleteSessionById(session.Id);
         }
 
-        public async Task<GameSession> GetSessionById(string id)
+        public async Task<GameSession> GetSessionById(int id)
         {
-            GameSession gameSession = await _gameSessionRepository.GetAsync(id);
+            GameSession? gameSession = await _gameSessionRepository.GetAsync(id);
 
             if (gameSession is null)
             {
-                throw new KeyNotFoundException($"Game session with token {id} was not found");
+                throw new KeyNotFoundException($"Game session with id {id} was not found");
             }
+            return gameSession;
+        }
+
+        public async Task<GameSession> GetSessionByGuid(string guid)
+        {
+            GameSession? gameSession = await _gameSessionRepository.GetByPublicIdAsync(guid);
+
+            if(gameSession is null)
+            {
+                throw new KeyNotFoundException($"Game session with id {guid} was not found");
+            }
+
             return gameSession;
         }
 
@@ -77,7 +101,7 @@ namespace PartyGame.Services
 
         public async Task AddNewGameSession(GameSession session)
         {
-            GameSession existedSession = await _gameSessionRepository.GetAsync(session.Id);
+            GameSession? existedSession = await _gameSessionRepository.GetAsync(session.Id);
             if (existedSession != null)
             {
                 throw new InvalidOperationException("A session with the same token already exists.");
@@ -85,9 +109,9 @@ namespace PartyGame.Services
             await _gameSessionRepository.CreateAsync(session);
         }
 
-        public async Task<bool> HasActiveGameSession(string id)
+        public async Task<bool> HasActiveGameSession(string guid)
         {
-            var existingSession = await _gameSessionRepository.GetAsync(id);
+            var existingSession = await _gameSessionRepository.GetActiveGameSession(guid);
 
             if (existingSession is null)
             {
@@ -97,17 +121,69 @@ namespace PartyGame.Services
             return true;
         }
 
-
         public async Task<GameSessionStateDto> GetActualGameState()
         {
-            string gameSessionId=_httpContextAccessorService.GetGameSessionIdFromHeader();
+            string gameSessionId = _httpContextAccessorService.GetUserIdFromHeader();
 
-            GameSession gameSession = await _gameSessionRepository.GetAsync(gameSessionId);
+            GameSession? session = await _gameSessionRepository.GetByPublicIdAsync(gameSessionId);
 
-            return _mapper.Map<GameSessionStateDto>(gameSession);
+            if (session is null)
+            {
+                throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
+            }
+
+            return _mapper.Map<GameSessionStateDto>(session);
         }
 
-    }
+        public async Task FinishGame(string guid)
+        {
+            GameSession? gameSession = await _gameSessionRepository.GetActiveGameSession(guid);
 
-   
+            gameSession.IsFinished = true;
+            gameSession.PublicId = Guid.NewGuid();
+
+            await _gameSessionRepository.UpdateAsync(gameSession);
+        }
+
+        public async Task<FinishedGameDto> GetFinishedGame(string guid)
+        {
+            GameSession? gameSession = await _gameSessionRepository.GetByPublicIdAsync(guid);
+        
+            if(gameSession is null)
+            {
+                throw new NotFoundException($"Game with id ${guid} does not exist");
+            }
+        
+            if(gameSession.IsFinished == false)
+            {
+                throw new Exception($"Game is not finished and cannot be showed");
+
+            }
+            return _mapper.Map<FinishedGameDto>(gameSession);     
+        }
+
+        public async Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery)
+        {
+            var games = await _gameSessionRepository.GetGameHistoryPage(scoreboardQuery);
+
+            var mappedGames = _mapper.Map<List<FinishedGameDto>>(games);
+            int totalScores = mappedGames.Count();
+
+            var result = new PagedResult<FinishedGameDto>(mappedGames, totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
+
+            return result;
+        }
+
+        public async Task<PagedResult<UserStats>> GetPagedUserStatsResult(ScoreboardQuery scoreboardQuery)
+        {
+          var games = await _gameSessionRepository.GetUsersStats(scoreboardQuery);
+          int totalScores = games.Count();
+
+          var result = new PagedResult<UserStats>(games, totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
+          return result;
+        }
+
+
+    }
 }
+

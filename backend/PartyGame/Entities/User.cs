@@ -1,10 +1,17 @@
-﻿using MongoDB.Bson;
+﻿
+using PartyGame.Entities;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PartyGame.Entities
 {
     public class User
     {
-        public ObjectId Id { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid PublicId { get; set; } = Guid.NewGuid();
         public string Nickname { get;set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }

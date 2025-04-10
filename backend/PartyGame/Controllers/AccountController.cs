@@ -19,13 +19,8 @@ namespace PartyGame.Controllers
         [HttpPut("register")]
         public async Task<IActionResult> AddNewUser([FromBody] RegisterUserDto registerUserDto)
         {
-            _accountService.RegisterUser(registerUserDto,"User");
-
-            return Ok(new
-                {
-                    Message = "User created"
-                }
-            );
+            await _accountService.RegisterUser(registerUserDto,"User");
+            return Ok(new {Message = "User created"} );
         }
 
         [HttpPost("login")]

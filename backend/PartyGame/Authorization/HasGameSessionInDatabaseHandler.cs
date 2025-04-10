@@ -26,7 +26,7 @@ namespace PartyGame.Authorization
                 return;
             }
 
-            GameSession? gameSession = await _gameSessionRepository.GetAsync(gameSessionID);
+            GameSession? gameSession = await _gameSessionRepository.GetActiveGameSession(gameSessionID);
 
             if (gameSession is not null)
             {

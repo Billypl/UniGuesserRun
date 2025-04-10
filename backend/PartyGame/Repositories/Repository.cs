@@ -1,62 +1,89 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using PartyGame.Entities;
-
+﻿
 namespace PartyGame.Repositories
 {
-    public interface IRepository<T> where T : class
+    using global::PartyGame.Entities;
+    using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    namespace PartyGame.Repositories
     {
-        Task<T> CreateAsync(T entity);
-        Task<T> GetAsync(string id);
-        Task<T> GetAsync(ObjectId id);
-        Task<IEnumerable<T>> GetAllAsync();
-        Task UpdateAsync(T entity);
-        Task<DeleteResult> DeleteAsync(string id);
-    }
 
-    public abstract class Repository<T> : IRepository<T> where T : class
-    {
-        protected readonly IMongoCollection<T> Collection;
-
-        public Repository(IMongoDatabase dbContext, string collectionName)
+        public interface IRepository<T> where T : class
         {
-            Collection = dbContext.GetCollection<T>(collectionName);
+            Task<T> CreateAsync(T entity);
+            Task<IEnumerable<T>> CreateManyAsync(IEnumerable<T> entities);
+            Task<T?> GetAsync(int id);
+            Task<IEnumerable<T>> GetAllAsync();
+            Task UpdateAsync(T entity);
+            Task<bool> DeleteAsync(int id);
+            Task<T?> GetByPublicIdAsync(Guid publicId);
+            Task<T?> GetByPublicIdAsync(string publicId);
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public abstract class Repository<T> : IRepository<T> where T : class
         {
-            await Collection.InsertOneAsync(entity);
-            return entity;
-        }
+            protected readonly GameDbContext _context;
+            protected readonly DbSet<T> _dbSet;
 
-        public async Task<T> GetAsync(string id)
-        {
-            var filter = Builders<T>.Filter.Eq("_id", new ObjectId(id));
-            return await Collection.Find(filter).FirstOrDefaultAsync();
-        }
+            public Repository(GameDbContext context)
+            {
+                _context = context;
+                _dbSet = context.Set<T>();
+            }
 
-        public async Task<T> GetAsync(ObjectId id)
-        {
-            var filter = Builders<T>.Filter.Eq("_id", id);
-            return await Collection.Find(filter).FirstOrDefaultAsync();
-        }
+            public async Task<T> CreateAsync(T entity)
+            {
+                await _dbSet.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await Collection.Find(FilterDefinition<T>.Empty).ToListAsync();
-        }
+            public async Task<IEnumerable<T>> CreateManyAsync(IEnumerable<T> entities)
+            {
+                await _dbSet.AddRangeAsync(entities);
+                await _context.SaveChangesAsync();
+                return entities;
+            }
 
-        public async Task UpdateAsync(T entity)
-        {
-            var idValue = entity.GetType().GetProperty("Id")?.GetValue(entity)?.ToString();
-            var filter = Builders<T>.Filter.Eq("_id", new ObjectId(idValue));
-            await Collection.ReplaceOneAsync(filter, entity);
-        }
+            public virtual async Task<T?> GetAsync(int id)
+            {
+                return await _dbSet.FindAsync(id);
+            }
 
-        public async Task<DeleteResult> DeleteAsync(string id)
-        {
-            var filter = Builders<T>.Filter.Eq("_id", new ObjectId(id));
-            return await Collection.DeleteOneAsync(filter);
+            public virtual async Task<IEnumerable<T>> GetAllAsync()
+            {
+                return await _dbSet.ToListAsync();
+            }
+
+            public async Task UpdateAsync(T entity)
+            {
+                _dbSet.Update(entity);
+                await _context.SaveChangesAsync();
+            }
+
+            public async Task<bool> DeleteAsync(int id)
+            {
+                var entity = await GetAsync(id);
+                if (entity != null)
+                {
+                    _dbSet.Remove(entity);
+                    await _context.SaveChangesAsync();
+                    return true; 
+                }
+                return false; 
+            }
+            public virtual async Task<T?> GetByPublicIdAsync(Guid publicId)
+            {
+                return await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
+            }
+
+            public virtual async Task<T?> GetByPublicIdAsync(string publicId)
+            {
+                var result = await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
+                return result; 
+            }
         }
     }
 

@@ -1,38 +1,34 @@
 ﻿using AutoMapper;
 using Microsoft.Identity.Client;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using PartyGame.Entities;
+using Microsoft.EntityFrameworkCore;
+using PartyGame.Repositories.PartyGame.Repositories;
 
 namespace PartyGame.Repositories
 {
     public interface IAccountRepository : IRepository<User>
     {
+        Task AddNewUsersAsync(IEnumerable<User> newUsers);
+        Task<User?> GetUserByNicknameOrEmailAsync(string nicknameOrEmail);
 
-        void AddNewUsers(IEnumerable<User> newUsers);
-        Task<User> GetUserByNicknameOrEmailAsync(string nicknameOrEmail);
     }
 
-    public class AccountRepository :Repository<User>,IAccountRepository
+    public class AccountRepository : Repository<User>, IAccountRepository
     {
-        public AccountRepository(GameDbContext gameDbContext):base(gameDbContext.Database,"Users")
+        public AccountRepository(GameDbContext gameDbContext) : base(gameDbContext)
         {
-
         }
 
-        public async void AddNewUsers(IEnumerable<User> newUsers)
+        public async Task AddNewUsersAsync(IEnumerable<User> newUsers)
         {
-            await Collection.InsertManyAsync(newUsers);
+            await _dbSet.AddRangeAsync(newUsers); // Add multiple users
+            await _context.SaveChangesAsync(); // Save changes
         }
 
-        public async Task<User> GetUserByNicknameOrEmailAsync(string nicknameOrEmail)
+        public async Task<User?> GetUserByNicknameOrEmailAsync(string nicknameOrEmail)
         {
-            var filter = Builders<User>.Filter.Or(
-                Builders<User>.Filter.Eq(u => u.Nickname, nicknameOrEmail),
-                Builders<User>.Filter.Eq(u => u.Email, nicknameOrEmail)
-            );
-
-            return await Collection.Find(filter).FirstOrDefaultAsync();
+            return await _dbSet
+                .FirstOrDefaultAsync(u => u.Nickname == nicknameOrEmail || u.Email == nicknameOrEmail);
         }
     }
 }
