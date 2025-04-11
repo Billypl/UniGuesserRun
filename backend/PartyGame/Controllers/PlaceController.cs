@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PartyGame.Entities;
 using PartyGame.Models.PlaceModels;
 using PartyGame.Services;
 
@@ -48,7 +47,6 @@ namespace PartyGame.Controllers
              await _placeService.UpdatePlaceByPublicId(placeId, updateDto);
             return Ok(new { Message = $"Place with id {placeId} updated successfully" });
         }
-
        
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]

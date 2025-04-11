@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using PartyGame.Entities;
 using PartyGame.Models.AccountModels;
 using PartyGame.Repositories;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.Extensions.Options;
 using PartyGame.Extensions.Exceptions;
 
@@ -18,9 +14,10 @@ namespace PartyGame.Services
         Task<LoginResultDto> Login(LoginUserDto loginUserDto);
         Task<AccountDetailsDto> GetAccountDetails();
         string RefreshSession();
-
-        Task<User> GetAccountDetailsByPublicId(string id);
-        Task<User> GetAccountDetailsByPublicId(Guid id);
+        Task<User> GetAccountDetailsByPublicId(string guid);
+        Task<User> GetAccountDetailsByPublicId(Guid guid);
+        Task DeleteUserByGUID(string guid);
+        Task DeleteUserByValueInToken();
     }
 
     public class AccountService : IAccountService
@@ -142,6 +139,25 @@ namespace PartyGame.Services
             }
 
             return user;
+        }
+
+        public async Task DeleteUserByGUID(string guid)
+        {
+           User? user = await _accountRepository.GetByPublicIdAsync(guid);
+          
+           if(user is null)
+           {
+                throw new NotFoundException($"User with id {guid} does not exist");
+           }
+
+            await _accountRepository.DeleteAsync(user.Id);
+        }
+
+        public async Task DeleteUserByValueInToken()
+        {
+            var userDataFromToken = _contextAccessorService.GetAuthenticatedUserProfile();
+
+            await DeleteUserByGUID(userDataFromToken.UserId);
         }
     }
 }

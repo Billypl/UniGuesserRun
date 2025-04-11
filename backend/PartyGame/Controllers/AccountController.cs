@@ -38,6 +38,20 @@ namespace PartyGame.Controllers
             return Ok(accountDetailsDto);
         }
 
-        
+        [HttpDelete("{userGuid}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string userGuid)
+        {
+            await _accountService.DeleteUserByGUID(userGuid);
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser()
+        {
+            await _accountService.DeleteUserByValueInToken();
+            return Ok();
+        }
+
+
     }
 }

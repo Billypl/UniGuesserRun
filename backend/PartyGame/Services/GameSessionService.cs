@@ -124,7 +124,6 @@ namespace PartyGame.Services
         public async Task<GameSessionStateDto> GetActualGameState()
         {
             string gameSessionId = _httpContextAccessorService.GetUserIdFromHeader();
-
             GameSession? session = await _gameSessionRepository.GetByPublicIdAsync(gameSessionId);
 
             if (session is null)
@@ -138,7 +137,6 @@ namespace PartyGame.Services
         public async Task FinishGame(string guid)
         {
             GameSession? gameSession = await _gameSessionRepository.GetActiveGameSession(guid);
-
             gameSession.IsFinished = true;
             gameSession.PublicId = Guid.NewGuid();
 
@@ -157,7 +155,6 @@ namespace PartyGame.Services
             if(gameSession.IsFinished == false)
             {
                 throw new Exception($"Game is not finished and cannot be showed");
-
             }
             return _mapper.Map<FinishedGameDto>(gameSession);     
         }

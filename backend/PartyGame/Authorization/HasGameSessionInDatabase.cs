@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using PartyGame.Repositories;
 
 namespace PartyGame.Authorization
 {

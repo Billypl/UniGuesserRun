@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Identity.Client;
 using PartyGame.Entities;
 using Microsoft.EntityFrameworkCore;
 using PartyGame.Repositories.PartyGame.Repositories;

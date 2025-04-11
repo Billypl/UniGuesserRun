@@ -23,7 +23,6 @@ namespace PartyGame.Services
         Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates);
         Task<GuessingPlaceDto> GetPlaceToGuess(int roundsNumber);
         Task<FinishedGameDto> FinishGame();
-        Task<int> GetActualRoundNumber();
      
     }
 
@@ -64,7 +63,7 @@ namespace PartyGame.Services
 
         }
 
-        public  string StartNewGame(StartDataDto startDataDto)
+        public string StartNewGame(StartDataDto startDataDto)
         { 
             string? tokenType = _httpContextAccessorService.GetTokenTypeSafe();
             string? playerGuid = _httpContextAccessorService.GetUserIdFromHeaderSafe();
@@ -166,7 +165,7 @@ namespace PartyGame.Services
                 var newRound = new Round
                 {
                     PlaceId = places[i].Id,
-                 
+                    PlaceToGuess = places[i],
                     Score = 0
                 };
 
@@ -279,12 +278,6 @@ namespace PartyGame.Services
             };
 
             return finishedGameDto;
-        }
-
-        public async Task<int> GetActualRoundNumber()
-        {
-            string userGuid = _httpContextAccessorService.GetUserIdFromHeader();
-            return (await _gameSessionService.GetSessionByGuid(userGuid)).ActualRoundNumber;
         }
 
     }
