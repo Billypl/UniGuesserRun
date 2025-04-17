@@ -32,3 +32,6 @@ export const JWT_USER_EMAIL_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identit
 export const USER_ROLE_ADMIN = 'Admin'
 export const USER_ROLE_MODERATOR = 'Moderator'
 export const USER_ROLE_USER = 'User'
+
+
+export const MAP_CENTER: [number, number] = [54.371513, 18.619164];
