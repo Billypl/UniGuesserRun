@@ -5,13 +5,38 @@ import placeService from "../services/api/placeService";
 import { PlaceToCheckDto } from "../models/place/PlaceToCheckDto";
 import { Navigate, useNavigate } from "react-router-dom";
 import accountService from "../services/api/accountService";
-import { MENU_ROUTE, USER_ROLE_ADMIN, USER_ROLE_MODERATOR } from "../Constants";
+import { MAP_CENTER, MENU_ROUTE, USER_ROLE_ADMIN, USER_ROLE_MODERATOR } from "../Constants";
+import FormField from "../components/FormField";
+import { useForm } from "react-hook-form";
+import FormSelect from "../components/FormSelect";
+import { MapContainer, TileLayer } from "react-leaflet";
+import { LocationMarker } from "../components/LocationMarker";
+import { RecenterMap } from "../components/RecenterMap";
+import { SelectMapLocation } from "../components/SelectMapLocation";
+import { Coordinates } from "../models/Coordinates";
+import { ClickedIcon } from "../components/MarkerIcons";
+
+interface UpdatePlaceFormInputs {
+  name: string;
+  description: string;
+  alt: string;
+  difficulty: string;
+}
 
 const PlaceQueue: React.FC = () => {
   const navigate = useNavigate();
   const [places, setPlaces] = useState<PlaceToCheckDto[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<PlaceToCheckDto | null>(null);
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   let requestSent = useRef(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UpdatePlaceFormInputs>();
 
   const getAllPlaces = async () => {
     const result = await placeService.getAllPlacesInQueue();
@@ -41,15 +66,109 @@ const PlaceQueue: React.FC = () => {
   const showPlaceDetails = () => {
     return (
       <>
-        <img src={selectedPlace?.newPlace.imageUrl} alt={selectedPlace?.newPlace.alt} />
-        <p>{selectedPlace?.newPlace.name}</p>
-        <p>{selectedPlace?.newPlace.description}</p>
-        <p>
-          {selectedPlace?.newPlace.coordinates.latitude}, {selectedPlace?.newPlace.coordinates.longitude}
-        </p>
-        <button onClick={() => setSelectedPlace(null)}>Go back</button>
-        <button onClick={() => acceptPlace()}>Accept</button>
-        <button onClick={() => rejectPlace()}>Reject</button>
+        <img className={styles.image} src={selectedPlace?.newPlace.imageUrl} alt={selectedPlace?.newPlace.alt} />
+        <div className={styles.map}>
+          <MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+
+            {isEditing && coordinates ? (
+              <>
+                <LocationMarker coords={coordinates} icon={ClickedIcon} label="Place location:" />
+                <RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
+              </>
+            ) : (
+              selectedPlace && (
+                <>
+                  <LocationMarker
+                    coords={selectedPlace.newPlace.coordinates}
+                    icon={ClickedIcon}
+                    label="Place location:"
+                  />
+                  <RecenterMap
+                    location={[
+                      selectedPlace.newPlace.coordinates.latitude,
+                      selectedPlace.newPlace.coordinates.longitude,
+                    ]}
+                  />
+                </>
+              )
+            )}
+
+            {isEditing && <SelectMapLocation selectLocationFunction={setCoordinates} />}
+          </MapContainer>
+        </div>
+
+        {isEditing && coordinates ? (
+          <p>
+            {coordinates.latitude}, {coordinates.longitude}
+          </p>
+        ) : (
+          <p>
+            {selectedPlace?.newPlace.coordinates.latitude}, {selectedPlace?.newPlace.coordinates.longitude}
+          </p>
+        )}
+
+        {isEditing && selectedPlace ? (
+          <>
+            <form onSubmit={handleSubmit(saveChanges)} className={styles.form}>
+              <FormField
+                label="Name"
+                name="name"
+                type="text"
+                defaultValue={selectedPlace.newPlace.name}
+                register={register}
+                error={errors.name?.message}
+              />
+
+              <FormField
+                label="Description"
+                name="description"
+                type="text"
+                defaultValue={selectedPlace.newPlace.description}
+                register={register}
+                error={errors.description?.message}
+              />
+
+              <FormField
+                label="alt"
+                name="alt"
+                type="text"
+                defaultValue={selectedPlace.newPlace.alt}
+                register={register}
+                error={errors.alt?.message}
+              />
+
+              <FormSelect
+                label="Difficulty"
+                name="difficulty"
+                options={[
+                  { value: "easy", label: "Easy" },
+                  { value: "normal", label: "Normal" },
+                  { value: "hard", label: "Hard" },
+                  { value: "ultra-nightmare", label: "Ultra-Nightmare" },
+                ]}
+                defaultValue={selectedPlace.newPlace.difficulty}
+                register={register}
+                error={errors.difficulty?.message}
+              />
+
+              <button type="submit">Save</button>
+              <button onClick={() => cancelChanges()}>Cancel</button>
+            </form>
+          </>
+        ) : (
+          <>
+            <p>{selectedPlace?.newPlace.name}</p>
+            <p>{selectedPlace?.newPlace.description}</p>
+            <button onClick={() => setIsEditing(true)}>Edit</button>
+            <button onClick={() => acceptPlace()}>Accept</button>
+            <button onClick={() => rejectPlace()}>Reject</button>
+          </>
+        )}
+        <button onClick={goBack}>Go back</button>
       </>
     );
   };
@@ -59,17 +178,46 @@ const PlaceQueue: React.FC = () => {
     await placeService.acceptPlaceToCheck(selectedPlace.id);
     showUpdatedPlaces();
   };
-  
+
   const rejectPlace = async () => {
     if (!selectedPlace) return;
     await placeService.rejectPlaceToCheck(selectedPlace.id);
     showUpdatedPlaces();
-  }
+  };
+
+  const saveChanges = (data: UpdatePlaceFormInputs) => {
+    if (!selectedPlace) return;
+
+    placeService.updatePlace(
+      selectedPlace?.id,
+      data.name,
+      data.description,
+      coordinates ?? selectedPlace.newPlace.coordinates,
+      selectedPlace?.newPlace.imageUrl,
+      data.alt,
+      data.difficulty,
+      selectedPlace?.authorId
+    );
+
+    setIsEditing(false);
+  };
+
+  const cancelChanges = () => {
+    setIsEditing(false);
+    setCoordinates(null);
+    reset();
+  };
+
+  const goBack = () => {
+    setSelectedPlace(null);
+    setIsEditing(false);
+    setCoordinates(null);
+  };
 
   const showUpdatedPlaces = async () => {
     setSelectedPlace(null);
     await getAllPlaces();
-  }
+  };
 
   useEffect(() => {
     if (requestSent.current) return;

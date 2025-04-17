@@ -4,6 +4,7 @@ import { NewPlaceDto } from "../../models/place/NewPlaceDto";
 import { PlaceToCheckDto } from "../../models/place/PlaceToCheckDto";
 import { Place } from "../../models/place/Place";
 import { Coordinates } from "../../models/Coordinates";
+import { UpdatePlaceDto } from "../../models/place/UpdatePlaceDto";
 
 export class PlaceService {
   private axiosInstance: AxiosInstance;
@@ -89,6 +90,32 @@ export class PlaceService {
 
   async acceptPlaceToCheck(placeId: string) {
     await this.axiosInstance.post(`/to_check/approve/${placeId}`, "", {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
+  }
+
+  async updatePlace(
+    placeId: string,
+    name: string,
+    description: string,
+    coordinates: Coordinates,
+    imageUrl: string,
+    alt: string,
+    difficulty: string,
+    authorId: string | null
+  ) {
+    const updateDto: UpdatePlaceDto = {
+      name: name,
+      description: description,
+      coordinates: coordinates,
+      imageUrl: imageUrl,
+      alt: alt,
+      difficulty: difficulty,
+      authorId: authorId,
+    };
+    await this.axiosInstance.put(`/to_check/${placeId}`, updateDto, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
       },

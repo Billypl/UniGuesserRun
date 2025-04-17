@@ -20,7 +20,6 @@ import FormSelect from "../components/FormSelect";
 interface AddPlaceFormInputs {
   name: string;
   description: string;
-  // coordinates: Coordinates;
   imageUrl: string;
   alt: string;
   difficulty: string;
@@ -78,12 +77,6 @@ const AddPlace: React.FC = () => {
     setImage(null);
   };
 
-  const selectCoordinates = (latlng: [number, number] | null) => {
-    if (latlng) {
-      setCoordinates({ latitude: latlng[0], longitude: latlng[1] });
-    }
-  };
-
   const canSkipQueue = (): boolean => {
     const userRole = accountService.getCurrentUser()?.role;
     return userRole === USER_ROLE_ADMIN || userRole === USER_ROLE_MODERATOR;
@@ -116,7 +109,7 @@ const AddPlace: React.FC = () => {
           {coordinates && (
             <>
               <LocationMarker
-                latlng={[coordinates.latitude, coordinates.longitude]}
+                coords={coordinates}
                 icon={ClickedIcon}
                 label="Clicked location:"
               />
@@ -124,7 +117,7 @@ const AddPlace: React.FC = () => {
             </>
           )}
 
-          <SelectMapLocation selectLocationFunction={selectCoordinates} />
+          <SelectMapLocation selectLocationFunction={setCoordinates} />
         </MapContainer>
       </div>
 

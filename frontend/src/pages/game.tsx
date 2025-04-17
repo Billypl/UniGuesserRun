@@ -16,8 +16,8 @@ const Game: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [imageUrl, setImage] = useState<string | null>(null);
-  const [playerLatLng, setPlayerLatLng] = useState<[number, number] | null>(null);
-  const [targetLatLng, setTargetLatLng] = useState<[number, number] | null>(null);
+  const [playerLatLng, setPlayerLatLng] = useState<Coordinates | null>(null);
+  const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null);
   const [guessDistance, setGuessDistance] = useState<number | null>(null);
 
   const ROUND_NUMBER: number = 5;
@@ -73,17 +73,17 @@ const Game: React.FC = () => {
     }
   };
 
-  const confirmPlayerChoice = (clickedLatLng: [number, number]) => {
+  const confirmPlayerChoice = (clickedLatLng: Coordinates) => {
     checkPlayerChoice(clickedLatLng);
   };
 
-  const checkPlayerChoice = async (clickedLatLng: [number, number]) => {
+  const checkPlayerChoice = async (clickedLatLng: Coordinates) => {
     const coords: Coordinates = {
-      latitude: clickedLatLng[0],
-      longitude: clickedLatLng[1],
+      latitude: clickedLatLng.latitude,
+      longitude: clickedLatLng.longitude,
     };
     const roundResult = await gameService.checkGuess(coords);
-    setTargetLatLng([roundResult.originalPlace.coordinates.latitude, roundResult.originalPlace.coordinates.longitude]);
+    setTargetLatLng(roundResult.originalPlace.coordinates);
     setGuessDistance(roundResult.distanceDifference);
   };
 
@@ -113,7 +113,7 @@ const Game: React.FC = () => {
     }
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setPlayerLatLng([position.coords.latitude, position.coords.longitude]);
+        setPlayerLatLng(position.coords);
         setError(null);
       },
       (error) => {
