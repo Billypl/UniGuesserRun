@@ -19,6 +19,18 @@
     height: 80px;
   }
 
+  .map {
+    height: 500px;
+    margin-top: 20px;
+    width: 80%;
+  }
+
+  .camera_container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+
   .form {
     margin: 15px 0 15px;
     display: flex;
