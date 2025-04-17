@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import FormField from "../components/FormField";
 import Logo from "../components/Logo";
-import {
-  MAP_CENTER,
-  MENU_ROUTE,
-  USER_ROLE_ADMIN,
-  USER_ROLE_MODERATOR,
-} from "../Constants";
+import { MAP_CENTER, MENU_ROUTE, USER_ROLE_ADMIN, USER_ROLE_MODERATOR } from "../Constants";
 import { useUserContext } from "../hooks/useUserContext";
 import styles from "../styles/AddPlace.module.scss";
 import placeService from "../services/api/placeService";
@@ -20,7 +15,6 @@ import { ClickedIcon } from "../components/MarkerIcons";
 import { SelectMapLocation } from "../components/SelectMapLocation";
 import { RecenterMap } from "../components/RecenterMap";
 import FormImage from "../components/FormImage";
-import Webcam from "react-webcam";
 import FormSelect from "../components/FormSelect";
 
 interface AddPlaceFormInputs {
@@ -36,8 +30,7 @@ const AddPlace: React.FC = () => {
   const navigate = useNavigate();
   const { setUsername } = useUserContext();
   const [error, setError] = useState<string | null>(null);
-  const { coordinates, setCoordinates, readCoordinates, geolocationError } =
-    useGeolocation();
+  const { coordinates, setCoordinates, readCoordinates, geolocationError } = useGeolocation();
   const [placeAdded, setPlaceAdded] = useState<boolean>(false);
   const [image, setImage] = useState<string | null>(null);
 
@@ -48,11 +41,14 @@ const AddPlace: React.FC = () => {
     formState: { errors },
   } = useForm<AddPlaceFormInputs>();
 
-  const addNewPlace = async (data: AddPlaceFormInputs) => {
+  const addNewPlace = async (data: AddPlaceFormInputs, event?: React.BaseSyntheticEvent) => {
     if (!coordinates) {
       setError("Coordinates not ready yet. Please try again.");
       return;
     }
+
+    const submitter = (event?.nativeEvent as SubmitEvent).submitter as HTMLButtonElement;
+    const skipQueue = submitter && submitter.name === "skipQueue";
 
     const errorMessage = await placeService.addNewPlace(
       data.name,
@@ -61,7 +57,7 @@ const AddPlace: React.FC = () => {
       data.imageUrl,
       data.alt,
       data.difficulty,
-      canSkipQueue()
+      skipQueue
     );
 
     setError(errorMessage);
@@ -69,19 +65,18 @@ const AddPlace: React.FC = () => {
     if (!errorMessage) {
       // TODO: ok and return to menu OR add another place
       setPlaceAdded(true);
-      
+
       clearStates();
       reset();
     }
   };
-
 
   const clearStates = () => {
     setUsername("");
     setCoordinates(null);
     setError(null);
     setImage(null);
-  }
+  };
 
   const selectCoordinates = (latlng: [number, number] | null) => {
     if (latlng) {
@@ -100,7 +95,9 @@ const AddPlace: React.FC = () => {
       <a className={styles.option} onClick={() => navigate(MENU_ROUTE)}>
         <button>Go back to menu</button>
       </a>
-      <button className={styles.option} onClick={() => setPlaceAdded(false)}>Add another place</button>
+      <button className={styles.option} onClick={() => setPlaceAdded(false)}>
+        Add another place
+      </button>
     </>
   ) : (
     <div className={styles.form_container}>
@@ -110,12 +107,7 @@ const AddPlace: React.FC = () => {
       <h2 className={styles.header}>Add new place to UniGuesser</h2>
 
       <div className={styles.map}>
-        <MapContainer
-          center={MAP_CENTER}
-          zoom={13}
-          scrollWheelZoom={true}
-          style={{ height: "100%", width: "100%" }}
-        >
+        <MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -128,9 +120,7 @@ const AddPlace: React.FC = () => {
                 icon={ClickedIcon}
                 label="Clicked location:"
               />
-              <RecenterMap
-                location={[coordinates.latitude, coordinates.longitude]}
-              />
+              <RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
             </>
           )}
 
@@ -142,30 +132,17 @@ const AddPlace: React.FC = () => {
         Read GPS coordinates
       </button>
 
-      <p className={styles.error}>
-        {geolocationError && "Geolocation error: " + geolocationError}
-      </p>
+      <p className={styles.error}>{geolocationError && "Geolocation error: " + geolocationError}</p>
       <p className={styles.coordinates}>
-        {coordinates &&
-          `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
+        {coordinates && `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
       </p>
 
-      <form onSubmit={handleSubmit(addNewPlace)} className={styles.form}>
+      <form onSubmit={handleSubmit((data, event) => addNewPlace(data, event))} className={styles.form}>
         <div className={styles.camera_container}>
-          <FormImage 
-            setImage={setImage}
-            image={image}
-            register={register}
-          />
+          <FormImage setImage={setImage} image={image} register={register} />
         </div>
 
-        <FormField
-          label="Name"
-          name="name"
-          type="text"
-          register={register}
-          error={errors.name?.message}
-        />
+        <FormField label="Name" name="name" type="text" register={register} error={errors.name?.message} />
 
         <FormField
           label="Description"
@@ -175,21 +152,9 @@ const AddPlace: React.FC = () => {
           error={errors.description?.message}
         />
 
-        <FormField
-          label="imageUrl"
-          name="imageUrl"
-          type="text"
-          register={register}
-          error={errors.imageUrl?.message}
-        />
+        <FormField label="imageUrl" name="imageUrl" type="text" register={register} error={errors.imageUrl?.message} />
 
-        <FormField
-          label="alt"
-          name="alt"
-          type="text"
-          register={register}
-          error={errors.alt?.message}
-        />
+        <FormField label="alt" name="alt" type="text" register={register} error={errors.alt?.message} />
 
         <FormSelect
           label="Difficulty"
@@ -206,9 +171,14 @@ const AddPlace: React.FC = () => {
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <button type="submit" className={styles.button}>
-          {canSkipQueue() ? "Add place" : "Add place to queue"}
+        <button type="submit" name="addToQueue" className={styles.button}>
+          Add place to queue
         </button>
+        {canSkipQueue() && (
+          <button type="submit" name="skipQueue" className={styles.button}>
+            Add place skipping queue
+          </button>
+        )}
       </form>
     </div>
   );
