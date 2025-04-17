@@ -80,8 +80,7 @@ export class PlaceService {
   }
 
   async rejectPlaceToCheck(placeId: string) {
-    await this.axiosInstance.delete("/to_check/reject", {
-      params: { placeId },
+    await this.axiosInstance.delete(`/to_check/reject/${placeId}`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
       },
@@ -89,8 +88,7 @@ export class PlaceService {
   }
 
   async acceptPlaceToCheck(placeId: string) {
-    await this.axiosInstance.post("/to_check/approve", "", {
-      params: { placeId },
+    await this.axiosInstance.post(`/to_check/approve/${placeId}`, "", {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
       },
