@@ -46,6 +46,8 @@ namespace PartyGame.Extensions
 
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
 
+            CreateMap<GameSession, GameSessionStateDto>();
+
         }
 
 
