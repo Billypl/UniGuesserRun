@@ -28,7 +28,6 @@ const Game: React.FC = () => {
 		const signal = controller.signal
 
 		if (gameService.hasToken()) {
-			console.log('istnieje')
 			getGame(signal)
 		} else {
 			startGame(signal)

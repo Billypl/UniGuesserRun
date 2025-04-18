@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY,GAME_STATE } from '../../Constants'
+import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_STATE } from '../../Constants'
 import { Coordinates } from '../../models/Coordinates'
 import { StartGameData } from '../../models/game/StartGameData'
 import { StartGameResponse } from '../../models/game/StartGameResponse'
@@ -37,15 +37,26 @@ export class GameService {
 		window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token)
 	}
 
-	async checkGameState(signal?: AbortSignal):Promise<GameSessionStateDto> {
-			const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_STATE ,{
-				headers: {
-					Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
-				},
-				signal
-			})
-			console.log('game state:',response)
-			return response.data;
+	async checkGameState(signal?: AbortSignal): Promise<GameSessionStateDto> {
+		const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_STATE, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+			},
+			signal,
+		})
+		console.log('game state:', response)
+		return response.data
+	}
+
+	async checkGameForUser(signal?: AbortSignal): Promise<GameSessionStateDto> {
+		const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_STATE, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+			},
+			signal,
+		})
+		console.log('game state:', response)
+		return response.data
 	}
 
 	async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
@@ -56,7 +67,6 @@ export class GameService {
 		})
 		return response.data
 	}
-
 
 	async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
 		const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
@@ -74,8 +84,22 @@ export class GameService {
 			},
 		})
 		window.sessionStorage.removeItem(GAME_TOKEN_KEY)
-		console.log('konczenie gry')
 		return response.data
+	}
+
+	async setUpGameTokenIfUserHasGame() {
+		try {
+			const response = await this.checkGameForUser()
+			console.log(response)
+			const accountToken = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY)
+			if (accountToken) {
+				window.sessionStorage.setItem(GAME_TOKEN_KEY, accountToken)
+			} else {
+				console.error('Account token is null and cannot be set as GAME_TOKEN_KEY')
+			}
+		} catch (error) {
+			console.error('Failed to check if the user has a game:', error)
+		}
 	}
 
 	hasToken(): boolean {
