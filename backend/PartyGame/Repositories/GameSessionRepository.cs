@@ -138,12 +138,9 @@ namespace PartyGame.Repositories
                 : stats.OrderByDescending(gs => gs.GamePlayed).ToList();
 
             // Paginacja
-            var pagedScores = stats
-                .Skip((scoreboardQuery.PageNumber - 1) * scoreboardQuery.PageSize)
-                .Take(scoreboardQuery.PageSize)
-                .ToList();
 
-            return pagedScores;
+
+            return stats;
         }
 
         public async Task<GameSession?> GetActiveGameSession(string guid)

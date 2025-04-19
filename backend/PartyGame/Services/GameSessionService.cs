@@ -166,10 +166,14 @@ namespace PartyGame.Services
         {
             var games = await _gameSessionRepository.GetGameHistoryPage(scoreboardQuery);
 
-            var mappedGames = _mapper.Map<List<FinishedGameDto>>(games);
-            int totalScores = mappedGames.Count();
+            var pagedGames = games
+            .Skip((scoreboardQuery.PageNumber - 1) * scoreboardQuery.PageSize)
+            .Take(scoreboardQuery.PageSize)
+            .ToList();
 
-            var result = new PagedResult<FinishedGameDto>(mappedGames, totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
+            var mappedGames = _mapper.Map<List<FinishedGameDto>>(pagedGames);
+
+            var result = new PagedResult<FinishedGameDto>(mappedGames, games.Count(), scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
 
             return result;
         }
@@ -177,9 +181,13 @@ namespace PartyGame.Services
         public async Task<PagedResult<UserStats>> GetPagedUserStatsResult(ScoreboardQuery scoreboardQuery)
         {
           var games = await _gameSessionRepository.GetUsersStats(scoreboardQuery);
-          int totalScores = games.Count();
 
-          var result = new PagedResult<UserStats>(games, totalScores, scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
+          var pagedGames = games
+            .Skip((scoreboardQuery.PageNumber - 1) * scoreboardQuery.PageSize)
+            .Take(scoreboardQuery.PageSize)
+            .ToList();
+
+            var result = new PagedResult<UserStats>(pagedGames, games.Count(), scoreboardQuery.PageSize, scoreboardQuery.PageNumber);
           return result;
         }
 
