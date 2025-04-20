@@ -26,19 +26,22 @@ h1 {
 	display: flex;
 	font-size: 20px;
 	font-weight: 500;
-	margin-bottom: 8px;
+	margin-bottom: 16px;
 	label {
 		margin-right: 8px;
 	}
 	input,
 	select {
+		border-radius: 12px;
 		padding: 4px;
 		font-size: 16px;
-		flex: 1; // Allow input and select to take up remaining space
-	}
+		flex: 1;
+		border: 1px solid Colors.$dark-blue;
 }
 
-.findButton {
+	select {
+		background-color: Colors.$white;
+	}
 }
 
 table {
@@ -47,13 +50,14 @@ table {
 	border-radius: 16px;
 	table-layout: fixed;
 	box-sizing: border-box;
+
 	thead {
 		tr {
 			th {
 				font-weight: 600;
 				font-size: 16px;
 				text-transform: uppercase;
-				padding: 4px 16px;
+				padding: 4px 0px;
 			}
 			margin-bottom: 16px;
 		}
@@ -67,7 +71,7 @@ table {
 				font-size: 12px;
 				padding: 4px 16px;
 			}
-			&:nth-child(2n) {
+			&:nth-child(2n + 1) {
 				background-color: lighten(Colors.$dark-blue, 75%);
 			}
 		}
@@ -131,6 +135,11 @@ table {
 		input,
 		select {
 			flex: 0;
+		}
+
+		.pageSizeSelect {
+			padding-left: 16px;
+			padding-right: 16px;
 		}
 	}
 

@@ -30,6 +30,7 @@ const Scoreboard: React.FC = () => {
 
 	const nicknameRef = useRef<HTMLInputElement>(null)
 	const difficultyRef = useRef<HTMLSelectElement>(null)
+	const pageSizeRef = useRef<HTMLSelectElement>(null)
 
 	useEffect(() => {
 		getAllRecords()
@@ -71,12 +72,14 @@ const Scoreboard: React.FC = () => {
 	const handleFindClick = () => {
 		const nickname = nicknameRef.current?.value || ''
 		const difficulty = difficultyRef.current?.value || 'any'
+		const pageSize = pageSizeRef.current?.value || '1'
 
 		setScoreboardQuery({
 			...scoreboardQuery,
 			searchNickname: nickname,
 			difficultyLevel: difficulty as 'easy' | 'medium' | 'hard' | 'any',
 			pageNumber: 1,
+			pageSize: parseInt(pageSize),
 		})
 	}
 
@@ -125,10 +128,19 @@ const Scoreboard: React.FC = () => {
 						<option value='hard'>Hard</option>
 					</select>
 				</div>
+
+				<div className={styles.inputField}>
+					<label htmlFor='difficulty'>Page size:</label>
+					<select className={styles.pageSizeSelect} id='difficulty' name='difficulty' ref={pageSizeRef} defaultValue='3'>
+						<option value='1'>1</option>
+						<option value='3'>3</option>
+						<option value='5'>5</option>
+					</select>
+				</div>
 			</div>
 
 			<button className={`${styles.rankingButton} ${styles.findButton}`} onClick={handleFindClick}>
-				Find
+				Apply
 			</button>
 
 			<table>
