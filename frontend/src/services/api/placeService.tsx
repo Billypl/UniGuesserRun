@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 import { ACCOUNT_TOKEN_KEY, PLACE_API_URL } from "../../Constants";
 import { NewPlaceDto } from "../../models/place/NewPlaceDto";
 import { PlaceToCheckDto } from "../../models/place/PlaceToCheckDto";
-import { Place } from "../../models/place/Place";
+import { ShowPlaceDto } from "../../models/place/ShowPlaceDto";
 import { Coordinates } from "../../models/Coordinates";
 import { UpdatePlaceDto } from "../../models/place/UpdatePlaceDto";
 
@@ -18,12 +18,13 @@ export class PlaceService {
     });
   }
 
-  async getAllPlaces(): Promise<Place[]> {
+  async getAllPlaces(): Promise<ShowPlaceDto[]> {
     const result = await this.axiosInstance.get("");
+    console.log(result.data);
     return result.data;
   }
 
-  async getPlace(id: string): Promise<Place> {
+  async getPlace(id: string): Promise<ShowPlaceDto> {
     const result = await this.axiosInstance.get(`/${id}`);
     return result.data;
   }
@@ -104,7 +105,7 @@ export class PlaceService {
     imageUrl: string,
     alt: string,
     difficulty: string,
-    authorId: string | null
+    authorId?: string | null
   ) {
     const updateDto: UpdatePlaceDto = {
       name: name,
@@ -115,12 +116,21 @@ export class PlaceService {
       difficulty: difficulty,
       authorId: authorId,
     };
-    await this.axiosInstance.put(`/to_check/${placeId}`, updateDto, {
+    await this.axiosInstance.put(`/${placeId}`, updateDto, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
       },
     });
   }
+
+  async deletePlace(placeId: string) {
+    await this.axiosInstance.delete(`/${placeId}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      }
+    });
+  }
+
 }
 
 export default new PlaceService();

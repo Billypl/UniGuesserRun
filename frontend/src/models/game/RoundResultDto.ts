@@ -1,7 +1,7 @@
-import { Place } from "../place/Place";
+import { ShowPlaceDto } from "../place/ShowPlaceDto";
 
 export interface RoundResultDto {
-  originalPlace: Place;
+  originalPlace: ShowPlaceDto;
   distanceDifference: number;
   roundNumber: number;
 }

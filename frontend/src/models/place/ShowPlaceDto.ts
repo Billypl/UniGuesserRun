@@ -1,6 +1,6 @@
 import { Coordinates } from "../Coordinates";
 
-export interface Place {
+export interface ShowPlaceDto {
     id: string; //OBJECTID
     name: string;
     description: string;
@@ -8,4 +8,5 @@ export interface Place {
     imageUrl: string;
     alt: string;
     difficultyLevel: string;
+    authorId?: string | null; //OBJECTID
 }

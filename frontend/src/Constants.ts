@@ -9,6 +9,7 @@ export const GAME_TOKEN_KEY = 'game_token'
 export const ACCOUNT_TOKEN_KEY = 'account_token'
 export const REFRESH_TOKEN_KEY = 'refresh_token'
 export const USER_NICKNAME_KEY = 'nickname'
+export const SELECTED_DIFFICULTY_KEY = 'selected_difficulty'
 
 export const MENU_ROUTE = '/menu'
 export const LOGIN_ROUTE = '/login'
@@ -19,7 +20,7 @@ export const SCOREBOARD_ROUTE = '/scoreboard'
 export const ADD_PLACE_ROUTE = '/add_place'
 export const PLACE_QUEUE_ROUTE = '/place_queue'
 export const PLACES_ROUTE = '/places'
-
+export const GAME_SETTINGS_ROUTE = '/game_settings'
 
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'

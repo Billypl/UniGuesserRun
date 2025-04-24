@@ -7,5 +7,5 @@ export interface UpdatePlaceDto {
     imageUrl: string;
     alt: string;
     difficulty: string;
-    authorId: string | null;
+    authorId?: string | null;
 }
