@@ -6,15 +6,16 @@ interface FormSelectProps<T extends FieldValues> {
   label: string;
   name: string;
   options: { value: string; label: string }[];
+  defaultValue?: string;
   register: UseFormRegister<T>;
   error?: string;
 }
 
-const FormSelect = <T extends FieldValues>({ label, name, options, register, error }: FormSelectProps<T>) => {
+const FormSelect = <T extends FieldValues>({ label, name, options, defaultValue = "", register, error }: FormSelectProps<T>) => {
   return (
     <div className={styles.field}>
       <label>{label}</label>
-      <select {...register(name as any)}>
+      <select {...register(name as any)} defaultValue={defaultValue}>
         {options.map(({ value, label }) => (
           <option key={value} value={value}>
             {label}
