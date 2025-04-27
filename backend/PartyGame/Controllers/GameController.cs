@@ -43,11 +43,11 @@ namespace PartyGame.Controllers
             return Ok(place);
         }
 
-        [HttpGet("actual_round")]
+        [HttpGet("game_state")]
         [Authorize(Policy = "HasGameInDatabase")]
-        public async Task<IActionResult> GetActualRoundNumber()
+        public async Task<IActionResult> GetGameState()
         {
-            var roundNumber = await _gameService.GetActualRoundNumber();
+            GameSessionStateDto roundNumber = await _gameSessionService.GetActualGameState();
             return Ok(roundNumber);
         }
 

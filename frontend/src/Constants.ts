@@ -1,4 +1,4 @@
-import exp from "constants"
+import exp from 'constants'
 
 export const GAME_API_URL = 'https://localhost:7157/api/game'
 export const SCOREBOARD_API_URL = 'https://localhost:7157/api/game_results'
@@ -24,6 +24,7 @@ export const GAME_SETTINGS_ROUTE = '/game_settings'
 
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'
+export const GAME_STATE = '/game_state'
 
 export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
 export const JWT_USER_ID_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
@@ -34,5 +35,5 @@ export const USER_ROLE_ADMIN = 'Admin'
 export const USER_ROLE_MODERATOR = 'Moderator'
 export const USER_ROLE_USER = 'User'
 
-
 export const MAP_CENTER: [number, number] = [54.371513, 18.619164];
+

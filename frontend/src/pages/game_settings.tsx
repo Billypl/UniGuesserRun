@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
-import styles from "../styles/GameSettings.module.scss"
+import styles from "../styles/GameSettings.module.scss";
 import { useForm } from "react-hook-form";
 import { StartGameData } from "../models/game/StartGameData";
 import FormField from "../components/FormField";
@@ -8,6 +8,7 @@ import FormSelect from "../components/FormSelect";
 import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from "../Constants";
 import accountService from "../services/api/accountService";
 import { useGameContext } from "../hooks/useGameContext";
+import gameService from "../services/api/gameService";
 
 const GameSettings: React.FC = () => {
   const navigate = useNavigate();
@@ -19,29 +20,30 @@ const GameSettings: React.FC = () => {
     formState: { errors },
   } = useForm<StartGameData>();
 
-  const startGame = (data: StartGameData) => {
+  const startGame = async (data: StartGameData) => {
     window.sessionStorage.setItem(SELECTED_DIFFICULTY_KEY, data.difficulty);
     if (!accountService.isLoggedIn()) {
       window.sessionStorage.setItem(USER_NICKNAME_KEY, data.nickname);
+    } else {
+      await gameService.setUpGameTokenIfUserHasGame();
     }
     navigate(GAME_ROUTE);
-  }
+  };
 
   return (
     <>
       <Header />
       <div className={styles.settings}>
         <form onSubmit={handleSubmit(startGame)} className={styles.form}>
-
-          {!accountService.isLoggedIn() &&
+          {!accountService.isLoggedIn() && (
             <FormField
               label="Nickname"
               name="nickname"
               type="text"
               register={register}
-              error={errors.nickname?.message} 
+              error={errors.nickname?.message}
             />
-          }
+          )}
 
           <FormSelect
             label="Difficulty"
@@ -54,7 +56,8 @@ const GameSettings: React.FC = () => {
             ]}
             defaultValue={"normal"}
             register={register}
-            error={errors.difficulty?.message} />
+            error={errors.difficulty?.message}
+          />
 
           <button type="submit">Start game</button>
         </form>
@@ -62,7 +65,6 @@ const GameSettings: React.FC = () => {
       </div>
     </>
   );
-}
-
+};
 
 export default GameSettings;
