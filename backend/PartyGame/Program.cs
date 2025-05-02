@@ -2,6 +2,9 @@
 using PartyGame.Middleware;
 using PartyGame.Extensions;
 using PartyGame.DependencyInjection;
+using PartyGame.Entities;
+using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder);
@@ -20,7 +23,12 @@ void ConfigureServices(WebApplicationBuilder builder)
 // Seedowanie bazy danych
 async Task SeedDatabase(WebApplication app)
 {
+    Console.WriteLine("##### Seeding database...");
     using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<GameDbContext>();
+    db.Database.Migrate();
+    System.Console.WriteLine("##### Db seeded...");
+
     var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
     await seeder.Seed();
 }
