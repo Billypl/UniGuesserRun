@@ -4,6 +4,8 @@ namespace PartyGame.Models.ScoreboardModels
     public enum SortDirection
     {
         ASC, DESC
+
+
     }
     public class ScoreboardQuery
     {     
@@ -11,7 +13,10 @@ namespace PartyGame.Models.ScoreboardModels
         public string? DifficultyLevel { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public SortDirection SortDirection { get; set; } = SortDirection.DESC;      
+        public SortDirection SortDirection { get; set; } = SortDirection.DESC;   
+        
+
+
     }
 
     

@@ -40,7 +40,7 @@ namespace PartyGame.Controllers
             //ItemsTo → 20(ostatni element na stronie)
             //TotalPages → 3(liczba stron)
 
-            PagedResult<UserStats> scores = 
+           PagedResult<UserStats> scores = 
                 await _gameSessionService.GetPagedUserStatsResult(scoreboardQuery);
             return Ok(scores);
         }
