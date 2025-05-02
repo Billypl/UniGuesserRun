@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
-import "leaflet/dist/leaflet.css";
-import gameService from "../services/api/gameService";
-import { Coordinates } from "../models/Coordinates";
-import { useGameContext } from "../hooks/useGameContext";
-import { useNavigate } from "react-router-dom";
-import GameInterface from "../components/GameInterface";
-import { GAME_RESULTS_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from "../Constants";
+import React, { useEffect, useState } from 'react'
+import 'leaflet/dist/leaflet.css'
+import gameService from '../services/api/gameService'
+import { Coordinates } from '../models/Coordinates'
+import { useGameContext } from '../hooks/useGameContext'
+import { useNavigate } from 'react-router-dom'
+import GameInterface from '../components/GameInterface'
+import { GAME_RESULTS_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from '../Constants'
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
-  const { setScore } = useGameContext();
+	const { setScore } = useGameContext()
 
 	const [loading, setLoading] = useState<boolean>(false)
 	const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
-  const [imageUrl, setImage] = useState<string | null>(null);
-  const [playerLatLng, setPlayerLatLng] = useState<Coordinates | null>(null);
-  const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null);
-  const [guessDistance, setGuessDistance] = useState<number | null>(null);
+	const [imageUrl, setImage] = useState<string | null>(null)
+	const [playerLatLng, setPlayerLatLng] = useState<Coordinates | null>(null)
+	const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null)
+	const [guessDistance, setGuessDistance] = useState<number | null>(null)
 
 	const ROUND_NUMBER: number = 5
 	const navigate = useNavigate()
@@ -58,7 +58,7 @@ const Game: React.FC = () => {
 				console.error('Request aborted by the abort conttoler (2nd fetch prevention')
 			} else {
 				setError('Failed to fetch data. Please try again later.')
-				console.error('Error fetching data:', err.name)
+				console.error('Error fetching data:', err)
 			}
 		} finally {
 			setLoading(false)
@@ -84,7 +84,7 @@ const Game: React.FC = () => {
 				const newController = new AbortController()
 				const newSignal = newController.signal
 				if (!nickname) {
-					throw new Error('User nickname is missing');
+					throw new Error('User nickname is missing')
 				}
 				startGame(newSignal)
 			}

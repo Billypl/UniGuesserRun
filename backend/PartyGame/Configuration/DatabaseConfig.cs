@@ -10,15 +10,24 @@ namespace PartyGame.DependencyInjections
         {
             services.AddHttpContextAccessor();
 
+            string connectionString;
+            if (File.Exists("/.dockerenv"))
+            {
+                connectionString = configuration.GetConnectionString("PostgreSql");
+            }
+            else
+            {
+                connectionString = configuration.GetConnectionString("PostgreSqlLocal");
+            }
+
             services.AddDbContext<GameDbContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("PostgreSql"));
+                options.UseNpgsql(connectionString);
             }, ServiceLifetime.Scoped);
 
-
-            services.AddScoped<GameDbContext>();
             services.AddScoped<GameDbContext>();
             return services;
         }
+
     }
 }

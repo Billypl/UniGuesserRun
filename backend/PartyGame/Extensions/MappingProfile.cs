@@ -21,10 +21,10 @@ namespace PartyGame.Extensions
 
             CreateMap<UpdatePlaceDto, Place>();
             CreateMap<Place, ShowPlaceDto>()
-                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId.ToString()))
                   .ForMember(dest => dest.Coordinates, opt => opt.MapFrom(src =>
                   new Coordinates { Latitude = src.Latitude, Longitude = src.Longitude }))
-                  .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.AuthorId))
+                  .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.AuthorPlace.PublicId))
                   .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.AuthorPlace.Nickname));
 
             CreateMap<GameSession, FinishedGameDto>()
