@@ -9,6 +9,8 @@ import { TargetIcon, ClickedIcon } from "./MarkerIcons";
 import { TargetMarker } from "./TargetMarker";
 
 import styles from "../styles/Game.module.scss";
+import { MAP_CENTER } from "../Constants";
+import { Coordinates } from "../models/Coordinates";
 
 interface GameInterfaceProps {
   error: string | null;
@@ -16,21 +18,19 @@ interface GameInterfaceProps {
   isLastRound: boolean;
   imageUrl: string;
   guessDistance: number | null;
-  targetLatLng: [number, number] | null;
-  onConfirmPlayerChoice: (latlng: [number, number]) => void;
+  targetLatLng: Coordinates | null;
+  onConfirmPlayerChoice: (latlng: Coordinates) => void;
   onNextRound: () => void;
   onFinishGame: () => void;
 }
 
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
-  const [clickedLatLng, setClickedLatLng] = useState<[number, number] | null>(null);
+  const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
 
-  const MAP_CENTER: [number, number] = [54.371513, 18.619164];
-
-  const selectLocation = (latlng: [number, number] | null) => {
+  const selectLocation = (coords: Coordinates | null) => {
     if (playerChoiceConfirmed) return; // cant move the marker after confirming your choice
-    setClickedLatLng(latlng);
+    setClickedLatLng(coords);
   };
 
   const confirmPlayerChoice = () => {
@@ -76,7 +76,7 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {clickedLatLng && <LocationMarker latlng={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />}
+          {clickedLatLng && <LocationMarker coords={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />}
           {playerChoiceConfirmed && (
             <TargetMarker clickedLatLng={clickedLatLng} targetLatLng={props.targetLatLng} icon={TargetIcon} />
           )}

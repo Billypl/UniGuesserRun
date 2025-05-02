@@ -7,16 +7,18 @@ import { GameContextProvider } from './components/GameContext';
 import { UserContextProvider } from './components/UserContext';
 import Register from './pages/register';
 import Login from './pages/login';
-import { ADD_PLACE_ROUTE, GAME_RESULTS_ROUTE, GAME_ROUTE, LOGIN_ROUTE, PLACE_QUEUE_ROUTE, PLACES_ROUTE, REGISTER_ROUTE, SCOREBOARD_ROUTE } from './Constants';
+import { ADD_PLACE_ROUTE, GAME_RESULTS_ROUTE, GAME_ROUTE, GAME_SETTINGS_ROUTE, LOGIN_ROUTE, PLACE_QUEUE_ROUTE, PLACES_ROUTE, REGISTER_ROUTE, SCOREBOARD_ROUTE } from './Constants';
 import AddPlace from './pages/add_place';
 import PlaceQueue from './pages/place_queue';
 import Places from './pages/places';
+import GameSettings from './pages/game_settings';
 
 const App = () => {
     return (
         <UserContextProvider><Router basename="/PartyGame">
             <Routes>
                 <Route path="/" element={<GameContextProvider><Menu /></GameContextProvider>}/>
+                <Route path={GAME_SETTINGS_ROUTE} element={<GameContextProvider><GameSettings /></GameContextProvider>} />
                 <Route path={GAME_ROUTE} element={<GameContextProvider><Game /></GameContextProvider>} />
                 <Route path={GAME_RESULTS_ROUTE} element={<GameContextProvider><GameResults /></GameContextProvider>} />
 

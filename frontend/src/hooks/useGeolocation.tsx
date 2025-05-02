@@ -11,7 +11,11 @@ export const useGeolocation = () => {
             return;
         }
 
-        const watchId = navigator.geolocation.watchPosition(
+        readCoordinates();
+    }, []);
+
+    const readCoordinates = () => {
+        navigator.geolocation.getCurrentPosition(
             (position) => {
                 setCoordinates({
                     latitude: position.coords.latitude,
@@ -32,9 +36,7 @@ export const useGeolocation = () => {
                 timeout: 5000,
             }
         );
+    }
 
-        return () => navigator.geolocation.clearWatch(watchId);
-    }, []);
-
-    return { coordinates, geolocationError };
+    return { coordinates, setCoordinates, readCoordinates, geolocationError };
 };

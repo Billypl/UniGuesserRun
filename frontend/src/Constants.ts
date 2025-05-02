@@ -9,6 +9,7 @@ export const GAME_TOKEN_KEY = 'game_token'
 export const ACCOUNT_TOKEN_KEY = 'account_token'
 export const REFRESH_TOKEN_KEY = 'refresh_token'
 export const USER_NICKNAME_KEY = 'nickname'
+export const SELECTED_DIFFICULTY_KEY = 'selected_difficulty'
 
 export const MENU_ROUTE = '/menu'
 export const LOGIN_ROUTE = '/login'
@@ -19,10 +20,11 @@ export const SCOREBOARD_ROUTE = '/scoreboard'
 export const ADD_PLACE_ROUTE = '/add_place'
 export const PLACE_QUEUE_ROUTE = '/place_queue'
 export const PLACES_ROUTE = '/places'
-export const GAME_STATE = '/game_state'
+export const GAME_SETTINGS_ROUTE = '/game_settings'
 
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'
+export const GAME_STATE = '/game_state'
 
 export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
 export const JWT_USER_ID_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
@@ -32,3 +34,6 @@ export const JWT_USER_EMAIL_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identit
 export const USER_ROLE_ADMIN = 'Admin'
 export const USER_ROLE_MODERATOR = 'Moderator'
 export const USER_ROLE_USER = 'User'
+
+export const MAP_CENTER: [number, number] = [54.371513, 18.619164];
+

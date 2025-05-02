@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import 'leaflet/dist/leaflet.css'
-import gameService from '../services/api/gameService'
-import { Coordinates } from '../models/Coordinates'
-import { useGameContext } from '../hooks/useGameContext'
-import { useNavigate } from 'react-router-dom'
-import GameInterface from '../components/GameInterface'
-import { GAME_RESULTS_ROUTE, USER_NICKNAME_KEY } from '../Constants'
+import React, { useEffect, useState } from "react";
+import "leaflet/dist/leaflet.css";
+import gameService from "../services/api/gameService";
+import { Coordinates } from "../models/Coordinates";
+import { useGameContext } from "../hooks/useGameContext";
+import { useNavigate } from "react-router-dom";
+import GameInterface from "../components/GameInterface";
+import { GAME_RESULTS_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from "../Constants";
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
-	const { difficulty, setScore } = useGameContext()
+  const { setScore } = useGameContext();
 
 	const [loading, setLoading] = useState<boolean>(false)
 	const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
-	const [imageUrl, setImage] = useState<string | null>(null)
-	const [playerLatLng, setPlayerLatLng] = useState<[number, number] | null>(null)
-	const [targetLatLng, setTargetLatLng] = useState<[number, number] | null>(null)
-	const [guessDistance, setGuessDistance] = useState<number | null>(null)
+  const [imageUrl, setImage] = useState<string | null>(null);
+  const [playerLatLng, setPlayerLatLng] = useState<Coordinates | null>(null);
+  const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null);
+  const [guessDistance, setGuessDistance] = useState<number | null>(null);
 
 	const ROUND_NUMBER: number = 5
 	const navigate = useNavigate()
@@ -28,7 +28,6 @@ const Game: React.FC = () => {
 		const signal = controller.signal
 
 		if (gameService.hasToken()) {
-			console.log('istnieje')
 			getGame(signal)
 		} else {
 			startGame(signal)
@@ -45,6 +44,10 @@ const Game: React.FC = () => {
 
 		try {
 			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
+			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY)
+			if (!difficulty) {
+				throw new Error('Difficulty not selected')
+			}
 			if (!nickname) {
 				throw new Error('User not logged in')
 			}
@@ -114,17 +117,13 @@ const Game: React.FC = () => {
 		}
 	}
 
-	const confirmPlayerChoice = (clickedLatLng: [number, number]) => {
+	const confirmPlayerChoice = (clickedLatLng: Coordinates) => {
 		checkPlayerChoice(clickedLatLng)
 	}
 
-	const checkPlayerChoice = async (clickedLatLng: [number, number]) => {
-		const coords: Coordinates = {
-			latitude: clickedLatLng[0],
-			longitude: clickedLatLng[1],
-		}
-		const roundResult = await gameService.checkGuess(coords)
-		setTargetLatLng([roundResult.originalPlace.coordinates.latitude, roundResult.originalPlace.coordinates.longitude])
+	const checkPlayerChoice = async (clickedLatLng: Coordinates) => {
+		const roundResult = await gameService.checkGuess(clickedLatLng)
+		setTargetLatLng(roundResult.originalPlace.coordinates)
 		setGuessDistance(roundResult.distanceDifference)
 	}
 
@@ -154,7 +153,7 @@ const Game: React.FC = () => {
 		}
 		navigator.geolocation.getCurrentPosition(
 			position => {
-				setPlayerLatLng([position.coords.latitude, position.coords.longitude])
+				setPlayerLatLng(position.coords)
 				setError(null)
 			},
 			error => {

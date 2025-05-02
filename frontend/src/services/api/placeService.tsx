@@ -2,8 +2,9 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 import { ACCOUNT_TOKEN_KEY, PLACE_API_URL } from "../../Constants";
 import { NewPlaceDto } from "../../models/place/NewPlaceDto";
 import { PlaceToCheckDto } from "../../models/place/PlaceToCheckDto";
-import { Place } from "../../models/place/Place";
+import { ShowPlaceDto } from "../../models/place/ShowPlaceDto";
 import { Coordinates } from "../../models/Coordinates";
+import { UpdatePlaceDto } from "../../models/place/UpdatePlaceDto";
 
 export class PlaceService {
   private axiosInstance: AxiosInstance;
@@ -17,18 +18,23 @@ export class PlaceService {
     });
   }
 
-  async getAllPlaces(): Promise<Place[]> {
+  async getAllPlaces(): Promise<ShowPlaceDto[]> {
     const result = await this.axiosInstance.get("");
+    console.log(result.data);
     return result.data;
   }
 
-  async getPlace(id: string): Promise<Place> {
+  async getPlace(id: string): Promise<ShowPlaceDto> {
     const result = await this.axiosInstance.get(`/${id}`);
     return result.data;
   }
 
   async getAllPlacesInQueue(): Promise<PlaceToCheckDto[]> {
-    const result = await this.axiosInstance.get<PlaceToCheckDto[]>("/to_check");
+    const result = await this.axiosInstance.get<PlaceToCheckDto[]>("/to_check", {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
     return result.data;
   }
 
@@ -76,12 +82,55 @@ export class PlaceService {
   }
 
   async rejectPlaceToCheck(placeId: string) {
-    await this.axiosInstance.delete("/to_check/reject", { params: { placeId } });
+    await this.axiosInstance.delete(`/to_check/reject/${placeId}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
   }
 
   async acceptPlaceToCheck(placeId: string) {
-    await this.axiosInstance.post("/to_check/approve", '', { params: { placeId } });
+    await this.axiosInstance.post(`/to_check/approve/${placeId}`, "", {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
   }
+
+  async updatePlace(
+    placeId: string,
+    name: string,
+    description: string,
+    coordinates: Coordinates,
+    imageUrl: string,
+    alt: string,
+    difficulty: string,
+    authorId?: string | null
+  ) {
+    const updateDto: UpdatePlaceDto = {
+      name: name,
+      description: description,
+      coordinates: coordinates,
+      imageUrl: imageUrl,
+      alt: alt,
+      difficulty: difficulty,
+      authorId: authorId,
+    };
+    await this.axiosInstance.put(`/${placeId}`, updateDto, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      },
+    });
+  }
+
+  async deletePlace(placeId: string) {
+    await this.axiosInstance.delete(`/${placeId}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+      }
+    });
+  }
+
 }
 
 export default new PlaceService();

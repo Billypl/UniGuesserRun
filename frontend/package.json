@@ -21,6 +21,7 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.1.1",
     "react-scripts": "^5.0.1",
+    "react-webcam": "^7.2.0",
     "sass": "^1.83.1",
     "scss": "^0.2.4",
     "typescript": "^4.9.5",
