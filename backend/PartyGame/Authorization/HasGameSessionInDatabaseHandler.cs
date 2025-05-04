@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using PartyGame.Entities;
 using PartyGame.Repositories;
 using System.Security.Claims;
 
@@ -26,7 +25,7 @@ namespace PartyGame.Authorization
                 return;
             }
 
-            GameSession? gameSession = await _gameSessionRepository.GetAsync(gameSessionID);
+            GameSession? gameSession = await _gameSessionRepository.GetActiveGameSession(gameSessionID);
 
             if (gameSession is not null)
             {

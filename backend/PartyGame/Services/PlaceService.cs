@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using PartyGame.Entities;
 using PartyGame.Extensions.Exceptions;
 using PartyGame.Models.AccountModels;
@@ -11,15 +9,14 @@ namespace PartyGame.Services
 {
     public interface IPlaceService
     {
-        Task<ShowPlaceDto> GetPlaceById(string id);
-        Task DeletePlaceById(string id);
-        Task UpdatePlaceById(string id,UpdatePlaceDto updatePlaceDto);
+        Task<ShowPlaceDto> GetPlaceByPublicId(string id);
+        Task DeletePlaceByPublicId(string id);
+        Task UpdatePlaceByPublicId(string id,UpdatePlaceDto updatePlaceDto);
         Task<List<ShowPlaceDto>> GetAllPlaces();
         Task AddNewPlace(NewPlaceDto newPlace);
-        Task<int> GetPlacesCount();
-        Task<List<ObjectId>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
+        Task<List<Place>> GetRandomPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel);
         Task AddNewPlaceToQueue(NewPlaceDto newPlace);
-        Task<List<PlaceToCheckDto>> GetAllPlacesInQueue();
+        Task<List<ShowPlaceDto>> GetAllPlacesInQueue();
         Task AcceptPlace(string PlaceToCheckId);
         Task RejectPlace(string PlaceToRejectId);
 
@@ -29,43 +26,48 @@ namespace PartyGame.Services
     {
         private readonly IPlacesRepository _placesRepository;
         private readonly IMapper _mapper;
-        private readonly IPlacesToCheckRepository _placesToCheckRepository;
         private readonly IHttpContextAccessorService _httpContextAccessorService;
+        private readonly IAccountService _accountService;
 
         public PlaceService(IPlacesRepository placesRepository,IMapper mapper,
-            IHttpContextAccessorService httpContextAccessorService, IPlacesToCheckRepository placesToCheckRepository)
+            IHttpContextAccessorService httpContextAccessorService,
+            IAccountService accountService)
         {
             _placesRepository = placesRepository;
             _mapper = mapper;
             _httpContextAccessorService = httpContextAccessorService;
-            _placesToCheckRepository = placesToCheckRepository;
+            _accountService = accountService;
         }
 
-        public async Task<ShowPlaceDto> GetPlaceById(string id)
+        public async Task<ShowPlaceDto> GetPlaceByPublicId(string id)
         {
-            Place place = await _placesRepository.GetAsync(id);
+            Place? place = await _placesRepository.GetByPublicIdAsync(id);
 
-            if (place == null)
+            if (place is null)
             {
                 throw new NotFoundException($"Place with ID {id} was not found.");
             }
 
             return _mapper.Map<ShowPlaceDto>(place); 
         }     
-        public async Task DeletePlaceById(string id)
+        public async Task DeletePlaceByPublicId(string id)
         {
-            DeleteResult deleteResult = await _placesRepository.DeleteAsync(id);
 
-            if (deleteResult.DeletedCount == 0)
+            Place? place = await _placesRepository.GetByPublicIdAsync(id);
+
+            if (place is null)
             {
-                throw new NotFoundException( $"Place with id {id} doesn't exist in the database" );
-            }   
+                throw new NotFoundException($"Place with id {id} doesn't exist in the database");
+            }
+
+            var deleteResult = await _placesRepository.DeleteAsync(place.Id);   
         }
 
-        public async Task UpdatePlaceById(string id,UpdatePlaceDto updatePlaceDto)
+        public async Task UpdatePlaceByPublicId(string id,UpdatePlaceDto updatePlaceDto)
         {
-            Place place = await _placesRepository.GetAsync(id);
-            if (place == null)
+            Place? place = await _placesRepository.GetByPublicIdAsync(id);
+
+            if (place is null)
             {
                 throw new NotFoundException($"Place with id {id} doesn't exist in the database and cannot be updated");
             }
@@ -92,21 +94,18 @@ namespace PartyGame.Services
         {
             Place place = new Place();
             _mapper.Map(newPlace, place);
+            place.InQueue = false;
             await _placesRepository.CreateAsync(place);
         }
-        public async Task<int> GetPlacesCount()
-        {
-            var count = await _placesRepository.GetPlacesCount();
-            return (int)count;
-        }
 
-        public async Task<List<ObjectId>> GetRandomIDsOfPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel)
+        public async Task<List<Place>> GetRandomPlaces(int numberOfRoundsToTake, DifficultyLevel difficultyLevel)
         {
    
-            var placesWithDifficulty = await _placesRepository.GetPlacesByDifficulty(difficultyLevel);
+            var placesWithDifficulty = 
+                (await _placesRepository.GetPlacesByDifficulty(difficultyLevel)).Where(p => p.InQueue == false).ToList();
             if (!placesWithDifficulty.Any())
             {
-                return new List<ObjectId>();
+                return new List<Place>();
             }
 
             numberOfRoundsToTake = Math.Min(numberOfRoundsToTake, placesWithDifficulty.Count);
@@ -120,7 +119,7 @@ namespace PartyGame.Services
             }
 
             var randomPlaces = randomIndexes
-                .Select(index => placesWithDifficulty[index].Id)
+                .Select(index => placesWithDifficulty[index])
                 .ToList();
 
              return randomPlaces;
@@ -130,47 +129,58 @@ namespace PartyGame.Services
         {
             AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetAuthenticatedUserProfile();
 
-            PlaceToCheck newPlaceToCheck = new PlaceToCheck
+            User user = await _accountService.GetAccountDetailsByPublicId(authorData.UserId);
+
+            Place newPlaceToCheck = new Place
             {
-                AuthorId = authorData.UserId,
+                AuthorId = user.Id,
                 CreatedAt = DateTime.Now,
-                NewPlace = newPlace
+                Name = newPlace.Name,
+                Description = newPlace.Description,
+                Latitude = newPlace.Coordinates.Latitude,
+                Longitude = newPlace.Coordinates.Longitude,
+                ImageUrl = newPlace.ImageUrl,
+                Alt = newPlace.Alt,
+                DifficultyLevel = newPlace.Difficulty,
+                AuthorPlace = user,
+
             };
 
-           await _placesToCheckRepository.CreateAsync(newPlaceToCheck);
+           await _placesRepository.CreateAsync(newPlaceToCheck);
         }
 
-        public async Task<List<PlaceToCheckDto>> GetAllPlacesInQueue()
+        public async Task<List<ShowPlaceDto>> GetAllPlacesInQueue()
         {
-            IEnumerable<PlaceToCheck> placesTask = await _placesToCheckRepository.GetAllAsync();
-            List<PlaceToCheckDto> placesDto = _mapper.Map<List<PlaceToCheckDto>>(placesTask);
+            IEnumerable<Place> placesTask = 
+                (await _placesRepository.GetAllAsync()).Where(p => p.InQueue == true);
+            List<ShowPlaceDto> placesDto = _mapper.Map<List<ShowPlaceDto>>(placesTask);
             return placesDto; 
         }
         public async Task AcceptPlace(string placeToCheckId)
         {
-            PlaceToCheck placeToAccept = _placesToCheckRepository.GetAsync(placeToCheckId).Result;
+            Place? placeToAccept = _placesRepository.GetByPublicIdAsync(placeToCheckId).Result;
 
             if (placeToAccept == null)
             {
                 throw new NotFoundException("Place you want to add to the game doesn't exist");
-
             }
 
-            Place newPlace = _mapper.Map<Place>(placeToAccept.NewPlace);
+            placeToAccept.InQueue = false;
 
-            await _placesRepository.CreateAsync(newPlace);
-            await _placesToCheckRepository.DeleteAsync(placeToCheckId);
+            await _placesRepository.UpdateAsync(placeToAccept);
         }
 
         public async Task RejectPlace(string placeToRejectId)
         {
-            DeleteResult result = await _placesToCheckRepository.DeleteAsync(placeToRejectId);
+            Place? place = await _placesRepository.GetByPublicIdAsync(placeToRejectId);
 
-            if (result.DeletedCount == 0)
+            if (place is null)
             {
                 throw new NotFoundException("Place you want to reject doesn't exist");
             }
-        }
+            var result = await _placesRepository.DeleteAsync(place.Id);
 
+          
+        }
     }
 }

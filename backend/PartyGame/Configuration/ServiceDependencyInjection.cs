@@ -9,12 +9,11 @@ namespace PartyGame.DependencyInjection
 
             services.AddScoped<IGameSessionService, GameSessionService>();
             services.AddScoped<IPlaceService, PlaceService>();
-            services.AddScoped<IScoreboardService, GameResultService>();
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IHttpContextAccessorService, HttpContextAccessorService>();
             services.AddScoped<ITokenService, TokenService>();
-
+            services.AddScoped<IRoundService, RoundService>();
             return services;
         }
     }

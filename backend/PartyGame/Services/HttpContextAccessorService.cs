@@ -14,8 +14,8 @@ namespace PartyGame.Services
         AccountDetailsFromTokenDto GetAuthenticatedUserProfile();
         string GetTokenType();
         string? GetTokenTypeSafe();
-        string GetGameSessionIdFromHeader();
-        string? GetGameSessionIdFromHeaderSafe();
+        string GetUserIdFromHeader();
+        string? GetUserIdFromHeaderSafe();
      
     }
 
@@ -56,14 +56,14 @@ namespace PartyGame.Services
                 throw new UnauthorizedAccessException("User is not authenticated.");
             }
 
-            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var email = user.FindFirst(ClaimTypes.Email)?.Value;
             var role = user.FindFirst(ClaimTypes.Role)?.Value;
             var nickname = user.FindFirst(ClaimTypes.Name)?.Value;
 
             return new AccountDetailsFromTokenDto
             {
-                UserId = userId ?? throw new NotFoundException("User ID not found in claims."),
+                UserId = userIdClaim ?? throw new NotFoundException("Id not found in claims."),
                 Email = email ?? throw new NotFoundException("Email not found in claims."),
                 Role = role ?? throw new NotFoundException("Role not found in claims."),
                 Nickname = nickname ?? throw new NotFoundException("Nickname not found in claims.")
@@ -95,31 +95,30 @@ namespace PartyGame.Services
             }
         }
 
-        public string GetGameSessionIdFromHeader()
+        public string GetUserIdFromHeader()
         {
             var user = _httpContextAccessor.HttpContext?.User;
-            var Id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(Id))
+            if (string.IsNullOrEmpty(userIdClaim))
             {
                 throw new NotFoundException("User ID not found in claims.");
             }
 
-            return Id;
+            return userIdClaim;
         }
 
-        public string? GetGameSessionIdFromHeaderSafe()
+        public string? GetUserIdFromHeaderSafe()
         {
             try
             {
-                return GetGameSessionIdFromHeader();
+                return GetUserIdFromHeader();
             }
             catch (NotFoundException)
             {
-                return "";
+                return null;
             }
         }
-
     }
 }
 

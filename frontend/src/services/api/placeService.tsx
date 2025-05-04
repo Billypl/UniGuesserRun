@@ -29,8 +29,8 @@ export class PlaceService {
     return result.data;
   }
 
-  async getAllPlacesInQueue(): Promise<PlaceToCheckDto[]> {
-    const result = await this.axiosInstance.get<PlaceToCheckDto[]>("/to_check", {
+  async getAllPlacesInQueue(): Promise<ShowPlaceDto[]> {
+    const result = await this.axiosInstance.get<ShowPlaceDto[]>("/to_check", {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
       },

@@ -1,23 +1,23 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using PartyGame.Entities;
 using PartyGame.Models.AccountModels;
 using PartyGame.Repositories;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.Extensions.Options;
+using PartyGame.Extensions.Exceptions;
 
 namespace PartyGame.Services
 {
     public interface IAccountService
     {
-        void RegisterUser(RegisterUserDto registerUserDto, string Role); 
+        Task RegisterUser(RegisterUserDto registerUserDto, string Role); 
         Task<LoginResultDto> Login(LoginUserDto loginUserDto);
         Task<AccountDetailsDto> GetAccountDetails();
         string RefreshSession();
-
+        Task<User> GetAccountDetailsByPublicId(string guid);
+        Task<User> GetAccountDetailsByPublicId(Guid guid);
+        Task DeleteUserByGUID(string guid);
+        Task DeleteUserByValueInToken();
     }
 
     public class AccountService : IAccountService
@@ -41,7 +41,7 @@ namespace PartyGame.Services
             _authenticationSettings = authenticationSettings.Value;
             _accountTokenService = accountTokenService;
         }
-        public async void RegisterUser(RegisterUserDto registerUserDto,string role)
+        public async Task RegisterUser(RegisterUserDto registerUserDto,string role)
         {
             if (await _accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Nickname) is not null)
             {
@@ -101,7 +101,12 @@ namespace PartyGame.Services
         {
             AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetAuthenticatedUserProfile();
 
-            User account = await _accountRepository.GetAsync(tokenData.UserId);
+            User? account = await _accountRepository.GetByPublicIdAsync(tokenData.UserId);
+
+            if(account is null)
+            {
+                throw new NotFoundException($"User was not found");
+            }
 
             AccountDetailsDto accountDetailsDto = _mapper.Map<AccountDetailsDto>(account);
 
@@ -111,6 +116,48 @@ namespace PartyGame.Services
         public string RefreshSession()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<User> GetAccountDetailsByPublicId(string id)
+        {
+            User? user = await _accountRepository.GetByPublicIdAsync(id);
+
+            if(user is null)
+            {
+                throw new NotFoundException($"User width id {id} doesnt exist");
+            }
+
+            return user;
+        }
+        public async Task<User> GetAccountDetailsByPublicId(Guid id)
+        {
+            User? user = await _accountRepository.GetByPublicIdAsync(id);
+
+            if (user is null)
+            {
+                throw new NotFoundException($"User width id {id} doesnt exist");
+            }
+
+            return user;
+        }
+
+        public async Task DeleteUserByGUID(string guid)
+        {
+           User? user = await _accountRepository.GetByPublicIdAsync(guid);
+          
+           if(user is null)
+           {
+                throw new NotFoundException($"User with id {guid} does not exist");
+           }
+
+            await _accountRepository.DeleteAsync(user.Id);
+        }
+
+        public async Task DeleteUserByValueInToken()
+        {
+            var userDataFromToken = _contextAccessorService.GetAuthenticatedUserProfile();
+
+            await DeleteUserByGUID(userDataFromToken.UserId);
         }
     }
 }

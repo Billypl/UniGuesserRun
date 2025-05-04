@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PartyGame.Entities;
 using System.Text.Json;
-using MongoDB.Driver;
 using System.Text.Json.Serialization;
-using System.Data;
 using PartyGame.Models.AccountModels;
 using PartyGame.Services;
 
@@ -24,29 +22,33 @@ namespace PartyGame.Extensions
 
         public async Task Seed()
         {
-           // await _gameDbContext.Places.DeleteManyAsync(Builders<Place>.Filter.Empty);
+            var userCount = await _gameDbContext.Users.CountAsync();
+            if (userCount == 0)
+            {
+                await AddUsers();
+            }
 
-            var placeCount = await _gameDbContext.Places.CountDocumentsAsync(Builders<Place>.Filter.Empty);
+            var placeCount = await _gameDbContext.Places.CountAsync();
 
             if (placeCount == 0)
             {
                 var places = GetPlaces();
+                foreach (var item in places)
+                {
+                    item.InQueue = false;
+                }
                 if (places != null)
                 {
-                    await _gameDbContext.Places.InsertManyAsync(places);
+                    await _gameDbContext.Places.AddRangeAsync(places);
+                    await _gameDbContext.SaveChangesAsync();
                 }
             }
-            var userCount = await _gameDbContext.Users.CountDocumentsAsync(Builders<User>.Filter.Empty);
-            if (userCount == 0)
-            {
-                AddUsers();
-            }
+
+            
         }
 
-
-        private void AddUsers()
+        private async Task AddUsers()
         {
-
             var admin = new RegisterUserDto
             {
                 Nickname = "Admin",
@@ -55,7 +57,7 @@ namespace PartyGame.Extensions
                 Email = "Admin@Admin.com",
             };
 
-            _accountService.RegisterUser(admin, "Admin");
+            await _accountService.RegisterUser(admin, "Admin");
 
             var moderator = new RegisterUserDto
             {
@@ -65,7 +67,7 @@ namespace PartyGame.Extensions
                 Email = "Moderator@Moderator.com"
             };
 
-            _accountService.RegisterUser(moderator, "Moderator");
+            await _accountService.RegisterUser(moderator, "Moderator");
 
             var user = new RegisterUserDto
             {
@@ -74,11 +76,10 @@ namespace PartyGame.Extensions
                 ConfirmPassword = "UserUser",
                 Email = "User@User.com"
             };
-            _accountService.RegisterUser(user, "User");
+            await _accountService.RegisterUser(user, "User");
         }
 
         private IEnumerable<Place>? GetPlaces()
-
         {
             string jsonString = File.ReadAllText(_filePath);
 

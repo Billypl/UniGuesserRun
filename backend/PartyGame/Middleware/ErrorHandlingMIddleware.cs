@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore;
 using PartyGame.Extensions.Exceptions;
 
 namespace PartyGame.Middleware
@@ -11,15 +11,10 @@ namespace PartyGame.Middleware
             {
                 await next.Invoke(context);
             }
-            catch (MongoWriteException ex)
+            catch (DbUpdateException ex)
             {
                 context.Response.StatusCode = 400;
-                await context.Response.WriteAsync($"Database write error: {ex.Message}");
-            }
-            catch (MongoConnectionException ex)
-            {
-                context.Response.StatusCode = 500;
-                await context.Response.WriteAsync($"Database connection error: {ex.Message}");
+                await context.Response.WriteAsync($"Database update error: {ex.Message}");
             }
             catch (InvalidOperationException ex)
             {
@@ -41,7 +36,6 @@ namespace PartyGame.Middleware
                 context.Response.StatusCode = 500;
                 await context.Response.WriteAsync($"Unexpected error occurred: {ex.Message}");
             }
-
         }
     }
 }

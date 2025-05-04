@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-
+﻿
 namespace PartyGame.Models.GameModels
 {
     public class GameSessionStateDto

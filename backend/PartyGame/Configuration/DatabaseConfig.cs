@@ -1,6 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Proxies;
 using PartyGame.Entities;
-using System.Runtime.InteropServices;
 
 namespace PartyGame.DependencyInjections
 {
@@ -9,24 +9,25 @@ namespace PartyGame.DependencyInjections
         public static IServiceCollection AddDatabaseConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpContextAccessor();
-            services.AddSingleton<IMongoClient>(sp =>
+
+            string connectionString;
+            if (File.Exists("/.dockerenv"))
             {
-                string connectionString = "";
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    connectionString = configuration.GetConnectionString("MongoDBWindowsConnection");
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    connectionString = configuration.GetConnectionString("MongoDBLinuxConnection");
-                }
-                return new MongoClient(connectionString);
-            });
+                connectionString = configuration.GetConnectionString("PostgreSql");
+            }
+            else
+            {
+                connectionString = configuration.GetConnectionString("PostgreSqlLocal");
+            }
 
+            services.AddDbContext<GameDbContext>(options =>
+            {
+                options.UseNpgsql(connectionString);
+            }, ServiceLifetime.Scoped);
 
-            services.AddScoped<GameDbContext>();
             services.AddScoped<GameDbContext>();
             return services;
         }
+
     }
 }
