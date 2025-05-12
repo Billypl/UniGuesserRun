@@ -5,6 +5,7 @@ using PartyGame.DependencyInjections;
 using PartyGame.Entities;
 using PartyGame.Extensions;
 using PartyGame.Middleware;
+using PartyGame.Settings;
 using System.Text.Json.Serialization;
 
 namespace PartyGame.DependencyInjection
@@ -29,16 +30,17 @@ namespace PartyGame.DependencyInjection
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-
+  
+            services.Configure<GameSettings>(
+                configuration.GetSection("GameSettings"));
 
             services.AddScoped<IAuthorizationHandler, HasGameSessionInDatabaseHandler>();
-          
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("HasGameInDatabase", policy =>
                     policy.Requirements.Add(new HasGameSessionInDatabase()));
             });
-
 
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<ErrorHandlingMiddleware>();

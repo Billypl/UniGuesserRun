@@ -10,8 +10,11 @@ public class GameSession
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid PublicId { get; set; } = Guid.NewGuid();
     public virtual List<Round> Rounds { get; set; }
+
+
     public DateTime ExpirationDate { get; set; }
     public int ActualRoundNumber { get; set; }
+    
     public double GameScore { get; set; }
     public string Difficulty { get; set; }
 

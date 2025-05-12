@@ -56,36 +56,5 @@ namespace PartyGame.Controllers
             return Ok(new { Message = "Place successfully added to queue" });
         }
 
-        [HttpPost("to_check")]
-        public async Task<IActionResult> AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
-        {
-            await _placeService.AddNewPlaceToQueue(newPlace);
-            return Ok(new { Message = "Place successfully added to queue"});
-        }
-
-        [Authorize(Roles = "Admin, Moderator")]
-        [HttpGet("to_check")]
-        public async Task<IActionResult> GetAllPlacesInQueue()
-        {
-            List<ShowPlaceDto> placesToCheck = await _placeService.GetAllPlacesInQueue();
-            return Ok(placesToCheck);
-        }
-
-        [Authorize(Roles = "Admin, Moderator")]
-        [HttpDelete("to_check/reject/{placeId}")]
-        public async Task<IActionResult> RejectPlaceToCheck([FromRoute] string placeId)
-        {
-            await _placeService.RejectPlace(placeId);
-            return Ok(new { Message = "Place successfully rejected"} );
-        }
-
-        [Authorize(Roles = "Admin, Moderator")]
-        [HttpPost("to_check/approve/{placeId}")]
-        public async Task<IActionResult> AcceptPlaceToCheck([FromRoute] string placeId)
-        {
-            await _placeService.AcceptPlace(placeId);
-            return Ok( new { Message = "Place successfully added to places" } );
-        }
-
     }
 }

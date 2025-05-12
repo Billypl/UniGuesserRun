@@ -4,10 +4,11 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
+    using PartyGame.Settings;
     using System.Text;
 
-   
-        public static class AuthenticationConfig
+
+    public static class AuthenticationConfig
         {
             public static IServiceCollection AddAuthenticationConfig(this IServiceCollection services, IConfiguration configuration)
             {

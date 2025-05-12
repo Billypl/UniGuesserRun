@@ -5,6 +5,7 @@ using PartyGame.Models.AccountModels;
 using PartyGame.Repositories;
 using Microsoft.Extensions.Options;
 using PartyGame.Extensions.Exceptions;
+using PartyGame.Settings;
 
 namespace PartyGame.Services
 {

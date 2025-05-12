@@ -7,7 +7,7 @@ using PartyGame.Services;
 
 namespace PartyGame.Controllers
 {
-    [Route("api/game_results")]
+    [Route("api/game_sessions")]
     [ApiController]
     public class GameSessionController : ControllerBase
     {
@@ -17,18 +17,6 @@ namespace PartyGame.Controllers
         {
             _gameSessionService = scoreboardService;
         }
-        // for testing / checking purpose 
-        //[HttpPost("save_score")]
-        //[Authorize(Roles = "Admin,Moderator")]
-        //public IActionResult PostNewScore([FromBody] FinishedGame finishedGame)
-        //{
-        //    _gameSessionService.SaveGame(finishedGame);
-        //    return Ok(
-        //        new
-        //        {
-        //            Message = "Score successfully added"
-        //        });
-        //}
 
         [HttpGet("scoreboard")]
         public async Task<IActionResult> GetUserStatsPage([FromQuery] ScoreboardQuery scoreboardQuery)

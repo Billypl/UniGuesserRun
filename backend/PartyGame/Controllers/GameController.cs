@@ -19,9 +19,9 @@ namespace PartyGame.Controllers
         }
 
         [HttpPost("start")]
-        public IActionResult StartGame([FromBody] StartDataDto startData)
+        public async Task<IActionResult> StartGame([FromBody] StartDataDto startData)
         {
-            var token =  _gameService.StartNewGame(startData);
+            var token = await _gameService.StartNewGame(startData);
             return Ok(new { Token = token, Message = "Game generated successfully" });
         }
 
