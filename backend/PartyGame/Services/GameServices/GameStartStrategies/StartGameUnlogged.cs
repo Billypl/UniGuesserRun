@@ -5,9 +5,9 @@ using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
 using PartyGame.Settings;
 
-namespace PartyGame.Services.StartGame
+namespace PartyGame.Services.GameServices.GameStartStrategies
 {
-    public class StartGameLogged: IStartGameStrategy
+    public class StartGameLogged : IStartGameStrategy
     {
 
         private readonly IGameSessionService _gameSessionService;
@@ -43,7 +43,7 @@ namespace PartyGame.Services.StartGame
 
             AccountDetailsFromTokenDto accountDetails = _httpContextAccessorService.GetAuthenticatedUserProfile();
 
-            var user = (await _accountService.GetAccountDetailsByPublicId(accountDetails.UserId));
+            var user = await _accountService.GetAccountDetailsByPublicId(accountDetails.UserId);
 
             GameSession gameSession = new GameSession
             {
@@ -53,6 +53,7 @@ namespace PartyGame.Services.StartGame
                 UserId = user.Id,
                 Player = user,
                 Difficulty = difficulty.ToString(),
+                GameMode = startDataDto.GameMode
             };
 
             foreach (Round gameRound in gameRounds)

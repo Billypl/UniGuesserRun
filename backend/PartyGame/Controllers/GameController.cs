@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PartyGame.Models.GameModels;
 using PartyGame.Services;
+using PartyGame.Services.GameServices;
 
 namespace PartyGame.Controllers
 {

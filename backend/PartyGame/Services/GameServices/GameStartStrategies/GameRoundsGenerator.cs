@@ -2,7 +2,7 @@
 using PartyGame.Entities;
 using PartyGame.Settings;
 
-namespace PartyGame.Services.StartGame
+namespace PartyGame.Services.GameServices.GameStartStrategies
 {
     public interface IGameRoundsGenerator
     {

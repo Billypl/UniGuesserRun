@@ -1,4 +1,6 @@
 ﻿using PartyGame.Entities;
+using PartyGame.Extensions.Exceptions;
+using PartyGame.Models.PlaceModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,5 +21,6 @@ public class Place
 
     public int? AuthorId { get; set; }
     public virtual User? AuthorPlace { get; set; }
+
 
 }

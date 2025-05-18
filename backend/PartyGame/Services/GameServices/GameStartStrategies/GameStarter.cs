@@ -1,6 +1,6 @@
 ﻿using PartyGame.Models.GameModels;
 
-namespace PartyGame.Services.StartGame
+namespace PartyGame.Services.GameServices.GameStartStrategies
 {
     public interface IGameStarter
     {
@@ -43,8 +43,8 @@ namespace PartyGame.Services.StartGame
         public IStartGameStrategy ChooseStrategy(string? tokenType)
         {
             return tokenType == "user"
-                ? (IStartGameStrategy) _logged
-                : (IStartGameStrategy) _loggedStrategy;
+                ? _logged
+                : _loggedStrategy;
         }
     }
 

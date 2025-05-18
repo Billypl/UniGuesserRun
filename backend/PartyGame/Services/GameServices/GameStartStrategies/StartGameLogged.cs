@@ -5,7 +5,7 @@ using PartyGame.Models.GameModels;
 using PartyGame.Models.TokenModels;
 using PartyGame.Settings;
 
-namespace PartyGame.Services.StartGame
+namespace PartyGame.Services.GameServices.GameStartStrategies
 {
     public class StartGameUnlogged : IStartGameStrategy
     {
@@ -57,6 +57,7 @@ namespace PartyGame.Services.StartGame
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
                 Difficulty = difficulty.ToString(),
+                GameMode = startDataDto.GameMode
             };
 
             foreach (Round gameRound in gameRounds)

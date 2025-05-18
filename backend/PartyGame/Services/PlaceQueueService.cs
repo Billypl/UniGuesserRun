@@ -39,20 +39,11 @@ namespace PartyGame.Services
 
             User user = await _accountService.GetAccountDetailsByPublicId(authorData.UserId);
 
-            Place newPlaceToCheck = new Place
-            {
-                AuthorId = user.Id,
-                CreatedAt = DateTime.Now,
-                Name = newPlace.Name,
-                Description = newPlace.Description,
-                Latitude = newPlace.Coordinates.Latitude,
-                Longitude = newPlace.Coordinates.Longitude,
-                ImageUrl = newPlace.ImageUrl,
-                Alt = newPlace.Alt,
-                DifficultyLevel = newPlace.Difficulty,
-                AuthorPlace = user,
-
-            };
+            Place newPlaceToCheck = _mapper.Map<Place>(newPlace);
+            newPlaceToCheck.AuthorId = user.Id;
+            newPlaceToCheck.CreatedAt = DateTime.Now;
+            newPlaceToCheck.AuthorPlace = user;
+            newPlaceToCheck.InQueue = true;
 
             await _placesRepository.CreateAsync(newPlaceToCheck);
         }
@@ -87,7 +78,6 @@ namespace PartyGame.Services
                 throw new NotFoundException("Place you want to reject doesn't exist");
             }
             var result = await _placesRepository.DeleteAsync(place.Id);
-
 
         }
 

@@ -7,8 +7,9 @@ using PartyGame.Services;
 
 namespace PartyGame.Controllers
 {
-    [Route("api/game_sessions")]
+  
     [ApiController]
+    [Route("api/game_sessions")]
     public class GameSessionController : ControllerBase
     {
         private readonly IGameSessionService _gameSessionService;

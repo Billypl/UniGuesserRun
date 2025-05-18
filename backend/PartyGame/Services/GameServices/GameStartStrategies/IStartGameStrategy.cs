@@ -1,8 +1,6 @@
-﻿
+﻿using PartyGame.Models.GameModels;
 
-using PartyGame.Models.GameModels;
-
-namespace PartyGame.Services.StartGame
+namespace PartyGame.Services.GameServices.GameStartStrategies
 {
     public interface IStartGameStrategy
     {
@@ -10,8 +8,8 @@ namespace PartyGame.Services.StartGame
     }
 
 
-   
 
 
-   
+
+
 }
