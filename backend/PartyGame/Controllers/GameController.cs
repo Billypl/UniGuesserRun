@@ -23,47 +23,41 @@ namespace PartyGame.Controllers
         public async Task<IActionResult> StartGame([FromBody] StartDataDto startData)
         {
             var token = await _gameService.StartNewGame(startData);
-            return Ok(new { Token = token, Message = "Game generated successfully" });
+            return Ok(token);
         }
 
-        [HttpPatch("check")]
-        [Authorize(Policy = "HasGameInDatabase")]
-        public async Task<IActionResult> CheckGuess([FromBody] Coordinates guessingCoordinates)
+        [HttpPatch("{gameGuid}/check")]
+        [Authorize(Policy = "HasGameSessionInDatabase")]
+        public async Task<IActionResult> CheckGuess([FromRoute] string gameGuid, [FromBody] Coordinates guessingCoordinates)
         {
-            var result = await _gameService.CheckGuess(guessingCoordinates);
+            var result = await _gameService.CheckGuess(gameGuid,guessingCoordinates);
             return Ok(result);
         }
 
-        [HttpGet("round/{roundNumber}")]
-        [Authorize(Policy = "HasGameInDatabase")]
-        public async Task<IActionResult> GetGuessingPlace([FromRoute] int roundNumber)
+        [HttpGet("{gameGuid}/round/{roundNumber}")]
+        [Authorize(Policy = "HasGameSessionInDatabase")]
+        public async Task<IActionResult> GetGuessingPlace([FromRoute] string gameGuid, [FromRoute] int roundNumber)
         {
-            var place = await _gameService.GetPlaceToGuess(roundNumber);
+            var place = await _gameService.GetPlaceToGuess(gameGuid,roundNumber);
             return Ok(place);
         }
 
-        [HttpGet("game_state")]
+        [HttpGet("{gameGuid}/game_state")]
         [Authorize(Policy = "HasGameInDatabase")]
-        public async Task<IActionResult> GetGameState()
+        public async Task<IActionResult> GetGameState([FromRoute] string gameGuid)
         {
             GameSessionStateDto roundNumber = await _gameSessionService.GetActualGameState();
             return Ok(roundNumber);
         }
 
-        [HttpPatch("finish")]
-        [Authorize(Policy = "HasGameInDatabase")]
-        public async Task<IActionResult> FinishGame()
+        [HttpPatch("{gameGuid}/finish")]
+        [Authorize(Policy = "HasGameSessionInDatabase")]
+        public async Task<IActionResult> FinishGame([FromRoute] string gameGuid)
         {
-            var result = await _gameService.FinishGame();
+            var result = await _gameService.FinishGame(gameGuid);
             return Ok(result);
         }
 
-        [HttpDelete("delete_session")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteGame()
-        {
-            await _gameSessionService.DeleteSessionByHeader();
-            return Ok(new { Message = "Game successfully deleted" });
-        }
+ 
     }
 }

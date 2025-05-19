@@ -38,7 +38,7 @@ namespace PartyGame.DependencyInjection
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("HasGameInDatabase", policy =>
+                options.AddPolicy("HasGameSessionInDatabase", policy =>
                     policy.Requirements.Add(new HasGameSessionInDatabase()));
             });
 

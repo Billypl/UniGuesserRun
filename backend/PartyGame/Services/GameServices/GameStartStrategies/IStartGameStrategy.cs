@@ -4,7 +4,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
 {
     public interface IStartGameStrategy
     {
-        Task<string> StartGame(StartDataDto startData);
+        Task<StartedGameData> StartGame(StartDataDto startData);
     }
 
 

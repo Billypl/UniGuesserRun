@@ -40,6 +40,8 @@ namespace PartyGame.Extensions
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
 
             CreateMap<GameSession, GameSessionStateDto>();
+            CreateMap<Round, GuessingPlaceDto>()
+                .ForMember(dest => dest.ImageUrl,opt => opt.MapFrom(src => src.PlaceToGuess.ImageUrl));
 
         }
     }
