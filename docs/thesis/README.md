@@ -1,3 +1,18 @@
+# Setup (WSL/Linux) 
+
+1. Install LaTeX package (takes some time) 
+```bash
+sudo apt update
+sudo apt install texlive-full
+```
+
+2. Open editor
+Visual Studio Code
+
+3. Install extension
+LaTeX workshop
+
+
 # PG LaTeX thesis template 
 
 The intention of this repo is to provide a working LaTeX template for
