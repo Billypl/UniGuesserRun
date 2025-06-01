@@ -41,6 +41,8 @@ namespace PartyGame.Extensions
 
             CreateMap<GameSession, GameSessionStateDto>();
 
+            CreateMap<Round, GuessingPlaceDto>();
+
         }
     }
 }

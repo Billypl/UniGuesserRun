@@ -51,7 +51,7 @@ namespace PartyGame.Services.GameServices
             string id = _httpContextAccessorService.GetUserIdFromHeader();
             GameSession session = await _gameSessionService.GetSessionByGuid(id);
 
-            var guessingPlace = session.GetRoundOrThrow(roundsNumber);
+            var guessingPlace = session.GetRoundOrThrow(roundsNumber).PlaceToGuess;
 
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
