@@ -39,7 +39,10 @@ namespace PartyGame.Extensions
 
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
 
-            CreateMap<GameSession, GameSessionStateDto>();
+            CreateMap<GameSession, GameSessionStateDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId.ToString())); // Map PublicId to Id as string
+
+
             CreateMap<Round, GuessingPlaceDto>()
                 .ForMember(dest => dest.ImageUrl,opt => opt.MapFrom(src => src.PlaceToGuess.ImageUrl));
 

@@ -52,12 +52,7 @@ const Game: React.FC = () => {
 			if (!nickname) {
 				throw new Error('User not logged in')
 			}
-			await gameService.startNewGameSession(
-				nickname ?? '',
-				difficulty ?? '',
-				gameMode ?? '',
-				signal
-			)
+			await gameService.startNewGameSession(nickname ?? '', difficulty ?? '', gameMode ?? '', signal)
 			startRound(0)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
@@ -85,7 +80,7 @@ const Game: React.FC = () => {
 			} else {
 				setError('Failed to fetch data. Please try again later.')
 				//console.error('Error fetching data:', err)
-				console.log('nieudalo sie wczytac stanu gry, tworzymy nowa gre')
+				console.log('nieudalo sie wczytac stanu gry, tworzymy nowa gre \n', err)
 				const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
 				const newController = new AbortController()
 				const newSignal = newController.signal

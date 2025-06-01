@@ -44,6 +44,7 @@ export class GameService {
 		const gameGuid = this.getGameGuid()
 		if (!gameGuid) throw new Error('Game GUID is missing')
 
+		console.log('GAME GUID:', gameGuid)
 		const url = `/${gameGuid}/game_state`
 		const response = await this.axiosInstance.get<GameSessionStateDto>(url, {
 			headers: {
@@ -55,10 +56,7 @@ export class GameService {
 	}
 
 	async checkGameForUser(signal?: AbortSignal): Promise<GameSessionStateDto> {
-		const gameGuid = this.getGameGuid()
-		if (!gameGuid) throw new Error('Game GUID is missing')
-
-		const url = `/${gameGuid}/game_state`
+		const url = `/active`
 		const response = await this.axiosInstance.get<GameSessionStateDto>(url, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
@@ -113,6 +111,7 @@ export class GameService {
 		try {
 			const state = await this.checkGameForUser()
 			const accountToken = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY)
+			window.sessionStorage.setItem(GAME_GUID, state.id)
 			if (accountToken) {
 				window.sessionStorage.setItem(GAME_TOKEN_KEY, accountToken)
 			} else {

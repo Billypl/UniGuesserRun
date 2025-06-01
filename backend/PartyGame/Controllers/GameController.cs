@@ -42,11 +42,19 @@ namespace PartyGame.Controllers
             return Ok(place);
         }
 
-        [HttpGet("{gameGuid}/game_state")]
-        [Authorize(Policy = "HasGameInDatabase")]
-        public async Task<IActionResult> GetGameState([FromRoute] string gameGuid)
+        [HttpGet("active")]
+        public async Task<IActionResult> GetActiveGameState()
         {
             GameSessionStateDto roundNumber = await _gameSessionService.GetActualGameState();
+            return Ok(roundNumber);
+        }
+
+
+        [HttpGet("{gameGuid}/game_state")]
+        [Authorize(Policy = "HasGameSessionInDatabase")]
+        public async Task<IActionResult> GetGameState([FromRoute] string gameGuid)
+        {
+            GameSessionStateDto roundNumber = await _gameSessionService.GetActualGameState(gameGuid);
             return Ok(roundNumber);
         }
 
