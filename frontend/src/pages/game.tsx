@@ -5,7 +5,7 @@ import { Coordinates } from '../models/Coordinates'
 import { useGameContext } from '../hooks/useGameContext'
 import { useNavigate } from 'react-router-dom'
 import GameInterface from '../components/GameInterface'
-import { GAME_RESULTS_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from '../Constants'
+import { GAME_RESULTS_ROUTE, SELECTED_DIFFICULTY_KEY, SELECTED_GAME_MODE, USER_NICKNAME_KEY } from '../Constants'
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
@@ -45,13 +45,19 @@ const Game: React.FC = () => {
 		try {
 			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
 			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY)
+			const gameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE)
 			if (!difficulty) {
 				throw new Error('Difficulty not selected')
 			}
 			if (!nickname) {
 				throw new Error('User not logged in')
 			}
-			await gameService.startNewGameSession(nickname, difficulty, signal)
+			await gameService.startNewGameSession(
+				nickname ?? '',
+				difficulty ?? '',
+				gameMode ?? '',
+				signal
+			)
 			startRound(0)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {

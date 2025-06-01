@@ -12,10 +12,10 @@ namespace PartyGame.Services.GameServices
 
     public interface IGameService
     {
-        Task<string> StartNewGame(StartDataDto startDataDto);
-        Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates);
-        Task<GuessingPlaceDto> GetPlaceToGuess(int roundsNumber);
-        Task<FinishedGameDto> FinishGame();
+        Task<StartedGameData> StartNewGame(StartDataDto startDataDto);
+        Task<RoundResultDto?> CheckGuess(string gameGuid, Coordinates guessingCoordinates);
+        Task<GuessingPlaceDto> GetPlaceToGuess(string gameGuid, int roundsNumber);
+        Task<FinishedGameDto> FinishGame(string gameGuid);
 
     }
     
@@ -41,35 +41,33 @@ namespace PartyGame.Services.GameServices
             _gameStarter = gameStarter;
         }
 
-        public async Task<string> StartNewGame(StartDataDto startDataDto)
+        public async Task<StartedGameData> StartNewGame(StartDataDto startDataDto)
         {
             return await _gameStarter.StartNewGame(startDataDto);
         }
 
-        public async Task<GuessingPlaceDto> GetPlaceToGuess(int roundsNumber)
+        public async Task<GuessingPlaceDto> GetPlaceToGuess(string gameGuid, int roundsNumber)
         {
-            string id = _httpContextAccessorService.GetUserIdFromHeader();
-            GameSession session = await _gameSessionService.GetSessionByGuid(id);
+            GameSession session = await _gameSessionService.GetSessionByGuid(gameGuid);
 
             var guessingPlace = session.GetRoundOrThrow(roundsNumber).PlaceToGuess;
 
             return _mapper.Map<GuessingPlaceDto>(guessingPlace);
         }
 
-        public async Task<RoundResultDto?> CheckGuess(Coordinates guessingCoordinates)
+        public async Task<RoundResultDto?> CheckGuess(string gameGuid, Coordinates guessingCoordinates)
         {
-            var gameId = _httpContextAccessorService.GetUserIdFromHeader();
-            GameSession session = await _gameSessionService.GetSessionByGuid(gameId);
+            GameSession session = await _gameSessionService.GetSessionByGuid(gameGuid);
 
             var result = session.CheckGuess(guessingCoordinates, _mapper, _gameSettings.RoundsNumber);
             await _gameSessionService.UpdateGameSession(session);
             return result;
         }
 
-        public async Task<FinishedGameDto> FinishGame()
+        public async Task<FinishedGameDto> FinishGame(string gameGuid)
         {
-            string userGuid = _httpContextAccessorService.GetUserIdFromHeader();
-            GameSession session = await _gameSessionService.GetSessionByGuid(userGuid);
+
+            GameSession session = await _gameSessionService.GetSessionByGuid(gameGuid);
 
             session.EnsureGameFinished(_gameSettings.RoundsNumber);
 

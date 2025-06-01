@@ -4,7 +4,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
 {
     public interface IGameStarter
     {
-        Task<string> StartNewGame(StartDataDto startDataDto);
+        Task<StartedGameData> StartNewGame(StartDataDto startDataDto);
         IStartGameStrategy ChooseStrategy(string? tokenType);
     }
 
@@ -27,7 +27,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
             _gameSessionService = gameSessionService;
         }
 
-        public async Task<string> StartNewGame(StartDataDto startDataDto)
+        public async Task<StartedGameData> StartNewGame(StartDataDto startDataDto)
         {
             string? tokenType = _httpContextAccessorService.GetTokenTypeSafe();
             string? playerGuid = _httpContextAccessorService.GetUserIdFromHeaderSafe();

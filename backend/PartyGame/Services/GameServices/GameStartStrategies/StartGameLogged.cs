@@ -1,61 +1,56 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Options;
 using PartyGame.Entities;
+using PartyGame.Models.AccountModels;
 using PartyGame.Models.GameModels;
-using PartyGame.Models.TokenModels;
 using PartyGame.Settings;
 
 namespace PartyGame.Services.GameServices.GameStartStrategies
 {
-    public class StartGameUnlogged : IStartGameStrategy
+    public class StartGameLogged : IStartGameStrategy
     {
 
-        private readonly ITokenService _accountTokenService;
         private readonly IGameSessionService _gameSessionService;
-        private readonly IGameRoundsGenerator _gameRoundsGenerator;
+        private readonly IHttpContextAccessorService _httpContextAccessorService;
+        private readonly IAccountService _accountService;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IGameRoundsGenerator _gameRoundsGenerator;
 
 
-        public StartGameUnlogged(
-            ITokenService accountService,
+        public StartGameLogged(
             IGameSessionService gameSessionService,
-            IGameRoundsGenerator gameRoundsGenerator,
-            IOptions<AuthenticationSettings> authenticationSettings
+            IHttpContextAccessorService httpContextAccessorService,
+            IAccountService accountService,
+            IOptions<AuthenticationSettings> authenticationSettings,
+            IGameRoundsGenerator gameRoundsGenerator
         )
         {
-            _accountTokenService = accountService;
             _gameSessionService = gameSessionService;
-            _gameRoundsGenerator = gameRoundsGenerator;
+            _httpContextAccessorService = httpContextAccessorService;
+            _accountService = accountService;
             _authenticationSettings = authenticationSettings.Value;
+            _gameRoundsGenerator = gameRoundsGenerator;
         }
 
-        public async Task<string> StartGame(StartDataDto startDataDto)
-        {
-            if (startDataDto.Nickname is null)
-            {
-                throw new HttpRequestException("Nickname cannot be empty when you are not logged in (invalid token)");
-            }
 
+        public async Task<StartedGameData> StartGame(StartDataDto startDataDto)
+        {
             DifficultyLevel difficulty =
                 (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startDataDto.Difficulty, ignoreCase: true);
 
-            Guid GuestGuid = Guid.NewGuid();
-
-            GuestTokenDataDto guestTokenData = new GuestTokenDataDto
-            {
-                Nickname = startDataDto.Nickname,
-                Difficulty = startDataDto.Difficulty,
-                GameSessionId = GuestGuid.ToString(),
-            };
-
-            string newGameToken = _accountTokenService.GenerateGuestToken(guestTokenData);
-
             List<Round> gameRounds = await _gameRoundsGenerator.GenerateRounds(difficulty);
+
+            AccountDetailsFromTokenDto accountDetails = _httpContextAccessorService.GetAuthenticatedUserProfile();
+
+            var user = await _accountService.GetAccountDetailsByPublicId(accountDetails.UserId);
+
             GameSession gameSession = new GameSession
             {
-                PublicId = GuestGuid,
+                PublicId = Guid.NewGuid(),
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
+                UserId = user.Id,
+                Player = user,
                 Difficulty = difficulty.ToString(),
                 GameMode = startDataDto.GameMode
             };
@@ -66,7 +61,14 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
             }
 
             await _gameSessionService.AddNewGameSession(gameSession);
-            return newGameToken;
+
+            return new StartedGameData
+            {
+                Token = _httpContextAccessorService.GetTokenFromHeader(),
+                GameGuid = gameSession.PublicId.ToString()
+            };
         }
+
+
     }
 }

@@ -43,11 +43,19 @@ namespace PartyGame.Controllers
             return Ok(scores);
         }
 
-        [HttpGet("{gameResultId}")]
-        public async Task<IActionResult> GetResultDetails([FromRoute] string gameResultId)
+        [HttpGet("{gameGuid}")]
+        public async Task<IActionResult> GetResultDetails([FromRoute] string gameGuid)
         {
-            FinishedGameDto gameResult = await _gameSessionService.GetFinishedGame(gameResultId);
+            FinishedGameDto gameResult = await _gameSessionService.GetFinishedGame(gameGuid);
             return Ok(gameResult);
+        }
+
+        [HttpDelete("delete_session")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteGame()
+        {
+            await _gameSessionService.DeleteSessionByHeader();
+            return Ok(new { Message = "Game successfully deleted" });
         }
     }
 }

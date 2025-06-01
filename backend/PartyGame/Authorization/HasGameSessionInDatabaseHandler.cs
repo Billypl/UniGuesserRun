@@ -1,41 +1,75 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using PartyGame.Repositories;
-using System.Security.Claims;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using PartyGame.Entities;
+using PartyGame.Services;
 
 namespace PartyGame.Authorization
 {
-    public class HasGameSessionInDatabaseHandler :
-        AuthorizationHandler<HasGameSessionInDatabase>
+    public class HasGameSessionInDatabaseHandler
+        : AuthorizationHandler<HasGameSessionInDatabase>
     {
-        private readonly IGameSessionRepository _gameSessionRepository;
+        private readonly IGameSessionService _gameSessionService;
+        private readonly IHttpContextAccessorService _httpContextAccessorService;
 
-        public HasGameSessionInDatabaseHandler(IGameSessionRepository gameSessionRepository)
+        public HasGameSessionInDatabaseHandler(
+            IGameSessionService gameSessionService,
+            IHttpContextAccessorService httpContextAccessorService)
         {
-            _gameSessionRepository = gameSessionRepository;
+            _gameSessionService = gameSessionService;
+            _httpContextAccessorService = httpContextAccessorService;
         }
 
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, HasGameSessionInDatabase requirement)
+        protected override async Task HandleRequirementAsync(
+            AuthorizationHandlerContext context,
+            HasGameSessionInDatabase requirement)
         {
-          
-            string? gameSessionID = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrWhiteSpace(gameSessionID))
+            // 1. Odczytaj HttpContext z context.Resource
+            if (context.Resource is not HttpContext httpContext)
             {
                 context.Fail();
                 return;
             }
 
-            GameSession? gameSession = await _gameSessionRepository.GetActiveGameSession(gameSessionID);
-
-            if (gameSession is not null)
+            // 2. Wyciągnij gameGuid z trasy
+            var routeValues = httpContext.GetRouteData()?.Values;
+            if (routeValues == null ||
+                !routeValues.TryGetValue("gameGuid", out var guidObj) ||
+                guidObj is not string gameGuidString ||
+                !Guid.TryParse(gameGuidString, out var gameGuid))
             {
-                context.Succeed(requirement);
-            }
-            else {
                 context.Fail();
+                return;
             }
 
-        }
+            // 3. Pobierz sesję i sprawdź uprawnienia
+            GameSession session;
+            try
+            {
+                session = await _gameSessionService.GetSessionByGuid(gameGuid.ToString());
+            }
+            catch
+            {
+                context.Fail();
+                return;
+            }
 
+            var tokenType = _httpContextAccessorService.GetTokenType();
+            var userGuid = _httpContextAccessorService.GetUserIdFromHeader();
+
+            bool isAuthorized = tokenType switch
+            {
+                "user" => session.Player?.PublicId.ToString() == userGuid,
+                "guest" => session.PublicId.ToString() == userGuid,
+                _ => false
+            };
+
+            if (isAuthorized)
+                context.Succeed(requirement);
+            else
+                context.Fail();
+        }
     }
 }
