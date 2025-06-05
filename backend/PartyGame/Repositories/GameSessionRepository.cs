@@ -9,7 +9,7 @@ namespace PartyGame.Repositories
     public interface IGameSessionRepository:IRepository<GameSession>
     {
         Task<bool> DeleteGameSessionByPlayerId(int userId);
-        Task<GameSession?> GetGameSessionByPlayerId(string userGuid);
+        Task<GameSession?> GetActiveGameSessionByPlayerId(string userGuid);
         Task<List<UserStats>> GetUsersStats(ScoreboardQuery scoreboardQuery);
         Task<List<GameSession>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
 
@@ -70,12 +70,12 @@ namespace PartyGame.Repositories
             return false;
         }
 
-        public async Task<GameSession?> GetGameSessionByPlayerId(string userGuid)
+        public async Task<GameSession?> GetActiveGameSessionByPlayerId(string userGuid)
         {
             return await _dbSet
                 .Include(gs => gs.Player)
                 .Include(gs => gs.Rounds)
-                .FirstOrDefaultAsync(gs => gs.Player != null && gs.Player.PublicId.ToString() == userGuid);
+                .FirstOrDefaultAsync(gs => gs.Player != null && gs.Player.PublicId.ToString() == userGuid && gs.IsFinished == false);
         }
 
         public async Task<List<GameSession>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery)

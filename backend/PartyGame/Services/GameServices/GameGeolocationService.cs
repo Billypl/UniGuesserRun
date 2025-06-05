@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PartyGame.Extensions;
 using PartyGame.Models;
 using PartyGame.Models.GameModels;
 

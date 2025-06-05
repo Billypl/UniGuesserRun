@@ -110,6 +110,7 @@ export class GameService {
 	async setUpGameTokenIfUserHasGame() {
 		try {
 			const state = await this.checkGameForUser()
+			console.log(state)
 			const accountToken = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY)
 			window.sessionStorage.setItem(GAME_GUID, state.id)
 			if (accountToken) {

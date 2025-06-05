@@ -5,7 +5,14 @@ import { Coordinates } from '../models/Coordinates'
 import { useGameContext } from '../hooks/useGameContext'
 import { useNavigate } from 'react-router-dom'
 import GameInterface from '../components/GameInterface'
-import { GAME_RESULTS_ROUTE, SELECTED_DIFFICULTY_KEY, SELECTED_GAME_MODE, USER_NICKNAME_KEY } from '../Constants'
+import {
+	GAME_GUID,
+	GAME_RESULTS_ROUTE,
+	GAME_TOKEN_KEY,
+	SELECTED_DIFFICULTY_KEY,
+	SELECTED_GAME_MODE,
+	USER_NICKNAME_KEY,
+} from '../Constants'
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
@@ -140,6 +147,7 @@ const Game: React.FC = () => {
 	const finishGame = async () => {
 		const response = await gameService.finishGame()
 		setScore(response.finalScore)
+
 		navigate(GAME_RESULTS_ROUTE)
 	}
 

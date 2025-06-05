@@ -112,7 +112,7 @@ namespace PartyGame.Services
 
         public async Task<bool> HasActiveGameSession(string guid)
         {
-            var existingSession = await _gameSessionRepository.GetGameSessionByPlayerId(guid);
+            var existingSession = await _gameSessionRepository.GetActiveGameSessionByPlayerId(guid);
 
             if (existingSession is null)
             {
@@ -125,7 +125,7 @@ namespace PartyGame.Services
         public async Task<GameSessionStateDto> GetActualGameState()
         {
             string gameSessionId = _httpContextAccessorService.GetUserIdFromHeader();
-            GameSession? session = await _gameSessionRepository.GetGameSessionByPlayerId(gameSessionId);
+            GameSession? session = await _gameSessionRepository.GetActiveGameSessionByPlayerId(gameSessionId);
 
             if (session is null)
             {

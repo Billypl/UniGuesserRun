@@ -39,10 +39,7 @@ const Account: React.FC = () => {
 
 				<a className={styles.nav_item} onClick={() => navigate(ADD_PLACE_ROUTE)}>
 					add place
-				</a>
-				<a className={styles.nav_item} onClick={() => navigate(REGISTER_ROUTE)}>
-					Register
-				</a>
+				</a>			
 
 				<a className={styles.nav_item}>{accountService.getCurrentUser()?.nickname}</a>
 				<a className={`${styles.logout} ${styles.nav_item} `} onClick={handleLogout}>

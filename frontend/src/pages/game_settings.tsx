@@ -24,8 +24,10 @@ const GameSettings: React.FC = () => {
 		window.sessionStorage.setItem(SELECTED_GAME_MODE, data.gameMode)
 		window.sessionStorage.setItem(SELECTED_DIFFICULTY_KEY, data.difficulty)
 		if (!accountService.isLoggedIn()) {
+			console.log('niezalogowany')
 			window.sessionStorage.setItem(USER_NICKNAME_KEY, data.nickname)
 		} else {
+			console.log('zalogowany')
 			await gameService.setUpGameTokenIfUserHasGame()
 		}
 		navigate(GAME_ROUTE)

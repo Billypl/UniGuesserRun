@@ -6,7 +6,7 @@ using AutoMapper;
 using PartyGame.Models;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.PlaceModels;
-using PartyGame.Services;
+using PartyGame.Extensions;
 
 public class GameSession
 {
