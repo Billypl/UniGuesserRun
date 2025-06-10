@@ -27,6 +27,7 @@ interface GameInterfaceProps {
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
+  const [fullScreenImage, setFullScreenImage] = useState<boolean>(false);
 
   const selectLocation = (coords: Coordinates | null) => {
     if (playerChoiceConfirmed) return; // cant move the marker after confirming your choice
@@ -55,24 +56,32 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 
   return (
     <div className={styles.game_interface}>
-      <div className={styles.game_header}>
-        <h1>Round {props.currentRoundNumber + 1}</h1>
-      </div>
+      {!fullScreenImage && (
+        <div className={styles.game_header}>
+          <h1>Round {props.currentRoundNumber + 1}</h1>
+        </div>
+      )}
 
-      <div className={styles.image_container}>
-        <img src={props.imageUrl!} />
-      </div>
+      {fullScreenImage ? (
+        <div className={styles.full_image_container} onClick={() => setFullScreenImage(false)}>
+          <img src={props.imageUrl!} />
+        </div>)
+        :
+        (<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
+          <img src={props.imageUrl!} />
+        </div>
+      )}
 
       {props.error && <p style={{ color: "red" }}>{props.error}</p>}
 
-      {clickedLatLng && !playerChoiceConfirmed && (
+      {clickedLatLng && !playerChoiceConfirmed && !fullScreenImage && (
         <button className={styles.button} onClick={confirmPlayerChoice}>Confirm</button>
       )}
       {clickedLatLng && playerChoiceConfirmed &&
-      <div className={styles.game_controls}>
-        {props.guessDistance && <h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
-        {endRoundButton()}
-      </div>}
+        <div className={styles.game_controls}>
+          {props.guessDistance && <h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
+          {endRoundButton()}
+        </div>}
 
       {/* Map Section */}
       <div className={styles.map_container}>
