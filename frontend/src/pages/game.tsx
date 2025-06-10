@@ -167,7 +167,7 @@ const Game: React.FC = () => {
 	}
 
 	return (
-		<div style={{ textAlign: 'center', marginTop: '20px' }}>
+		<div>
 			{loading && <h1>Loading...</h1>}
 			{imageUrl && currentRoundNumber != null && (
 				<GameInterface

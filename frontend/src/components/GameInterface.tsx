@@ -39,11 +39,11 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   }
 
   const endRoundButton = () => {
-    
+
     return props.isLastRound ? (
-      <button onClick={props.onFinishGame}>Finish game</button>
+      <button className={styles.end_round_button} onClick={props.onFinishGame}>Finish game</button>
     ) : (
-      <button onClick={nextRound}>Next round</button>
+      <button className={styles.end_round_button} onClick={nextRound}>Next round</button>
     );
   };
 
@@ -54,8 +54,11 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   }
 
   return (
-    <div>
-      <h1>Round {props.currentRoundNumber + 1}</h1>
+    <div className={styles.game_interface}>
+      <div className={styles.game_header}>
+        <h1>Round {props.currentRoundNumber + 1}</h1>
+      </div>
+
       <div className={styles.image_container}>
         <img src={props.imageUrl!} />
       </div>
@@ -63,13 +66,16 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
       {props.error && <p style={{ color: "red" }}>{props.error}</p>}
 
       {clickedLatLng && !playerChoiceConfirmed && (
-        <button onClick={confirmPlayerChoice}>Confirm choice</button>
+        <button className={styles.button} onClick={confirmPlayerChoice}>Confirm</button>
       )}
-      {clickedLatLng && playerChoiceConfirmed && endRoundButton()}
-      {props.guessDistance && <h1>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
+      {clickedLatLng && playerChoiceConfirmed &&
+      <div className={styles.game_controls}>
+        {props.guessDistance && <h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
+        {endRoundButton()}
+      </div>}
 
       {/* Map Section */}
-      <div style={{ height: "500px", marginTop: "20px" }}>
+      <div className={styles.map_container}>
         <MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

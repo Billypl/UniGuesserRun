@@ -1,14 +1,96 @@
 @use "utilities/Colors";
+@use "utilities/Mixins";
 
-.image_container {
+.game_interface {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+
+  .game_header {
+    position: absolute;
+    top: 0;
+    background-color: Colors.$white;
+    box-shadow: 0 3px 15px Colors.$dark-grey;
+    z-index: 1000;
+    width: 30%;
+    left: 35%;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  .map_container {
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+  }
+
+  .image_container {
     background-color: Colors.$lighter-grey;
-    display: flex;
-    justify-content: center;
-    margin-top: 10vh;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px Colors.$dark-grey;
+    border: 2px solid Colors.$white;
 
     img {
-        width: 100%;
-        max-width: fit-content;
-        height: 50vh;
+      @include Mixins.clickable;
+
+      &:hover {
+        filter: brightness(0.8);
+      }
+      border-radius: 12px;
+      width: 100%;
+      max-width: fit-content;
+      height: 30vh;
     }
+  }
+
+  .game_controls {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    bottom: 0;
+    background-color: Colors.$white;
+    box-shadow: 0 3px 15px Colors.$dark-grey;
+    z-index: 1000;
+    width: 30%;
+    left: 35%;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+
+    .distance {
+      color: Colors.$dark-blue;
+    }
+
+    .end_round_button {
+      @include Mixins.dark-button;
+      border-radius: 12px;
+      text-transform: uppercase;
+      padding: 20px 20px;
+      font-weight: bold;
+      font-size: 20px;
+      margin: 0 auto 20px;
+    }
+  }
+
+  .button {
+    @include Mixins.dark-button;
+
+    bottom: 0;
+    position: absolute;
+    z-index: 1000;
+    border-radius: 12px;
+    text-transform: uppercase;
+    width: 10%;
+    left: 45%;
+    font-size: 20px;
+    padding: 20px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 15px Colors.$dark-grey;
+    font-weight: bold;
+  }
 }
