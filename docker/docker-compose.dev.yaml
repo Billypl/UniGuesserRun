@@ -1,0 +1,15 @@
+include:
+  - docker-compose.infra.yaml
+
+services:
+  frontend:
+    container_name: frontend
+    image: node:23.5.0-alpine
+    ports:
+      - 3000:3000
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    environment:
+      WATCHPACK_POLLING: 'true'
+    command: sh -c "cd app && npm install && npm run start"

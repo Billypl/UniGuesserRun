@@ -1,0 +1,21 @@
+services:
+  db:
+    container_name: ugr-db
+    image: postgres
+    restart: always
+    # uncomment to persist data
+    #volumes:
+    #  - ./db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: UniGuesser
+
+  adminer:
+    container_name: ugr-db-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
