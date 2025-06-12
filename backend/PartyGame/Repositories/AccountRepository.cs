@@ -1,51 +1,33 @@
 ﻿using AutoMapper;
-using MongoDB.Driver;
 using PartyGame.Entities;
+using Microsoft.EntityFrameworkCore;
+using PartyGame.Repositories.PartyGame.Repositories;
 
 namespace PartyGame.Repositories
 {
-    public interface IAccountRepository
+    public interface IAccountRepository : IRepository<User>
     {
-        void AddNewUser(User newUser);
-        void DeleteUser(User existingUser);
-        void AddNewUsers(IEnumerable<User> newUsers);
-        Task<User> GetUserByNicknameOrEmailAsync(string nicknameOrEmail);
+        Task AddNewUsersAsync(IEnumerable<User> newUsers);
+        Task<User?> GetUserByNicknameOrEmailAsync(string nicknameOrEmail);
+
     }
 
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : Repository<User>, IAccountRepository
     {
-        private readonly GameDbContext _gameDbContext;
-
-        public AccountRepository(GameDbContext gameDbContext, IMapper mapper)
+        public AccountRepository(GameDbContext gameDbContext) : base(gameDbContext)
         {
-            _gameDbContext = gameDbContext;
         }
 
-        public async void AddNewUser(User newUser)
+        public async Task AddNewUsersAsync(IEnumerable<User> newUsers)
         {
-            await _gameDbContext.Users.InsertOneAsync(newUser);
+            await _dbSet.AddRangeAsync(newUsers); // Add multiple users
+            await _context.SaveChangesAsync(); // Save changes
         }
 
-        public async void DeleteUser(User existingUser)
+        public async Task<User?> GetUserByNicknameOrEmailAsync(string nicknameOrEmail)
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Id, existingUser.Id);
-            _ = await _gameDbContext.Users.DeleteOneAsync(filter);
+            return await _dbSet
+                .FirstOrDefaultAsync(u => u.Nickname == nicknameOrEmail || u.Email == nicknameOrEmail);
         }
-        public async void AddNewUsers(IEnumerable<User> newUsers)
-        {
-            await _gameDbContext.Users.InsertManyAsync(newUsers);
-        }
-
-        public async Task<User> GetUserByNicknameOrEmailAsync(string nicknameOrEmail)
-        {
-            var filter = Builders<User>.Filter.Or(
-                Builders<User>.Filter.Eq(u => u.Nickname, nicknameOrEmail),
-                Builders<User>.Filter.Eq(u => u.Email, nicknameOrEmail)
-            );
-
-            return await _gameDbContext.Users.Find(filter).FirstOrDefaultAsync();
-        }
-
-
     }
 }

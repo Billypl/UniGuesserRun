@@ -13,22 +13,12 @@ namespace PartyGame.Models.Validations
             _accountRepository = accountRepository;
             RuleFor(u => u.Email)
                 .NotEmpty()
-                .EmailAddress()
-                .Custom((value, context) =>
-                {
-                    if (_accountRepository.GetUserByNicknameOrEmailAsync(value).Result is not null)
-                    {
-                        context.AddFailure(value,"Email is taken");
-                    }
-                });
+                .EmailAddress();
 
             RuleFor(u => u.Nickname)
                 .NotEmpty()
                 .MinimumLength(3)
-                .Custom((value, context) =>
-                {
-                   
-                });
+                .MaximumLength(25);
 
             RuleFor(u => u.Password)
                 .NotEmpty()

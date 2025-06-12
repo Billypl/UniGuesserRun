@@ -1,21 +1,8 @@
 import axios, { AxiosInstance } from 'axios'
 import { SCOREBOARD_API_URL, GAME_TOKEN_KEY } from '../../Constants'
-
-export interface FinishedGame {
-	id: number
-	nickname: string
-	finalScore: number
-	// rounds: Round[];
-	difficultyLevel: string
-}
-
-export interface PagedResult<FinishedGame> {
-	items: FinishedGame[]
-	totalPages: number
-	itemFrom: number
-	itemsTo: number
-	totalItemsCount: number
-}
+import FinishedGame from '../../models/scoreboard/UserStats'
+import { PagedResult } from '../../models/scoreboard/PagedResult'
+import { ScoreboardQuery } from '../../models/scoreboard/SearchQuery'
 
 export class ScoreboardService {
 	private axiosInstance: AxiosInstance
@@ -37,9 +24,19 @@ export class ScoreboardService {
 		})
 	}
 
-	async getScores(): Promise<FinishedGame[]> {
-		const result = await this.axiosInstance.get<PagedResult<FinishedGame>>('')
-		return result.data.items
+	async getScores(scoreboardQuery: ScoreboardQuery): Promise<PagedResult<FinishedGame>> {
+		const result = await this.axiosInstance.get<PagedResult<FinishedGame>>('/scoreboard', {
+			params: {
+				PageNumber: scoreboardQuery.pageNumber,
+				PageSize: scoreboardQuery.pageSize,
+				SortDirection: scoreboardQuery.sortDirection,
+				SearchNickname: scoreboardQuery.searchNickname,
+				DifficultyLevel: scoreboardQuery.difficultyLevel,
+			},
+		})
+
+		console.log(result.data)
+		return result.data
 	}
 }
 

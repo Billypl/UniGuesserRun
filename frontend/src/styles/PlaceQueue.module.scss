@@ -1,0 +1,31 @@
+@use "utilities/Colors";
+
+.container {
+    margin-top: 100px;
+
+    .place_queue {
+        text-align: center;
+        
+        .place_entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid Colors.$lighter-grey;
+        }
+    }
+
+    .place_details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .image {
+            max-width: 1000px;
+            height: 100%;
+            display: block;
+        }
+        .map {
+            height: 400px;
+
+        }
+    }
+}

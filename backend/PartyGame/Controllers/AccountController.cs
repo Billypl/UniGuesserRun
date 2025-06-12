@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using PartyGame.Models.AccountModels;
 using PartyGame.Services;
 
@@ -19,26 +17,39 @@ namespace PartyGame.Controllers
         }
 
         [HttpPut("register")]
-        public IActionResult AddNewUser([FromBody] RegisterUserDto registerUserDto)
+        public async Task<IActionResult> AddNewUser([FromBody] RegisterUserDto registerUserDto)
         {
-            _accountService.RegisterUser(registerUserDto,"User");
-
-            return Ok(new
-                {
-                    Message = "User created"
-                }
-            );
+            await _accountService.RegisterUser(registerUserDto,"User");
+            return Ok(new {Message = "User created"} );
         }
 
-
-       
-
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginUserDto loginUserDto)
+        public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
         {
-           string token = _accountService.Login(loginUserDto);
+            LoginResultDto tokens = await _accountService.Login(loginUserDto);
+            return Ok(tokens);
+        }
 
-           return Ok(token);
+        [Authorize(Roles = "Admin,Moderator,User")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserData()
+        {
+            AccountDetailsDto accountDetailsDto =  await _accountService.GetAccountDetails();
+            return Ok(accountDetailsDto);
+        }
+
+        [HttpDelete("{userGuid}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] string userGuid)
+        {
+            await _accountService.DeleteUserByGUID(userGuid);
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser()
+        {
+            await _accountService.DeleteUserByValueInToken();
+            return Ok();
         }
 
 

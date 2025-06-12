@@ -1,0 +1,21 @@
+include:
+  - docker-compose.infra.yaml
+  - docker-compose.dev.yaml
+
+services:
+  backend:
+    container_name: ugr-api
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    ports:
+      - '${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}'
+      - '${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}'
+    volumes:
+      - ../backend/PartyGame:/app
+      - ../https/dev-cert.pfx:/https/dev-cert.pfx
+    environment:
+      - ASPNETCORE_URLS=http://+:5223;https://+:7157
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dev-cert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=admin
+      - ASPNETCORE_Kestrel__Certificates__Default__AllowInvalid=true
+      - ASPNETCORE_ENVIRONMENT=Development
+    command: bash -c "cd app && dotnet watch run --launch-profile https"

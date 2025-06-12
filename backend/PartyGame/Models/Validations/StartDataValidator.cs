@@ -16,12 +16,11 @@ public class StartDataValidator : AbstractValidator<StartDataDto>
             .Must(difficulty => difficultyLevels.Contains(difficulty.ToLower()))  
             .WithMessage("Invalid difficulty level. Valid options are: easy, normal, hard.");
 
-        RuleFor(dto => dto.Nickname)
-            .NotEmpty()
-            .WithMessage("Nickname cannot be empty.")
+        RuleFor(dto => dto.Nickname) 
             .MinimumLength(MinimalNicknameLength)
             .WithMessage($"Minimal length of nickname is {MinimalNicknameLength}.")
             .MaximumLength(MaximalNicknameLength)
-            .WithMessage($"Maximum length of nickname is {MaximalNicknameLength}.");
+            .WithMessage($"Maximum length of nickname is {MaximalNicknameLength}.")
+            .When(x => !string.IsNullOrEmpty(x.Nickname)); 
     }
 }

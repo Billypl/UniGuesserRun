@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using PartyGame.Entities;
 using PartyGame.Models.GameModels;
 using PartyGame.Services;
 
@@ -9,71 +7,62 @@ namespace PartyGame.Controllers
 {
     [ApiController]
     [Route("api/game")]
-    public class GameController:ControllerBase
+    public class GameController : ControllerBase
     {
         private readonly IGameService _gameService;
+        private readonly IGameSessionService _gameSessionService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService, IGameSessionService gameSessionService)
         {
             _gameService = gameService;
+            _gameSessionService = gameSessionService;
         }
 
         [HttpPost("start")]
-        public ActionResult StartGame([FromBody]  StartDataDto startData)
+        public IActionResult StartGame([FromBody] StartDataDto startData)
         {
-            string token = _gameService.StartNewGame(startData);
-
-            return Ok(new
-            {
-                Token = token,
-                Message = "Game generated successfully"
-            });
+            var token =  _gameService.StartNewGame(startData);
+            return Ok(new { Token = token, Message = "Game generated successfully" });
         }
 
-   
-
         [HttpPatch("check")]
-        [Authorize]
-        public ActionResult CheckGuess([FromBody]  Coordinates guessingCoordinates)
-        { 
-           RoundResultDto result = _gameService.CheckGuess(guessingCoordinates);
-           return Ok(result);
+        [Authorize(Policy = "HasGameInDatabase")]
+        public async Task<IActionResult> CheckGuess([FromBody] Coordinates guessingCoordinates)
+        {
+            var result = await _gameService.CheckGuess(guessingCoordinates);
+            return Ok(result);
         }
 
         [HttpGet("round/{roundNumber}")]
-        [Authorize]
-        public GuessingPlaceDto GetGuessingPlace([FromRoute] int roundNumber)
+        [Authorize(Policy = "HasGameInDatabase")]
+        public async Task<IActionResult> GetGuessingPlace([FromRoute] int roundNumber)
         {
-            return _gameService.GetPlaceToGuess(roundNumber);
+            var place = await _gameService.GetPlaceToGuess(roundNumber);
+            return Ok(place);
         }
 
-        [HttpGet("actual_round")]
-        [Authorize]
-        public int GetActualRoundNumber()
+        [HttpGet("game_state")]
+        [Authorize(Policy = "HasGameInDatabase")]
+        public async Task<IActionResult> GetGameState()
         {
-            return _gameService.GetActualRoundNumber();
+            GameSessionStateDto roundNumber = await _gameSessionService.GetActualGameState();
+            return Ok(roundNumber);
         }
 
         [HttpPatch("finish")]
-        [Authorize]
-        public ActionResult FinishGame()
+        [Authorize(Policy = "HasGameInDatabase")]
+        public async Task<IActionResult> FinishGame()
         {
-            SummarizeGameDto result = _gameService.FinishGame();
+            var result = await _gameService.FinishGame();
             return Ok(result);
         }
 
         [HttpDelete("delete_session")]
-        [Authorize]
-        public ActionResult DeleteGame()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteGame()
         {
-            _gameService.DeleteGame();
-            return Ok(new
-                {
-                    Message = "Game successfully deleted"
-                }
-                );
+            await _gameSessionService.DeleteSessionByHeader();
+            return Ok(new { Message = "Game successfully deleted" });
         }
-
-
     }
 }

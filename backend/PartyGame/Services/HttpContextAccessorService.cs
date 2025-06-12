@@ -2,14 +2,21 @@
 using PartyGame.Entities;
 using System;
 using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 using PartyGame.Models.AccountModels;
+using PartyGame.Extensions.Exceptions;
 
 namespace PartyGame.Services
 {
     public interface IHttpContextAccessorService
     {
         string GetTokenFromHeader();
-        AccountDetailsFromTokenDto GetProfileInformation();
+        AccountDetailsFromTokenDto GetAuthenticatedUserProfile();
+        string GetTokenType();
+        string? GetTokenTypeSafe();
+        string GetUserIdFromHeader();
+        string? GetUserIdFromHeaderSafe();
+     
     }
 
     public class HttpContextAccessorService : IHttpContextAccessorService
@@ -27,20 +34,20 @@ namespace PartyGame.Services
 
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
             {
-                throw new KeyNotFoundException("Authorization header or token is missing.");
+                throw new NotFoundException("Authorization header or token is missing.");
             }
 
             string token = authorizationHeader.Substring("Bearer ".Length).Trim();
 
             if (string.IsNullOrEmpty(token))
             {
-                throw new KeyNotFoundException("Token was not found in the Authorization header.");
+                throw new NotFoundException("Token was not found in the Authorization header.");
             }
 
             return token;
         }
 
-        public AccountDetailsFromTokenDto GetProfileInformation()
+        public AccountDetailsFromTokenDto GetAuthenticatedUserProfile()
         {
             var user = _httpContextAccessor.HttpContext?.User;
 
@@ -49,18 +56,68 @@ namespace PartyGame.Services
                 throw new UnauthorizedAccessException("User is not authenticated.");
             }
 
-            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var email = user.FindFirst(ClaimTypes.Email)?.Value;
             var role = user.FindFirst(ClaimTypes.Role)?.Value;
             var nickname = user.FindFirst(ClaimTypes.Name)?.Value;
 
             return new AccountDetailsFromTokenDto
             {
-                UserId = userId ?? throw new KeyNotFoundException("User ID not found in claims."),
-                Email = email ?? throw new KeyNotFoundException("Email not found in claims."),
-                Role = role ?? throw new KeyNotFoundException("Role not found in claims."),
-                Nickname = nickname ?? throw new KeyNotFoundException("Nickname not found in claims.")
+                UserId = userIdClaim ?? throw new NotFoundException("Id not found in claims."),
+                Email = email ?? throw new NotFoundException("Email not found in claims."),
+                Role = role ?? throw new NotFoundException("Role not found in claims."),
+                Nickname = nickname ?? throw new NotFoundException("Nickname not found in claims.")
             };
+        }
+
+        public string GetTokenType()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            var tokenType = user.FindFirst("token_type")?.Value;
+
+            if (string.IsNullOrEmpty(tokenType))
+            {
+                throw new NotFoundException("Token type in token is missing.");
+            }
+
+            return tokenType.ToString();
+        }
+
+        public string GetTokenTypeSafe()
+        {
+            try
+            {
+                return GetTokenType();
+            }
+            catch (NotFoundException)
+            {
+                return ""; 
+            }
+        }
+
+        public string GetUserIdFromHeader()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                throw new NotFoundException("User ID not found in claims.");
+            }
+
+            return userIdClaim;
+        }
+
+        public string? GetUserIdFromHeaderSafe()
+        {
+            try
+            {
+                return GetUserIdFromHeader();
+            }
+            catch (NotFoundException)
+            {
+                return null;
+            }
         }
     }
 }

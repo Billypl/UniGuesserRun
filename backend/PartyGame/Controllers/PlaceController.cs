@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PartyGame.Entities;
 using PartyGame.Models.PlaceModels;
 using PartyGame.Services;
 
@@ -8,7 +7,6 @@ namespace PartyGame.Controllers
 {
     [Route("api/place")]
     [ApiController]
-    [Authorize(Roles = "Admin,Moderator")]
     public class PlaceController : ControllerBase
     {
         private readonly IPlaceService _placeService;
@@ -18,70 +16,75 @@ namespace PartyGame.Controllers
             _placeService = placeService;
         }
 
+
+        // get places wont be authorize only for developing purpose 
         [HttpGet]
-        public ActionResult GetAllPlaces(IPlaceService placeService)
+        public async Task<IActionResult> GetAllPlaces(IPlaceService placeService)
         {
-            List<Place> places = _placeService.GetAllPlaces().Result;
+            List<ShowPlaceDto> places = await _placeService.GetAllPlaces();
             return Ok(places);
         }
 
         [HttpGet("{placeID}")]
-        public ActionResult GetPlace([FromRoute] int placeId)
+        public async  Task<IActionResult> GetPlace([FromRoute] string placeId)
         {
-            Place place = _placeService.GetPlaceById(placeId).Result;
+            ShowPlaceDto place = await _placeService.GetPlaceByPublicId(placeId);
             return Ok(place);
         }
 
-        [AllowAnonymous]
-        [Authorize(Roles = "Admin,Moderator,User")]
-        [HttpPost("to_check")]
-        public ActionResult AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
+        [HttpDelete("{placeId}")]
+        [Authorize(Roles = "Admin, Moderator")]
+        public async Task<IActionResult> DeletePlace([FromRoute] string placeId)
         {
-            _placeService.AddNewPlaceToQueue(newPlace);
-            return Ok(
-                new
-                {
-                    Message = "Place successfully added to db"
-                }
-            );
+            await _placeService.DeletePlaceByPublicId(placeId);
+            return Ok(new { Message = $"Place with id {placeId} deleted successfully" });
         }
 
+        [HttpPut("{placeId}")]
+        [Authorize(Roles = "Admin, Moderator")]
+        public async Task<IActionResult> UpdatePlace([FromRoute] string placeId, [FromBody] UpdatePlaceDto updateDto)
+        {
+             await _placeService.UpdatePlaceByPublicId(placeId, updateDto);
+            return Ok(new { Message = $"Place with id {placeId} updated successfully" });
+        }
+       
         [HttpPost]
-        public ActionResult AddNewPlace([FromBody] NewPlaceDto newPlace)
+        [Authorize(Roles = "Admin, Moderator")]
+        public async Task<IActionResult> AddNewPlace([FromBody] NewPlaceDto newPlace)
         {
-            _placeService.AddNewPlace(newPlace);
-            return Ok(
-                new
-                {
-                    Message = "Place successfully added to db"
-                }
-            );
+            await _placeService.AddNewPlace(newPlace);
+            return Ok(new { Message = "Place successfully added to queue" });
         }
 
-
-        [HttpDelete("to_check/reject")]
-        public ActionResult RejectPlaceToCheck([FromQuery] string placeId)
+        [HttpPost("to_check")]
+        public async Task<IActionResult> AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
         {
-            _placeService.RejectPlace(placeId);
-            return Ok(
-                new
-                {
-                    Message = "Place successfully rejected"
-                }
-                );
+            await _placeService.AddNewPlaceToQueue(newPlace);
+            return Ok(new { Message = "Place successfully added to queue"});
         }
 
-
-        [HttpPost("to_check/approve")]
-        public ActionResult AcceptPlaceToCheck([FromQuery] string placeId)
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpGet("to_check")]
+        public async Task<IActionResult> GetAllPlacesInQueue()
         {
-            _placeService.RejectPlace(placeId);
-            return Ok(
-                new
-                {
-                    Message = "Place successfully rejected"
-                }
-            );
+            List<ShowPlaceDto> placesToCheck = await _placeService.GetAllPlacesInQueue();
+            return Ok(placesToCheck);
+        }
+
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpDelete("to_check/reject/{placeId}")]
+        public async Task<IActionResult> RejectPlaceToCheck([FromRoute] string placeId)
+        {
+            await _placeService.RejectPlace(placeId);
+            return Ok(new { Message = "Place successfully rejected"} );
+        }
+
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpPost("to_check/approve/{placeId}")]
+        public async Task<IActionResult> AcceptPlaceToCheck([FromRoute] string placeId)
+        {
+            await _placeService.AcceptPlace(placeId);
+            return Ok( new { Message = "Place successfully added to places" } );
         }
 
     }

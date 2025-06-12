@@ -1,8 +1,11 @@
-﻿namespace PartyGame.Models.GameModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PartyGame.Models.GameModels
 {
     public class StartDataDto
     {
-        public string Nickname { get; set; }
+        // when user is logged nickname is not required 
+        public string? Nickname { get; set; }
         public string Difficulty { get; set; }
     }
 }

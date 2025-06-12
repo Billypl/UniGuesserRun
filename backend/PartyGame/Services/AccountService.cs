@@ -1,21 +1,23 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using PartyGame.Entities;
 using PartyGame.Models.AccountModels;
 using PartyGame.Repositories;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.Extensions.Options;
+using PartyGame.Extensions.Exceptions;
 
 namespace PartyGame.Services
 {
     public interface IAccountService
     {
-        void RegisterUser(RegisterUserDto registerUserDto, string Role); 
-        string Login(LoginUserDto loginUserDto);
-
+        Task RegisterUser(RegisterUserDto registerUserDto, string Role); 
+        Task<LoginResultDto> Login(LoginUserDto loginUserDto);
+        Task<AccountDetailsDto> GetAccountDetails();
+        string RefreshSession();
+        Task<User> GetAccountDetailsByPublicId(string guid);
+        Task<User> GetAccountDetailsByPublicId(Guid guid);
+        Task DeleteUserByGUID(string guid);
+        Task DeleteUserByValueInToken();
     }
 
     public class AccountService : IAccountService
@@ -25,32 +27,39 @@ namespace PartyGame.Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly ITokenService _accountTokenService;
 
         public AccountService(IAccountRepository accountRepository, IPasswordHasher<User> passwordHasher,
             IHttpContextAccessorService contextAccessorService, IMapper mapper,
-            IOptions<AuthenticationSettings> authenticationSettings)
+            IOptions<AuthenticationSettings> authenticationSettings,
+            ITokenService accountTokenService)
         {
             _accountRepository =accountRepository;
             _contextAccessorService = contextAccessorService;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings.Value;
-
+            _accountTokenService = accountTokenService;
         }
-
-
-        public void RegisterUser(RegisterUserDto registerUserDto,string Role)
+        public async Task RegisterUser(RegisterUserDto registerUserDto,string role)
         {
-            if (_accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Nickname).Result is not null)
+            if (await _accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Nickname) is not null)
             {
                 throw new BadHttpRequestException("Nickname is already used");
             }
+
+
+            if (await _accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Email) is not null)
+            {
+                throw new BadHttpRequestException("Email is already used");
+            }
+
             var newUser = new User()
             {
                 Email = registerUserDto.Email,
                 Nickname = registerUserDto.Nickname,
                 CreatedAt = DateTime.Now,
-                Role = Role,
+                Role = role,
 
             };
 
@@ -58,12 +67,12 @@ namespace PartyGame.Services
             newUser.PasswordHash = passwordHash;
 
 
-            _accountRepository.AddNewUser(newUser);
+            await _accountRepository.CreateAsync(newUser);
         }
 
-        public string Login(LoginUserDto loginUserDto)
+        public async Task<LoginResultDto> Login(LoginUserDto loginUserDto)
         {
-            var user = _accountRepository.GetUserByNicknameOrEmailAsync(loginUserDto.NicknameOrEmail).Result;
+            var user = await _accountRepository.GetUserByNicknameOrEmailAsync(loginUserDto.NicknameOrEmail);
 
             if (user is null)
             {
@@ -74,34 +83,81 @@ namespace PartyGame.Services
 
             if (result == PasswordVerificationResult.Failed)
             {
-                throw new KeyNotFoundException("Invalid username or password");
+                throw new KeyNotFoundException("Invalid nickname or password");
             }
 
-            var claims = new List<Claim>()
+            string token = _accountTokenService.GenerateAccountToken(user);
+            string refreshToken = _accountTokenService.GenerateRefreshToken(user);
+
+            return new LoginResultDto
             {
-                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                new Claim(ClaimTypes.Email,$"{user.Email}"),
-                new Claim(ClaimTypes.Role,$"{user.Role}"),
-                new Claim(ClaimTypes.Name, $"{user.Nickname}")
+                Token = token,
+                RefreshToken = refreshToken,
+                Nickname = user.Nickname
             };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(_authenticationSettings.JwtExpireAccount);
-
-            var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
-                _authenticationSettings.JwtIssuer,
-                claims,
-                expires: expires,
-                signingCredentials: cred
-            );
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            return tokenHandler.WriteToken(token);
-
         }
 
+        public async Task<AccountDetailsDto> GetAccountDetails()
+        {
+            AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetAuthenticatedUserProfile();
 
+            User? account = await _accountRepository.GetByPublicIdAsync(tokenData.UserId);
+
+            if(account is null)
+            {
+                throw new NotFoundException($"User was not found");
+            }
+
+            AccountDetailsDto accountDetailsDto = _mapper.Map<AccountDetailsDto>(account);
+
+            return accountDetailsDto;
+        }
+
+        public string RefreshSession()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<User> GetAccountDetailsByPublicId(string id)
+        {
+            User? user = await _accountRepository.GetByPublicIdAsync(id);
+
+            if(user is null)
+            {
+                throw new NotFoundException($"User width id {id} doesnt exist");
+            }
+
+            return user;
+        }
+        public async Task<User> GetAccountDetailsByPublicId(Guid id)
+        {
+            User? user = await _accountRepository.GetByPublicIdAsync(id);
+
+            if (user is null)
+            {
+                throw new NotFoundException($"User width id {id} doesnt exist");
+            }
+
+            return user;
+        }
+
+        public async Task DeleteUserByGUID(string guid)
+        {
+           User? user = await _accountRepository.GetByPublicIdAsync(guid);
+          
+           if(user is null)
+           {
+                throw new NotFoundException($"User with id {guid} does not exist");
+           }
+
+            await _accountRepository.DeleteAsync(user.Id);
+        }
+
+        public async Task DeleteUserByValueInToken()
+        {
+            var userDataFromToken = _contextAccessorService.GetAuthenticatedUserProfile();
+
+            await DeleteUserByGUID(userDataFromToken.UserId);
+        }
     }
 }

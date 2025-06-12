@@ -1,34 +1,22 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
-using PartyGame.Models.GameModels;
+﻿using PartyGame.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum DifficultyLevel
+public class GameSession
 {
-    [JsonPropertyName("easy")]
-    Easy,
+    [Key]
+    public int Id { get; set; }
 
-    [JsonPropertyName("normal")]
-    Normal,
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid PublicId { get; set; } = Guid.NewGuid();
+    public virtual List<Round> Rounds { get; set; }
+    public DateTime ExpirationDate { get; set; }
+    public int ActualRoundNumber { get; set; }
+    public double GameScore { get; set; }
+    public string Difficulty { get; set; }
 
-    [JsonPropertyName("hard")]
-    Hard
-}
+    public int? UserId { get; set; }
+    public virtual User? Player { get; set; }
 
-namespace PartyGame.Entities
-{
-    public class GameSession
-    {
-        public ObjectId Id { get; set; }
-        public string Token { get; set; }
-        public List<Round> Rounds { get; set; }
-        public DateTime ExpirationDate { get; set;}
-        public int ActualRoundNumber { get; set; }
-        public double GameScore { get; set; }
-        public string Nickname { get; set; }
-        public DifficultyLevel DifficultyLevel { get; set; }
-
-    }
+    public bool IsFinished { get; set; } = false;
 }

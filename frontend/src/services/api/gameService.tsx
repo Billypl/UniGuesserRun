@@ -1,103 +1,110 @@
-import axios, { AxiosInstance } from "axios";
-import { GAME_API_URL, GAME_TOKEN_KEY } from "../../Constants";
-
-// Define types for the request and response data
-export interface Coordinates {
-  longitude: number;
-  latitude: number;
-}
-
-export interface StartGameData {
-  nickname: string;
-  difficulty: string;
-}
-
-export interface StartGameResponse {
-  token: string;
-  message: string;
-}
-
-export interface GuessingPlaceDto {
-  imageUrl: string;
-}
-
-interface Place {
-  coordinates: Coordinates;
-  //imageUrl: string;
-  //alt: string;
-}
-
-export interface RoundResultDto {
-  originalPlace: Place;
-  distanceDifference: number;
-  roundNumber: number;
-}
-
-export interface SummarizeGameDto {
-  // TODO: round list
-  score: number;
-}
+import axios, { AxiosInstance } from 'axios'
+import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_STATE } from '../../Constants'
+import { Coordinates } from '../../models/Coordinates'
+import { StartGameData } from '../../models/game/StartGameData'
+import { StartGameResponse } from '../../models/game/StartGameResponse'
+import { GuessingPlaceDto } from '../../models/game/GuessingPlaceDto'
+import { RoundResultDto } from '../../models/game/RoundResultDto'
+import { FinishedGameDto } from '../../models/game/SummarizeGameDto'
+import { GameSessionStateDto } from '../../models/game/GameSessionState'
 
 export class GameService {
-  private axiosInstance: AxiosInstance;
+	private axiosInstance: AxiosInstance
 
-  constructor() {
-    this.axiosInstance = axios.create({
-      baseURL: GAME_API_URL,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
+	constructor() {
+		this.axiosInstance = axios.create({
+			baseURL: GAME_API_URL,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+	}
 
-  async startGame(nickname: string, difficulty: string){
-    const startData: StartGameData = {
-      nickname: nickname,
-      difficulty: difficulty,
-    };
-    const response = await this.axiosInstance.post<StartGameResponse>("/start", startData);
-    window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token);
-  }
+	async startNewGameSession(nickname: string, difficulty: string, signal?: AbortSignal) {
+		const startData: StartGameData = {
+			nickname: nickname,
+			difficulty: difficulty,
+		}
 
-  async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
-    const response = await this.axiosInstance.patch<RoundResultDto>("/check", guessingCoordinates, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
-      },
-    });
-    return response.data;
-  }
+		const response = await this.axiosInstance.post<StartGameResponse>('/start', startData, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+			},
+			signal,
+		})
 
-  async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
-    const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
-      },
-    });
-    return response.data;
-  }
+		console.log(response.data.token)
+		window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token)
+	}
 
-  async finishGame(): Promise<SummarizeGameDto> {
-    const response = await this.axiosInstance.patch<SummarizeGameDto>("/finish", "", {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
-      },
-    });
-    return response.data;
-  }
+	async checkGameState(signal?: AbortSignal): Promise<GameSessionStateDto> {
+		const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_STATE, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+			},
+			signal,
+		})
+		console.log('game state:', response)
+		return response.data
+	}
 
-  deleteSession() {
-    this.axiosInstance.delete("/delete_session", {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
-      },
-    });
-    window.sessionStorage.removeItem(GAME_TOKEN_KEY);
-  }
+	async checkGameForUser(signal?: AbortSignal): Promise<GameSessionStateDto> {
+		const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_STATE, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+			},
+			signal,
+		})
+		console.log('game state:', response)
+		return response.data
+	}
 
-  hasToken(): boolean {
-    return !!window.sessionStorage.getItem(GAME_TOKEN_KEY);
-  }
+	async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
+		const response = await this.axiosInstance.patch<RoundResultDto>('/check', guessingCoordinates, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+			},
+		})
+		return response.data
+	}
+
+	async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
+		const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+			},
+		})
+		return response.data
+	}
+
+	async finishGame(): Promise<FinishedGameDto> {
+		const response = await this.axiosInstance.patch<FinishedGameDto>('/finish', '', {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+			},
+		})
+		window.sessionStorage.removeItem(GAME_TOKEN_KEY)
+		return response.data
+	}
+
+	async setUpGameTokenIfUserHasGame() {
+		try {
+			const response = await this.checkGameForUser()
+			console.log(response)
+			const accountToken = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY)
+			if (accountToken) {
+				window.sessionStorage.setItem(GAME_TOKEN_KEY, accountToken)
+			} else {
+				console.error('Account token is null and cannot be set as GAME_TOKEN_KEY')
+			}
+		} catch (error) {
+			console.error('Failed to check if the user has a game:', error)
+		}
+	}
+
+	hasToken(): boolean {
+		return !!window.sessionStorage.getItem(GAME_TOKEN_KEY)
+	}
 }
 
-export default new GameService();
+export default new GameService()
