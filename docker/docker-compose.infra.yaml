@@ -3,9 +3,8 @@ services:
     container_name: ugr-db
     image: postgres
     restart: always
-    # uncomment to persist data
-    #volumes:
-    #  - ./db:/var/lib/postgresql/data
+    volumes:
+      - ../data/db:/var/lib/postgresql/data
     ports:
       - 5432:5432
     environment:
