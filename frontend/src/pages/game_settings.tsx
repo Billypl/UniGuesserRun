@@ -34,6 +34,7 @@ const GameSettings: React.FC = () => {
     <>
       <Header />
       <div className={styles.settings}>
+        <h2 className={styles.header}>Game settings</h2>
         <form onSubmit={handleSubmit(startGame)} className={styles.form}>
           {!accountService.isLoggedIn() && (
             <FormField
@@ -59,9 +60,9 @@ const GameSettings: React.FC = () => {
             error={errors.difficulty?.message}
           />
 
-          <button type="submit">Start game</button>
+          <button type="submit" className={styles.start_game}>Start game</button>
         </form>
-        <button onClick={() => navigate(MENU_ROUTE)}>Go back</button>
+        <button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>Go back</button>
       </div>
     </>
   );
