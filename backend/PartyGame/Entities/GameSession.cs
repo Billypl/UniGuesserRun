@@ -7,6 +7,7 @@ using PartyGame.Models;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.PlaceModels;
 using PartyGame.Extensions;
+using PartyGame.Services;
 
 public class GameSession
 {

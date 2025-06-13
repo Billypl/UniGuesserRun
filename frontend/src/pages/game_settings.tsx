@@ -81,13 +81,5 @@ return (
 </div>
 </>
 );
-
-					<button type='submit'>Start game</button>
-				</form>
-				<button onClick={() => navigate(MENU_ROUTE)}>Go back</button>
-			</div>
-		</>
-	)
 }
-
-export default GameSettings
+export default GameSettings;
