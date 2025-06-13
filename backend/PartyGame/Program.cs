@@ -27,7 +27,7 @@ async Task SeedDatabase(WebApplication app)
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<GameDbContext>();
     db.Database.Migrate();
-    System.Console.WriteLine("##### Db seeded...");
+    Console.WriteLine("##### Db seeded...");
 
     var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
     await seeder.Seed();

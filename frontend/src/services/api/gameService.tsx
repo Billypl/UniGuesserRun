@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_STATE } from '../../Constants'
+import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_STATE, GAME_GUID } from '../../Constants'
 import { Coordinates } from '../../models/Coordinates'
 import { StartGameData } from '../../models/game/StartGameData'
 import { StartGameResponse } from '../../models/game/StartGameResponse'
@@ -20,12 +20,13 @@ export class GameService {
 		})
 	}
 
-	async startNewGameSession(nickname: string, difficulty: string, signal?: AbortSignal) {
-		const startData: StartGameData = {
-			nickname: nickname,
-			difficulty: difficulty,
-		}
+	private getGameGuid(): string | null {
+		return window.sessionStorage.getItem(GAME_GUID)
+	}
 
+	async startNewGameSession(nickname: string, difficulty: string, gameMode: string, signal?: AbortSignal) {
+		const startData: StartGameData = { nickname, difficulty, gameMode }
+		console.log(startData)
 		const response = await this.axiosInstance.post<StartGameResponse>('/start', startData, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
@@ -33,34 +34,44 @@ export class GameService {
 			signal,
 		})
 
-		console.log(response.data.token)
-		window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token)
+		console.log(response.data)
+		const { token, gameGuid } = response.data
+		window.sessionStorage.setItem(GAME_TOKEN_KEY, token)
+		window.sessionStorage.setItem(GAME_GUID, gameGuid)
 	}
 
 	async checkGameState(signal?: AbortSignal): Promise<GameSessionStateDto> {
-		const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_STATE, {
+		const gameGuid = this.getGameGuid()
+		if (!gameGuid) throw new Error('Game GUID is missing')
+
+		console.log('GAME GUID:', gameGuid)
+		const url = `/${gameGuid}/game_state`
+		const response = await this.axiosInstance.get<GameSessionStateDto>(url, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
 			},
 			signal,
 		})
-		console.log('game state:', response)
 		return response.data
 	}
 
 	async checkGameForUser(signal?: AbortSignal): Promise<GameSessionStateDto> {
-		const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_STATE, {
+		const url = `/active`
+		const response = await this.axiosInstance.get<GameSessionStateDto>(url, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
 			},
 			signal,
 		})
-		console.log('game state:', response)
 		return response.data
 	}
 
 	async checkGuess(guessingCoordinates: Coordinates): Promise<RoundResultDto> {
-		const response = await this.axiosInstance.patch<RoundResultDto>('/check', guessingCoordinates, {
+		const gameGuid = this.getGameGuid()
+		if (!gameGuid) throw new Error('Game GUID is missing')
+
+		const url = `/${gameGuid}/check`
+		const response = await this.axiosInstance.patch<RoundResultDto>(url, guessingCoordinates, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
 			},
@@ -69,7 +80,11 @@ export class GameService {
 	}
 
 	async getGuessingPlace(roundNumber: number): Promise<GuessingPlaceDto> {
-		const response = await this.axiosInstance.get<GuessingPlaceDto>(`/round/${roundNumber}`, {
+		const gameGuid = this.getGameGuid()
+		if (!gameGuid) throw new Error('Game GUID is missing')
+
+		const url = `/${gameGuid}/round/${roundNumber}`
+		const response = await this.axiosInstance.get<GuessingPlaceDto>(url, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
 			},
@@ -78,20 +93,26 @@ export class GameService {
 	}
 
 	async finishGame(): Promise<FinishedGameDto> {
-		const response = await this.axiosInstance.patch<FinishedGameDto>('/finish', '', {
+		const gameGuid = this.getGameGuid()
+		if (!gameGuid) throw new Error('Game GUID is missing')
+
+		const url = `/${gameGuid}/finish`
+		const response = await this.axiosInstance.patch<FinishedGameDto>(url, null, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
 			},
 		})
 		window.sessionStorage.removeItem(GAME_TOKEN_KEY)
+		window.sessionStorage.removeItem(GAME_GUID)
 		return response.data
 	}
 
 	async setUpGameTokenIfUserHasGame() {
 		try {
-			const response = await this.checkGameForUser()
-			console.log(response)
+			const state = await this.checkGameForUser()
+			console.log(state)
 			const accountToken = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY)
+			window.sessionStorage.setItem(GAME_GUID, state.id)
 			if (accountToken) {
 				window.sessionStorage.setItem(GAME_TOKEN_KEY, accountToken)
 			} else {

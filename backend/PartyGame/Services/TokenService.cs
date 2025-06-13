@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.TokenModels;
+using PartyGame.Settings;
 
 namespace PartyGame.Services
 {

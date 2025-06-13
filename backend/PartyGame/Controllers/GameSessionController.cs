@@ -7,8 +7,9 @@ using PartyGame.Services;
 
 namespace PartyGame.Controllers
 {
-    [Route("api/game_results")]
+  
     [ApiController]
+    [Route("api/game_sessions")]
     public class GameSessionController : ControllerBase
     {
         private readonly IGameSessionService _gameSessionService;
@@ -17,18 +18,6 @@ namespace PartyGame.Controllers
         {
             _gameSessionService = scoreboardService;
         }
-        // for testing / checking purpose 
-        //[HttpPost("save_score")]
-        //[Authorize(Roles = "Admin,Moderator")]
-        //public IActionResult PostNewScore([FromBody] FinishedGame finishedGame)
-        //{
-        //    _gameSessionService.SaveGame(finishedGame);
-        //    return Ok(
-        //        new
-        //        {
-        //            Message = "Score successfully added"
-        //        });
-        //}
 
         [HttpGet("scoreboard")]
         public async Task<IActionResult> GetUserStatsPage([FromQuery] ScoreboardQuery scoreboardQuery)
@@ -54,11 +43,19 @@ namespace PartyGame.Controllers
             return Ok(scores);
         }
 
-        [HttpGet("{gameResultId}")]
-        public async Task<IActionResult> GetResultDetails([FromRoute] string gameResultId)
+        [HttpGet("{gameGuid}")]
+        public async Task<IActionResult> GetResultDetails([FromRoute] string gameGuid)
         {
-            FinishedGameDto gameResult = await _gameSessionService.GetFinishedGame(gameResultId);
+            FinishedGameDto gameResult = await _gameSessionService.GetFinishedGame(gameGuid);
             return Ok(gameResult);
+        }
+
+        [HttpDelete("delete_session")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteGame()
+        {
+            await _gameSessionService.DeleteSessionByHeader();
+            return Ok(new { Message = "Game successfully deleted" });
         }
     }
 }

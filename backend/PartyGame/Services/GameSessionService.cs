@@ -19,6 +19,7 @@ namespace PartyGame.Services
         Task AddNewGameSession(GameSession session);
         Task<bool> HasActiveGameSession(string guid);
         Task<GameSessionStateDto> GetActualGameState();
+        Task<GameSessionStateDto> GetActualGameState(string guid);
         Task FinishGame(string guid);
         Task<FinishedGameDto> GetFinishedGame(string guid);
         Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
@@ -111,7 +112,7 @@ namespace PartyGame.Services
 
         public async Task<bool> HasActiveGameSession(string guid)
         {
-            var existingSession = await _gameSessionRepository.GetActiveGameSession(guid);
+            var existingSession = await _gameSessionRepository.GetActiveGameSessionByPlayerId(guid);
 
             if (existingSession is null)
             {
@@ -124,7 +125,19 @@ namespace PartyGame.Services
         public async Task<GameSessionStateDto> GetActualGameState()
         {
             string gameSessionId = _httpContextAccessorService.GetUserIdFromHeader();
-            GameSession? session = await _gameSessionRepository.GetByPublicIdAsync(gameSessionId);
+            GameSession? session = await _gameSessionRepository.GetActiveGameSessionByPlayerId(gameSessionId);
+
+            if (session is null)
+            {
+                throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
+            }
+
+            return _mapper.Map<GameSessionStateDto>(session);
+        }
+
+        public async Task<GameSessionStateDto> GetActualGameState(string guid)
+        {
+            GameSession? session = await _gameSessionRepository.GetActiveGameSession(guid);
 
             if (session is null)
             {

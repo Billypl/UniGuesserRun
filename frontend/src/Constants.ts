@@ -1,7 +1,5 @@
-import exp from 'constants'
-
 export const GAME_API_URL = 'https://localhost:7157/api/game'
-export const SCOREBOARD_API_URL = 'https://localhost:7157/api/game_results'
+export const SESSIONS_API_URL = 'https://localhost:7157/api/game_sessions'
 export const ACCOUNT_API_URL = 'https://localhost:7157/api/account'
 export const PLACE_API_URL = 'https://localhost:7157/api/place'
 
@@ -10,6 +8,8 @@ export const ACCOUNT_TOKEN_KEY = 'account_token'
 export const REFRESH_TOKEN_KEY = 'refresh_token'
 export const USER_NICKNAME_KEY = 'nickname'
 export const SELECTED_DIFFICULTY_KEY = 'selected_difficulty'
+export const SELECTED_GAME_MODE = 'selected_game_mode'
+export const GAME_GUID = 'game_guid'
 
 export const MENU_ROUTE = '/menu'
 export const LOGIN_ROUTE = '/login'
@@ -35,5 +35,4 @@ export const USER_ROLE_ADMIN = 'Admin'
 export const USER_ROLE_MODERATOR = 'Moderator'
 export const USER_ROLE_USER = 'User'
 
-export const MAP_CENTER: [number, number] = [54.371513, 18.619164];
-
+export const MAP_CENTER: [number, number] = [54.371513, 18.619164]

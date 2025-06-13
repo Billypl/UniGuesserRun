@@ -7,6 +7,7 @@ namespace PartyGame.Models.GameModels
         // when user is logged nickname is not required 
         public string? Nickname { get; set; }
         public string Difficulty { get; set; }
+        public GameMode GameMode { get; set; }
     }
 }
 

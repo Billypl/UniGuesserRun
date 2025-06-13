@@ -1,4 +1,4 @@
-﻿namespace PartyGame
+﻿namespace PartyGame.Settings
 {
     public class AuthenticationSettings
     {

@@ -131,7 +131,12 @@ const Scoreboard: React.FC = () => {
 
 				<div className={styles.inputField}>
 					<label htmlFor='difficulty'>Page size:</label>
-					<select className={styles.pageSizeSelect} id='difficulty' name='difficulty' ref={pageSizeRef} defaultValue='3'>
+					<select
+						className={styles.pageSizeSelect}
+						id='difficulty'
+						name='difficulty'
+						ref={pageSizeRef}
+						defaultValue='3'>
 						<option value='1'>1</option>
 						<option value='3'>3</option>
 						<option value='5'>5</option>
@@ -152,7 +157,17 @@ const Scoreboard: React.FC = () => {
 						<th>Average Score</th>
 					</tr>
 				</thead>
-				<tbody className='records-list'>{records.map(showRecord)}</tbody>
+				<tbody className='records-list'>
+					{records.length > 0 ? (
+						records.map(showRecord)
+					) : (
+						<tr>
+							<td colSpan={4}>
+								No records found. 
+							</td>
+						</tr>
+					)}
+				</tbody>
 			</table>
 
 			<div className={styles.pagesBox}>{pageNumbers.map(showPage)}</div>
