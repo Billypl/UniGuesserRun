@@ -33,20 +33,21 @@ const GameSettings: React.FC = () => {
 		navigate(GAME_ROUTE)
 	}
 
-	return (
-		<>
-			<Header />
-			<div className={styles.settings}>
-				<form onSubmit={handleSubmit(startGame)} className={styles.form}>
-					{!accountService.isLoggedIn() && (
-						<FormField
-							label='Nickname'
-							name='nickname'
-							type='text'
-							register={register}
-							error={errors.nickname?.message}
-						/>
-					)}
+return (
+  <>
+    <Header />
+    <div className={styles.settings}>
+      <h2 className={styles.header}>Game settings</h2>
+      <form onSubmit={handleSubmit(startGame)} className={styles.form}>
+        {!accountService.isLoggedIn() && (
+          <FormField
+            label="Nickname"
+            name="nickname"
+            type="text"
+            register={register}
+            error={errors.nickname?.message}
+          />
+        )}
 
 					<FormSelect
 						label='Difficulty'
@@ -62,17 +63,24 @@ const GameSettings: React.FC = () => {
 						error={errors.difficulty?.message}
 					/>
 
-					<FormSelect
-						label='Game mode'
-						name='gameMode'
-						options={[
-							{ value: 'classic', label: 'Classic' },
-							{ value: 'geolocation', label: 'Geolocation' },
-						]}
-						defaultValue={'classic'}
-						register={register}
-						error={errors.difficulty?.message}
-					/>
+<FormSelect
+  label="Game mode"
+  name="gameMode"
+  options={[
+    { value: 'classic', label: 'Classic' },
+    { value: 'geolocation', label: 'Geolocation' },
+  ]}
+  defaultValue="classic"
+  register={register}
+  error={errors.difficulty?.message}
+/>
+
+<button type="submit" className={styles.start_game}>Start game</button>
+</form>
+<button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>Go back</button>
+</div>
+</>
+);
 
 					<button type='submit'>Start game</button>
 				</form>
