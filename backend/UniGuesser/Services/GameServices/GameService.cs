@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.ScoreboardModels;
 using PartyGame.Services.GameServices.GameStartStrategies;
+using UniGuesser.Models.Enumerations;
 
 
 namespace PartyGame.Services.GameServices
@@ -16,8 +17,7 @@ namespace PartyGame.Services.GameServices
         Task<StartedGameData> StartNewGame(StartDataDto startDataDto);
         Task<RoundResultDto?> CheckGuess(string gameGuid, Coordinates guessingCoordinates);
         Task<GuessingPlaceDto> GetPlaceToGuess(string gameGuid, int roundsNumber);
-        Task<FinishedGameDto> FinishGame(string gameGuid);
-        Task AbortGame(string gameGuid);
+        Task<FinishedGameDto?> EndGame(string gameGuid, GameStatus status);
     }
     
     public class GameService : IGameService
@@ -65,47 +65,28 @@ namespace PartyGame.Services.GameServices
             return result;
         }
 
-        public async Task<FinishedGameDto> FinishGame(string gameGuid)
+        public async Task<FinishedGameDto?> EndGame(string gameGuid, GameStatus status)
         {
-
             GameSession session = await _gameSessionService.GetSessionByGuid(gameGuid);
 
-            session.EnsureGameFinished(_gameSettings.RoundsNumber);
+            if (status == GameStatus.Finished)
+            {
+                session.EnsureGameFinished(_gameSettings.RoundsNumber);
+            }
 
             string tokenType = _httpContextAccessorService.GetTokenType();
 
             if (tokenType == "user")
             {
-                await _gameSessionService.FinishGame(session);
+                await _gameSessionService.SetGameStatus(session, status);
+                FinishedGameDto finishedGameDto = _mapper.Map<FinishedGameDto>(session);
+                return finishedGameDto;
             }
             else
             {
                 await _gameSessionService.DeleteSessionById(session.Id);
+                return null;
             }
-
-            FinishedGameDto finishedGameDto = _mapper.Map<FinishedGameDto>(session);
-
-            return finishedGameDto;
-        }
-
-        public async Task AbortGame(string gameGuid)
-        {
-            GameSession session = await _gameSessionService.GetSessionByGuid(gameGuid);
-
-            string tokenType = _httpContextAccessorService.GetTokenType();
-
-            if (tokenType == "user")
-            {
-                await _gameSessionService.FinishGame(session);
-            }
-            else
-            {
-                await _gameSessionService.DeleteSessionById(session.Id);
-            }
-
-            FinishedGameDto finishedGameDto = _mapper.Map<FinishedGameDto>(session);
-
-
         }
     }
 }

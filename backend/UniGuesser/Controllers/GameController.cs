@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PartyGame.Models.GameModels;
 using PartyGame.Services;
 using PartyGame.Services.GameServices;
+using UniGuesser.Models.Enumerations;
 
 namespace PartyGame.Controllers
 {
@@ -63,16 +64,17 @@ namespace PartyGame.Controllers
         [Authorize(Policy = "HasGameSessionInDatabase")]
         public async Task<IActionResult> FinishGame([FromRoute] string gameGuid)
         {
-            var result = await _gameService.FinishGame(gameGuid);
+            var result = await _gameService.EndGame(gameGuid,GameStatus.Finished);
             return Ok(result);
         }
 
-        //[HttpPatch("{gameGuid}/abort")]
-        //public async Task<IActionResult> AbortGame([FromRoute] string gameGuid)
-        //{
-        //    var result = await _gameService.AbortGame(gameGuid);
-        //    return Ok(result);
-        //}
+        [HttpPatch("{gameGuid}/abandon")]
+        [Authorize(Policy = "HasGameSessionInDatabase")]
+        public async Task<IActionResult> AbortGame([FromRoute] string gameGuid)
+        {
+            var result = await _gameService.EndGame(gameGuid, GameStatus.Abandoned);
+            return Ok(result);
+        }
 
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PartyGame.Entities;
 using PartyGame.Models.ScoreboardModels;
 using PartyGame.Repositories.PartyGame.Repositories;
+using UniGuesser.Models.Enumerations;
 
 namespace PartyGame.Repositories
 {
@@ -73,13 +74,13 @@ namespace PartyGame.Repositories
             return await _dbSet
                 .Include(gs => gs.Player)
                 .Include(gs => gs.Rounds)
-                .FirstOrDefaultAsync(gs => gs.Player != null && gs.Player.PublicId.ToString() == userGuid && gs.IsFinished == false);
+                .FirstOrDefaultAsync(gs => gs.Player != null && gs.Player.PublicId.ToString() == userGuid && gs.GameState == GameStatus.InProgress);
         }
 
         public async Task<List<GameSession>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery)
         {
             var query = _dbSet.AsQueryable()
-                .Where(gs => gs.UserId != null && gs.IsFinished);
+                .Where(gs => gs.UserId != null && gs.GameState != GameStatus.InProgress);
 
             if (!string.IsNullOrEmpty(scoreboardQuery.DifficultyLevel))
             {
@@ -114,7 +115,7 @@ namespace PartyGame.Repositories
             }
 
             List<UserStats> stats = await query
-                .Where(gs => gs.UserId != null && gs.IsFinished)
+                .Where(gs => gs.UserId != null && gs.GameState != GameStatus.InProgress)
                 .GroupBy(gs => new { gs.UserId, gs.Player!.Nickname, gs.Player.PublicId })
                 .Select(g => new UserStats
                 {
@@ -141,7 +142,7 @@ namespace PartyGame.Repositories
 
         public async Task<GameSession?> GetActiveGameSession(string guid)
         {
-            return await _dbSet.Where(g => g.IsFinished == false).FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
+            return await _dbSet.Where(g => g.GameState == GameStatus.InProgress).FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
         }
     }
 }

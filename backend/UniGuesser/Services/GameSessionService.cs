@@ -6,6 +6,7 @@ using PartyGame.Models;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.ScoreboardModels;
 using PartyGame.Repositories;
+using UniGuesser.Models.Enumerations;
 
 namespace PartyGame.Services
 {
@@ -20,7 +21,7 @@ namespace PartyGame.Services
         Task<bool> HasActiveGameSession(string guid);
         Task<GameSessionStateDto> GetActualGameStateByHeader();
         Task<GameSessionStateDto> GetActualGameState(string guid);
-        Task FinishGame(GameSession gameSession);
+        Task SetGameStatus(GameSession gameSession, GameStatus status);
         Task<FinishedGameDto> GetFinishedGame(string guid);
         Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
         Task<PagedResult<UserStats>> GetPagedUserStatsResult(ScoreboardQuery scoreboardQuery);
@@ -146,19 +147,9 @@ namespace PartyGame.Services
             return _mapper.Map<GameSessionStateDto>(session);
         }
 
-        public async Task FinishGame(GameSession gameSession)
+        public async Task SetGameStatus(GameSession gameSession, GameStatus status)
         {
-            gameSession.IsFinished = true;
-            gameSession.PublicId = Guid.NewGuid();
-
-            await _gameSessionRepository.UpdateAsync(gameSession);
-        }
-
-        public async Task AbortGame(GameSession gameSession)
-        {
-            gameSession.IsFinished = true; 
-            //gameSession.PublicId = Guid.NewGuid();
-
+            gameSession.GameState = status;
             await _gameSessionRepository.UpdateAsync(gameSession);
         }
 
@@ -171,7 +162,7 @@ namespace PartyGame.Services
                 throw new NotFoundException($"Game with id ${guid} does not exist");
             }
         
-            if(gameSession.IsFinished == false)
+            if(gameSession.GameState == GameStatus.InProgress)
             {
                 throw new Exception($"Game is not finished and cannot be showed");
             }
@@ -207,7 +198,7 @@ namespace PartyGame.Services
           return result;
         }
 
-
+       
     }
 }
 

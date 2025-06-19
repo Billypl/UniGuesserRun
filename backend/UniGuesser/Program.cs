@@ -52,8 +52,6 @@ void ConfigureMiddleware(WebApplication app)
         {
             options.WithTitle("UniGuesser Api");
             options.Theme = ScalarTheme.DeepSpace;
-            options.Layout = ScalarLayout.Classic;
-            options.HideClientButton = true;
             options.WithOpenApiRoutePattern("/openapi/{documentName}.json");
         });
     }

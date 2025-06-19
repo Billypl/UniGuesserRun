@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using PartyGame;
 using PartyGame.Entities;
 using PartyGame.Repositories.PartyGame.Repositories;
+using UniGuesser.Models.Enumerations;
 
 namespace PartyGame
 {
@@ -28,7 +29,7 @@ namespace PartyGame
                 }
                 else
                 {
-                    session.IsFinished = true;
+                    session.GameState = GameStatus.Abandoned;
                     _dbSet.Update(session); 
                 }
             }

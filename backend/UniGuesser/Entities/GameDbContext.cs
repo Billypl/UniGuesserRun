@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UniGuesser.Models.Enumerations;
 
 namespace PartyGame.Entities
 {
@@ -49,8 +50,8 @@ namespace PartyGame.Entities
 
                 entity.Property(gs => gs.PublicId)
                     .HasDefaultValueSql("gen_random_uuid()");
-                entity.Property(gs => gs.IsFinished)
-                    .HasDefaultValue(false);
+                entity.Property(gs => gs.GameState)
+                    .HasDefaultValue(GameStatus.InProgress);
 
             });
 

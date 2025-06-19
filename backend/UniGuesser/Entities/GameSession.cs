@@ -8,6 +8,7 @@ using PartyGame.Models.GameModels;
 using PartyGame.Models.PlaceModels;
 using PartyGame.Extensions;
 using PartyGame.Services;
+using UniGuesser.Models.Enumerations;
 
 public class GameSession
 {
@@ -28,7 +29,7 @@ public class GameSession
     public int? UserId { get; set; }
     public virtual User? Player { get; set; }
 
-    public bool IsFinished { get; set; } = false;
+    public GameStatus GameState { get; set; } = GameStatus.InProgress;
 
     public Round GetRoundOrThrow(int requestedRound)
     {
