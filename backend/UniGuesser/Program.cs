@@ -4,6 +4,7 @@ using PartyGame.Extensions;
 using PartyGame.DependencyInjection;
 using PartyGame.Entities;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +43,22 @@ void ConfigureMiddleware(WebApplication app)
     app.UseHttpsRedirection();
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Uniguesser API"));
+     
+    if (app.Environment.IsDevelopment())
+    {
+        // scalar docs
+        app.MapOpenApi();
+        app.MapScalarApiReference(options =>
+        {
+            options.WithTitle("UniGuesser Api");
+            options.Theme = ScalarTheme.DeepSpace;
+            options.Layout = ScalarLayout.Classic;
+            options.HideClientButton = true;
+            options.WithOpenApiRoutePattern("/openapi/{documentName}.json");
+        });
+    }
+
+
     app.UseAuthorization();
     app.MapControllers();
 }

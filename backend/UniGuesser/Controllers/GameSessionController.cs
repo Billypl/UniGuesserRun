@@ -50,11 +50,11 @@ namespace PartyGame.Controllers
             return Ok(gameResult);
         }
 
-        [HttpDelete("delete_session")]
+        [HttpDelete("{gameGuid}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteGame()
+        public async Task<IActionResult> DeleteGame(string gameGuid)
         {
-            await _gameSessionService.DeleteSessionByHeader();
+            await _gameSessionService.DeleteSessionByGuid(gameGuid);
             return Ok(new { Message = "Game successfully deleted" });
         }
     }

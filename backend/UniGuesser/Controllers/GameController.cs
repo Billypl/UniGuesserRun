@@ -42,20 +42,21 @@ namespace PartyGame.Controllers
             return Ok(place);
         }
 
+        // checking if game exists for a user 
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveGameState()
         {
-            GameSessionStateDto roundNumber = await _gameSessionService.GetActualGameState();
-            return Ok(roundNumber);
+            GameSessionStateDto gameSessionStateDto = await _gameSessionService.GetActualGameStateByHeader();
+            return Ok(gameSessionStateDto);
         }
 
-
+        // checking actual game state of a game 
         [HttpGet("{gameGuid}/game_state")]
         [Authorize(Policy = "HasGameSessionInDatabase")]
         public async Task<IActionResult> GetGameState([FromRoute] string gameGuid)
         {
-            GameSessionStateDto roundNumber = await _gameSessionService.GetActualGameState(gameGuid);
-            return Ok(roundNumber);
+            GameSessionStateDto gameSessionStateDto = await _gameSessionService.GetActualGameState(gameGuid);
+            return Ok(gameSessionStateDto);
         }
 
         [HttpPatch("{gameGuid}/finish")]
@@ -66,6 +67,12 @@ namespace PartyGame.Controllers
             return Ok(result);
         }
 
- 
+        //[HttpPatch("{gameGuid}/abort")]
+        //public async Task<IActionResult> AbortGame([FromRoute] string gameGuid)
+        //{
+        //    var result = await _gameService.AbortGame(gameGuid);
+        //    return Ok(result);
+        //}
+
     }
 }

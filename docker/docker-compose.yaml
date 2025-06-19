@@ -5,12 +5,12 @@ include:
 services:
   backend:
     container_name: ugr-api
-    image: mcr.microsoft.com/dotnet/sdk:8.0
+    image: mcr.microsoft.com/dotnet/sdk:9.0
     ports:
       - '${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}'
       - '${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}'
     volumes:
-      - ../backend/PartyGame:/app
+      - ../backend/UniGuesser:/app
       - ../https/dev-cert.pfx:/https/dev-cert.pfx
     environment:
       - ASPNETCORE_URLS=http://+:5223;https://+:7157

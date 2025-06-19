@@ -1,6 +1,7 @@
 ﻿
 
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using PartyGame.Models.GameModels;
 using PartyGame.Models.ScoreboardModels;
@@ -16,7 +17,7 @@ namespace PartyGame.Services.GameServices
         Task<RoundResultDto?> CheckGuess(string gameGuid, Coordinates guessingCoordinates);
         Task<GuessingPlaceDto> GetPlaceToGuess(string gameGuid, int roundsNumber);
         Task<FinishedGameDto> FinishGame(string gameGuid);
-
+        Task AbortGame(string gameGuid);
     }
     
     public class GameService : IGameService
@@ -75,7 +76,7 @@ namespace PartyGame.Services.GameServices
 
             if (tokenType == "user")
             {
-                await _gameSessionService.FinishGame(session.PublicId.ToString());
+                await _gameSessionService.FinishGame(session);
             }
             else
             {
@@ -87,5 +88,24 @@ namespace PartyGame.Services.GameServices
             return finishedGameDto;
         }
 
+        public async Task AbortGame(string gameGuid)
+        {
+            GameSession session = await _gameSessionService.GetSessionByGuid(gameGuid);
+
+            string tokenType = _httpContextAccessorService.GetTokenType();
+
+            if (tokenType == "user")
+            {
+                await _gameSessionService.FinishGame(session);
+            }
+            else
+            {
+                await _gameSessionService.DeleteSessionById(session.Id);
+            }
+
+            FinishedGameDto finishedGameDto = _mapper.Map<FinishedGameDto>(session);
+
+
+        }
     }
 }

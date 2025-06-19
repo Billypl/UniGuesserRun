@@ -49,7 +49,11 @@ namespace PartyGame.DependencyInjection
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<Seeder>();
             services.AddEndpointsApiExplorer();
+            services.AddOpenApi();
             services.AddSwaggerGen();
+
+          
+
 
             return services;
         }

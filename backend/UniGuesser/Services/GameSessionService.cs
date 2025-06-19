@@ -12,15 +12,15 @@ namespace PartyGame.Services
     public interface IGameSessionService
     {
         Task DeleteSessionById(int id);
-        Task DeleteSessionByHeader();
+        Task DeleteSessionByGuid(string guid);
         Task<GameSession> GetSessionById(int id);
         Task<GameSession> GetSessionByGuid(string guid);
         Task UpdateGameSession(GameSession session);
         Task AddNewGameSession(GameSession session);
         Task<bool> HasActiveGameSession(string guid);
-        Task<GameSessionStateDto> GetActualGameState();
+        Task<GameSessionStateDto> GetActualGameStateByHeader();
         Task<GameSessionStateDto> GetActualGameState(string guid);
-        Task FinishGame(string guid);
+        Task FinishGame(GameSession gameSession);
         Task<FinishedGameDto> GetFinishedGame(string guid);
         Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
         Task<PagedResult<UserStats>> GetPagedUserStatsResult(ScoreboardQuery scoreboardQuery);
@@ -51,9 +51,8 @@ namespace PartyGame.Services
             }
         }
 
-        public async Task DeleteSessionByHeader()
+        public async Task DeleteSessionByGuid(string guid)
         {
-            string guid = _httpContextAccessorService.GetUserIdFromHeader();
 
             GameSession? session = await _gameSessionRepository.GetByPublicIdAsync(guid);
 
@@ -122,7 +121,7 @@ namespace PartyGame.Services
             return true;
         }
 
-        public async Task<GameSessionStateDto> GetActualGameState()
+        public async Task<GameSessionStateDto> GetActualGameStateByHeader()
         {
             string gameSessionId = _httpContextAccessorService.GetUserIdFromHeader();
             GameSession? session = await _gameSessionRepository.GetActiveGameSessionByPlayerId(gameSessionId);
@@ -147,11 +146,18 @@ namespace PartyGame.Services
             return _mapper.Map<GameSessionStateDto>(session);
         }
 
-        public async Task FinishGame(string guid)
+        public async Task FinishGame(GameSession gameSession)
         {
-            GameSession? gameSession = await _gameSessionRepository.GetActiveGameSession(guid);
             gameSession.IsFinished = true;
             gameSession.PublicId = Guid.NewGuid();
+
+            await _gameSessionRepository.UpdateAsync(gameSession);
+        }
+
+        public async Task AbortGame(GameSession gameSession)
+        {
+            gameSession.IsFinished = true; 
+            //gameSession.PublicId = Guid.NewGuid();
 
             await _gameSessionRepository.UpdateAsync(gameSession);
         }
