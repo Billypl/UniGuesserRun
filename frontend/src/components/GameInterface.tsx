@@ -8,9 +8,11 @@ import { LocationMarker } from './LocationMarker'
 import { TargetIcon, ClickedIcon } from './MarkerIcons'
 import { TargetMarker } from './TargetMarker'
 
-import styles from '../styles/Game.module.scss'
+import styles from '../styles/GameInterface.module.scss'
 import { MAP_CENTER } from '../Constants'
 import { Coordinates } from '../models/Coordinates'
+
+import { ReactComponent as ExitIcon} from '../assets/images/x-lg.svg';
 
 interface GameInterfaceProps {
 	error: string | null
@@ -68,6 +70,9 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 			{fullScreenImage ? (
 				<div className={styles.full_image_container} onClick={() => setFullScreenImage(false)}>
 					<img src={props.imageUrl!} />
+					<div className={styles.fullscreen_exit}>
+						<ExitIcon />
+					</div>
 				</div>
 			) : (
 				<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
@@ -78,13 +83,13 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 			{props.error && <p style={{ color: 'red' }}>{props.error}</p>}
 
 			{clickedLatLng && !playerChoiceConfirmed && !fullScreenImage && (
-				<button className={styles.button} onClick={confirmPlayerChoice}>
+				<button className={styles.confirm_button} onClick={confirmPlayerChoice}>
 					Confirm
 				</button>
 			)}
 
 			{clickedLatLng && playerChoiceConfirmed && props.guessDistance && (
-				<div className={styles.game_controls}>
+				<div className={styles.round_result}>
 					{<h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
 					{endRoundButton()}
 				</div>
