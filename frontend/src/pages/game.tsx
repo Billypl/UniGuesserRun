@@ -144,6 +144,7 @@ const Game: React.FC = () => {
 
 	const resetGameState = () => {
 		setGuessDistance(null)
+		setTargetLatLng(null)
 	}
 
 	const getCoordinates = () => {
@@ -152,11 +153,11 @@ const Game: React.FC = () => {
 			return
 		}
 		navigator.geolocation.getCurrentPosition(
-			position => {
+			(position) => {
 				setPlayerLatLng(position.coords)
 				setError(null)
 			},
-			error => {
+			(error) => {
 				setError('Unable to retrieve location. Please enable location services.')
 				console.error(error)
 			},
