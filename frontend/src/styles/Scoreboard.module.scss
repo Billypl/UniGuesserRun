@@ -37,7 +37,7 @@ h1 {
 		font-size: 16px;
 		flex: 1;
 		border: 1px solid Colors.$dark-blue;
-}
+	}
 
 	select {
 		background-color: Colors.$white;
@@ -75,6 +75,19 @@ table {
 				background-color: lighten(Colors.$dark-blue, 75%);
 			}
 		}
+	}
+
+	th:first-of-type {
+		border-top-left-radius: 14px;
+	}
+	th:last-of-type {
+		border-top-right-radius: 14px;
+	}
+	tr:last-of-type td:first-of-type {
+		border-bottom-left-radius: 14px;
+	}
+	tr:last-of-type td:last-of-type {
+		border-bottom-right-radius: 14px;
 	}
 }
 
