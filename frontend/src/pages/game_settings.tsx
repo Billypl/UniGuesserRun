@@ -7,7 +7,6 @@ import FormField from "../components/FormField";
 import FormSelect from "../components/FormSelect";
 import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from "../Constants";
 import accountService from "../services/api/accountService";
-import { useGameContext } from "../hooks/useGameContext";
 import gameService from "../services/api/gameService";
 
 const GameSettings: React.FC = () => {

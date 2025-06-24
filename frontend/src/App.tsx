@@ -7,11 +7,12 @@ import { GameContextProvider } from './components/GameContext';
 import { UserContextProvider } from './components/UserContext';
 import Register from './pages/register';
 import Login from './pages/login';
-import { ADD_PLACE_ROUTE, GAME_RESULTS_ROUTE, GAME_ROUTE, GAME_SETTINGS_ROUTE, LOGIN_ROUTE, PLACE_QUEUE_ROUTE, PLACES_ROUTE, REGISTER_ROUTE, SCOREBOARD_ROUTE } from './Constants';
+import { ADD_PLACE_ROUTE, GAME_RESULTS_ROUTE, GAME_ROUTE, GAME_SETTINGS_ROUTE, LOGIN_ROUTE, PLACE_QUEUE_ROUTE, PLACES_ROUTE, USER_ROUTE, REGISTER_ROUTE, SCOREBOARD_ROUTE } from './Constants';
 import AddPlace from './pages/add_place';
 import PlaceQueue from './pages/place_queue';
 import Places from './pages/places';
 import GameSettings from './pages/game_settings';
+import User from './pages/user';
 
 const App = () => {
     return (
@@ -25,6 +26,7 @@ const App = () => {
                 <Route path={SCOREBOARD_ROUTE} element={<Scoreboard />} />
                 <Route path={REGISTER_ROUTE} element={<Register />} />
                 <Route path={LOGIN_ROUTE} element={<Login />} />
+                <Route path={`${USER_ROUTE}/:id`} element={<User />} />
                 <Route path={ADD_PLACE_ROUTE} element={<AddPlace />} />
                 <Route path={PLACE_QUEUE_ROUTE} element={<PlaceQueue />} />
                 <Route path={PLACES_ROUTE} element={<Places />} />
