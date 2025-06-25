@@ -24,13 +24,13 @@
 
 # ----------------------
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 # restore dependencies
-COPY ./PartyGame/*.csproj ./
+COPY ./UniGuesser/*.csproj ./
 RUN dotnet restore
 # build app
-COPY ./PartyGame/ ./
+COPY ./UniGuesser/ ./
 EXPOSE 7157
 # CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:7157"]
 CMD ["dotnet","run", "--launch-profile", "https"]
@@ -40,8 +40,8 @@ CMD ["dotnet","run", "--launch-profile", "https"]
 # FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS build
 # WORKDIR /src
 # # restore dependencies
-# COPY ["src/PartyGame/PartyGame.csproj", "PartyGame/"]
-# RUN dotnet restore "PartyGame/PartyGame.csproj"
+# COPY ["src/UniGuesser/UniGuesser.csproj", "UniGuesser/"]
+# RUN dotnet restore "UniGuesser/UniGuesser.csproj"
 # #build
-# COPY ["src/PartyGame", "PartyGame/"]
-# RUN dotnet build "PartyGame/PartyGame.csproj" -c Release 
+# COPY ["src/UniGuesser", "UniGuesser/"]
+# RUN dotnet build "UniGuesser/UniGuesser.csproj" -c Release 
