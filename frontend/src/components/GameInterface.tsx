@@ -27,7 +27,9 @@ interface GameInterfaceProps {
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
+  
   const [fullScreenImage, setFullScreenImage] = useState<boolean>(false);
+  const [zoomClass, setZoomClass] = useState<string>("");
 
   const selectLocation = (coords: Coordinates | null) => {
     if (playerChoiceConfirmed) return; // cant move the marker after confirming your choice
@@ -38,6 +40,18 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
     setPlayerChoiceConfirmed(true);
     props.onConfirmPlayerChoice(clickedLatLng!);
   }
+
+  const showFullScreenImage = () => {
+    setZoomClass("zoomIn");
+    setFullScreenImage(true);
+  };
+
+  const hideFullScreenImage = () => {
+    setZoomClass("zoomOut");
+    setTimeout(() => {
+      setFullScreenImage(false);
+    }, 400);
+  };
 
   const endRoundButton = () => {
 
@@ -63,11 +77,13 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
       )}
 
       {fullScreenImage ? (
-        <div className={styles.full_image_container} onClick={() => setFullScreenImage(false)}>
+        //<div className={styles.full_image_container} onClick={() => setFullScreenImage(false)} key={Date.now()}>
+        <div className={`${styles.full_image_container} ${styles[zoomClass]}`} onClick={hideFullScreenImage}>
           <img src={props.imageUrl!} />
         </div>)
         :
-        (<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
+        (//<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
+        <div className={styles.image_container} onClick={showFullScreenImage}>
           <img src={props.imageUrl!} />
         </div>
       )}
