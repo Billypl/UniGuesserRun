@@ -19,7 +19,7 @@ const GameResults: React.FC = () => {
     <div className={styles.result_container}>
         <h1>GAME RESULTS</h1>
         <h2>Congratulations {accountService.getCurrentUser()?.nickname}!</h2>
-        <p>Your score: <b>{score.toFixed(2)}</b></p>
+        <p>Your score: <b>{score.toFixed(0)}</b></p>
         <p>On <b>{window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY)}</b> difficulty</p>
         <br />
         <button onClick={returnToMenu}>Back to menu</button>

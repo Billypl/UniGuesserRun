@@ -95,7 +95,7 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
       )}
       {clickedLatLng && playerChoiceConfirmed &&
         <div className={styles.game_controls}>
-          {props.guessDistance && <h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
+          {props.guessDistance && <h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(0)}</h1>}
           {endRoundButton()}
         </div>}
 

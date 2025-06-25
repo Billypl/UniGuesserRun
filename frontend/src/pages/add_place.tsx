@@ -127,7 +127,7 @@ const AddPlace: React.FC = () => {
 
       <p className={styles.error}>{geolocationError && "Geolocation error: " + geolocationError}</p>
       <p className={styles.coordinates}>
-        {coordinates && `Coordinates: ${coordinates.latitude}, ${coordinates.longitude}`}
+        {coordinates && `Coordinates: ${coordinates.latitude.toFixed(4)}, ${coordinates.longitude.toFixed(4)}`}
       </p>
 
       <form onSubmit={handleSubmit((data, event) => addNewPlace(data, event))} className={styles.form}>
