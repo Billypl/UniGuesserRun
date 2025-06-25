@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { SCOREBOARD_API_URL, GAME_TOKEN_KEY } from '../../Constants'
+import { SESSIONS_API_URL, GAME_TOKEN_KEY } from '../../Constants'
 import FinishedGame from '../../models/scoreboard/UserStats'
 import { PagedResult } from '../../models/scoreboard/PagedResult'
 import { ScoreboardQuery } from '../../models/scoreboard/SearchQuery'
@@ -9,7 +9,7 @@ export class ScoreboardService {
 
 	constructor() {
 		this.axiosInstance = axios.create({
-			baseURL: SCOREBOARD_API_URL,
+			baseURL: SESSIONS_API_URL,
 			headers: {
 				'Content-Type': 'application/json',
 			},
