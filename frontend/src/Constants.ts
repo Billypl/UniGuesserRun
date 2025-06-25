@@ -25,6 +25,7 @@ export const GAME_SETTINGS_ROUTE = '/game_settings'
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'
 export const GAME_STATE = '/game_state'
+export const GAME_ACTIVE_STATE = '/active'
 
 export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
 export const JWT_USER_ID_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'

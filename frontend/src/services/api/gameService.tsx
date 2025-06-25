@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_STATE } from '../../Constants'
+import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_ACTIVE_STATE, GAME_STATE } from '../../Constants'
 import { Coordinates } from '../../models/Coordinates'
 import { StartGameData } from '../../models/game/StartGameData'
 import { StartGameResponse } from '../../models/game/StartGameResponse'
@@ -35,6 +35,23 @@ export class GameService {
 
 		console.log(response.data.token)
 		window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token)
+	}
+
+	async checkActiveGameState(signal?: AbortSignal) {
+		try {
+			const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_ACTIVE_STATE, {
+				headers: {
+					Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+				},
+				signal,
+			})
+			console.log('active game state:', response)
+			return response.data
+		}
+		catch (error) {
+			console.error('User has no previous active game', error)
+			return null
+		}
 	}
 
 	async checkGameState(signal?: AbortSignal): Promise<GameSessionStateDto> {
