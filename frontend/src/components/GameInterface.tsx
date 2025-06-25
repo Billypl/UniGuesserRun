@@ -8,7 +8,7 @@ import { LocationMarker } from "./LocationMarker";
 import { TargetIcon, ClickedIcon } from "./MarkerIcons";
 import { TargetMarker } from "./TargetMarker";
 
-import styles from "../styles/Game.module.scss";
+import styles from "../styles/Game.module.scss"
 import { MAP_CENTER } from "../Constants";
 import { Coordinates } from "../models/Coordinates";
 
@@ -27,7 +27,7 @@ interface GameInterfaceProps {
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
-  
+
   const [fullScreenImage, setFullScreenImage] = useState<boolean>(false);
   const [zoomClass, setZoomClass] = useState<string>("");
 
@@ -50,7 +50,7 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
     setZoomClass("zoomOut");
     setTimeout(() => {
       setFullScreenImage(false);
-    }, 400);
+    }, 400); //time spent zooming out
   };
 
   const endRoundButton = () => {
@@ -78,15 +78,18 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 
       {fullScreenImage ? (
         //<div className={styles.full_image_container} onClick={() => setFullScreenImage(false)} key={Date.now()}>
-        <div className={`${styles.full_image_container} ${styles[zoomClass]}`} onClick={hideFullScreenImage}>
-          <img src={props.imageUrl!} />
-        </div>)
+        <div className={styles.fullscreen_container}>
+          <div className={`${styles.full_image_container}`} onClick={hideFullScreenImage}>
+            <img  className={styles[zoomClass]} src={props.imageUrl!} />
+          </div>
+        </div>
+      )
         :
         (//<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
-        <div className={styles.image_container} onClick={showFullScreenImage}>
-          <img src={props.imageUrl!} />
-        </div>
-      )}
+          <div className={styles.image_container} onClick={showFullScreenImage}>
+            <img src={props.imageUrl!} />
+          </div>
+        )}
 
       {props.error && <p style={{ color: "red" }}>{props.error}</p>}
 
