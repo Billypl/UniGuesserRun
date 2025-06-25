@@ -142,6 +142,9 @@ namespace PartyGame.Repositories
 
         public async Task<GameSession?> GetActiveGameSession(string guid)
         {
+            //throw(new NotImplementedException($"GUID: {guid}, gamesession: {_dbSet.FirstOrDefault().Id.ToString()}"));
+            //Console.WriteLine($"Fetching active game session with GUID: {guid}");
+            
             return await _dbSet.Where(g => g.GameState == GameStatus.InProgress).FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
         }
     }

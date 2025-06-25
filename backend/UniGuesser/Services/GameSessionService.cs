@@ -137,6 +137,7 @@ namespace PartyGame.Services
 
         public async Task<GameSessionStateDto> GetActualGameState(string guid)
         {
+            
             GameSession? session = await _gameSessionRepository.GetActiveGameSession(guid);
 
             if (session is null)

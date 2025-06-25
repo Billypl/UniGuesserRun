@@ -35,11 +35,24 @@ namespace PartyGame.Authorization
 
             // 2. Wyciągnij gameGuid z trasy
             var routeValues = httpContext.GetRouteData()?.Values;
-            if (routeValues == null ||
+            if (routeValues == null || 
                 !routeValues.TryGetValue("gameGuid", out var guidObj) ||
                 guidObj is not string gameGuidString ||
                 !Guid.TryParse(gameGuidString, out var gameGuid))
             {
+                if(!routeValues.TryGetValue("gameGuid", out var guidObj2)) {
+                    throw(new Exception($"-1: routeValues.TryGetValue {routeValues.TryGetValue("gameGuid", out var guidObj3)}"));
+                }
+
+                if(guidObj2 is not string gameGuidString2) {
+                    throw(new Exception($"2: guidObj not string {guidObj2}"));
+                }
+
+                if(!Guid.TryParse(gameGuidString2, out var gameGuid2)) { 
+
+                    throw(new Exception($"3: gameGuidString2 {gameGuidString2}, Guid.TryParse {!Guid.TryParse(gameGuidString2, out var gameGuid4)}"));
+                }
+
                 context.Fail();
                 return;
             }
@@ -52,6 +65,8 @@ namespace PartyGame.Authorization
             }
             catch
             {
+                throw(new Exception("333333333333333333333333333333333333333"));
+
                 context.Fail();
                 return;
             }
@@ -69,7 +84,10 @@ namespace PartyGame.Authorization
             if (isAuthorized)
                 context.Succeed(requirement);
             else
+            {
+                throw(new Exception("444444444444444444444444444444444444444"));
                 context.Fail();
+            }
         }
     }
 }

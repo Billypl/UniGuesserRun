@@ -7,7 +7,7 @@ import FormField from '../components/FormField'
 import FormSelect from '../components/FormSelect'
 import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, SELECTED_GAME_MODE, USER_NICKNAME_KEY } from '../Constants'
 import accountService from '../services/api/accountService'
-import { useGameContext } from '../hooks/useGameContext'
+import { startGameManually } from '../utils/gameStartHelper'
 import gameService from '../services/api/gameService'
 
 const GameSettings: React.FC = () => {
@@ -21,33 +21,24 @@ const GameSettings: React.FC = () => {
 	} = useForm<StartGameData>()
 
 	const startGame = async (data: StartGameData) => {
-		window.sessionStorage.setItem(SELECTED_GAME_MODE, data.gameMode)
-		window.sessionStorage.setItem(SELECTED_DIFFICULTY_KEY, data.difficulty)
-		if (!accountService.isLoggedIn()) {
-			console.log('niezalogowany')
-			window.sessionStorage.setItem(USER_NICKNAME_KEY, data.nickname)
-		} else {
-			console.log('zalogowany')
-			await gameService.setUpGameTokenIfUserHasGame()
-		}
-		navigate(GAME_ROUTE)
+		await startGameManually(data, navigate);
 	}
 
-return (
-  <>
-    <Header />
-    <div className={styles.settings}>
-      <h2 className={styles.header}>Game settings</h2>
-      <form onSubmit={handleSubmit(startGame)} className={styles.form}>
-        {!accountService.isLoggedIn() && (
-          <FormField
-            label="Nickname"
-            name="nickname"
-            type="text"
-            register={register}
-            error={errors.nickname?.message}
-          />
-        )}
+	return (
+		<>
+			<Header />
+			<div className={styles.settings}>
+				<h2 className={styles.header}>Game settings</h2>
+				<form onSubmit={handleSubmit(startGame)} className={styles.form}>
+					{!accountService.isLoggedIn() && (
+						<FormField
+							label="Nickname"
+							name="nickname"
+							type="text"
+							register={register}
+							error={errors.nickname?.message}
+						/>
+					)}
 
 					<FormSelect
 						label='Difficulty'
@@ -63,23 +54,23 @@ return (
 						error={errors.difficulty?.message}
 					/>
 
-<FormSelect
-  label="Game mode"
-  name="gameMode"
-  options={[
-    { value: 'classic', label: 'Classic' },
-    { value: 'geolocation', label: 'Geolocation' },
-  ]}
-  defaultValue="classic"
-  register={register}
-  error={errors.difficulty?.message}
-/>
+					<FormSelect
+						label="Game mode"
+						name="gameMode"
+						options={[
+							{ value: 'classic', label: 'Classic' },
+							{ value: 'geolocation', label: 'Geolocation' },
+						]}
+						defaultValue="classic"
+						register={register}
+						error={errors.gameMode?.message}
+					/>
 
-<button type="submit" className={styles.start_game}>Start game</button>
-</form>
-<button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>Go back</button>
-</div>
-</>
-);
+					<button type="submit" className={styles.start_game}>Start game</button>
+				</form>
+				<button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>Go back</button>
+			</div>
+		</>
+	);
 }
 export default GameSettings;
