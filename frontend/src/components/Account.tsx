@@ -58,7 +58,6 @@ const Account: React.FC = () => {
 				<a className={styles.nav_item} onClick={() => navigate(`${USER_ROUTE}/${accountService.getCurrentUser()?.userId}`)}>
 					{accountService.getCurrentUser()?.nickname}
 				</a>
-
 				<a className={`${styles.logout} ${styles.nav_item} `} onClick={handleLogout}>
 					Logout
 				</a>

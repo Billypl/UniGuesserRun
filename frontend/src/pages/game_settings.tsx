@@ -10,61 +10,75 @@ import accountService from "../services/api/accountService";
 import gameService from "../services/api/gameService";
 
 const GameSettings: React.FC = () => {
-  const navigate = useNavigate();
+	const navigate = useNavigate()
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<StartGameData>();
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm<StartGameData>()
 
-  const startGame = async (data: StartGameData) => {
-    window.sessionStorage.setItem(SELECTED_DIFFICULTY_KEY, data.difficulty);
-    if (!accountService.isLoggedIn()) {
-      window.sessionStorage.setItem(USER_NICKNAME_KEY, data.nickname);
-    } else {
-      await gameService.setUpGameTokenIfUserHasGame();
-    }
-    navigate(GAME_ROUTE);
-  };
+	const startGame = async (data: StartGameData) => {
+		window.sessionStorage.setItem(SELECTED_GAME_MODE, data.gameMode)
+		window.sessionStorage.setItem(SELECTED_DIFFICULTY_KEY, data.difficulty)
+		if (!accountService.isLoggedIn()) {
+			console.log('niezalogowany')
+			window.sessionStorage.setItem(USER_NICKNAME_KEY, data.nickname)
+		} else {
+			console.log('zalogowany')
+			await gameService.setUpGameTokenIfUserHasGame()
+		}
+		navigate(GAME_ROUTE)
+	}
 
-  return (
-    <>
-      <Header />
-      <div className={styles.settings}>
-        <h2 className={styles.header}>Game settings</h2>
-        <form onSubmit={handleSubmit(startGame)} className={styles.form}>
-          {!accountService.isLoggedIn() && (
-            <FormField
-              label="Nickname"
-              name="nickname"
-              type="text"
-              register={register}
-              error={errors.nickname?.message}
-            />
-          )}
-
-          <FormSelect
-            label="Difficulty"
-            name="difficulty"
-            options={[
-              { value: "easy", label: "Easy" },
-              { value: "normal", label: "Normal" },
-              { value: "hard", label: "Hard" },
-              { value: "ultra-nightmare", label: "Ultra-Nightmare" },
-            ]}
-            defaultValue={"normal"}
+return (
+  <>
+    <Header />
+    <div className={styles.settings}>
+      <h2 className={styles.header}>Game settings</h2>
+      <form onSubmit={handleSubmit(startGame)} className={styles.form}>
+        {!accountService.isLoggedIn() && (
+          <FormField
+            label="Nickname"
+            name="nickname"
+            type="text"
             register={register}
-            error={errors.difficulty?.message}
+            error={errors.nickname?.message}
           />
+        )}
 
-          <button type="submit" className={styles.start_game}>Start game</button>
-        </form>
-        <button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>Go back</button>
-      </div>
-    </>
-  );
-};
+					<FormSelect
+						label='Difficulty'
+						name='difficulty'
+						options={[
+							{ value: 'easy', label: 'Easy' },
+							{ value: 'normal', label: 'Normal' },
+							{ value: 'hard', label: 'Hard' },
+							{ value: 'ultra-nightmare', label: 'Ultra-Nightmare' },
+						]}
+						defaultValue={'normal'}
+						register={register}
+						error={errors.difficulty?.message}
+					/>
 
+<FormSelect
+  label="Game mode"
+  name="gameMode"
+  options={[
+    { value: 'classic', label: 'Classic' },
+    { value: 'geolocation', label: 'Geolocation' },
+  ]}
+  defaultValue="classic"
+  register={register}
+  error={errors.difficulty?.message}
+/>
+
+<button type="submit" className={styles.start_game}>Start game</button>
+</form>
+<button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>Go back</button>
+</div>
+</>
+);
+}
 export default GameSettings;

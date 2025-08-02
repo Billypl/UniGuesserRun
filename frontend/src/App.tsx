@@ -16,7 +16,7 @@ import User from './pages/user';
 
 const App = () => {
     return (
-        <UserContextProvider><Router basename="/PartyGame">
+        <UserContextProvider><Router basename="/">
             <Routes>
                 <Route path="/" element={<GameContextProvider><Menu /></GameContextProvider>}/>
                 <Route path={GAME_SETTINGS_ROUTE} element={<GameContextProvider><GameSettings /></GameContextProvider>} />
