@@ -1,0 +1,58 @@
+services:
+  backend:
+    container_name: ugr-api
+    image: billypl/ugr-backend:latest # Replace with your actual image name
+    restart: always
+    ports:
+      - "${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}" # or use 443 if behind HTTPS proxy
+    environment:
+      - ASPNETCORE_URLS=http://+:${BACKEND_HTTP_PORT};https://+:${BACKEND_HTTPS_PORT}
+      - ASPNETCORE_ENVIRONMENT=Production
+      # convert to reverse proxy
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dev-cert.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=admin
+      - ASPNETCORE_Kestrel__Certificates__Default__AllowInvalid=true
+    volumes:
+      - ../https:/https
+    depends_on:
+      - db
+    networks:
+      - ugr-net
+
+  frontend:
+    container_name: ugr-frontend
+    image: billypl/ugr-frontend:latest # Replace with your actual image name
+    restart: always
+    ports:
+      - "80:80" # Consider using 80 if deploying publicly
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - ugr-net
+
+  db:
+    container_name: ugr-db
+    image: postgres:16
+    restart: always
+    volumes:
+      - ../data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - ugr-net
+
+  adminer:
+    container_name: ugr-db-adminer
+    image: adminer
+    restart: always
+    ports:
+      - "${DB_ADMIN_PANEL_PORT}:${DB_ADMIN_PANEL_PORT}"
+    networks:
+      - ugr-net
+
+networks:
+  ugr-net:

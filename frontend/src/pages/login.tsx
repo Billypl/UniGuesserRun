@@ -24,7 +24,7 @@ const Login: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const loginUser = async(data: LoginFormInputs) => {
+  const loginUser = async (data: LoginFormInputs) => {
     //TODO: sprawdzenie w przypadku błędnych danych
     const errorMessage = await accountService.login(data.nicknameOrEmail, data.password);
     setError(errorMessage);
@@ -33,36 +33,34 @@ const Login: React.FC = () => {
       setUsername(user.nickname);
       navigate(MENU_ROUTE);
     }
-  }
+  };
 
   return (
     <div className={styles.form_container}>
-      <Logo />
-      <form onSubmit={handleSubmit(loginUser)} 
-    className={styles.form}>
+      <div className={styles.logo_container}>
+        <Logo />
+      </div>
       <h2 className={styles.header}>Sign in to UniGuesser</h2>
+      <form onSubmit={handleSubmit(loginUser)} className={styles.form}>
+        <FormField
+          label="Nickname or Email"
+          name="nicknameOrEmail"
+          type="text"
+          register={login}
+          error={errors.nicknameOrEmail?.message}
+        />
 
-      <FormField
-        label="Nickname or Email"
-        name="nicknameOrEmail"
-        type="text"
-        register={login}
-        error={errors.nicknameOrEmail?.message}
-      />
-      
-      <FormField
-        label="Password"
-        name="password"
-        type="password"
-        register={login}
-        error={errors.password?.message}
-      />
+        <FormField label="Password" name="password" type="password" register={login} error={errors.password?.message} />
 
-      {error && <p className={styles.error}>{error}</p>}
+        {error && <p className={styles.error}>{error}</p>}
 
-      <button type="submit" className={styles.submit_button}>Login</button>
-    </form>
-    <p onClick={() => navigate(REGISTER_ROUTE)} className={styles.link}>New to UniGuesser? Sign up</p> 
+        <button type="submit" className={styles.button}>
+          Login
+        </button>
+      </form>
+      <p onClick={() => navigate(REGISTER_ROUTE)} className={styles.link}>
+        New to UniGuesser? Sign up
+      </p>
     </div>
   );
 };

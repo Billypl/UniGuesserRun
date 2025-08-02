@@ -1,61 +1,53 @@
-@import "Mixins";
-@import "Colors";
+@use "utilities/Mixins";
+@use "utilities/Colors";
 
 .form_container {
-    margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-basis: auto;
+  margin-top: 8vh;
+  width: auto;
+
+  .header {
+    font-size: 30px;
+  }
+
+  .logo_container {
+    width: 80px;
+    height: 80px;
+  }
+
+  .form {
+    margin: 15px 0 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: auto;
+    font-size: 25px;
 
-    .form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        div {
-            display: flex;
-            flex-direction: column;
-            width: 14rem;
-            margin-top: 5px;
-
-            input {
-                border-radius: 5px;
-                border-color: $dark-grey;
-                border-style: solid;
-                border-width: 1px;
-                padding: 3px 5px 3px 5px;
-                margin-top: 2px;
-            }
-        }
-
-        .hint {
-            font-size: 0.7rem;
-            margin-top: 2px;
-            margin-bottom: 5px;
-            color: $light-grey;
-        }
-
-        .error {
-            font-size: 0.9rem;
-            color: $dark-red;
-            margin-top: 5px;
-            margin-bottom: -5px;
-            white-space: pre-wrap;
-            text-align: center;
-        }
-
-        button {
-            @include button;
-
-            width: 14rem;
-            margin-top: 15px;
-            padding: 7px 0 7px 0;
-            font-size: 1rem;
-        }
+    .error {
+      font-size: 15px;
+      color: Colors.$dark-red;
+      margin-top: 5px;
+      margin-bottom: -5px;
+      white-space: pre-wrap;
+      text-align: center;
     }
+  }
 
-    .link {
-        @include link;
-    }
+  .button {
+    @include Mixins.dark-button;
+
+    width: 300px;
+    margin-top: 15px;
+    padding: 10px 0 10px 0;
+    font-size: 1rem;
+    max-width: 70vw;
+    font-size: 18px;
+  }
+
+  .link {
+    @include Mixins.link;
+  }
 }

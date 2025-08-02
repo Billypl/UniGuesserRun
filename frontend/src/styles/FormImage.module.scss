@@ -1,0 +1,22 @@
+@use "utilities/Mixins";
+
+.button {
+    @include Mixins.dark-button;
+
+    width: 300px;
+    margin-top: 15px;
+    padding: 10px 0 10px 0;
+    font-size: 1rem;
+    max-width: 70vw;
+    font-size: 18px;
+}
+
+.photo_button {
+    @include Mixins.dark-button;
+    width: 300px;
+    margin-top: 10px;
+    padding: 10px 0 10px 0;
+    font-size: 1rem;
+    max-width: 70vw;
+    font-size: 18px;
+}

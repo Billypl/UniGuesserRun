@@ -9,6 +9,8 @@ import { TargetIcon, ClickedIcon } from "./MarkerIcons";
 import { TargetMarker } from "./TargetMarker";
 
 import styles from "../styles/Game.module.scss";
+import { MAP_CENTER } from "../Constants";
+import { Coordinates } from "../models/Coordinates";
 
 interface GameInterfaceProps {
   error: string | null;
@@ -16,21 +18,20 @@ interface GameInterfaceProps {
   isLastRound: boolean;
   imageUrl: string;
   guessDistance: number | null;
-  targetLatLng: [number, number] | null;
-  onConfirmPlayerChoice: (latlng: [number, number]) => void;
+  targetLatLng: Coordinates | null;
+  onConfirmPlayerChoice: (latlng: Coordinates) => void;
   onNextRound: () => void;
   onFinishGame: () => void;
 }
 
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
-  const [clickedLatLng, setClickedLatLng] = useState<[number, number] | null>(null);
+  const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null);
   const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
+  const [fullScreenImage, setFullScreenImage] = useState<boolean>(false);
 
-  const MAP_CENTER: [number, number] = [54.371513, 18.619164];
-
-  const selectLocation = (latlng: [number, number] | null) => {
+  const selectLocation = (coords: Coordinates | null) => {
     if (playerChoiceConfirmed) return; // cant move the marker after confirming your choice
-    setClickedLatLng(latlng);
+    setClickedLatLng(coords);
   };
 
   const confirmPlayerChoice = () => {
@@ -39,11 +40,11 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   }
 
   const endRoundButton = () => {
-    
+
     return props.isLastRound ? (
-      <button onClick={props.onFinishGame}>Finish game</button>
+      <button className={styles.end_round_button} onClick={props.onFinishGame}>Finish game</button>
     ) : (
-      <button onClick={nextRound}>Next round</button>
+      <button className={styles.end_round_button} onClick={nextRound}>Next round</button>
     );
   };
 
@@ -54,29 +55,43 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
   }
 
   return (
-    <div>
-      <h1>Round {props.currentRoundNumber + 1}</h1>
-      <div className={styles.image_container}>
-        <img src={props.imageUrl!} />
-      </div>
+    <div className={styles.game_interface}>
+      {!fullScreenImage && (
+        <div className={styles.game_header}>
+          <h1>Round {props.currentRoundNumber + 1}</h1>
+        </div>
+      )}
+
+      {fullScreenImage ? (
+        <div className={styles.full_image_container} onClick={() => setFullScreenImage(false)}>
+          <img src={props.imageUrl!} />
+        </div>)
+        :
+        (<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
+          <img src={props.imageUrl!} />
+        </div>
+      )}
 
       {props.error && <p style={{ color: "red" }}>{props.error}</p>}
 
-      {clickedLatLng && !playerChoiceConfirmed && (
-        <button onClick={confirmPlayerChoice}>Confirm choice</button>
+      {clickedLatLng && !playerChoiceConfirmed && !fullScreenImage && (
+        <button className={styles.button} onClick={confirmPlayerChoice}>Confirm</button>
       )}
-      {clickedLatLng && playerChoiceConfirmed && endRoundButton()}
-      {props.guessDistance && <h1>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
+      {clickedLatLng && playerChoiceConfirmed &&
+        <div className={styles.game_controls}>
+          {props.guessDistance && <h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>}
+          {endRoundButton()}
+        </div>}
 
       {/* Map Section */}
-      <div style={{ height: "500px", marginTop: "20px" }}>
+      <div className={styles.map_container}>
         <MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {clickedLatLng && <LocationMarker latlng={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />}
+          {clickedLatLng && <LocationMarker coords={clickedLatLng} icon={ClickedIcon} label="Clicked location:" />}
           {playerChoiceConfirmed && (
             <TargetMarker clickedLatLng={clickedLatLng} targetLatLng={props.targetLatLng} icon={TargetIcon} />
           )}

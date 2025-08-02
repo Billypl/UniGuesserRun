@@ -25,8 +25,11 @@ The game is fully dockerized using `docker-compose` for easy deployment.
 ### Running with Docker
 ```sh
 git clone https://github.com/YourUsername/UniguesserRun.git
-cd UniguesserRun
+cd UniguesserRun/docker
+# full app
 docker-compose up
+# without backend
+docker-compose.dev.yaml
 ```
 
 ## Contact

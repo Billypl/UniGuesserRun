@@ -8,14 +8,10 @@ const Logo: React.FC = () => {
     const navigate = useNavigate();
 
     return(
-        <div className={styles.logo}>
-            <a onClick={() => navigate(MENU_ROUTE)}>
-                <img src={logo}></img>
-            </a>
-        </div>
-        
+        <a className={styles.logo} onClick={() => navigate(MENU_ROUTE)}>
+            <img src={logo}></img>
+        </a>
     )
-
 };
 
 export default Logo;

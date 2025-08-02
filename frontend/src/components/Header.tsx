@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Account from "./Account";
 import Logo from "./Logo";
@@ -12,10 +11,10 @@ const Header = () => {
     <header className={styles.header}>
       <nav className={styles.nav}>
         <Logo />
-        <div className={styles.title} onClick={() => navigate(MENU_ROUTE)}>UniGuesser</div>
+        <a className={styles.title} onClick={() => navigate(MENU_ROUTE)}>UniGuesser</a>
         <Account />
       </nav>
-    </header>
+    </header> 
   );
 };
 

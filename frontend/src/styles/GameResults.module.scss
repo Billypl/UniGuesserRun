@@ -1,4 +1,4 @@
-@import "Mixins";
+@use "utilities/Mixins";
 
 .result_container {
     display: flex;
@@ -6,7 +6,7 @@
     align-items: center;
 
     button {
-        @include button;
+        @include Mixins.dark-button;
 
         width: 12rem;
         margin-top: 15px;

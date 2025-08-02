@@ -1,19 +1,29 @@
-@import "Mixins";
-@import "Colors";
+@use 'utilities/Mixins';
+@use 'utilities/Colors';
 
 .account {
-    display: flex;
-    justify-content: space-between;
-    column-gap: 20px;
+	display: flex;
+	justify-content: space-between;
+	column-gap: 10px;
+	margin: 0 15px 0 15px;
+	flex-wrap: wrap;
 
-    .nav_item {
-        @include button;
-        padding: 10px;
-        background-color: $dark-blue;
-        text-transform: uppercase;
-        border-radius: 1rem;
-        width: 8em;
-        text-align: center;
-        justify-content: center;
-    }
+	a {
+		@include Mixins.dark-button;
+		text-transform: uppercase;
+		font-size: .8rem;
+		border-radius: 16px;
+		padding: 1em 1.5em;
+		text-align: center;
+		justify-content: center;
+	}
+
+	.nav_item {
+		@include Mixins.dark-button;
+	}
+
+	.logout {
+		@include Mixins.light-button;
+		border: solid 1px Colors.$dark-blue;
+	}
 }
