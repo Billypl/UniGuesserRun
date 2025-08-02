@@ -1,14 +1,13 @@
-import { useNavigate } from 'react-router-dom'
-import Header from '../components/Header'
-import styles from '../styles/GameSettings.module.scss'
-import { useForm } from 'react-hook-form'
-import { StartGameData } from '../models/game/StartGameData'
-import FormField from '../components/FormField'
-import FormSelect from '../components/FormSelect'
-import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, SELECTED_GAME_MODE, USER_NICKNAME_KEY } from '../Constants'
-import accountService from '../services/api/accountService'
-import { useGameContext } from '../hooks/useGameContext'
-import gameService from '../services/api/gameService'
+import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import styles from "../styles/GameSettings.module.scss";
+import { useForm } from "react-hook-form";
+import { StartGameData } from "../models/game/StartGameData";
+import FormField from "../components/FormField";
+import FormSelect from "../components/FormSelect";
+import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from "../Constants";
+import accountService from "../services/api/accountService";
+import gameService from "../services/api/gameService";
 
 const GameSettings: React.FC = () => {
 	const navigate = useNavigate()

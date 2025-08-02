@@ -1,0 +1,56 @@
+@use 'utilities/Mixins';
+@use 'utilities/Colors';
+
+.background {
+	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+		url('../assets/images/background-map-menu.png');
+	background-position: center;
+	background-size: cover;
+	height: 100vh;
+	width: 100vw;
+	box-sizing: content-box;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	filter: blur(1px);
+	-webkit-filter: blur(1px);
+}
+
+.profile_container {
+	padding: 20px;
+	padding-top: 150px;
+	height: 100vh;
+
+	.account_info {
+		padding: 20px;
+		background-color: Colors.$white;
+		border-radius: 20px;
+		box-shadow: 0 0 8px Colors.$dark-grey;
+		max-width: 600px;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+
+		.games_table {
+			th {
+				padding: 10px;
+			}
+			th:first-of-type {
+				border-top-left-radius: 14px;
+			}
+			th:last-of-type {
+				border-top-right-radius: 14px;
+			}
+			tr:last-of-type td:first-of-type {
+				border-bottom-left-radius: 14px;
+			}
+			tr:last-of-type td:last-of-type {
+				border-bottom-right-radius: 14px;
+			}
+		}
+	}
+}
