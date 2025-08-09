@@ -5,7 +5,7 @@ import { StartGameData } from '../../models/game/StartGameData'
 import { StartGameResponse } from '../../models/game/StartGameResponse'
 import { GuessingPlaceDto } from '../../models/game/GuessingPlaceDto'
 import { RoundResultDto } from '../../models/game/RoundResultDto'
-import { FinishedGameDto } from '../../models/game/SummarizeGameDto'
+import { FinishedGameDto } from '../../models/game/FinishedGameDto'
 import { GameSessionStateDto } from '../../models/game/GameSessionState'
 
 export class GameService {
