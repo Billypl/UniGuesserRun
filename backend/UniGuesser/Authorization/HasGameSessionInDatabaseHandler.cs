@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using PartyGame.Entities;
-using PartyGame.Services;
+using Services;
 
 namespace PartyGame.Authorization
 {
@@ -62,7 +61,7 @@ namespace PartyGame.Authorization
             bool isAuthorized = tokenType switch
             {
                 "user" => session.Player?.PublicId.ToString() == userGuid,
-                "guest" => session.PublicId.ToString() == userGuid,
+                "guest" => session.Guid.ToString() == userGuid,
                 _ => false
             };
 

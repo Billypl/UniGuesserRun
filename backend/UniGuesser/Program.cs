@@ -1,8 +1,8 @@
 
+using Entities;
 using PartyGame.Middleware;
 using PartyGame.Extensions;
 using PartyGame.DependencyInjection;
-using PartyGame.Entities;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 

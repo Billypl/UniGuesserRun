@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Entities;
 using Microsoft.EntityFrameworkCore;
-using PartyGame.Entities;
-using PartyGame.Models.ScoreboardModels;
-using PartyGame.Repositories.PartyGame.Repositories;
-using UniGuesser.Models.Enumerations;
+using Models.Enumerations;
+using Models.ScoreboardModels;
+using Repositories.Repositories;
 
-namespace PartyGame.Repositories
+
+namespace Repositories
 {
     public interface IGameSessionRepository : IRepository<GameSession>
     {
@@ -45,7 +46,7 @@ namespace PartyGame.Repositories
                 .Include(g => g.Player)
                 .Include(g => g.Rounds)
                 .ThenInclude(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == publicId);
         }
 
         public override async Task<GameSession?> GetByPublicIdAsync(string publicId)
@@ -54,7 +55,7 @@ namespace PartyGame.Repositories
                 .Include(g => g.Player)
                 .Include(g => g.Rounds)
                 .ThenInclude(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == Guid.Parse(publicId));
         }
 
         public async Task<bool> DeleteGameSessionByPlayerId(int userId)
@@ -142,7 +143,7 @@ namespace PartyGame.Repositories
 
         public async Task<GameSession?> GetActiveGameSession(string guid)
         {
-            return await _dbSet.Where(g => g.GameState == GameStatus.InProgress).FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
+            return await _dbSet.Where(g => g.GameState == GameStatus.InProgress).FirstOrDefaultAsync(g => g.Guid.ToString() == guid);
         }
     }
 }

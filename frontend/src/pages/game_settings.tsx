@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { StartGameData } from "../models/game/StartGameData";
 import FormField from "../components/FormField";
 import FormSelect from "../components/FormSelect";
-import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY } from "../Constants";
+import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY,SELECTED_GAME_MODE } from "../Constants";
 import accountService from "../services/api/accountService";
 import gameService from "../services/api/gameService";
 

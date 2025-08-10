@@ -1,8 +1,11 @@
-﻿using PartyGame.Services;
-using PartyGame.Services.GameServices;
-using PartyGame.Services.GameServices.GameStartStrategies;
+﻿
 
-namespace PartyGame.DependencyInjection
+using Services;
+using Services.GameServices;
+using Services.GameServices.GameStartStrategies;
+using UniGuesser.Services.GameServices.GameStartStrategies;
+
+namespace DependencyInjection
 {
     public static class ServiceDependencyInjection
     {

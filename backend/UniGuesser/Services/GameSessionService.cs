@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
-using PartyGame.Entities;
-using PartyGame.Extensions.Exceptions;
-using PartyGame.Models;
-using PartyGame.Models.GameModels;
-using PartyGame.Models.ScoreboardModels;
-using PartyGame.Repositories;
-using UniGuesser.Models.Enumerations;
+using Models;
+using Models.Enumerations;
+using Models.GameModels;
+using Models.ScoreboardModels;
+using Repositories;
+using UniGuesser.Middleware.Exceptions;
 
-namespace PartyGame.Services
+namespace Services
 {
     public interface IGameSessionService
     {
@@ -48,7 +46,7 @@ namespace PartyGame.Services
             var deleteResult = await _gameSessionRepository.DeleteAsync(id);
             if (deleteResult == false)
             {
-                throw new NotFoundException($"GameSession with id {id} was not found.");
+                throw new GameSessionExceptions.GameNotFoundException(id);
             }
         }
 
@@ -59,7 +57,7 @@ namespace PartyGame.Services
 
             if (session is null)
             {
-                throw new NotFoundException($"GameSession with id {guid} was not found.");
+                throw new GameSessionExceptions.GameNotFoundException(guid); ;
             }
 
             await DeleteSessionById(session.Id);
@@ -71,7 +69,7 @@ namespace PartyGame.Services
 
             if (gameSession is null)
             {
-                throw new KeyNotFoundException($"Game session with id {id} was not found");
+                throw new GameSessionExceptions.GameNotFoundException(id);
             }
             return gameSession;
         }
@@ -82,7 +80,7 @@ namespace PartyGame.Services
 
             if(gameSession is null)
             {
-                throw new KeyNotFoundException($"Game session with id {guid} was not found");
+                throw new GameSessionExceptions.GameNotFoundException(guid);
             }
 
             return gameSession;
@@ -94,7 +92,7 @@ namespace PartyGame.Services
 
             if (existingSession == null)
             {
-                throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
+                throw new GameSessionExceptions.GameNotFoundException(session.Id);
             }
 
             await _gameSessionRepository.UpdateAsync(session);
@@ -105,7 +103,7 @@ namespace PartyGame.Services
             GameSession? existedSession = await _gameSessionRepository.GetAsync(session.Id);
             if (existedSession != null)
             {
-                throw new InvalidOperationException("A session with the same token already exists.");
+                throw new GameSessionExceptions.GameAlreadyExistsException();
             }
             await _gameSessionRepository.CreateAsync(session);
         }
@@ -129,7 +127,7 @@ namespace PartyGame.Services
 
             if (session is null)
             {
-                throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
+                throw new GameSessionExceptions.GameNotFoundException(gameSessionId);
             }
 
             return _mapper.Map<GameSessionStateDto>(session);
@@ -141,7 +139,7 @@ namespace PartyGame.Services
 
             if (session is null)
             {
-                throw new KeyNotFoundException($"GameSession with ID {session.Id} was not found.");
+                throw new GameSessionExceptions.GameNotFoundException(guid);
             }
 
             return _mapper.Map<GameSessionStateDto>(session);
@@ -159,12 +157,12 @@ namespace PartyGame.Services
         
             if(gameSession is null)
             {
-                throw new NotFoundException($"Game with id ${guid} does not exist");
+                throw new GameSessionExceptions.GameNotFoundException(guid);
             }
         
             if(gameSession.GameState == GameStatus.InProgress)
             {
-                throw new Exception($"Game is not finished and cannot be showed");
+                throw new GameSessionExceptions.GameNotFinishedException(guid);
             }
             return _mapper.Map<FinishedGameDto>(gameSession);     
         }

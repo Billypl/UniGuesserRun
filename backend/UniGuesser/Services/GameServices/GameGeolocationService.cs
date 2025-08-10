@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using PartyGame.Extensions;
-using PartyGame.Models;
-using PartyGame.Models.GameModels;
+using Models;
+using Models.GameModels;
+using UniGuesser.Middleware.Exceptions;
+using UniGuesser.Services;
 
-namespace PartyGame.Services.GameServices
+namespace Services.GameServices
 {
     public interface IGameGeolocationService
     {
@@ -35,7 +36,7 @@ namespace PartyGame.Services.GameServices
 
             if (session.GameMode != GameMode.Geolocation)
             {
-                throw new Exception("Wrong game mode");
+                throw new GameExceptions.WrongGameModeException(session.GameMode.ToString());
             }
 
             var actualRound = session.Rounds[session.ActualRoundNumber];

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Entities;
 using Microsoft.Extensions.Options;
-using PartyGame.Entities;
-using PartyGame.Models.GameModels;
-using PartyGame.Models.TokenModels;
-using PartyGame.Settings;
+using Models.GameModels;
+using Models.TokenModels;
+using Settings;
+using UniGuesser.Middleware.Exceptions;
 
-namespace PartyGame.Services.GameServices.GameStartStrategies
+namespace Services.GameServices.GameStartStrategies
 {
     public class StartGameUnlogged : IStartGameStrategy
     {
@@ -33,7 +34,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
         {
             if (startDataDto.Nickname is null)
             {
-                throw new HttpRequestException("Nickname cannot be empty when you are not logged in (invalid token)");
+                throw new GameExceptions.EmptyNicknameException();
             }
 
             DifficultyLevel difficulty =
@@ -53,7 +54,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
             List<Round> gameRounds = await _gameRoundsGenerator.GenerateRounds(difficulty);
             GameSession gameSession = new GameSession
             {
-                PublicId = GuestGuid,
+                Guid = GuestGuid,
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
                 Difficulty = difficulty.ToString(),

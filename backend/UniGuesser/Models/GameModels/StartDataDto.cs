@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PartyGame.Models.GameModels
+﻿
+namespace Models.GameModels
 {
     public class StartDataDto
     {

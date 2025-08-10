@@ -1,6 +1,6 @@
-﻿using PartyGame.Models.GameModels;
+﻿using Models.GameModels;
 
-namespace PartyGame.Models.PlaceModels
+namespace Models.PlaceModels
 {
     public class ShowPlaceDto
     {

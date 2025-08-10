@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PartyGame.Migrations
 {
     [DbContext(typeof(GameDbContext))]
-    [Migration("20250619153748_new-game-status")]
-    partial class newgamestatus
+    [Migration("20250808203711_GamseSessionChanged")]
+    partial class GamseSessionChanged
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,13 +54,13 @@ namespace PartyGame.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("PublicId")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Entities;
 using Microsoft.Extensions.Options;
-using PartyGame.Entities;
-using PartyGame.Models.AccountModels;
-using PartyGame.Models.GameModels;
-using PartyGame.Settings;
-
-namespace PartyGame.Services.GameServices.GameStartStrategies
+using Models.AccountModels;
+using Models.GameModels;
+using Services;
+using Services.GameServices.GameStartStrategies;
+using Settings;
+namespace UniGuesser.Services.GameServices.GameStartStrategies
 {
     public class StartGameLogged : IStartGameStrategy
     {
@@ -36,8 +37,6 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
         public async Task<StartedGameData> StartGame(StartDataDto startDataDto)
         {
 
-
-
             DifficultyLevel difficulty =
                 (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startDataDto.Difficulty, ignoreCase: true);
 
@@ -45,11 +44,11 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
 
             AccountDetailsFromTokenDto accountDetails = _httpContextAccessorService.GetAuthenticatedUserProfile();
 
-            var user = await _accountService.GetAccountDetailsByPublicId(accountDetails.UserId);
+            var user = await _accountService.GetAccountDetailsByPublicId(accountDetails.Guid);
 
             GameSession gameSession = new GameSession
             {
-                PublicId = Guid.NewGuid(),
+                Guid = Guid.NewGuid(),
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
                 UserId = user.Id,
@@ -68,7 +67,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
             return new StartedGameData
             {
                 Token = _httpContextAccessorService.GetTokenFromHeader(),
-                GameGuid = gameSession.PublicId.ToString()
+                GameGuid = gameSession.Guid.ToString()
             };
         }
 

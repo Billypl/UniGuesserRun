@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace PartyGame.Entities
+namespace Entities
 {
     public class Round
     {

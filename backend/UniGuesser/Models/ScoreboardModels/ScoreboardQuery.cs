@@ -1,5 +1,5 @@
 ﻿
-namespace PartyGame.Models.ScoreboardModels
+namespace Models.ScoreboardModels
 {
     public enum SortDirection
     {

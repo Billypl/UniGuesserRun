@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PartyGame.Entities;
-using PartyGame.Repositories.PartyGame.Repositories;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Entities;
+using Repositories.Repositories;
 
-namespace PartyGame.Repositories
+namespace Repositories
 {
     public interface IPlacesRepository : IRepository<Place>
     {
@@ -38,14 +39,14 @@ namespace PartyGame.Repositories
         {
             return await _dbSet
                 .Include(p => p.AuthorPlace)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == publicId);
         }
 
         public override async Task<Place?> GetByPublicIdAsync(string publicId)
         {
             return await _dbSet
                 .Include(p => p.AuthorPlace)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == Guid.Parse(publicId));
         }
 
         public async Task<long> GetPlacesCount()

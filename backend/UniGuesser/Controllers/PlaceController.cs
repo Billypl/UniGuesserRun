@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PartyGame.Models.PlaceModels;
-using PartyGame.Services;
+using Models.PlaceModels;
+using Services;
 
-namespace PartyGame.Controllers
+
+namespace Controllers
 {
     [Route("api/place")]
     [ApiController]
@@ -19,6 +20,7 @@ namespace PartyGame.Controllers
 
         // get places wont be authorize only for developing purpose 
         [HttpGet]
+        [ProducesResponseType(typeof(List<ShowPlaceDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllPlaces(IPlaceService placeService)
         {
             List<ShowPlaceDto> places = await _placeService.GetAllPlaces();
@@ -26,6 +28,8 @@ namespace PartyGame.Controllers
         }
 
         [HttpGet("{placeID}")]
+        [ProducesResponseType(typeof(ShowPlaceDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async  Task<IActionResult> GetPlace([FromRoute] string placeId)
         {
             ShowPlaceDto place = await _placeService.GetPlaceByPublicId(placeId);
@@ -34,6 +38,8 @@ namespace PartyGame.Controllers
 
         [HttpDelete("{placeId}")]
         [Authorize(Roles = "Admin, Moderator")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeletePlace([FromRoute] string placeId)
         {
             await _placeService.DeletePlaceByPublicId(placeId);
@@ -42,6 +48,8 @@ namespace PartyGame.Controllers
 
         [HttpPut("{placeId}")]
         [Authorize(Roles = "Admin, Moderator")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdatePlace([FromRoute] string placeId, [FromBody] UpdatePlaceDto updateDto)
         {
              await _placeService.UpdatePlaceByPublicId(placeId, updateDto);
@@ -50,6 +58,8 @@ namespace PartyGame.Controllers
        
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AddNewPlace([FromBody] NewPlaceDto newPlace)
         {
             await _placeService.AddNewPlace(newPlace);

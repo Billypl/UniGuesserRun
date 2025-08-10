@@ -1,4 +1,4 @@
-namespace PartyGame.Models.GameModels
+namespace Models.GameModels
 {
     public class GameSessionStateDto
     {

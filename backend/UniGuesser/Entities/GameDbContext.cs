@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UniGuesser.Models.Enumerations;
+using Models.Enumerations;
 
-namespace PartyGame.Entities
+
+namespace Entities
 {
     public class GameDbContext : DbContext
     {
@@ -48,7 +49,7 @@ namespace PartyGame.Entities
                 entity.HasIndex(gs => gs.ExpirationDate);
                 entity.HasIndex(gs => gs.ActualRoundNumber);
 
-                entity.Property(gs => gs.PublicId)
+                entity.Property(gs => gs.Guid)
                     .HasDefaultValueSql("gen_random_uuid()");
                 entity.Property(gs => gs.GameState)
                     .HasDefaultValue(GameStatus.InProgress);

@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
-using PartyGame.Entities;
-using PartyGame.Models;
-using PartyGame.Models.AccountModels;
-using PartyGame.Models.GameModels;
-using PartyGame.Models.PlaceModels;
-using PartyGame.Models.ScoreboardModels;
+using Entities;
+using Models;
+using Models.AccountModels;
+using Models.GameModels;
+using Models.PlaceModels;
+using Models.ScoreboardModels;
+
 
 namespace PartyGame.Extensions
 {
@@ -28,8 +29,8 @@ namespace PartyGame.Extensions
                   .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.AuthorPlace.Nickname));
 
             CreateMap<GameSession, FinishedGameDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId.ToString()))  // Map PublicId to Id as string
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.HasValue ? src.UserId.ToString() : null))  // Map nullable UserId to string
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid.ToString()))  // Map Guid to Id as string
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.HasValue ? src.UserId.ToString() : null))  // Map nullable Guid to string
             .ForMember(dest => dest.Nickname, opt => opt.MapFrom(src => src.Player != null ? src.Player.Nickname : null))  // Map nullable Player Nickname
             .ForMember(dest => dest.FinalScore, opt => opt.MapFrom(src => src.GameScore))  // Map GameScore to FinalScore
             .ForMember(dest => dest.Rounds, opt => opt.MapFrom(src => src.Rounds))  // Map Rounds
@@ -40,7 +41,7 @@ namespace PartyGame.Extensions
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
 
             CreateMap<GameSession, GameSessionStateDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId.ToString())); // Map PublicId to Id as string
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid.ToString())); // Map Guid to Id as string
 
 
             CreateMap<Round, GuessingPlaceDto>()

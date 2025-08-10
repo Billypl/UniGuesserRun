@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PartyGame.Entities;
-using PartyGame.Repositories.PartyGame.Repositories;
+﻿using Entities;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Repositories;
 
-namespace PartyGame.Repositories
+namespace Repositories
 {
     public interface IRoundRepository:IRepository<Round>
     {
@@ -33,14 +33,14 @@ namespace PartyGame.Repositories
         {
             return await _dbSet
                 .Include(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == publicId);
         }
 
         public override async Task<Round?> GetByPublicIdAsync(string publicId)
         {
             return await _dbSet
                 .Include(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == Guid.Parse(publicId));
         }
     }
 }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PartyGame.Migrations
 {
     [DbContext(typeof(GameDbContext))]
-    [Migration("20250619153748_new-game-status")]
-    partial class newgamestatus
+    [Migration("20250810211839_AddGuidColumnToGameSessions")]
+    partial class AddGuidColumnToGameSessions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,60 +25,7 @@ namespace PartyGame.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GameSession", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActualRoundNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Difficulty")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("GameMode")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("GameScore")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("GameState")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("PublicId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActualRoundNumber");
-
-                    b.HasIndex("ExpirationDate");
-
-                    b.HasIndex("PlayerId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("GameSessions");
-                });
-
-            modelBuilder.Entity("PartyGame.Entities.Round", b =>
+            modelBuilder.Entity("Entities.Round", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,7 +62,7 @@ namespace PartyGame.Migrations
                     b.ToTable("Rounds");
                 });
 
-            modelBuilder.Entity("PartyGame.Entities.User", b =>
+            modelBuilder.Entity("Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,6 +106,59 @@ namespace PartyGame.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GameSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActualRoundNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Difficulty")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("GameMode")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("GameScore")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("GameState")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActualRoundNumber");
+
+                    b.HasIndex("ExpirationDate");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GameSessions");
                 });
 
             modelBuilder.Entity("Place", b =>
@@ -228,21 +228,7 @@ namespace PartyGame.Migrations
                     b.ToTable("Places");
                 });
 
-            modelBuilder.Entity("GameSession", b =>
-                {
-                    b.HasOne("PartyGame.Entities.User", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId");
-
-                    b.HasOne("PartyGame.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("PartyGame.Entities.Round", b =>
+            modelBuilder.Entity("Entities.Round", b =>
                 {
                     b.HasOne("GameSession", "GameSession")
                         .WithMany("Rounds")
@@ -261,14 +247,28 @@ namespace PartyGame.Migrations
                     b.Navigation("PlaceToGuess");
                 });
 
+            modelBuilder.Entity("GameSession", b =>
+                {
+                    b.HasOne("Entities.User", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId");
+
+                    b.HasOne("Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("Place", b =>
                 {
-                    b.HasOne("PartyGame.Entities.User", null)
+                    b.HasOne("Entities.User", null)
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("PartyGame.Entities.User", "AuthorPlace")
+                    b.HasOne("Entities.User", "AuthorPlace")
                         .WithMany()
                         .HasForeignKey("AuthorPlaceId");
 

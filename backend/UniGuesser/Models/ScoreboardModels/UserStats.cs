@@ -1,6 +1,6 @@
-﻿using PartyGame.Models.GameModels;
+﻿using Models.GameModels;
 
-namespace PartyGame.Models.ScoreboardModels
+namespace Models.ScoreboardModels
 {
     public class UserStats
     {
