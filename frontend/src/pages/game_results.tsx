@@ -17,27 +17,58 @@ const GameResults: React.FC = () => {
 		navigate(MENU_ROUTE)
 	}
 
-	const getMapCenter = (): [number, number] => {
-		if (!finishedGameData) return MAP_CENTER
+	const getMapBounds = (): [[number, number], [number, number]] => {
+		if (!finishedGameData)
+			return [
+				[0, 0],
+				[0, 0],
+			]
 
-		const maxLat: number =
+		// clicked positions
+		const clickedMaxLat: number =
 			finishedGameData?.rounds.reduce((max, round) => {
 				return Math.max(max, round.latitude)
 			}, -Infinity) || 0
-		const minLat: number =
+		const clickedMinLat: number =
 			finishedGameData?.rounds.reduce((min, round) => {
 				return Math.min(min, round.latitude)
 			}, Infinity) || 0
-		const maxLng: number =
+		const clickedMaxLng: number =
 			finishedGameData?.rounds.reduce((max, round) => {
 				return Math.max(max, round.longitude)
 			}, -Infinity) || 0
-		const minLng: number =
+		const clickedMinLng: number =
 			finishedGameData?.rounds.reduce((min, round) => {
 				return Math.min(min, round.longitude)
 			}, Infinity) || 0
 
-		return [(maxLat + minLat) / 2, (maxLng + minLng) / 2]
+		// target positions
+		const targetMaxLat: number =
+			finishedGameData?.rounds.reduce((max, round) => {
+				return Math.max(max, round.placeToGuess.latitude)
+			}, -Infinity) || 0
+		const targetMinLat: number =
+			finishedGameData?.rounds.reduce((min, round) => {
+				return Math.min(min, round.placeToGuess.latitude)
+			}, Infinity) || 0
+		const targetMaxLng: number =
+			finishedGameData?.rounds.reduce((max, round) => {
+				return Math.max(max, round.placeToGuess.longitude)
+			}, -Infinity) || 0
+		const targetMinLng: number =
+			finishedGameData?.rounds.reduce((min, round) => {
+				return Math.min(min, round.placeToGuess.longitude)
+			}, Infinity) || 0
+
+		const maxLat = Math.max(clickedMaxLat, targetMaxLat)
+		const minLat = Math.min(clickedMinLat, targetMinLat)
+		const maxLng = Math.max(clickedMaxLng, targetMaxLng)
+		const minLng = Math.min(clickedMinLng, targetMinLng)
+
+		return [
+			[minLat, minLng],
+			[maxLat, maxLng],
+		]
 	}
 
 	const showRoundsTargets = () => {
@@ -88,7 +119,8 @@ const GameResults: React.FC = () => {
 		<div className={styles.results_container}>
 			<div className={styles.map_container}>
 				<MapContainer
-					center={getMapCenter()}
+					center={finishedGameData?.rounds ? undefined : MAP_CENTER} // default map center
+					bounds={finishedGameData?.rounds ? getMapBounds() : undefined}
 					zoom={13}
 					scrollWheelZoom={true}
 					style={{ height: '100%', width: '100%' }}
