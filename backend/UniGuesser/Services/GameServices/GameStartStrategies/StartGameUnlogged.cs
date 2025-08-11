@@ -54,7 +54,7 @@ namespace Services.GameServices.GameStartStrategies
             List<Round> gameRounds = await _gameRoundsGenerator.GenerateRounds(difficulty);
             GameSession gameSession = new GameSession
             {
-                Guid = GuestGuid,
+                PublicId = GuestGuid,
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
                 Difficulty = difficulty.ToString(),

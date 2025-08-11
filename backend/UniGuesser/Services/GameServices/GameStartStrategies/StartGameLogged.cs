@@ -48,7 +48,7 @@ namespace UniGuesser.Services.GameServices.GameStartStrategies
 
             GameSession gameSession = new GameSession
             {
-                Guid = Guid.NewGuid(),
+                PublicId = Guid.NewGuid(),
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
                 UserId = user.Id,
@@ -67,7 +67,7 @@ namespace UniGuesser.Services.GameServices.GameStartStrategies
             return new StartedGameData
             {
                 Token = _httpContextAccessorService.GetTokenFromHeader(),
-                GameGuid = gameSession.Guid.ToString()
+                GameGuid = gameSession.PublicId.ToString()
             };
         }
 

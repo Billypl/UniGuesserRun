@@ -77,13 +77,13 @@ namespace Repositories
             }
             public virtual async Task<T?> GetByPublicIdAsync(Guid publicId)
             {
-                return await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == publicId);
+                return await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
             }
 
             public virtual async Task<T?> GetByPublicIdAsync(string publicId)
             {
-                var result = await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == Guid.Parse(publicId));
-                return result; 
+                var result = await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
+                return result;
             }
         }
     }

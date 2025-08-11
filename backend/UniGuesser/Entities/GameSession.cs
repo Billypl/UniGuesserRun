@@ -16,7 +16,7 @@ public class GameSession
     public int Id { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Guid { get; set; } = Guid.NewGuid();
+    public Guid PublicId { get; set; } = Guid.NewGuid();
     public virtual List<Round> Rounds { get; set; }
 
     public GameMode GameMode { get; set; }

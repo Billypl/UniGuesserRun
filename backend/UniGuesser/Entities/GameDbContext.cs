@@ -49,7 +49,7 @@ namespace Entities
                 entity.HasIndex(gs => gs.ExpirationDate);
                 entity.HasIndex(gs => gs.ActualRoundNumber);
 
-                entity.Property(gs => gs.Guid)
+                entity.Property(gs => gs.PublicId)
                     .HasDefaultValueSql("gen_random_uuid()");
                 entity.Property(gs => gs.GameState)
                     .HasDefaultValue(GameStatus.InProgress);

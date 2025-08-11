@@ -40,9 +40,20 @@ namespace Controllers
         [ProducesResponseType(typeof(AccountDetailsDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUserData()
+        public async Task<IActionResult> GetOwnUserData()
         {
             AccountDetailsDto accountDetailsDto =  await _accountService.GetAccountDetails();
+            return Ok(accountDetailsDto);
+        }
+
+        [Authorize(Roles = "Admin,Moderator,User")]
+        [HttpGet("{userGuid}")]
+        [ProducesResponseType(typeof(AccountDetailsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserData([FromRoute] string userGuid)
+        {
+            AccountDetailsDto accountDetailsDto = await _accountService.GetAccountDetails(userGuid);
             return Ok(accountDetailsDto);
         }
 

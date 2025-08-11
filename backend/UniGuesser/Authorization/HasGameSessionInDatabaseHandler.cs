@@ -61,7 +61,7 @@ namespace PartyGame.Authorization
             bool isAuthorized = tokenType switch
             {
                 "user" => session.Player?.PublicId.ToString() == userGuid,
-                "guest" => session.Guid.ToString() == userGuid,
+                "guest" => session.PublicId.ToString() == userGuid,
                 _ => false
             };
 

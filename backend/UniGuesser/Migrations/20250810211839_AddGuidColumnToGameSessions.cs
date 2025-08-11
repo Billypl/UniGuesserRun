@@ -11,7 +11,7 @@ namespace PartyGame.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<Guid>(
-                name: "Guid",
+                name: "PublicId",
                 table: "GameSessions",
                 type: "uuid",
                 nullable: false,
@@ -21,7 +21,7 @@ namespace PartyGame.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Guid",
+                name: "PublicId",
                 table: "GameSessions");
         }
 

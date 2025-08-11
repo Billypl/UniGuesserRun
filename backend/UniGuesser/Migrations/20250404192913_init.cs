@@ -144,7 +144,7 @@ namespace PartyGame.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_GameSessions_UserId",
                 table: "GameSessions",
-                column: "Guid");
+                column: "PublicId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Places_AuthorId",

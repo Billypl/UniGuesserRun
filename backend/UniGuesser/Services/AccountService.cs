@@ -14,6 +14,7 @@ namespace Services
         Task RegisterUser(RegisterUserDto registerUserDto, string Role); 
         Task<LoginResultDto> Login(LoginUserDto loginUserDto);
         Task<AccountDetailsDto> GetAccountDetails();
+        Task<AccountDetailsDto> GetAccountDetails(string userGuid);
         string RefreshSession();
         Task<User> GetAccountDetailsByPublicId(string guid);
         Task<User> GetAccountDetailsByPublicId(Guid guid);
@@ -102,11 +103,17 @@ namespace Services
         {
             AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetAuthenticatedUserProfile();
 
-            User? account = await _accountRepository.GetByPublicIdAsync(tokenData.Guid);
+            return await GetAccountDetails(tokenData.Guid);
+        }
 
-            if(account is null)
+        public async Task<AccountDetailsDto> GetAccountDetails(string playerGuid)
+        {
+
+            User? account = await _accountRepository.GetByPublicIdAsync(playerGuid);
+
+            if (account is null)
             {
-                throw new AccountExceptions.UserNotFoundException(tokenData.Guid);
+                throw new AccountExceptions.UserNotFoundException(playerGuid);
             }
 
             AccountDetailsDto accountDetailsDto = _mapper.Map<AccountDetailsDto>(account);

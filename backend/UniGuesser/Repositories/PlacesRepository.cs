@@ -39,14 +39,14 @@ namespace Repositories
         {
             return await _dbSet
                 .Include(p => p.AuthorPlace)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == publicId);
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
         }
 
         public override async Task<Place?> GetByPublicIdAsync(string publicId)
         {
             return await _dbSet
                 .Include(p => p.AuthorPlace)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == Guid.Parse(publicId));
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
         }
 
         public async Task<long> GetPlacesCount()

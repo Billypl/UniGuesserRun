@@ -46,7 +46,7 @@ namespace Repositories
                 .Include(g => g.Player)
                 .Include(g => g.Rounds)
                 .ThenInclude(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == publicId);
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
         }
 
         public override async Task<GameSession?> GetByPublicIdAsync(string publicId)
@@ -55,7 +55,7 @@ namespace Repositories
                 .Include(g => g.Player)
                 .Include(g => g.Rounds)
                 .ThenInclude(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Guid") == Guid.Parse(publicId));
+                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
         }
 
         public async Task<bool> DeleteGameSessionByPlayerId(int userId)
@@ -143,7 +143,7 @@ namespace Repositories
 
         public async Task<GameSession?> GetActiveGameSession(string guid)
         {
-            return await _dbSet.Where(g => g.GameState == GameStatus.InProgress).FirstOrDefaultAsync(g => g.Guid.ToString() == guid);
+            return await _dbSet.Where(g => g.GameState == GameStatus.InProgress).FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
         }
     }
 }

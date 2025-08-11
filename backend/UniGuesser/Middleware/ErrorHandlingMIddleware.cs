@@ -69,10 +69,10 @@ namespace PartyGame.Middleware
                 var json = JsonSerializer.Serialize(problemDetails);
                 await context.Response.WriteAsync(json);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("Unexpected error");
+                await context.Response.WriteAsync($" Unexpected error: {ex}");
             }
         }
     }
