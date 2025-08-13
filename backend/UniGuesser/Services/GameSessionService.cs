@@ -5,6 +5,7 @@ using Models.GameModels;
 using Models.ScoreboardModels;
 using Repositories;
 using UniGuesser.Middleware.Exceptions;
+using UniGuesser.Models.ScoreboardModels;
 
 namespace Services
 {
@@ -23,7 +24,7 @@ namespace Services
         Task<FinishedGameDto> GetFinishedGame(string guid);
         Task<PagedResult<FinishedGameDto>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
         Task<PagedResult<UserStats>> GetPagedUserStatsResult(ScoreboardQuery scoreboardQuery);
-
+        Task<PagedResult<FinishedGameDto>> GetGameHistoryPageByUser(UserHistoryQuery userHistoryQuery, string userGuid);
     }
 
     public class GameSessionService : IGameSessionService
@@ -197,6 +198,22 @@ namespace Services
         }
 
        
+
+        public async Task<PagedResult<FinishedGameDto>> GetGameHistoryPageByUser(UserHistoryQuery userHistoryQuery, string userGuid)
+        {
+          var games  = await _gameSessionRepository.GetGameUserHistoryGames(userHistoryQuery, userGuid);
+
+          var pagedGames = games
+            .Skip((userHistoryQuery.PageNumber - 1) * userHistoryQuery.PageSize)
+            .Take(userHistoryQuery.PageSize)
+            .ToList();
+
+          var mappedGames = _mapper.Map<List<FinishedGameDto>>(pagedGames);
+
+          var result = new PagedResult<FinishedGameDto>(mappedGames, games.Count(), userHistoryQuery.PageSize, userHistoryQuery.PageNumber);
+
+          return result;
+        }
     }
 }
 

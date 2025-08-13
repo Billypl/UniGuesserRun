@@ -41,6 +41,8 @@ namespace Controllers
             return Ok(result);
         }
 
+
+
         [HttpGet("{gameGuid}/round/{roundNumber}")]
         [Authorize(Policy = "HasGameSessionInDatabase")]
         [ProducesResponseType(typeof(GuessingPlaceDto), StatusCodes.Status200OK)]

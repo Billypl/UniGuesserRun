@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.ScoreboardModels;
 using Services;
+using UniGuesser.Models.ScoreboardModels;
 
 
 namespace Controllers
@@ -42,6 +43,16 @@ namespace Controllers
         {
             PagedResult<FinishedGameDto> scores = 
                 await _gameSessionService.GetGameHistoryPage(scoreboardQuery);
+            return Ok(scores);
+        }
+
+        [HttpGet("history/user/{userGuid}")]
+        [Authorize(Roles = "Admin, Moderator, User")]
+        [ProducesResponseType(typeof(PagedResult<FinishedGameDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetHistoryPagesByUser([FromQuery] UserHistoryQuery userHistoryQuery, [FromRoute] string userGuid)
+        {
+            PagedResult<FinishedGameDto> scores = 
+                await _gameSessionService.GetGameHistoryPageByUser(userHistoryQuery, userGuid);
             return Ok(scores);
         }
 
