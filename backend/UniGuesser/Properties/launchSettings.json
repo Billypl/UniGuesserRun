@@ -24,11 +24,11 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "api/place",
+      "applicationUrl": "http://localhost:5223;http://localhost:7157",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "http://+:5223;https://+:7157",
+        "ASPNETCORE_URLS": "http://+:5223;http://+:7157",
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:5223;https://localhost:7157"
+      }
     },
     "IIS Express": {
       "commandName": "IISExpress",

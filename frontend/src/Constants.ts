@@ -1,7 +1,7 @@
-export const GAME_API_URL = 'https://localhost:7157/api/game'
-export const SESSIONS_API_URL = 'https://localhost:7157/api/game_sessions'
-export const ACCOUNT_API_URL = 'https://localhost:7157/api/account'
-export const PLACE_API_URL = 'https://localhost:7157/api/place'
+export const GAME_API_URL = 'http://localhost:7157/api/game'
+export const SESSIONS_API_URL = 'http://localhost:7157/api/game_sessions'
+export const ACCOUNT_API_URL = 'http://localhost:7157/api/account'
+export const PLACE_API_URL = 'http://localhost:7157/api/place'
 
 export const GAME_TOKEN_KEY = 'game_token'
 export const ACCOUNT_TOKEN_KEY = 'account_token'

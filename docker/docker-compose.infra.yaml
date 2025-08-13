@@ -1,7 +1,7 @@
 services:
   db:
     container_name: ugr-db
-    image: postgres
+    image: postgres:16.9
     restart: always
     volumes:
       - ../data/db:/var/lib/postgresql/data

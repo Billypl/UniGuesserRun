@@ -40,7 +40,6 @@ void ConfigureMiddleware(WebApplication app)
     app.UseCors("AllowSpecificOrigins");
     app.UseMiddleware<ErrorHandlingMiddleware>();
     app.UseAuthentication();
-    app.UseHttpsRedirection();
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Uniguesser API"));
      
