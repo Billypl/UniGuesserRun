@@ -32,6 +32,25 @@ docker-compose up
 docker-compose.dev.yaml
 ```
 
+### Pushing new image
+```sh
+docker build -t billypl/ugr-frontend:latest frontend
+docker push billypl/ugr-frontend:latest
+
+docker build -t billypl/ugr-backend:latest backend
+docker push billypl/ugr-backend:latest
+
+docker compose -f docker-compose.prod.yaml up --build
+docker compose -f docker-compose.prod.yaml down
+```
+
+
+
+
+
+
+
+
 ## Contact
 For any inquiries, feel free to open an issue or reach out to us via email.
 
