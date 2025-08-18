@@ -1,7 +1,8 @@
-﻿using PartyGame.Models.GameModels;
+﻿
 using System.ComponentModel.DataAnnotations;
+using Models.GameModels;
 
-namespace PartyGame.Models.PlaceModels
+namespace Models.PlaceModels
 {
     public class NewPlaceDto
     {

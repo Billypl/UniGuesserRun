@@ -1,8 +1,8 @@
 ﻿
-using PartyGame.Entities;
-using PartyGame.Models.GameModels;
+using Entities;
 
-namespace PartyGame.Models.ScoreboardModels
+
+namespace Models.ScoreboardModels
 {
     public class FinishedGameDto
     {

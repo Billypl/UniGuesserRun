@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
+using Entities;
 using Microsoft.AspNetCore.Identity;
-using PartyGame.Entities;
-using PartyGame.Models.AccountModels;
-using PartyGame.Repositories;
 using Microsoft.Extensions.Options;
-using PartyGame.Extensions.Exceptions;
-using PartyGame.Settings;
+using Models.AccountModels;
+using Repositories;
+using Settings;
+using UniGuesser.Middleware.Exceptions;
 
-namespace PartyGame.Services
+namespace Services
 {
     public interface IAccountService
     {
         Task RegisterUser(RegisterUserDto registerUserDto, string Role); 
         Task<LoginResultDto> Login(LoginUserDto loginUserDto);
         Task<AccountDetailsDto> GetAccountDetails();
+        Task<AccountDetailsDto> GetAccountDetails(string userGuid);
         string RefreshSession();
         Task<User> GetAccountDetailsByPublicId(string guid);
         Task<User> GetAccountDetailsByPublicId(Guid guid);
@@ -46,13 +47,13 @@ namespace PartyGame.Services
         {
             if (await _accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Nickname) is not null)
             {
-                throw new BadHttpRequestException("Nickname is already used");
+                throw new AccountExceptions.NicknameUsedException(registerUserDto.Nickname);
             }
 
 
             if (await _accountRepository.GetUserByNicknameOrEmailAsync(registerUserDto.Email) is not null)
             {
-                throw new BadHttpRequestException("Email is already used");
+                throw new AccountExceptions.EmailUsedException(registerUserDto.Email);
             }
 
             var newUser = new User()
@@ -77,14 +78,14 @@ namespace PartyGame.Services
 
             if (user is null)
             {
-                throw new KeyNotFoundException("Invalid nickname or password");
+                throw new AccountExceptions.InvalidUsernameOrPasswordException();
             }
 
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginUserDto.Password);
 
             if (result == PasswordVerificationResult.Failed)
             {
-                throw new KeyNotFoundException("Invalid nickname or password");
+                throw new AccountExceptions.InvalidUsernameOrPasswordException();
             }
 
             string token = _accountTokenService.GenerateAccountToken(user);
@@ -102,11 +103,17 @@ namespace PartyGame.Services
         {
             AccountDetailsFromTokenDto tokenData = _contextAccessorService.GetAuthenticatedUserProfile();
 
-            User? account = await _accountRepository.GetByPublicIdAsync(tokenData.UserId);
+            return await GetAccountDetails(tokenData.Guid);
+        }
 
-            if(account is null)
+        public async Task<AccountDetailsDto> GetAccountDetails(string playerGuid)
+        {
+
+            User? account = await _accountRepository.GetByPublicIdAsync(playerGuid);
+
+            if (account is null)
             {
-                throw new NotFoundException($"User was not found");
+                throw new AccountExceptions.UserNotFoundException(playerGuid);
             }
 
             AccountDetailsDto accountDetailsDto = _mapper.Map<AccountDetailsDto>(account);
@@ -125,7 +132,7 @@ namespace PartyGame.Services
 
             if(user is null)
             {
-                throw new NotFoundException($"User width id {id} doesnt exist");
+                throw new AccountExceptions.UserNotFoundException(id);
             }
 
             return user;
@@ -136,7 +143,7 @@ namespace PartyGame.Services
 
             if (user is null)
             {
-                throw new NotFoundException($"User width id {id} doesnt exist");
+                throw new AccountExceptions.UserNotFoundException(id.ToString());
             }
 
             return user;
@@ -148,17 +155,16 @@ namespace PartyGame.Services
           
            if(user is null)
            {
-                throw new NotFoundException($"User with id {guid} does not exist");
+                throw new AccountExceptions.UserNotFoundException(guid);
            }
-
-            await _accountRepository.DeleteAsync(user.Id);
+           await _accountRepository.DeleteAsync(user.Id);
         }
 
         public async Task DeleteUserByValueInToken()
         {
             var userDataFromToken = _contextAccessorService.GetAuthenticatedUserProfile();
 
-            await DeleteUserByGUID(userDataFromToken.UserId);
+            await DeleteUserByGUID(userDataFromToken.Guid);
         }
     }
 }

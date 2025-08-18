@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PartyGame.Models.PlaceModels;
-using PartyGame.Services;
+using Models.PlaceModels;
+using Services;
 
-namespace PartyGame.Controllers
+namespace Controllers
 {
     [Route("api/place/to_check")]
     [ApiController]
@@ -17,6 +17,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddNewPlaceToQueue([FromBody] NewPlaceDto newPlace)
         {
             await _placeQueueService.AddNewPlaceToQueue(newPlace);
@@ -25,6 +26,7 @@ namespace PartyGame.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpGet]
+        [ProducesResponseType(typeof(List<ShowPlaceDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllPlacesInQueue()
         {
             List<ShowPlaceDto> placesToCheck = await _placeQueueService.GetAllPlacesInQueue();
@@ -33,6 +35,7 @@ namespace PartyGame.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("reject/{placeId}")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> RejectPlaceToCheck([FromRoute] string placeId)
         {
             await _placeQueueService.RejectPlace(placeId);
@@ -41,6 +44,7 @@ namespace PartyGame.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost("approve/{placeId}")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> AcceptPlaceToCheck([FromRoute] string placeId)
         {
             await _placeQueueService.AcceptPlace(placeId);

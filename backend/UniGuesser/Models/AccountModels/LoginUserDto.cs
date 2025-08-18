@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PartyGame.Models.AccountModels
+namespace Models.AccountModels
 {
     public class LoginUserDto
     {

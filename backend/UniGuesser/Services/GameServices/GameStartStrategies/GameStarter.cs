@@ -1,6 +1,8 @@
-﻿using PartyGame.Models.GameModels;
+﻿using Models.GameModels;
+using UniGuesser.Middleware.Exceptions;
+using UniGuesser.Services.GameServices.GameStartStrategies;
 
-namespace PartyGame.Services.GameServices.GameStartStrategies
+namespace Services.GameServices.GameStartStrategies
 {
     public interface IGameStarter
     {
@@ -33,7 +35,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
             string? playerGuid = _httpContextAccessorService.GetUserIdFromHeaderSafe();
 
             if (playerGuid is not null && await _gameSessionService.HasActiveGameSession(playerGuid))
-                throw new InvalidOperationException($"Game for id:{playerGuid} already exists");
+                throw new GameSessionExceptions.UserHasActiveGameSessionException(playerGuid);
 
             var strategy = ChooseStrategy(tokenType);
 

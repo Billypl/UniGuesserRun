@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using PartyGame.Entities;
-using PartyGame.Models.AccountModels;
-using PartyGame.Repositories;
+using Models.AccountModels;
+using Repositories;
 
-namespace PartyGame.Models.Validations
+
+namespace Models.Validations
 {
     public class RegisterUserDtoValidator:AbstractValidator<RegisterUserDto>
     {

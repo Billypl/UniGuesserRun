@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using PartyGame.Entities;
-using System;
+﻿
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using PartyGame.Models.AccountModels;
-using PartyGame.Extensions.Exceptions;
+using Models.AccountModels;
+using UniGuesser.Middleware.Exceptions;
 
-namespace PartyGame.Services
+namespace Services
 {
     public interface IHttpContextAccessorService
     {
@@ -63,7 +60,7 @@ namespace PartyGame.Services
 
             return new AccountDetailsFromTokenDto
             {
-                UserId = userIdClaim ?? throw new NotFoundException("Id not found in claims."),
+                Guid = userIdClaim ?? throw new NotFoundException("Id not found in claims."),
                 Email = email ?? throw new NotFoundException("Email not found in claims."),
                 Role = role ?? throw new NotFoundException("Role not found in claims."),
                 Nickname = nickname ?? throw new NotFoundException("Nickname not found in claims.")

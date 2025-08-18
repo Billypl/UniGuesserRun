@@ -1,4 +1,4 @@
-﻿namespace PartyGame.DependencyInjection
+﻿namespace DependencyInjection
 {
     public static class CorsConfig
     {

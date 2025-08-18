@@ -18,4 +18,5 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=admin
       - ASPNETCORE_Kestrel__Certificates__Default__AllowInvalid=true
       - ASPNETCORE_ENVIRONMENT=Development
-    command: bash -c "cd app && dotnet watch run --launch-profile https"
+    command: dotnet watch --project /app/UniGuesser.csproj run --launch-profile https
+

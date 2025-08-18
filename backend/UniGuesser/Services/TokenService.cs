@@ -1,15 +1,14 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using PartyGame.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authentication;
+using Entities;
 using Microsoft.Extensions.Options;
-using PartyGame.Models.GameModels;
-using PartyGame.Models.TokenModels;
-using PartyGame.Settings;
+using Models.TokenModels;
+using Settings;
 
-namespace PartyGame.Services
+
+namespace Services
 {
     public interface ITokenService
     {

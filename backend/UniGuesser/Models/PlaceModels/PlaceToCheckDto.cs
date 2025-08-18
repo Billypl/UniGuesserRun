@@ -1,5 +1,5 @@
 ﻿
-namespace PartyGame.Models.PlaceModels
+namespace Models.PlaceModels
 {
     public class PlaceToCheckDto
     {

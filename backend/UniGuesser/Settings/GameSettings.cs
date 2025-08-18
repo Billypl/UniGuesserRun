@@ -1,8 +1,5 @@
-﻿namespace PartyGame
+﻿public class GameSettings
 {
-    public class GameSettings
-    {
         public int RoundsNumber { get; set; }
-    }
-
 }
+

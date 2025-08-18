@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using PartyGame.Models.AccountModels;
-using PartyGame.Services;
+using Models.AccountModels;
+using Services;
 
-namespace PartyGame.Controllers
+
+namespace Controllers
 {
     [Route("api/account")]
     [ApiController]
@@ -17,6 +18,8 @@ namespace PartyGame.Controllers
         }
 
         [HttpPut("register")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status409Conflict)]
         public async Task<IActionResult> AddNewUser([FromBody] RegisterUserDto registerUserDto)
         {
             await _accountService.RegisterUser(registerUserDto,"User");
@@ -24,6 +27,8 @@ namespace PartyGame.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(typeof(LoginResultDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
         {
             LoginResultDto tokens = await _accountService.Login(loginUserDto);
@@ -32,26 +37,44 @@ namespace PartyGame.Controllers
 
         [Authorize(Roles = "Admin,Moderator,User")]
         [HttpGet]
-        public async Task<IActionResult> GetUserData()
+        [ProducesResponseType(typeof(AccountDetailsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetOwnUserData()
         {
             AccountDetailsDto accountDetailsDto =  await _accountService.GetAccountDetails();
             return Ok(accountDetailsDto);
         }
 
+        [Authorize(Roles = "Admin,Moderator,User")]
+        [HttpGet("{userGuid}")]
+        [ProducesResponseType(typeof(AccountDetailsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserData([FromRoute] string userGuid)
+        {
+            AccountDetailsDto accountDetailsDto = await _accountService.GetAccountDetails(userGuid);
+            return Ok(accountDetailsDto);
+        }
+
         [HttpDelete("{userGuid}")]
+        [ProducesResponseType( StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser([FromRoute] string userGuid)
         {
             await _accountService.DeleteUserByGUID(userGuid);
             return Ok();
         }
 
+
+        [Authorize(Roles = "Admin,Moderator,User")]
         [HttpDelete]
+        [ProducesResponseType( StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser()
         {
             await _accountService.DeleteUserByValueInToken();
             return Ok();
         }
-
-
     }
 }

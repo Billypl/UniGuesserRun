@@ -1,8 +1,7 @@
-﻿using PartyGame.Entities;
-using PartyGame.Extensions.Exceptions;
-using PartyGame.Models.PlaceModels;
+﻿
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Entities;
+
 
 public class Place
 {

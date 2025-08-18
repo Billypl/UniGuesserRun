@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using PartyGame.Entities;
-using PartyGame.Extensions.Exceptions;
-using PartyGame.Models.AccountModels;
-using PartyGame.Models.PlaceModels;
-using PartyGame.Repositories;
+using Models.PlaceModels;
+using Repositories;
+using UniGuesser.Middleware.Exceptions;
+using static UniGuesser.Middleware.Exceptions.PlacesExceptions;
 
-namespace PartyGame.Services
+namespace Services
 {
     public interface IPlaceService
     {
@@ -41,7 +40,7 @@ namespace PartyGame.Services
 
             if (place is null)
             {
-                throw new NotFoundException($"Place with ID {id} was not found.");
+                throw new PlacesExceptions.PlaceNotFoundException(id);
             }
 
             return _mapper.Map<ShowPlaceDto>(place); 
@@ -53,7 +52,7 @@ namespace PartyGame.Services
 
             if (place is null)
             {
-                throw new NotFoundException($"Place with id {id} doesn't exist in the database");
+                throw new PlacesExceptions.PlaceNotFoundException(id);
             }
 
             var deleteResult = await _placesRepository.DeleteAsync(place.Id);   
@@ -65,7 +64,7 @@ namespace PartyGame.Services
 
             if (place is null)
             {
-                throw new NotFoundException($"Place with id {id} doesn't exist in the database and cannot be updated");
+                throw new PlacesExceptions.PlaceNotFoundException(id);
             }
 
             _mapper.Map(updatePlaceDto, place);
@@ -78,7 +77,7 @@ namespace PartyGame.Services
 
             if (places == null)
             {
-                throw new NotFoundException($"There is no places in db");
+                throw new PlacesNotFoundException();
             }
 
             List<ShowPlaceDto> placesToShow = _mapper.Map<List<ShowPlaceDto>>(places);

@@ -1,6 +1,6 @@
-using PartyGame.Models.GameModels;
+using Models.GameModels;
 
-namespace PartyGame.Services
+namespace UniGuesser.Services
 {
     public static class DistanceCalculator
     {
