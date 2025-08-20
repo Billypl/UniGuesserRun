@@ -5,7 +5,7 @@
 namespace PartyGame.Migrations
 {
     /// <inheritdoc />
-    public partial class changeGuidName : Migration
+    public partial class fixRelation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
