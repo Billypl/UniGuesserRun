@@ -23,7 +23,7 @@ namespace DependencyInjections
             services.AddDbContext<GameDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
-            }, ServiceLifetime.Scoped);
+            }, ServiceLifetime.Singleton);
 
             services.AddScoped<GameDbContext>();
             return services;
