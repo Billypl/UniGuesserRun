@@ -4,7 +4,8 @@ import scoreboardService from '../services/api/scoreboardService'
 import UserStats from '../models/scoreboard/UserStats'
 import styles from '../styles/Scoreboard.module.scss'
 import { MENU_ROUTE } from '../Constants'
-import { ScoreboardQuery, SortDirection } from '../models/scoreboard/SearchQuery'
+import { ScoreboardQuery } from '../models/scoreboard/SearchQuery'
+import { SortDirection } from "../models/scoreboard/SortDirection"
 import { PagedResult } from '../models/scoreboard/PagedResult'
 
 const Scoreboard: React.FC = () => {

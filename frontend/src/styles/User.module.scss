@@ -36,21 +36,28 @@
 		gap: 10px;
 
 		.games_table {
-			th {
-				padding: 10px;
+			@include Mixins.table;
+
+			@media (min-width: 768px) {
+				tbody {
+					tr {
+						td {
+							font-size: 16px;
+						}
+					}
+				}
 			}
-			th:first-of-type {
-				border-top-left-radius: 14px;
-			}
-			th:last-of-type {
-				border-top-right-radius: 14px;
-			}
-			tr:last-of-type td:first-of-type {
-				border-bottom-left-radius: 14px;
-			}
-			tr:last-of-type td:last-of-type {
-				border-bottom-right-radius: 14px;
-			}
+		}
+
+		button {
+			@include Mixins.dark-button;
+
+			width: 12rem;
+			margin-top: 15px;
+			margin-left: auto;
+			margin-right: auto;
+			padding: 7px 0 7px 0;
+			font-size: 1rem;
 		}
 	}
 }

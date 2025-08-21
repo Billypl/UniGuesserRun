@@ -26,13 +26,7 @@ export class ScoreboardService {
 
 	async getScores(scoreboardQuery: ScoreboardQuery): Promise<PagedResult<FinishedGame>> {
 		const result = await this.axiosInstance.get<PagedResult<FinishedGame>>('/scoreboard', {
-			params: {
-				PageNumber: scoreboardQuery.pageNumber,
-				PageSize: scoreboardQuery.pageSize,
-				SortDirection: scoreboardQuery.sortDirection,
-				SearchNickname: scoreboardQuery.searchNickname,
-				DifficultyLevel: scoreboardQuery.difficultyLevel,
-			},
+			params: scoreboardQuery,
 		})
 
 		console.log(result.data)
