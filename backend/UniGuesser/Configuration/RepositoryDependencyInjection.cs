@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.DataProtection.Repositories;
-using PartyGame.Entities;
-using PartyGame.Repositories;
-using PartyGame.Services;
+using Repositories;
 
-namespace PartyGame.DependencyInjection
+
+namespace DependencyInjection
 {
     public static class RepositoryDependencyInjection
     {

@@ -1,7 +1,7 @@
-﻿using PartyGame.Entities;
-using PartyGame.Models.PlaceModels;
+﻿
+using Models.PlaceModels;
 
-namespace PartyGame.Models.GameModels
+namespace Models.GameModels
 {
     public class RoundResultDto
     {

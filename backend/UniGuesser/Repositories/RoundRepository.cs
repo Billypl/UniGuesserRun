@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PartyGame.Entities;
-using PartyGame.Repositories.PartyGame.Repositories;
+﻿using Entities;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Repositories;
 
-namespace PartyGame.Repositories
+namespace Repositories
 {
     public interface IRoundRepository:IRepository<Round>
     {

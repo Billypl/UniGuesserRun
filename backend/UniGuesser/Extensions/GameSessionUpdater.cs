@@ -1,13 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using PartyGame;
-using PartyGame.Entities;
-using PartyGame.Repositories.PartyGame.Repositories;
-using UniGuesser.Models.Enumerations;
+﻿using Entities;
+using Microsoft.EntityFrameworkCore;
+using Models.Enumerations;
+using Repositories.Repositories;
 
-namespace PartyGame
-{
-    public class GameSessionUpdater : Repository<GameSession>
+public class GameSessionUpdater : Repository<GameSession>
     {
         public GameSessionUpdater(GameDbContext context) : base(context)
         {
@@ -37,7 +33,6 @@ namespace PartyGame
             _context.SaveChanges();
         }
     }
-}   
 
 
 public class GameSessionBackgroundUpdater : BackgroundService

@@ -1,14 +1,14 @@
-﻿using PartyGame.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using AutoMapper;
+
 using System.ComponentModel.DataAnnotations;
-using PartyGame.Extensions.Exceptions;
-using AutoMapper;
-using PartyGame.Models;
-using PartyGame.Models.GameModels;
-using PartyGame.Models.PlaceModels;
-using PartyGame.Extensions;
-using PartyGame.Services;
-using UniGuesser.Models.Enumerations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Entities;
+using Models;
+using Models.Enumerations;
+using Models.GameModels;
+using Models.PlaceModels;
+using UniGuesser.Middleware.Exceptions;
+using UniGuesser.Services;
 
 public class GameSession
 {
@@ -34,7 +34,7 @@ public class GameSession
     public Round GetRoundOrThrow(int requestedRound)
     {
         if (ActualRoundNumber != requestedRound)
-            throw new ForbidException($"Expected round {ActualRoundNumber}, got {requestedRound}");
+            throw new GameSessionExceptions.WrongRequestedRoundException(ActualRoundNumber, requestedRound);
 
         return Rounds[requestedRound];
     }
@@ -42,7 +42,7 @@ public class GameSession
     public RoundResultDto CheckGuess(Coordinates guess, IMapper mapper, int totalRounds)
     {
         if (ActualRoundNumber >= totalRounds)
-            throw new InvalidOperationException($"Round limit exceeded");
+            throw new GameSessionExceptions.RoundNumberOverflowException(ActualRoundNumber);
 
         var round = Rounds[ActualRoundNumber];
         var place = round.PlaceToGuess;
@@ -70,7 +70,7 @@ public class GameSession
     public void EnsureGameFinished(int roundsNumber)
     {
         if (ActualRoundNumber != roundsNumber)
-            throw new InvalidOperationException($"Cannot finish game. {roundsNumber - ActualRoundNumber} rounds left.");
+            throw new GameSessionExceptions.GameCannotBeFinishedException(roundsNumber - ActualRoundNumber);
     }
 
 }

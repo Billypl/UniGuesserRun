@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
+using DependencyInjection;
+using DependencyInjections;
+using Entities;
 using PartyGame.Authorization;
 using PartyGame.DependencyInjections;
-using PartyGame.Entities;
 using PartyGame.Extensions;
 using PartyGame.Middleware;
-using PartyGame.Settings;
-using System.Text.Json.Serialization;
 
 namespace PartyGame.DependencyInjection
 {

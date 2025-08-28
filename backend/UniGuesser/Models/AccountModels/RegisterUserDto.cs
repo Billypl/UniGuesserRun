@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using PartyGame.Entities;
 
-namespace PartyGame.Models.AccountModels
+namespace Models.AccountModels
 {
     public class RegisterUserDto
     {

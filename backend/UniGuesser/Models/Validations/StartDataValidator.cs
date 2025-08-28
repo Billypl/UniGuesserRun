@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PartyGame.Models.GameModels;
+using Models.GameModels;
 
 public class StartDataValidator : AbstractValidator<StartDataDto>
 {

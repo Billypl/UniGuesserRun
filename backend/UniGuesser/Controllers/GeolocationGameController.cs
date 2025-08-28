@@ -1,10 +1,11 @@
 ﻿
 
 using Microsoft.AspNetCore.Mvc;
-using PartyGame.Models.GameModels;
-using PartyGame.Services.GameServices;
+using Models.GameModels;
+using Services.GameServices;
 
-namespace PartyGame.Controllers
+
+namespace Controllers
 {
     [Route("api/game/geolocation")]
     [ApiController]
@@ -19,6 +20,8 @@ namespace PartyGame.Controllers
         }
 
         [HttpPost("distance")]
+        [ProducesResponseType(typeof(double), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetDistanceFromPlace(Coordinates coordinates)
         {
             var distance = await _gameGeolocationService.GetDistanceFromPlace(coordinates);

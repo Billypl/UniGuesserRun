@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Models
+﻿namespace Models
 {
     public class PagedResult<T>
     {

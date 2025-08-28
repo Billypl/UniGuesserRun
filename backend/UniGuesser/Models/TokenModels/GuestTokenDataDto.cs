@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Models.TokenModels
+﻿namespace Models.TokenModels
 {
     public class GuestTokenDataDto
     {

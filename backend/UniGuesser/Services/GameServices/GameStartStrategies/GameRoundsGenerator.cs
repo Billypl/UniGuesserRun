@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Options;
-using PartyGame.Entities;
-using PartyGame.Settings;
+﻿using Entities;
+using Microsoft.Extensions.Options;
+using UniGuesser.Middleware.Exceptions;
 
-namespace PartyGame.Services.GameServices.GameStartStrategies
+namespace Services.GameServices.GameStartStrategies
 {
     public interface IGameRoundsGenerator
     {
@@ -27,7 +27,7 @@ namespace PartyGame.Services.GameServices.GameStartStrategies
 
             if (places.Count < _gameSettings.RoundsNumber)
             {
-                throw new InvalidOperationException("Not enough places retrieved from database.");
+                throw new PlacesExceptions.NotEnoughPlacesException(_gameSettings.RoundsNumber, places.Count);
             }
 
             return places.Select(p => new Round
