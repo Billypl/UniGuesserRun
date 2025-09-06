@@ -59,10 +59,10 @@ const User: React.FC = () => {
 			return null
 		}
 		if (accountDetails.role.toLowerCase() === 'admin') {
-			return <CrownIcon />
+			return <CrownIcon title='Admin'/>
 		}
 		if (accountDetails.role.toLowerCase() === 'moderator') {
-			return <ShieldIcon />
+			return <ShieldIcon title='Moderator'/>
 		}
 		return null
 	}
