@@ -16,7 +16,7 @@ import {
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
-	const { setScore } = useGameContext()
+	const { setFinishedGameData } = useGameContext()
 
 	const [loading, setLoading] = useState<boolean>(false)
 	const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null)
@@ -59,11 +59,16 @@ const Game: React.FC = () => {
 			if (!nickname) {
 				throw new Error('User not logged in')
 			}
-			await gameService.startNewGameSession(nickname ?? '', difficulty ?? '', gameMode ?? '', signal)
+			await gameService.startNewGameSession(
+				nickname ?? '',
+				difficulty ?? '',
+				gameMode ?? '',
+				signal
+			)
 			startRound(0)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
-				console.error('Request aborted by the abort conttoler (2nd fetch prevention')
+				console.error('Request aborted by the abort controller (2nd fetch prevention)')
 			} else {
 				setError('Failed to fetch data. Please try again later.')
 				console.error('Error fetching data:', err)
@@ -146,7 +151,7 @@ const Game: React.FC = () => {
 
 	const finishGame = async () => {
 		const response = await gameService.finishGame()
-		setScore(response.finalScore)
+		setFinishedGameData(response)
 
 		navigate(GAME_RESULTS_ROUTE)
 	}
