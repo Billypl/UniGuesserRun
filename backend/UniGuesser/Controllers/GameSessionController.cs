@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PartyGame.Models;
-using PartyGame.Models.ScoreboardModels;
-using PartyGame.Services;
+using Models;
+using Models.ScoreboardModels;
+using Services;
+using UniGuesser.Models.ScoreboardModels;
 
 
-namespace PartyGame.Controllers
+namespace Controllers
 {
   
     [ApiController]
@@ -20,6 +21,7 @@ namespace PartyGame.Controllers
         }
 
         [HttpGet("scoreboard")]
+        [ProducesResponseType(typeof(PagedResult<UserStats>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserStatsPage([FromQuery] ScoreboardQuery scoreboardQuery)
         {
             // Rezultat:
@@ -36,6 +38,7 @@ namespace PartyGame.Controllers
 
         [HttpGet("history")]
         [Authorize(Roles = "Admin, Moderator, User")]
+        [ProducesResponseType(typeof(PagedResult<FinishedGameDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetHistoryPages([FromQuery] ScoreboardQuery scoreboardQuery)
         {
             PagedResult<FinishedGameDto> scores = 
@@ -43,7 +46,19 @@ namespace PartyGame.Controllers
             return Ok(scores);
         }
 
+        [HttpGet("history/user/{userGuid}")]
+        [Authorize(Roles = "Admin, Moderator, User")]
+        [ProducesResponseType(typeof(PagedResult<FinishedGameDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetHistoryPagesByUser([FromQuery] UserHistoryQuery userHistoryQuery, [FromRoute] string userGuid)
+        {
+            PagedResult<FinishedGameDto> scores = 
+                await _gameSessionService.GetGameHistoryPageByUser(userHistoryQuery, userGuid);
+            return Ok(scores);
+        }
+
         [HttpGet("{gameGuid}")]
+        [ProducesResponseType(typeof(FinishedGameDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetResultDetails([FromRoute] string gameGuid)
         {
             FinishedGameDto gameResult = await _gameSessionService.GetFinishedGame(gameGuid);
@@ -52,6 +67,8 @@ namespace PartyGame.Controllers
 
         [HttpDelete("{gameGuid}")]
         [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteGame(string gameGuid)
         {
             await _gameSessionService.DeleteSessionByGuid(gameGuid);

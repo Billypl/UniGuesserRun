@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Proxies;
-using PartyGame.Entities;
 
-namespace PartyGame.DependencyInjections
+namespace DependencyInjections
 {
     public static class DatabaseConfig
     {
@@ -23,7 +23,7 @@ namespace PartyGame.DependencyInjections
             services.AddDbContext<GameDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
-            }, ServiceLifetime.Scoped);
+            }, ServiceLifetime.Singleton);
 
             services.AddScoped<GameDbContext>();
             return services;

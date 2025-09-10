@@ -1,7 +1,7 @@
-﻿using PartyGame.Entities;
-using PartyGame.Repositories;
+﻿using Entities;
+using Repositories;
 
-namespace PartyGame.Services
+namespace Services
 {
     public interface IRoundService
     {

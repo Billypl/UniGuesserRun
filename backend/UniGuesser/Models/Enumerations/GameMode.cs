@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace PartyGame.Models
+namespace Models
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum GameMode

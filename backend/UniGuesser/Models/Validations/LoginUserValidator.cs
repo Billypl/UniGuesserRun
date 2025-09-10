@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Models.Validations
+﻿namespace Models.Validations
 {
     public class LoginUserValidator
     {

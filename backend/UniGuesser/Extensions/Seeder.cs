@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PartyGame.Entities;
+﻿
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PartyGame.Models.AccountModels;
-using PartyGame.Services;
+using Entities;
+using Microsoft.EntityFrameworkCore;
+using Models.AccountModels;
+using Services;
+
 
 namespace PartyGame.Extensions
 {

@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using Entities;
 using Microsoft.EntityFrameworkCore;
-using PartyGame.Entities;
-using PartyGame.Models.ScoreboardModels;
-using PartyGame.Repositories.PartyGame.Repositories;
-using UniGuesser.Models.Enumerations;
+using Models.Enumerations;
+using Models.ScoreboardModels;
+using Repositories.Repositories;
+using UniGuesser.Models.ScoreboardModels;
 
-namespace PartyGame.Repositories
+
+namespace Repositories
 {
     public interface IGameSessionRepository : IRepository<GameSession>
     {
@@ -14,6 +16,7 @@ namespace PartyGame.Repositories
         Task<List<UserStats>> GetUsersStats(ScoreboardQuery scoreboardQuery);
         Task<List<GameSession>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
         Task<GameSession?> GetActiveGameSession(string guid);
+        Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, string userGuid);
     }
 
     public class GameSessionRepository : Repository<GameSession>, IGameSessionRepository
@@ -66,6 +69,7 @@ namespace PartyGame.Repositories
                 await _context.SaveChangesAsync();
                 return true;
             }
+
             return false;
         }
 
@@ -74,7 +78,9 @@ namespace PartyGame.Repositories
             return await _dbSet
                 .Include(gs => gs.Player)
                 .Include(gs => gs.Rounds)
-                .FirstOrDefaultAsync(gs => gs.Player != null && gs.Player.PublicId.ToString() == userGuid && gs.GameState == GameStatus.InProgress);
+                .FirstOrDefaultAsync(gs =>
+                    gs.Player != null && gs.Player.PublicId.ToString() == userGuid &&
+                    gs.GameState == GameStatus.InProgress);
         }
 
         public async Task<List<GameSession>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery)
@@ -90,7 +96,8 @@ namespace PartyGame.Repositories
             if (!string.IsNullOrEmpty(scoreboardQuery.SearchNickname))
             {
                 query = query
-                    .Where(gs => gs.Player != null && gs.Player.Nickname.Equals(scoreboardQuery.SearchNickname, StringComparison.OrdinalIgnoreCase));
+                    .Where(gs => gs.Player != null && gs.Player.Nickname.Equals(scoreboardQuery.SearchNickname,
+                        StringComparison.OrdinalIgnoreCase));
             }
 
             query = scoreboardQuery.SortDirection == SortDirection.ASC
@@ -129,7 +136,8 @@ namespace PartyGame.Repositories
             if (!string.IsNullOrEmpty(scoreboardQuery.SearchNickname))
             {
                 stats = stats
-                    .Where(gs => gs.Nickname.Contains(scoreboardQuery.SearchNickname, StringComparison.OrdinalIgnoreCase))
+                    .Where(gs =>
+                        gs.Nickname.Contains(scoreboardQuery.SearchNickname, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
@@ -142,10 +150,38 @@ namespace PartyGame.Repositories
 
         public async Task<GameSession?> GetActiveGameSession(string guid)
         {
-            //throw(new NotImplementedException($"GUID: {guid}, gamesession: {_dbSet.FirstOrDefault().Id.ToString()}"));
-            //Console.WriteLine($"Fetching active game session with GUID: {guid}");
+            return await _dbSet.Where(g => g.GameState == GameStatus.InProgress)
+                .FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
+        }
+
+        public async Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, string userGuid)
+        {
+            if (!Guid.TryParse(userGuid, out var parsedGuid))
+                return new List<GameSession>();
+
+            var query = _dbSet
+                .Where(gs => gs.Player.PublicId == parsedGuid && gs.GameState != GameStatus.InProgress);
+
+            if (!string.IsNullOrEmpty(userHistoryQuery.DifficultyLevel))
+            {
+                query = query.Where(gs => gs.Difficulty != null &&
+                                          gs.Difficulty.Contains(userHistoryQuery.DifficultyLevel));
+            }
+
             
-            return await _dbSet.Where(g => g.GameState == GameStatus.InProgress).FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
+
+            query = userHistoryQuery.SortDirection == SortDirection.ASC
+                ? query.OrderBy(gs => gs.ExpirationDate)
+                : query.OrderByDescending(gs => gs.ExpirationDate);
+
+            int skip = Math.Max(userHistoryQuery.PageNumber - 1, 0) * userHistoryQuery.PageSize;
+
+            query = query.Include(gs => gs.Rounds);
+
+            return await query
+                .Skip(skip)
+                .Take(userHistoryQuery.PageSize)
+                .ToListAsync();
         }
     }
-}
+}   

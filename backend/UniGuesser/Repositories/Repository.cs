@@ -1,13 +1,14 @@
 ﻿
-namespace PartyGame.Repositories
+using Entities;
+
+namespace Repositories
 {
-    using global::PartyGame.Entities;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
-    namespace PartyGame.Repositories
+    namespace Repositories
     {
 
         public interface IRepository<T> where T : class
@@ -82,7 +83,7 @@ namespace PartyGame.Repositories
             public virtual async Task<T?> GetByPublicIdAsync(string publicId)
             {
                 var result = await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
-                return result; 
+                return result;
             }
         }
     }

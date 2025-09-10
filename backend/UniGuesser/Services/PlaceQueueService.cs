@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using PartyGame.Entities;
-using PartyGame.Extensions.Exceptions;
-using PartyGame.Models.AccountModels;
-using PartyGame.Models.PlaceModels;
-using PartyGame.Repositories;
+using Entities;
+using Models.AccountModels;
+using Models.PlaceModels;
+using Repositories;
+using static UniGuesser.Middleware.Exceptions.PlacesExceptions;
 
-namespace PartyGame.Services
+namespace Services
 {
     public interface IPlaceQueueService
     {
@@ -37,7 +37,7 @@ namespace PartyGame.Services
         {
             AccountDetailsFromTokenDto authorData = _httpContextAccessorService.GetAuthenticatedUserProfile();
 
-            User user = await _accountService.GetAccountDetailsByPublicId(authorData.UserId);
+            User user = await _accountService.GetAccountDetailsByPublicId(authorData.Guid);
 
             Place newPlaceToCheck = _mapper.Map<Place>(newPlace);
             newPlaceToCheck.AuthorId = user.Id;
@@ -61,7 +61,7 @@ namespace PartyGame.Services
 
             if (placeToAccept == null)
             {
-                throw new NotFoundException("Place you want to add to the game doesn't exist");
+                throw new PlaceNotFoundInQueueException(placeToCheckId);
             }
 
             placeToAccept.InQueue = false;
@@ -75,7 +75,7 @@ namespace PartyGame.Services
 
             if (place is null)
             {
-                throw new NotFoundException("Place you want to reject doesn't exist");
+                throw new PlaceNotFoundInQueueException(placeToRejectId);
             }
             var result = await _placesRepository.DeleteAsync(place.Id);
 

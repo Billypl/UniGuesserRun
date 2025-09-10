@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using PartyGame.Entities;
 using Microsoft.EntityFrameworkCore;
-using PartyGame.Repositories.PartyGame.Repositories;
+using Entities;
+using Repositories.Repositories;
 
-namespace PartyGame.Repositories
+namespace Repositories
 {
     public interface IAccountRepository : IRepository<User>
     {

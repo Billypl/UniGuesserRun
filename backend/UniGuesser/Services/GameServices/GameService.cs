@@ -3,13 +3,13 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using PartyGame.Models.GameModels;
-using PartyGame.Models.ScoreboardModels;
-using PartyGame.Services.GameServices.GameStartStrategies;
-using UniGuesser.Models.Enumerations;
+using Models.Enumerations;
+using Models.GameModels;
+using Models.ScoreboardModels;
+using Services.GameServices.GameStartStrategies;
 
 
-namespace PartyGame.Services.GameServices
+namespace Services.GameServices
 {
 
     public interface IGameService

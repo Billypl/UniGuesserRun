@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using PartyGame.Entities;
-using PartyGame.Services;
+using Services;
 
 namespace PartyGame.Authorization
 {

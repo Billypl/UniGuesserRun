@@ -1,6 +1,6 @@
 ﻿using FluentValidation.AspNetCore;
 using FluentValidation;
-using PartyGame.Models.Validations;
+using Models.Validations;
 
 namespace PartyGame.DependencyInjections
 {

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace UniGuesser.Models.Enumerations
+namespace Models.Enumerations
 {
     public enum GameStatus
     {

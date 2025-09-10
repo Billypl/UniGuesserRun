@@ -1,4 +1,4 @@
-﻿namespace PartyGame.Extensions.Exceptions
+﻿namespace UniGuesser.Middleware.Exceptions
 {
     public class NotFoundException : Exception
     {

@@ -1,6 +1,6 @@
-﻿using PartyGame.Models.GameModels;
+﻿using Models.GameModels;
 
-namespace PartyGame.Services.GameServices.GameStartStrategies
+namespace Services.GameServices.GameStartStrategies
 {
     public interface IStartGameStrategy
     {

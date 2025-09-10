@@ -1,6 +1,8 @@
-﻿using PartyGame.Extensions;
+﻿
 
-namespace PartyGame.DependencyInjections
+using PartyGame.Extensions;
+
+namespace DependencyInjections
 {
     public static class AutoMapperConfig
     {
