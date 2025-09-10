@@ -61,6 +61,12 @@
 
 		.games_table {
 			@include Mixins.table;
+			
+			tbody {
+				tr {
+					@include Mixins.clickable;
+				}
+			}
 
 			@media (min-width: 768px) {
 				tbody {

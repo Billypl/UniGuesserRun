@@ -10,21 +10,22 @@ import { PagedResult } from '../models/scoreboard/PagedResult'
 import { FinishedGameDto } from '../models/game/FinishedGameDto'
 import { ReactComponent as CrownIcon } from '../assets/images/crown.svg'
 import { ReactComponent as ShieldIcon } from '../assets/images/shield.svg'
+import { GAME_RESULTS_ROUTE, USER_ROUTE } from '../Constants'
 
 const User: React.FC = () => {
 	const navigate = useNavigate()
 
-	const { id } = useParams<{ id: string }>()
+	const { userId } = useParams<{ userId: string }>()
 	const [accountDetails, setAccountDetails] = useState<AccountDetailsDto | null>(null)
 	const [gamesHistory, setGamesHistory] = useState<PagedResult<FinishedGameDto> | null>(null)
 
 	useEffect(() => {
-		if (!id) {
+		if (!userId) {
 			navigate('/')
 			return
 		}
-		fetchAccountDetails(id)
-		fetchHistoryPage(id)
+		fetchAccountDetails(userId)
+		fetchHistoryPage(userId)
 	}, [])
 
 	const fetchAccountDetails = async (userId: string) => {
@@ -59,10 +60,10 @@ const User: React.FC = () => {
 			return null
 		}
 		if (accountDetails.role.toLowerCase() === 'admin') {
-			return <CrownIcon title='Admin'/>
+			return <CrownIcon title="Admin" />
 		}
 		if (accountDetails.role.toLowerCase() === 'moderator') {
-			return <ShieldIcon title='Moderator'/>
+			return <ShieldIcon title="Moderator" />
 		}
 		return null
 	}
@@ -84,7 +85,7 @@ const User: React.FC = () => {
 					</thead>
 					<tbody>
 						{gamesHistory.items.map((game) => (
-							<tr key={game.id}>
+							<tr key={game.id} onClick={() => navigateToResults(game.id)}>
 								<td>{new Date().toLocaleDateString()}</td>
 								<td>{game.difficulty.toUpperCase()}</td>
 								<td>{game.finalScore.toFixed(0)}</td>
@@ -94,6 +95,10 @@ const User: React.FC = () => {
 				</table>
 			</>
 		)
+	}
+
+	const navigateToResults = (gameId: string) => {
+		navigate(`${USER_ROUTE}/${userId}/${GAME_RESULTS_ROUTE}/${gameId}`)
 	}
 
 	return (

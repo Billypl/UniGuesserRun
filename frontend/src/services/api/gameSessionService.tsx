@@ -23,7 +23,15 @@ export class GameSessionService {
 			},
 			params: userHistoryQuery,
 		})
-		console.log(response.data)
+		return response.data
+	}
+
+	async getResultDetails(gameId: string): Promise<FinishedGameDto> {
+		const response = await this.axiosInstance.get<FinishedGameDto>(`/${gameId}`, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+			},
+		})
 		return response.data
 	}
 }
