@@ -46,31 +46,8 @@ h1 {
 
 	table {
 		@include Mixins.table;
-		
+
 		width: 100%;
-	}
-
-	.pagesBox {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		.boxNumber {
-			padding: 10px 16px;
-			background-color: Colors.$dark-blue;
-			color: Colors.$white;
-			border-radius: 16px;
-			cursor: pointer;
-			margin: 4px 8px;
-		}
-
-		.activePage {
-			color: Colors.$dark-blue;
-			background-color: Colors.$white;
-			font-weight: bold;
-			text-decoration: underline;
-			border: 1px solid Colors.$dark-blue;
-		}
 	}
 
 	.rankingButton {

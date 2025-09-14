@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/Header'
 import styles from '../styles/User.module.scss'
@@ -11,13 +11,27 @@ import { FinishedGameDto } from '../models/game/FinishedGameDto'
 import { ReactComponent as CrownIcon } from '../assets/images/crown.svg'
 import { ReactComponent as ShieldIcon } from '../assets/images/shield.svg'
 import { GAME_RESULTS_ROUTE, USER_ROUTE } from '../Constants'
+import { UserHistoryQuery } from '../models/game/UserHistoryQuery'
+import PaginationButtons from '../components/PaginationButtons'
 
 const User: React.FC = () => {
 	const navigate = useNavigate()
 
 	const { userId } = useParams<{ userId: string }>()
 	const [accountDetails, setAccountDetails] = useState<AccountDetailsDto | null>(null)
-	const [gamesHistory, setGamesHistory] = useState<PagedResult<FinishedGameDto> | null>(null)
+	const [userHistoryQuery, setUserHistoryQuery] = useState<UserHistoryQuery>({
+		difficultyLevel: null,
+		pageNumber: 1,
+		pageSize: 5,
+		sortDirection: SortDirection.DESC,
+	})
+	const [gamesHistory, setGamesHistory] = useState<PagedResult<FinishedGameDto>>({
+		items: [],
+		totalPages: 0,
+		itemFrom: 0,
+		itemsTo: 0,
+		totalItemsCount: 0,
+	})
 
 	useEffect(() => {
 		if (!userId) {
@@ -27,6 +41,12 @@ const User: React.FC = () => {
 		fetchAccountDetails(userId)
 		fetchHistoryPage(userId)
 	}, [])
+
+	useEffect(() => {
+		if (userId) {
+			fetchHistoryPage(userId)
+		}
+	}, [userHistoryQuery])
 
 	const fetchAccountDetails = async (userId: string) => {
 		try {
@@ -43,15 +63,20 @@ const User: React.FC = () => {
 
 	const fetchHistoryPage = async (userId: string) => {
 		try {
-			const history = await gameSessionService.getHistoryPagesByUser(userId, {
-				difficultyLevel: null,
-				pageNumber: 1,
-				pageSize: 5,
-				sortDirection: SortDirection.DESC,
-			})
+			const history = await gameSessionService.getHistoryPagesByUser(userId, userHistoryQuery)
 			setGamesHistory(history)
 		} catch (error) {
 			console.error('Error fetching game history:', error)
+		}
+	}
+
+	const changeHistoryPage = (pageNumber: number) => {
+		console.log('Changing to page: ' + pageNumber)
+		if (pageNumber !== userHistoryQuery.pageNumber) {
+			setUserHistoryQuery((prev) => ({
+				...prev,
+				pageNumber,
+			}))
 		}
 	}
 
@@ -69,9 +94,6 @@ const User: React.FC = () => {
 	}
 
 	const showGameHistory = () => {
-		if (gamesHistory === null) {
-			return null
-		}
 		return (
 			<>
 				<p className={styles.games_history_title}>Recent games:</p>
@@ -93,6 +115,11 @@ const User: React.FC = () => {
 						))}
 					</tbody>
 				</table>
+				<PaginationButtons
+					totalPages={gamesHistory.totalPages}
+					currentPage={userHistoryQuery.pageNumber}
+					onChangePage={changeHistoryPage}
+				/>
 			</>
 		)
 	}

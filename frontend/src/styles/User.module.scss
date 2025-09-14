@@ -62,9 +62,15 @@
 		.games_table {
 			@include Mixins.table;
 			
+			margin-bottom: 10px;
+
 			tbody {
 				tr {
 					@include Mixins.clickable;
+
+					&:hover {
+						background-color: lighten(Colors.$dark-blue, 60%);
+					}
 				}
 			}
 
@@ -83,7 +89,7 @@
 			@include Mixins.dark-button;
 
 			width: 12rem;
-			margin-top: 15px;
+			margin-top: 10px;
 			margin-left: auto;
 			margin-right: auto;
 			padding: 7px 0 7px 0;
