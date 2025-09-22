@@ -106,13 +106,19 @@ const User: React.FC = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{gamesHistory.items.map((game) => (
-							<tr key={game.id} onClick={() => navigateToResults(game.id)}>
-								<td>{new Date().toLocaleDateString()}</td>
-								<td>{game.difficulty.toUpperCase()}</td>
-								<td>{game.finalScore.toFixed(0)}</td>
+						{gamesHistory.items.length === 0 ? (
+							<tr>
+								<td colSpan={3}>No games found</td>
 							</tr>
-						))}
+						) : (
+							gamesHistory.items.map((game) => (
+								<tr key={game.id} onClick={() => navigateToResults(game.id)} className={styles.clickable_row}>
+									<td>{new Date().toLocaleDateString()}</td>
+									<td>{game.difficulty.toUpperCase()}</td>
+									<td>{game.finalScore.toFixed(0)}</td>
+								</tr>
+							))
+						)}
 					</tbody>
 				</table>
 				<PaginationButtons

@@ -15,7 +15,9 @@ const PaginationButtons = ({
 	const [pageNumbers, setPageNumbers] = useState<(number | '...')[]>([])
 
 	useEffect(() => {
-		setupPages()
+		if (totalPages > 1) {
+			setupPages()
+		}
 	}, [totalPages, currentPage, siblingCount])
 
 	const setupPages = () => {
@@ -26,7 +28,7 @@ const PaginationButtons = ({
 		pages.add(totalPages)
 		pages.add(currentPage)
 
-        // move the window of visible pages towards the middle when near the start or end
+		// move the window of visible pages towards the middle when near the start or end
 		const windowMiddle = Math.min(
 			Math.max(currentPage, siblingCount + 3),
 			totalPages - 2 - siblingCount
@@ -75,7 +77,7 @@ const PaginationButtons = ({
 		)
 	}
 
-	return (
+	return totalPages > 1 ? (
 		<div className={styles.pagesBox}>
 			<div
 				className={`${styles.pageButton} ${currentPage === 1 ? styles.disabled : ''}`}
@@ -95,7 +97,7 @@ const PaginationButtons = ({
 				{'>'}
 			</div>
 		</div>
-	)
+	) : null
 }
 
 export default PaginationButtons
