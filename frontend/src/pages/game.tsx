@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import 'leaflet/dist/leaflet.css'
 import gameService from '../services/api/gameService'
 import { Coordinates } from '../models/Coordinates'
-import { useGameContext } from '../hooks/useGameContext'
 import { useNavigate } from 'react-router-dom'
 import GameInterface from '../components/GameInterface'
 import {
@@ -16,8 +15,6 @@ import {
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
-	const { setFinishedGameData } = useGameContext()
-
 	const [loading, setLoading] = useState<boolean>(false)
 	const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null)
 	const [error, setError] = useState<string | null>(null)
@@ -151,9 +148,7 @@ const Game: React.FC = () => {
 
 	const finishGame = async () => {
 		const response = await gameService.finishGame()
-		setFinishedGameData(response)
-
-		navigate(GAME_RESULTS_ROUTE)
+		navigate(`${GAME_RESULTS_ROUTE}/${response.id}`)
 	}
 
 	const resetGameState = () => {

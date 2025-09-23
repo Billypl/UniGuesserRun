@@ -1,39 +1,86 @@
-@use "Colors";
+@use 'Colors';
 
 @mixin clickable {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 @mixin link {
-    @include clickable;
+	@include clickable;
 
-    &:hover {
-        text-decoration: underline;
-    }
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 @mixin dark-button {
-    @include clickable;
-    
-    background-color: Colors.$dark-blue;
-    color: Colors.$white;
-    border-radius: 16px;
-    border: none;
+	@include clickable;
 
-    &:hover {
-        background-color: Colors.$darker-blue;
-    }
+	background-color: Colors.$dark-blue;
+	color: Colors.$white;
+	border-radius: 16px;
+	border: none;
+
+	&:hover {
+		background-color: Colors.$darker-blue;
+	}
 }
 
 @mixin light-button {
-    @include clickable;
-    
-    background-color: Colors.$white;
-    color: Colors.$dark-blue;
-    border-radius: 16px;
-    border: none;
+	@include clickable;
 
-    &:hover {
-        background-color: Colors.$lighter-grey;
-    }
+	background-color: Colors.$white;
+	color: Colors.$dark-blue;
+	border-radius: 16px;
+	border: none;
+
+	&:hover {
+		background-color: Colors.$lighter-grey;
+	}
+}
+
+@mixin table {
+	width: 100%;
+	border: 2px solid Colors.$dark-blue;
+	border-radius: 16px;
+	table-layout: fixed;
+	box-sizing: border-box;
+
+	thead {
+		tr {
+			th {
+				font-weight: 600;
+				font-size: 16px;
+				text-transform: uppercase;
+				padding: 4px 0px;
+			}
+			margin-bottom: 16px;
+		}
+	}
+	tbody {
+		tr {
+			td {
+				text-align: center;
+				white-space: wrap;
+				overflow: hidden;
+				font-size: 12px;
+				padding: 4px 16px;
+			}
+			&:nth-child(2n + 1) {
+				background-color: lighten(Colors.$dark-blue, 75%);
+			}
+		}
+	}
+
+	th:first-of-type {
+		border-top-left-radius: 14px;
+	}
+	th:last-of-type {
+		border-top-right-radius: 14px;
+	}
+	tr:last-of-type td:first-of-type {
+		border-bottom-left-radius: 14px;
+	}
+	tr:last-of-type td:last-of-type {
+		border-bottom-right-radius: 14px;
+	}
 }

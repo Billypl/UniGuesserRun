@@ -174,13 +174,13 @@ namespace Repositories
                 ? query.OrderBy(gs => gs.ExpirationDate)
                 : query.OrderByDescending(gs => gs.ExpirationDate);
 
-            int skip = Math.Max(userHistoryQuery.PageNumber - 1, 0) * userHistoryQuery.PageSize;
+            //int skip = Math.Max(userHistoryQuery.PageNumber - 1, 0) * userHistoryQuery.PageSize;
 
             query = query.Include(gs => gs.Rounds);
 
             return await query
-                .Skip(skip)
-                .Take(userHistoryQuery.PageSize)
+                //.Skip(skip)
+                //.Take(userHistoryQuery.PageSize)
                 .ToListAsync();
         }
     }

@@ -1,7 +1,4 @@
-export enum SortDirection {
-	ASC = 'ASC',
-	DESC = 'DESC',
-}
+import { SortDirection } from './SortDirection'
 
 export interface ScoreboardQuery {
 	searchNickname?: string
