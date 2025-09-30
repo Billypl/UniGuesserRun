@@ -4,17 +4,17 @@ import scoreboardService from '../services/api/scoreboardService'
 import UserStats from '../models/scoreboard/UserStats'
 import styles from '../styles/Scoreboard.module.scss'
 import { MENU_ROUTE } from '../Constants'
-import { ScoreboardQuery } from '../models/scoreboard/SearchQuery'
+import { ScoreboardQuery } from '../models/scoreboard/ScoreboardQuery'
 import { SortDirection } from '../models/scoreboard/SortDirection'
 import { PagedResult } from '../models/scoreboard/PagedResult'
 import PaginationButtons from '../components/PaginationButtons'
+import { Difficulty } from '../models/game/Difficulty'
 
 const Scoreboard: React.FC = () => {
 	const navigate = useNavigate()
 	const [records, setRecords] = useState<UserStats[]>([])
 	const [scoreboardQuery, setScoreboardQuery] = useState<ScoreboardQuery>({
 		searchNickname: '',
-		difficultyLevel: 'easy',
 		pageNumber: 1,
 		pageSize: 3,
 		sortDirection: SortDirection.DESC,
@@ -48,13 +48,13 @@ const Scoreboard: React.FC = () => {
 
 	const handleFindClick = () => {
 		const nickname = nicknameRef.current?.value || ''
-		const difficulty = difficultyRef.current?.value || 'any'
+		const difficulty = difficultyRef.current?.value || undefined
 		const pageSize = pageSizeRef.current?.value || '1'
 
 		setScoreboardQuery({
 			...scoreboardQuery,
 			searchNickname: nickname,
-			difficultyLevel: difficulty as 'easy' | 'medium' | 'hard' | 'any',
+			difficultyLevel: difficulty as Difficulty | undefined,
 			pageNumber: 1,
 			pageSize: parseInt(pageSize),
 		})

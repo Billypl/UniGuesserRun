@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_STATE, GAME_GUID } from '../../Constants'
+import { GAME_API_URL, GAME_TOKEN_KEY, ACCOUNT_TOKEN_KEY, GAME_GUID } from '../../Constants'
 import { Coordinates } from '../../models/Coordinates'
 import { StartGameData } from '../../models/game/StartGameData'
 import { StartGameResponse } from '../../models/game/StartGameResponse'
@@ -7,6 +7,8 @@ import { GuessingPlaceDto } from '../../models/game/GuessingPlaceDto'
 import { RoundResultDto } from '../../models/game/RoundResultDto'
 import { FinishedGameDto } from '../../models/game/FinishedGameDto'
 import { GameSessionStateDto } from '../../models/game/GameSessionState'
+import { Difficulty } from '../../models/game/Difficulty'
+import { GameMode } from '../../models/game/GameMode'
 
 export class GameService {
 	private axiosInstance: AxiosInstance
@@ -24,7 +26,7 @@ export class GameService {
 		return window.sessionStorage.getItem(GAME_GUID)
 	}
 
-	async startNewGameSession(nickname: string, difficulty: string, gameMode: string, signal?: AbortSignal) {
+	async startNewGameSession(nickname: string, difficulty: Difficulty, gameMode: GameMode, signal?: AbortSignal) {
 		const startData: StartGameData = { nickname, difficulty, gameMode }
 		console.log(startData)
 		const response = await this.axiosInstance.post<StartGameResponse>('/start', startData, {

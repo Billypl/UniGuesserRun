@@ -16,14 +16,15 @@ import { SelectMapLocation } from '../components/SelectMapLocation'
 import { RecenterMap } from '../components/RecenterMap'
 import FormImage from '../components/FormImage'
 import FormSelect from '../components/FormSelect'
-import { Coordinates } from '../models/Coordinates'
+import { UserRole } from '../models/account/UserRole'
+import { Difficulty } from '../models/game/Difficulty'
 
 interface AddPlaceFormInputs {
 	name: string
 	description: string
 	imageUrl: string
 	alt: string
-	difficulty: string
+	difficulty: Difficulty
 	latitude: number
 	longitude: number
 }
@@ -98,7 +99,7 @@ const AddPlace: React.FC = () => {
 
 	const canSkipQueue = (): boolean => {
 		const userRole = accountService.getCurrentUser()?.role
-		return userRole === USER_ROLE_ADMIN || userRole === USER_ROLE_MODERATOR
+		return userRole === UserRole.ADMIN || userRole === UserRole.MODERATOR
 	}
 
 	return placeAdded ? (

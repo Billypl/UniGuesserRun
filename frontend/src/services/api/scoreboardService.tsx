@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { SESSIONS_API_URL, GAME_TOKEN_KEY } from '../../Constants'
 import FinishedGame from '../../models/scoreboard/UserStats'
 import { PagedResult } from '../../models/scoreboard/PagedResult'
-import { ScoreboardQuery } from '../../models/scoreboard/SearchQuery'
+import { ScoreboardQuery } from '../../models/scoreboard/ScoreboardQuery'
 
 export class ScoreboardService {
 	private axiosInstance: AxiosInstance
@@ -28,8 +28,6 @@ export class ScoreboardService {
 		const result = await this.axiosInstance.get<PagedResult<FinishedGame>>('/scoreboard', {
 			params: scoreboardQuery,
 		})
-
-		console.log(result.data)
 		return result.data
 	}
 }

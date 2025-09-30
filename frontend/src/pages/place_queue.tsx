@@ -16,12 +16,14 @@ import { SelectMapLocation } from '../components/SelectMapLocation'
 import { Coordinates } from '../models/Coordinates'
 import { ClickedIcon } from '../components/MarkerIcons'
 import { ShowPlaceDto } from '../models/place/ShowPlaceDto'
+import { UserRole } from '../models/account/UserRole'
+import { Difficulty } from '../models/game/Difficulty'
 
 interface UpdatePlaceFormInputs {
 	name: string
 	description: string
 	alt: string
-	difficulty: string
+	difficulty: Difficulty
 }
 
 const PlaceQueue: React.FC = () => {
@@ -226,7 +228,7 @@ const PlaceQueue: React.FC = () => {
 	}, [])
 
 	const currentUser = accountService.getCurrentUser()
-	if (currentUser === null || (currentUser.role !== USER_ROLE_ADMIN && currentUser.role !== USER_ROLE_MODERATOR)) {
+	if (currentUser === null || (currentUser.role !== UserRole.ADMIN && currentUser.role !== UserRole.MODERATOR)) {
 		return <Navigate to={MENU_ROUTE} />
 	}
 

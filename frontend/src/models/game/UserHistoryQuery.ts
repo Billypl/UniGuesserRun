@@ -1,7 +1,8 @@
 import { SortDirection } from "../scoreboard/SortDirection"
+import { Difficulty } from "./Difficulty"
 
 export interface UserHistoryQuery {
-	difficultyLevel: string | null
+	difficultyLevel: Difficulty | null
 	pageNumber: number
 	pageSize: number
 	sortDirection: SortDirection

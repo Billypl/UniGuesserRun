@@ -15,12 +15,14 @@ import { ClickedIcon } from "../components/MarkerIcons";
 import FormField from "../components/FormField";
 import { useForm } from "react-hook-form";
 import FormSelect from "../components/FormSelect";
+import { UserRole } from "../models/account/UserRole";
+import { Difficulty } from "../models/game/Difficulty";
 
 interface UpdatePlaceFormInputs {
   name: string;
   description: string;
   alt: string;
-  difficulty: string;
+  difficulty: Difficulty;
 }
 
 const Places: React.FC = () => {
@@ -213,7 +215,7 @@ const Places: React.FC = () => {
   }, []);
 
   const currentUser = accountService.getCurrentUser();
-  if (currentUser === null || currentUser.role !== USER_ROLE_ADMIN) {
+  if (currentUser === null || currentUser.role !== UserRole.ADMIN) {
     return <Navigate to={MENU_ROUTE} />;
   }
 

@@ -1,6 +1,4 @@
-
-import { Coordinates } from "../Coordinates";
-import { PlaceToCheckDto } from "../place/PlaceToCheckDto";
+import { Difficulty } from "./Difficulty";
 
 export interface FinishedGameDto {
   id: string;
@@ -8,7 +6,7 @@ export interface FinishedGameDto {
   nickname: string;
   finalScore: number;
   rounds: Round[];
-  difficulty: string;
+  difficulty: Difficulty;
 }
 
 export interface Round {

@@ -16,6 +16,7 @@ import { AccountDetailsFromTokenDto } from '../../models/account/AccountDetailsF
 import { LoginResultDto } from '../../models/account/LoginResultDto'
 import { jwtDecode } from 'jwt-decode'
 import { AccountDetailsDto } from '../../models/account/AccountDetailsDto'
+import { UserRole } from '../../models/account/UserRole'
 
 export class AccountService {
 	private axiosInstance: AxiosInstance
@@ -128,7 +129,7 @@ export class AccountService {
 			userId: '123',
 			nickname: 'test',
 			email: 'test@wp.pl',
-			role: 'user',
+			role: UserRole.USER,
 		}
 		return response
 	}

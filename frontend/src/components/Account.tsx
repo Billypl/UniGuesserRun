@@ -11,6 +11,7 @@ import {
 	USER_ROUTE,
 } from '../Constants'
 import styles from '../styles/Account.module.scss'
+import { UserRole } from '../models/account/UserRole'
 
 const Account: React.FC = () => {
 	const navigate = useNavigate()
@@ -18,8 +19,6 @@ const Account: React.FC = () => {
 	const handleLogout = () => {
 		accountService.logout()
 		navigate(MENU_ROUTE)
-
-		const test = accountService.getCurrentUser()?.role == ''
 	}
 
 	const displayGuestContent = () => {
@@ -39,13 +38,13 @@ const Account: React.FC = () => {
 		const role = accountService.getCurrentUser()?.role
 		return (
 			<div className={styles.account}>
-				{role === 'Admin' && (
+				{role === UserRole.ADMIN && (
 					<a className={styles.nav_item} onClick={() => navigate(PLACES_ROUTE)}>
 						Places
 					</a>
 				)}
-				
-				{(role === 'Admin' || role === 'Moderator') && (
+
+				{(role === UserRole.ADMIN || role === UserRole.MODERATOR) && (
 					<a className={styles.nav_item} onClick={() => navigate(PLACE_QUEUE_ROUTE)}>
 						Place queue
 					</a>

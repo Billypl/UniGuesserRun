@@ -5,6 +5,7 @@ import { PlaceToCheckDto } from "../../models/place/PlaceToCheckDto";
 import { ShowPlaceDto } from "../../models/place/ShowPlaceDto";
 import { Coordinates } from "../../models/Coordinates";
 import { UpdatePlaceDto } from "../../models/place/UpdatePlaceDto";
+import { Difficulty } from "../../models/game/Difficulty";
 
 export class PlaceService {
   private axiosInstance: AxiosInstance;
@@ -44,7 +45,7 @@ export class PlaceService {
     coordinates: Coordinates,
     imageUrl: string,
     alt: string,
-    difficulty: string,
+    difficulty: Difficulty,
     skipQueue: boolean
   ): Promise<string | null> {
     try {
@@ -104,7 +105,7 @@ export class PlaceService {
     coordinates: Coordinates,
     imageUrl: string,
     alt: string,
-    difficulty: string,
+    difficulty: Difficulty,
     authorId?: string | null
   ) {
     const updateDto: UpdatePlaceDto = {
