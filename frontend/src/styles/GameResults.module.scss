@@ -22,6 +22,7 @@
 	.summary_container {
 		margin: 30px;
 
+		text-align: center;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -34,6 +35,8 @@
 		}
 
 		table {
+			@include Mixins.table;
+
 			margin-top: 20px;
 			margin-bottom: 10px;
 			max-width: 300px;

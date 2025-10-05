@@ -3,7 +3,6 @@ import Menu from './pages/menu';
 import Game from './pages/game';
 import Scoreboard from './pages/scoreboard';
 import GameResults from './pages/game_results';
-import { GameContextProvider } from './components/GameContext';
 import { UserContextProvider } from './components/UserContext';
 import Register from './pages/register';
 import Login from './pages/login';
@@ -18,18 +17,23 @@ const App = () => {
     return (
         <UserContextProvider><Router basename="/">
             <Routes>
-                <Route path="/" element={<GameContextProvider><Menu /></GameContextProvider>}/>
-                <Route path={GAME_SETTINGS_ROUTE} element={<GameContextProvider><GameSettings /></GameContextProvider>} />
-                <Route path={GAME_ROUTE} element={<GameContextProvider><Game /></GameContextProvider>} />
-                <Route path={GAME_RESULTS_ROUTE} element={<GameContextProvider><GameResults /></GameContextProvider>} />
+                <Route path="/" element={<Menu />} />
+                <Route path={GAME_SETTINGS_ROUTE} element={<GameSettings />} />
+                <Route path={GAME_ROUTE} element={<Game />} />
+                <Route path={`${GAME_RESULTS_ROUTE}/:gameId`} element={<GameResults />} />
 
                 <Route path={SCOREBOARD_ROUTE} element={<Scoreboard />} />
+
                 <Route path={REGISTER_ROUTE} element={<Register />} />
                 <Route path={LOGIN_ROUTE} element={<Login />} />
-                <Route path={`${USER_ROUTE}/:id`} element={<User />} />
+
+                <Route path={`${USER_ROUTE}/:userId`} element={<User />} />
+                <Route path={`${USER_ROUTE}/:userId/${GAME_RESULTS_ROUTE}/:gameId`} element={<GameResults />} />
+
                 <Route path={ADD_PLACE_ROUTE} element={<AddPlace />} />
                 <Route path={PLACE_QUEUE_ROUTE} element={<PlaceQueue />} />
                 <Route path={PLACES_ROUTE} element={<Places />} />
+
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router></UserContextProvider>

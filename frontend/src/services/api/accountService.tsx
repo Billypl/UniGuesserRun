@@ -15,6 +15,7 @@ import { LoginUserDto } from '../../models/account/LoginUserDto'
 import { AccountDetailsFromTokenDto } from '../../models/account/AccountDetailsFromTokenDto'
 import { LoginResultDto } from '../../models/account/LoginResultDto'
 import { jwtDecode } from 'jwt-decode'
+import { AccountDetailsDto } from '../../models/account/AccountDetailsDto'
 
 export class AccountService {
 	private axiosInstance: AxiosInstance
@@ -28,7 +29,12 @@ export class AccountService {
 		})
 	}
 
-	async addNewUser(nickname: string, email: string, password: string, confirmPassword: string): Promise<string | null> {
+	async addNewUser(
+		nickname: string,
+		email: string,
+		password: string,
+		confirmPassword: string
+	): Promise<string | null> {
 		try {
 			const registerUserDto: RegisterUserDto = {
 				nickname: nickname,
@@ -84,6 +90,24 @@ export class AccountService {
 		}
 
 		return null
+	}
+
+	async getOwnAccountDetails(): Promise<AccountDetailsDto> {
+		const response = await this.axiosInstance.get<AccountDetailsDto>('', {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+			},
+		})
+		return response.data
+	}
+	
+	async getAccountDetails(userId: string): Promise<AccountDetailsDto> {
+		const response = await this.axiosInstance.get<AccountDetailsDto>(`/${userId}`, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
+			},
+		})
+		return response.data
 	}
 
 	logout() {
