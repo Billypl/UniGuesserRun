@@ -22,6 +22,7 @@ export const ADD_PLACE_ROUTE = '/add_place'
 export const PLACE_QUEUE_ROUTE = '/place_queue'
 export const PLACES_ROUTE = '/places'
 export const GAME_SETTINGS_ROUTE = '/game_settings'
+export const PROFILE_ROUTE = '/profile'
 
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'

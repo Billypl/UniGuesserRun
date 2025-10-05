@@ -11,6 +11,7 @@ import {
 	USER_ROUTE,
 } from '../Constants'
 import styles from '../styles/Account.module.scss'
+import hamburger_styles from '../styles/UserMenu.module.scss'
 
 const Account: React.FC = () => {
 	const navigate = useNavigate()
@@ -25,10 +26,10 @@ const Account: React.FC = () => {
 	const displayGuestContent = () => {
 		return (
 			<div className={styles.account}>
-				<a className={styles.nav_item} onClick={() => navigate(LOGIN_ROUTE)}>
+				<a className={hamburger_styles.menu_option} onClick={() => navigate(LOGIN_ROUTE)}>
 					Login
 				</a>
-				<a className={styles.nav_item} onClick={() => navigate(REGISTER_ROUTE)}>
+				<a className={hamburger_styles.menu_option} onClick={() => navigate(REGISTER_ROUTE)}>
 					Register
 				</a>
 			</div>
@@ -40,25 +41,25 @@ const Account: React.FC = () => {
 		return (
 			<div className={styles.account}>
 				{role === 'Admin' && (
-					<a className={styles.nav_item} onClick={() => navigate(PLACES_ROUTE)}>
+					<a className={hamburger_styles.menu_option} onClick={() => navigate(PLACES_ROUTE)}>
 						Places
 					</a>
 				)}
 				
 				{(role === 'Admin' || role === 'Moderator') && (
-					<a className={styles.nav_item} onClick={() => navigate(PLACE_QUEUE_ROUTE)}>
+					<a className={hamburger_styles.menu_option} onClick={() => navigate(PLACE_QUEUE_ROUTE)}>
 						Place queue
 					</a>
 				)}
 
-				<a className={styles.nav_item} onClick={() => navigate(ADD_PLACE_ROUTE)}>
+				<a className={hamburger_styles.menu_option} onClick={() => navigate(ADD_PLACE_ROUTE)}>
 					Add place
 				</a>
 
-				<a className={styles.nav_item} onClick={() => navigate(`${USER_ROUTE}/${accountService.getCurrentUser()?.userId}`)}>
+				<a className={hamburger_styles.menu_option} onClick={() => navigate(`${USER_ROUTE}/${accountService.getCurrentUser()?.userId}`)}>
 					{accountService.getCurrentUser()?.nickname}
 				</a>
-				<a className={`${styles.logout} ${styles.nav_item} `} onClick={handleLogout}>
+				<a className={`${styles.logout} ${hamburger_styles.menu_option} `} onClick={handleLogout}>
 					Logout
 				</a>
 			</div>
