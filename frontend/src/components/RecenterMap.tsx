@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { useMap, useMapEvents } from "react-leaflet";
-import { MAP_CENTER } from "../Constants";
+import { useMap } from "react-leaflet";
 
 // Component to recenter map automatically on coords change
 export const RecenterMap: React.FC<{ location: [number, number] }> = ({ location }) => {

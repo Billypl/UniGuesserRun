@@ -12,7 +12,7 @@ const Header = () => {
       <nav className={styles.nav}>
         <Logo />
         <a className={styles.title} onClick={() => navigate(MENU_ROUTE)}>UniGuesser</a>
-        <Account />
+        <Account/>
       </nav>
     </header> 
   );
