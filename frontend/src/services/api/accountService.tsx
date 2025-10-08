@@ -149,11 +149,12 @@ export class AccountService {
 		}
 		try {
 			const decoded: any = jwtDecode(token)
+			console.log('Decoded token:', decoded)
 			return {
 				userId: decoded[JWT_USER_ID_KEY],
 				nickname: decoded[JWT_USER_NICKNAME_KEY],
 				email: decoded[JWT_USER_EMAIL_KEY],
-				role: decoded[JWT_USER_ROLE_KEY],
+				role: decoded[JWT_USER_ROLE_KEY].toLowerCase() as UserRole,
 			}
 		} catch (error) {
 			console.error('Invalid token', error)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -12,10 +12,12 @@ import styles from '../styles/GameInterface.module.scss'
 import { MAP_CENTER } from '../Constants'
 import { Coordinates } from '../models/Coordinates'
 
-import { ReactComponent as ExitIcon} from '../assets/images/x-lg.svg';
+import { ReactComponent as ExitIcon } from '../assets/images/x-lg.svg'
+import { GameMode } from '../models/game/GameMode'
 
 interface GameInterfaceProps {
 	error: string | null
+	gameMode: GameMode
 	currentRoundNumber: number
 	isLastRound: boolean
 	imageUrl: string
@@ -31,9 +33,61 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 	const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false)
 	const [fullScreenImage, setFullScreenImage] = useState<boolean>(false)
 
+	useEffect(() => {
+		if (props.gameMode === GameMode.GEOLOCATION) {
+			forceUpdateGeolocation()
+			const watchId = watchGeolocation()
+			return () => {
+				if (watchId) {
+					navigator.geolocation.clearWatch(watchId)
+				}
+			}
+		}
+	}, [])
+
 	const selectLocation = (coords: Coordinates | null) => {
 		if (playerChoiceConfirmed) return // cant move the marker after confirming your choice
 		setClickedLatLng(coords)
+	}
+
+	const watchGeolocation = (): number | null => {
+		if (!('geolocation' in navigator)) {
+			console.error('Geolocation is not supported by your browser.')
+			return null
+		}
+		return navigator.geolocation.watchPosition(
+			(position) => {
+				console.log('Geolocation position obtained:', position)
+				selectLocation(position.coords)
+			},
+			(error) => {
+				console.error('Unable to retrieve location. Please enable location services.', error)
+			},
+			{
+				maximumAge: 3000,
+				timeout: 5000,
+			}
+		)
+	}
+	const forceUpdateGeolocation = () => {
+		if (!('geolocation' in navigator)) {
+			console.error('Geolocation is not supported by your browser.')
+			return
+		}
+
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				console.log('Geolocation position obtained:', position)
+				selectLocation(position.coords)
+			},
+			(error) => {
+				console.error('Unable to retrieve location. Please enable location services.', error)
+			},
+			{
+				maximumAge: 3000,
+				timeout: 5000,
+			}
+		)
 	}
 
 	const confirmPlayerChoice = () => {
@@ -54,8 +108,14 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 	}
 
 	const nextRound = () => {
-		setClickedLatLng(null)
 		setPlayerChoiceConfirmed(false)
+		if (props.gameMode === GameMode.CLASSIC) {
+			setClickedLatLng(null)
+		}
+		else if (props.gameMode === GameMode.GEOLOCATION) {
+			console.log('Forcing geolocation update for next round')
+			forceUpdateGeolocation()
+		}
 		props.onNextRound()
 	}
 
@@ -119,7 +179,10 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 						/>
 					)}
 
-					<SelectMapLocation selectLocationFunction={selectLocation} />
+					{/* Manual location selection is disabled in GEOLOCATION mode */}
+					{props.gameMode === GameMode.CLASSIC && (
+						<SelectMapLocation selectLocationFunction={selectLocation} />
+					)}
 				</MapContainer>
 			</div>
 		</div>

@@ -20,7 +20,6 @@ const Game: React.FC = () => {
 	const [error, setError] = useState<string | null>(null)
 
 	const [imageUrl, setImage] = useState<string | null>(null)
-	const [playerLatLng, setPlayerLatLng] = useState<Coordinates | null>(null)
 	const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null)
 	const [guessDistance, setGuessDistance] = useState<number | null>(null)
 
@@ -154,32 +153,13 @@ const Game: React.FC = () => {
 		setTargetLatLng(null)
 	}
 
-	const getCoordinates = () => {
-		if (!('geolocation' in navigator)) {
-			setError('Geolocation is not supported by your browser.')
-			return
-		}
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				setPlayerLatLng(position.coords)
-				setError(null)
-			},
-			(error) => {
-				setError('Unable to retrieve location. Please enable location services.')
-				console.error(error)
-			},
-			{
-				enableHighAccuracy: true,
-			}
-		)
-	}
-
 	return (
 		<div>
 			{loading && <h1>Loading...</h1>}
 			{imageUrl && currentRoundNumber != null && (
 				<GameInterface
 					error={error}
+					gameMode={GameMode.GEOLOCATION}
 					currentRoundNumber={currentRoundNumber}
 					isLastRound={isLastRound(currentRoundNumber)}
 					imageUrl={imageUrl}
