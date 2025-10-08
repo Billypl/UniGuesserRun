@@ -5,6 +5,6 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
 {
     public interface IStartGameStrategy
     {
-        Task<StartedGameData> StartGame(StartNewGameCommand startData);
+        Task<StartedGameData> StartGame(StartNewGameCommand startGameCommand);
     }
 }

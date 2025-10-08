@@ -5,6 +5,8 @@ using UniGuesser.Application.Models.Enumerations;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.UseCases.Game.CheckGuess;
 using UniGuesser.Application.UseCases.Game.FinishGame;
+using UniGuesser.Application.UseCases.Game.GetActiveGame;
+using UniGuesser.Application.UseCases.Game.GetActualGameState;
 using UniGuesser.Application.UseCases.Game.GetPlaceToGuess;
 using UniGuesser.Application.UseCases.Game.StartNewGame;
 using UniGuesser.Domain.Services;
@@ -64,8 +66,10 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetActiveGameState()
         {
-            GameSessionStateDto gameSessionStateDto = await _gameSessionService.GetActualGameStateByHeader();
-            return Ok(gameSessionStateDto);
+            var command = new GetActiveGameQuery();
+            var result = await _mediator.Send(command);
+            return Ok(result);
+
         }
 
         // checking actual game state of a game 
@@ -75,8 +79,9 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetGameState([FromRoute] string gameGuid)
         {
-            GameSessionStateDto gameSessionStateDto = await _gameSessionService.GetActualGameState(gameGuid);
-            return Ok(gameSessionStateDto);
+            var command = new GetActualGameStateQuery(gameGuid);
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
         [HttpPatch("{gameGuid}/finish")]

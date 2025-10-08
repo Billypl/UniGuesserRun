@@ -32,22 +32,22 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
             _authenticationSettings = authenticationSettings.Value;
         }
 
-        public async Task<StartedGameData> StartGame(StartNewGameCommand startDataDto)
+        public async Task<StartedGameData> StartGame(StartNewGameCommand startGameCommand)
         {
-            if (startDataDto.Nickname is null)
+            if (startGameCommand.startDataDto.Nickname is null)
             {
                 throw new GameExceptions.EmptyNicknameException();
             }
 
             DifficultyLevel difficulty =
-                (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startDataDto.Difficulty, ignoreCase: true);
+                (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startGameCommand.startDataDto.Difficulty, ignoreCase: true);
 
             Guid GuestGuid = Guid.NewGuid();
 
             GuestTokenDataDto guestTokenData = new GuestTokenDataDto
             {
-                Nickname = startDataDto.Nickname,
-                Difficulty = startDataDto.Difficulty,
+                Nickname = startGameCommand.startDataDto.Nickname,
+                Difficulty = startGameCommand.startDataDto.Difficulty,
                 GameSessionId = GuestGuid.ToString(),
             };
 
@@ -60,7 +60,7 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
                 Difficulty = difficulty.ToString(),
-                GameMode = startDataDto.GameMode
+                GameMode = startGameCommand.startDataDto.GameMode
             };
 
             foreach (Round gameRound in gameRounds)

@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniGuesser.Application.Models;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Models.ScoreboardModels;
+using UniGuesser.Application.UseCases.GameSessions.DeleteGameSession;
+using UniGuesser.Application.UseCases.GameSessions.GetGameDetails;
+using UniGuesser.Application.UseCases.GameSessions.GetScoreboardPage;
+using UniGuesser.Application.UseCases.GameSessions.GetUserHistoryPage;
 using UniGuesser.Domain.Services;
 
 namespace UniGuesser.Adapters.Inbound.Controllers
@@ -12,11 +17,11 @@ namespace UniGuesser.Adapters.Inbound.Controllers
     [Route("api/game_sessions")]
     public class GameSessionController : ControllerBase
     {
-        private readonly IGameSessionService _gameSessionService;
+        private readonly IMediator _mediator;
 
-        public GameSessionController(IGameSessionService scoreboardService)
+        public GameSessionController(IMediator mediator)
         {
-            _gameSessionService = scoreboardService;
+            _mediator = mediator;
         }
 
         [HttpGet("scoreboard")]
@@ -30,9 +35,10 @@ namespace UniGuesser.Adapters.Inbound.Controllers
             //ItemsTo → 20(ostatni element na stronie)
             //TotalPages → 3(liczba stron)
 
-           PagedResult<UserStats> scores = 
-                await _gameSessionService.GetPagedUserStatsResult(scoreboardQuery);
-            return Ok(scores);
+            var query = new GetScoreboardPageQuery(scoreboardQuery);
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         [HttpGet("history")]
@@ -40,9 +46,10 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(PagedResult<FinishedGameDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetHistoryPages([FromQuery] ScoreboardQuery scoreboardQuery)
         {
-            PagedResult<FinishedGameDto> scores = 
-                await _gameSessionService.GetGameHistoryPage(scoreboardQuery);
-            return Ok(scores);
+            var query = new GetGameHistoryPageQuery(scoreboardQuery);
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         [HttpGet("history/user/{userGuid}")]
@@ -60,8 +67,10 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetResultDetails([FromRoute] string gameGuid)
         {
-            FinishedGameDto gameResult = await _gameSessionService.GetFinishedGame(gameGuid);
-            return Ok(gameResult);
+            var query = new GetGameDetailsQuery(gameGuid);
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         [HttpDelete("{gameGuid}")]
@@ -70,8 +79,10 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteGame(string gameGuid)
         {
-            await _gameSessionService.DeleteSessionByGuid(gameGuid);
-            return Ok(new { Message = "Game successfully deleted" });
+            var query = new DeleteGameSessionCommand(gameGuid);
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
     }
 }

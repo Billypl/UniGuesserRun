@@ -6,7 +6,7 @@
         {
             public override int StatusCode => 404;
 
-            public GameNotFoundException(string guid)
+            public GameNotFoundException(Guid guid)
                 : base($"Game with guid {guid} not found")
             {
             }
@@ -17,7 +17,7 @@
             }
         }
 
-        public class GameNotFinishedException(string guid) 
+        public class GameNotFinishedException(Guid guid) 
             
             : BaseException($"Game with guid {guid} is not finished")
         {
@@ -48,10 +48,13 @@
             public override int StatusCode => 400;
         }
 
-        public class UserHasActiveGameSessionException(string guid)
+        public class UserHasActiveGameSessionException(Guid guid)
 
             : BaseException($"User with guid {guid} has an active game session")
         {
+            private Guid? playerGuid;
+
+           
 
             public override int StatusCode => 400;
         }

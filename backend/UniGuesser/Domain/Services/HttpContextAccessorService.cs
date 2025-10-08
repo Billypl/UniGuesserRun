@@ -10,8 +10,8 @@ namespace UniGuesser.Domain.Services
         AccountDetailsFromTokenDto GetAuthenticatedUserProfile();
         string GetTokenType();
         string? GetTokenTypeSafe();
-        string GetUserIdFromHeader();
-        string? GetUserIdFromHeaderSafe();
+        Guid GetUserIdFromHeader();
+        Guid? GetUserIdFromHeaderSafe();
      
     }
 
@@ -91,7 +91,7 @@ namespace UniGuesser.Domain.Services
             }
         }
 
-        public string GetUserIdFromHeader()
+        public Guid GetUserIdFromHeader()
         {
             var user = _httpContextAccessor.HttpContext?.User;
             var userIdClaim = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -101,10 +101,15 @@ namespace UniGuesser.Domain.Services
                 throw new NotFoundException("User ID not found in claims.");
             }
 
-            return userIdClaim;
+            if (!Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Guid.Empty;
+            }
+
+            return userId;
         }
 
-        public string? GetUserIdFromHeaderSafe()
+        public Guid? GetUserIdFromHeaderSafe()
         {
             try
             {

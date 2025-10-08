@@ -12,7 +12,7 @@ namespace UniGuesser.Infrastructure.Configuration
         {
 
             services.AddScoped<IGameSessionService, GameSessionService>();
-            services.AddScoped<IGameService, GameService>();
+
             services.AddScoped<IHttpContextAccessorService, HttpContextAccessorService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRoundService, RoundService>();

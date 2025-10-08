@@ -7,7 +7,7 @@ using static UniGuesser.Domain.Middleware.Exceptions.PlacesExceptions;
 
 namespace UniGuesser.Application.UseCases.Places.DeletePlace
 {
-    public class DeletePlaceHandler(IPlacesRepository placesRepository, IMapper mapper) : IRequestHandler<DeletePlaceCommand, Unit>
+    public class DeletePlaceHandler(IPlacesRepository placesRepository) : IRequestHandler<DeletePlaceCommand, Unit>
     {
         public async Task<Unit> Handle(DeletePlaceCommand request, CancellationToken cancellationToken)
         {

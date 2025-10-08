@@ -31,7 +31,7 @@ namespace UniGuesser.Domain.Services.GameServices
 
         public async Task<double> GetDistanceFromPlace(Coordinates actualPosition)
         {
-            string id = _httpContextAccessorService.GetUserIdFromHeader();
+            Guid id = _httpContextAccessorService.GetUserIdFromHeader();
             GameSession session = await _gameSessionService.GetSessionByGuid(id);
 
             if (session.GameMode != GameMode.Geolocation)

@@ -47,7 +47,7 @@ namespace UniGuesser.Infrastructure.Authorization
             GameSession session;
             try
             {
-                session = await _gameSessionService.GetSessionByGuid(gameGuid.ToString());
+                session = await _gameSessionService.GetSessionByGuid(gameGuid);
             }
             catch
             {
@@ -60,8 +60,8 @@ namespace UniGuesser.Infrastructure.Authorization
 
             bool isAuthorized = tokenType switch
             {
-                "user" => session.Player?.PublicId.ToString() == userGuid,
-                "guest" => session.PublicId.ToString() == userGuid,
+                "user" => session.Player?.PublicId == userGuid,
+                "guest" => session.PublicId == userGuid,
                 _ => false
             };
 

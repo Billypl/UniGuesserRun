@@ -7,11 +7,14 @@ using UniGuesser.Domain.Services;
 
 namespace UniGuesser.Application.UseCases.Game.FinishGame
 {
-    public class FinishGameHandler(IGameSessionService gameSessionService,
-        IMapper mapper, IHttpContextAccessorService httpContextAccessorService
-    ) : IRequestHandler<FinishGameCommand, FinishedGameDto>
+    public class ChangeGameStatusHandler(
+        IGameSessionService gameSessionService,
+        IMapper mapper, 
+        IHttpContextAccessorService httpContextAccessorService,
+        GameSettings gameSettings
+    ) : IRequestHandler<ChangeGameStatusCommand, FinishedGameDto>
     {
-        public async Task<FinishedGameDto> Handle(FinishGameCommand request, CancellationToken cancellationToken)
+        public async Task<FinishedGameDto> Handle(ChangeGameStatusCommand request, CancellationToken cancellationToken)
         {
             GameSession session = await gameSessionService.GetSessionByGuid(request.Guid);
 

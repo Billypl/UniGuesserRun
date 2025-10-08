@@ -10,11 +10,11 @@ namespace UniGuesser.Adapters.Outbound.Repositories
     public interface IGameSessionRepository : IRepository<GameSession>
     {
         Task<bool> DeleteGameSessionByPlayerId(int userId);
-        Task<GameSession?> GetActiveGameSessionByPlayerId(string userGuid);
+        Task<GameSession?> GetActiveGameSessionByPlayerId(Guid userGuid);
         Task<List<UserStats>> GetUsersStats(ScoreboardQuery scoreboardQuery);
         Task<List<GameSession>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);
-        Task<GameSession?> GetActiveGameSession(string guid);
-        Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, string userGuid);
+        Task<GameSession?> GetActiveGameSession(Guid guid);
+        Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, Guid userGuid);
     }
 
     public class GameSessionRepository : Repository<GameSession>, IGameSessionRepository
@@ -71,13 +71,13 @@ namespace UniGuesser.Adapters.Outbound.Repositories
             return false;
         }
 
-        public async Task<GameSession?> GetActiveGameSessionByPlayerId(string userGuid)
+        public async Task<GameSession?> GetActiveGameSessionByPlayerId(Guid userGuid)
         {
             return await _dbSet
                 .Include(gs => gs.Player)
                 .Include(gs => gs.Rounds)
                 .FirstOrDefaultAsync(gs =>
-                    gs.Player != null && gs.Player.PublicId.ToString() == userGuid &&
+                    gs.Player != null && gs.Player.PublicId == userGuid &&
                     gs.GameState == GameStatus.InProgress);
         }
 
@@ -146,19 +146,18 @@ namespace UniGuesser.Adapters.Outbound.Repositories
             return stats;
         }
 
-        public async Task<GameSession?> GetActiveGameSession(string guid)
+        public async Task<GameSession?> GetActiveGameSession(Guid guid)
         {
             return await _dbSet.Where(g => g.GameState == GameStatus.InProgress)
-                .FirstOrDefaultAsync(g => g.PublicId.ToString() == guid);
+                .FirstOrDefaultAsync(g => g.PublicId == guid);
         }
 
-        public async Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, string userGuid)
+        public async Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, Guid userGuid)
         {
-            if (!Guid.TryParse(userGuid, out var parsedGuid))
-                return new List<GameSession>();
+ 
 
             var query = _dbSet
-                .Where(gs => gs.Player.PublicId == parsedGuid && gs.GameState != GameStatus.InProgress);
+                .Where(gs => gs.Player.PublicId == userGuid && gs.GameState != GameStatus.InProgress);
 
             if (!string.IsNullOrEmpty(userHistoryQuery.DifficultyLevel))
             {

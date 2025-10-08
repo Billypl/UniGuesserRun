@@ -21,10 +21,12 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
         public async Task<StartedGameData> StartNewGame(StartNewGameCommand startDataDto)
         {
             string? tokenType = httpContextAccessorService.GetTokenTypeSafe();
-            string? playerGuid = httpContextAccessorService.GetUserIdFromHeaderSafe();
+            Guid? playerGuid = httpContextAccessorService.GetUserIdFromHeaderSafe();
 
-            if (playerGuid is not null && await gameSessionService.HasActiveGameSession(playerGuid))
-                throw new GameSessionExceptions.UserHasActiveGameSessionException(playerGuid);
+            if (playerGuid is not null && await gameSessionService.HasActiveGameSession(playerGuid.Value))
+            {
+                throw new GameSessionExceptions.UserHasActiveGameSessionException(playerGuid.Value);
+            }
 
             var strategy = ChooseStrategy(tokenType);
 

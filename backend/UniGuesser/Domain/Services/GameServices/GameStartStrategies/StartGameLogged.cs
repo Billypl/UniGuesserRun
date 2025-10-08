@@ -36,11 +36,11 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
         }
 
 
-        public async Task<StartedGameData> StartGame(StartNewGameCommand startDataDto)
+        public async Task<StartedGameData> StartGame(StartNewGameCommand startGameCommand)
         {
 
             DifficultyLevel difficulty =
-                (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startDataDto.Difficulty, ignoreCase: true);
+                (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startGameCommand.startDataDto.Difficulty, ignoreCase: true);
 
             List<Round> gameRounds = await _gameRoundsGenerator.GenerateRounds(difficulty);
 
@@ -56,7 +56,7 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
                 UserId = user.Id,
                 Player = user,
                 Difficulty = difficulty.ToString(),
-                GameMode = startDataDto.GameMode
+                GameMode = startGameCommand.startDataDto.GameMode
             };
 
             foreach (Round gameRound in gameRounds)
