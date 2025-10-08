@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Settings;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Models.TokenModels;
+using UniGuesser.Application.UseCases.Game.StartNewGame;
 using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Middleware.Exceptions;
 using UniGuesser.Domain.Services;
@@ -31,7 +32,7 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
             _authenticationSettings = authenticationSettings.Value;
         }
 
-        public async Task<StartedGameData> StartGame(StartDataDto startDataDto)
+        public async Task<StartedGameData> StartGame(StartNewGameCommand startDataDto)
         {
             if (startDataDto.Nickname is null)
             {

@@ -7,9 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\UseCases\GameSession\**" />
     <Compile Remove="Domain\Common\NewFolder\**" />
+    <Content Remove="Application\UseCases\GameSession\**" />
     <Content Remove="Domain\Common\NewFolder\**" />
+    <EmbeddedResource Remove="Application\UseCases\GameSession\**" />
     <EmbeddedResource Remove="Domain\Common\NewFolder\**" />
+    <None Remove="Application\UseCases\GameSession\**" />
     <None Remove="Domain\Common\NewFolder\**" />
   </ItemGroup>
 
@@ -37,15 +41,6 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.8.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\UseCases\GameSession\DeleteSession\" />
-    <Folder Include="Application\UseCases\GameSession\GetSession\" />
-    <Folder Include="Application\UseCases\GameSession\GetGameState\" />
-    <Folder Include="Application\UseCases\GameSession\FinishGame\" />
-    <Folder Include="Application\UseCases\GameSession\UpdateSession\" />
-    <Folder Include="Application\UseCases\Game\" />
   </ItemGroup>
 
 </Project>

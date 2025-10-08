@@ -13,7 +13,7 @@ namespace UniGuesser.Domain.Services
         Task DeleteSessionById(int id);
         Task DeleteSessionByGuid(string guid);
         Task<GameSession> GetSessionById(int id);
-        Task<GameSession> GetSessionByGuid(string guid);
+        Task<GameSession> GetSessionByGuid(Guid guid);
         Task UpdateGameSession(GameSession session);
         Task AddNewGameSession(GameSession session);
         Task<bool> HasActiveGameSession(string guid);

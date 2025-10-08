@@ -1,0 +1,34 @@
+﻿using MediatR;
+using UniGuesser.Application.Models.GameModels;
+using UniGuesser.Application.UseCases.Places.AddNewPlace;
+using UniGuesser.Domain.Middleware.Exceptions;
+using UniGuesser.Domain.Services;
+using UniGuesser.Domain.Services.GameServices.GameStartStrategies;
+
+namespace UniGuesser.Application.UseCases.Game.StartNewGame
+{
+    public class StartNewGameHandler(IHttpContextAccessorService httpContextAccessorService,IGameSessionService gameSessionService, 
+        StartGameLogged startGameLogged, StartGameUnlogged startGameUnlogged) : IRequestHandler<StartNewGameCommand, StartedGameData>
+    {
+        public async Task<StartedGameData> Handle(StartNewGameCommand request, CancellationToken cancellationToken)
+        {
+
+            string? tokenType = httpContextAccessorService.GetTokenTypeSafe();
+            string? playerGuid = httpContextAccessorService.GetUserIdFromHeaderSafe();
+
+            if (playerGuid is not null && await gameSessionService.HasActiveGameSession(playerGuid))
+                throw new GameSessionExceptions.UserHasActiveGameSessionException(playerGuid);
+
+            var strategy = ChooseStrategy(tokenType);
+
+            return await strategy.StartGame(request);
+        }
+        
+        public IStartGameStrategy ChooseStrategy(string? tokenType)
+        {
+            return tokenType == "user"
+                ? startGameLogged
+                : startGameUnlogged;
+        }
+    }
+}

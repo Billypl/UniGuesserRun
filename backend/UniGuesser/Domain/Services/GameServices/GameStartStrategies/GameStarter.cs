@@ -1,4 +1,5 @@
 ﻿using UniGuesser.Application.Models.GameModels;
+using UniGuesser.Application.UseCases.Game.StartNewGame;
 using UniGuesser.Domain.Middleware.Exceptions;
 using UniGuesser.Domain.Services;
 
@@ -6,7 +7,7 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
 {
     public interface IGameStarter
     {
-        Task<StartedGameData> StartNewGame(StartDataDto startDataDto);
+        Task<StartedGameData> StartNewGame(StartNewGameCommand startDataDto);
         IStartGameStrategy ChooseStrategy(string? tokenType);
     }
 
@@ -17,7 +18,7 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
         IGameSessionService gameSessionService) : IGameStarter
     {
 
-        public async Task<StartedGameData> StartNewGame(StartDataDto startDataDto)
+        public async Task<StartedGameData> StartNewGame(StartNewGameCommand startDataDto)
         {
             string? tokenType = httpContextAccessorService.GetTokenTypeSafe();
             string? playerGuid = httpContextAccessorService.GetUserIdFromHeaderSafe();

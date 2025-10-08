@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniGuesser.Application.Models.Enumerations;
 using UniGuesser.Application.Models.GameModels;
+using UniGuesser.Application.UseCases.Game.CheckGuess;
+using UniGuesser.Application.UseCases.Game.FinishGame;
+using UniGuesser.Application.UseCases.Game.GetPlaceToGuess;
+using UniGuesser.Application.UseCases.Game.StartNewGame;
 using UniGuesser.Domain.Services;
 using UniGuesser.Domain.Services.GameServices;
 
@@ -11,21 +16,22 @@ namespace UniGuesser.Adapters.Inbound.Controllers
     [Route("api/game")]
     public class GameController : ControllerBase
     {
-        private readonly IGameService _gameService;
-        private readonly IGameSessionService _gameSessionService;
 
-        public GameController(IGameService gameService, IGameSessionService gameSessionService)
+
+        private readonly IMediator _mediator;
+
+        public GameController(IMediator mediator)
         {
-            _gameService = gameService;
-            _gameSessionService = gameSessionService;
+            _mediator = mediator;
         }
 
         [HttpPost("start")]
         [ProducesResponseType(typeof(StartedGameData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> StartGame([FromBody] StartDataDto startData)
+        public async Task<IActionResult> StartGame([FromBody] StartDataDto startDataDto)
         {
-            var token = await _gameService.StartNewGame(startData);
+            var command = new StartNewGameCommand(startDataDto);
+            var token = await _mediator.Send(command);
             return Ok(token);
         }
 
@@ -35,10 +41,10 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CheckGuess([FromRoute] string gameGuid, [FromBody] Coordinates guessingCoordinates)
         {
-            var result = await _gameService.CheckGuess(gameGuid,guessingCoordinates);
+            var command = new CheckGuessCommand(gameGuid,guessingCoordinates);
+            var result = await _mediator.Send(command);
             return Ok(result);
         }
-
 
 
         [HttpGet("{gameGuid}/round/{roundNumber}")]
@@ -47,8 +53,9 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetGuessingPlace([FromRoute] string gameGuid, [FromRoute] int roundNumber)
         {
-            var place = await _gameService.GetPlaceToGuess(gameGuid,roundNumber);
-            return Ok(place);
+            var command = new GetPlaceToGuessQuery(gameGuid, roundNumber);
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
         // checking if game exists for a user 
@@ -78,7 +85,8 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> FinishGame([FromRoute] string gameGuid)
         {
-            var result = await _gameService.EndGame(gameGuid,GameStatus.Finished);
+            var command = new ChangeGameStatusCommand(gameGuid, GameStatus.Finished);
+            var result = await _mediator.Send(command);
             return Ok(result);
         }
 
@@ -88,7 +96,8 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AbortGame([FromRoute] string gameGuid)
         {
-            var result = await _gameService.EndGame(gameGuid, GameStatus.Abandoned);
+            var command = new ChangeGameStatusCommand(gameGuid, GameStatus.Abandoned);
+            var result = await _mediator.Send(command);
             return Ok(result);
         }
 

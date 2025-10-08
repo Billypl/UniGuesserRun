@@ -5,6 +5,7 @@ using Settings;
 using UniGuesser.Adapters.Outbound.Repositories;
 using UniGuesser.Application.Models.AccountModels;
 using UniGuesser.Application.Models.GameModels;
+using UniGuesser.Application.UseCases.Game.StartNewGame;
 using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Services;
 namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
@@ -35,7 +36,7 @@ namespace UniGuesser.Domain.Services.GameServices.GameStartStrategies
         }
 
 
-        public async Task<StartedGameData> StartGame(StartDataDto startDataDto)
+        public async Task<StartedGameData> StartGame(StartNewGameCommand startDataDto)
         {
 
             DifficultyLevel difficulty =
