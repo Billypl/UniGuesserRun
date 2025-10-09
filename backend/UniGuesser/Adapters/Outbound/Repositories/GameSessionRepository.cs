@@ -149,7 +149,10 @@ namespace UniGuesser.Adapters.Outbound.Repositories
         public async Task<GameSession?> GetActiveGameSession(Guid guid)
         {
             return await _dbSet.Where(g => g.GameState == GameStatus.InProgress)
+                .Include(g => g.Player)
+                .Include(r => r.Rounds)
                 .FirstOrDefaultAsync(g => g.PublicId == guid);
+
         }
 
         public async Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, Guid userGuid)

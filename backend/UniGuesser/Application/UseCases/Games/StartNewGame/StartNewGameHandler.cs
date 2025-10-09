@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using UniGuesser.Application.Models.GameModels;
-using UniGuesser.Application.UseCases.Places.AddNewPlace;
+using UniGuesser.Application.UseCases.Game.StartNewGame;
 using UniGuesser.Domain.Middleware.Exceptions;
 using UniGuesser.Domain.Services;
 using UniGuesser.Domain.Services.GameServices.GameStartStrategies;
 
-namespace UniGuesser.Application.UseCases.Game.StartNewGame
+namespace UniGuesser.Application.UseCases.Games.StartNewGame
 {
     public class StartNewGameHandler(IHttpContextAccessorService httpContextAccessorService,IGameSessionService gameSessionService, 
         StartGameLogged startGameLogged, StartGameUnlogged startGameUnlogged) : IRequestHandler<StartNewGameCommand, StartedGameData>

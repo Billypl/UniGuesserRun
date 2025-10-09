@@ -83,6 +83,9 @@ export class GameService {
 		const gameGuid = this.getGameGuid()
 		if (!gameGuid) throw new Error('Game GUID is missing')
 
+		console.log('GAME GUID:', gameGuid)
+		console.log("roundNumber:", roundNumber)
+
 		const url = `/${gameGuid}/round/${roundNumber}`
 		const response = await this.axiosInstance.get<GuessingPlaceDto>(url, {
 			headers: {

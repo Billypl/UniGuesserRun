@@ -41,6 +41,9 @@ const Scoreboard: React.FC = () => {
 			const result = await scoreboardService.getScores(scoreboardQuery)
 			setPagedResult(result)
 			setRecords(result.items)
+
+
+
 		} catch (error) {
 			console.error('Error while fetching scores:', error)
 		}
@@ -54,7 +57,7 @@ const Scoreboard: React.FC = () => {
 		setScoreboardQuery({
 			...scoreboardQuery,
 			searchNickname: nickname,
-			difficultyLevel: difficulty as 'easy' | 'medium' | 'hard' | 'any',
+			difficultyLevel: difficulty as 'easy' | 'normal' | 'hard' | 'any',
 			pageNumber: 1,
 			pageSize: parseInt(pageSize),
 		})
@@ -98,7 +101,7 @@ const Scoreboard: React.FC = () => {
 					<label htmlFor="difficulty">Difficulty:</label>
 					<select id="difficulty" name="difficulty" ref={difficultyRef}>
 						<option value="easy">Easy</option>
-						<option value="medium">Medium</option>
+						<option value="normal">Normal</option>
 						<option value="hard">Hard</option>
 					</select>
 				</div>
