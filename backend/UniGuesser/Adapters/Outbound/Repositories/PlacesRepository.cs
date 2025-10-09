@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Repositories.Repositories;
-using UniGuesser.Infrastructure.Persistence;
+using UniGuesser.Domain.Entities;
 
 namespace UniGuesser.Adapters.Outbound.Repositories
 {

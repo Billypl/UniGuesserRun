@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories;
 using UniGuesser.Domain.Entities;
-using UniGuesser.Infrastructure.Persistence;
 
 namespace UniGuesser.Adapters.Outbound.Repositories
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Proxies;
-using UniGuesser.Infrastructure.Persistence;
+using UniGuesser.Domain.Entities;
 
 namespace UniGuesser.Infrastructure.Configuration
 {

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Middleware;
 using UniGuesser.Infrastructure.Configuration;
 using UniGuesser.Infrastructure.Extensions;
-using UniGuesser.Infrastructure.Persistence;
 
 
 var builder = WebApplication.CreateBuilder(args);

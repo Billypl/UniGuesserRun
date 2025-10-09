@@ -5,8 +5,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UniGuesser.Application.Models.AccountModels;
 using UniGuesser.Application.UseCases.Accounts.Register;
+using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Services;
-using UniGuesser.Infrastructure.Persistence;
 
 
 namespace UniGuesser.Infrastructure.Extensions

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Options;
 using UniGuesser.Application.Models.Enumerations;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.UseCases.Game.CheckGuess;
@@ -11,7 +12,7 @@ namespace UniGuesser.Application.UseCases.Game.FinishGame
         IGameSessionService gameSessionService,
         IMapper mapper, 
         IHttpContextAccessorService httpContextAccessorService,
-        GameSettings gameSettings
+        IOptions<GameSettings> gameSettings
     ) : IRequestHandler<ChangeGameStatusCommand, FinishedGameDto>
     {
         public async Task<FinishedGameDto> Handle(ChangeGameStatusCommand request, CancellationToken cancellationToken)
@@ -20,7 +21,7 @@ namespace UniGuesser.Application.UseCases.Game.FinishGame
 
             if (request.GameStatus == GameStatus.Finished)
             {
-                session.EnsureGameFinished(gameSettings.RoundsNumber);
+                session.EnsureGameFinished(gameSettings.Value.RoundsNumber);
             }
 
             string tokenType = httpContextAccessorService.GetTokenType();

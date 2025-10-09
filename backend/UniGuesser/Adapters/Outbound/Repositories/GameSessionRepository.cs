@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories;
 using UniGuesser.Application.Models.Enumerations;
 using UniGuesser.Application.Models.ScoreboardModels;
-using UniGuesser.Infrastructure.Persistence;
+using UniGuesser.Domain.Entities;
 
 namespace UniGuesser.Adapters.Outbound.Repositories
 {

@@ -6,6 +6,7 @@ using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Models.ScoreboardModels;
 using UniGuesser.Application.UseCases.GameSessions.DeleteGameSession;
 using UniGuesser.Application.UseCases.GameSessions.GetGameDetails;
+using UniGuesser.Application.UseCases.GameSessions.GetGameHistoryPageByUser;
 using UniGuesser.Application.UseCases.GameSessions.GetScoreboardPage;
 using UniGuesser.Application.UseCases.GameSessions.GetUserHistoryPage;
 using UniGuesser.Domain.Services;
@@ -57,9 +58,10 @@ namespace UniGuesser.Adapters.Inbound.Controllers
         [ProducesResponseType(typeof(PagedResult<FinishedGameDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetHistoryPagesByUser([FromQuery] UserHistoryQuery userHistoryQuery, [FromRoute] string userGuid)
         {
-            PagedResult<FinishedGameDto> scores = 
-                await _gameSessionService.GetGameHistoryPageByUser(userHistoryQuery, userGuid);
-            return Ok(scores);
+            var query = new GetGameHistoryPageByUserQuery(userHistoryQuery,userGuid);
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         [HttpGet("{gameGuid}")]

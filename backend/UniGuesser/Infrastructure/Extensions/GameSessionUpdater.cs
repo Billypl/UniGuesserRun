@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Repositories;
 using UniGuesser.Application.Models.Enumerations;
-using UniGuesser.Infrastructure.Persistence;
+using UniGuesser.Domain.Entities;
 
 public class GameSessionUpdater : Repository<GameSession>
     {

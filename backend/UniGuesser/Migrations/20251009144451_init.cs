@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace PartyGame.Migrations
+namespace UniGuesser.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,13 +37,14 @@ namespace PartyGame.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PublicId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    GameMode = table.Column<int>(type: "integer", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ActualRoundNumber = table.Column<int>(type: "integer", nullable: false),
                     GameScore = table.Column<double>(type: "double precision", nullable: false),
                     Difficulty = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: true),
                     PlayerId = table.Column<int>(type: "integer", nullable: true),
-                    IsFinished = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
+                    GameState = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -76,7 +77,7 @@ namespace PartyGame.Migrations
                     Alt = table.Column<string>(type: "text", nullable: false),
                     DifficultyLevel = table.Column<string>(type: "text", nullable: false),
                     InQueue = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     AuthorId = table.Column<int>(type: "integer", nullable: true),
                     AuthorPlaceId = table.Column<int>(type: "integer", nullable: true)
                 },
@@ -88,7 +89,7 @@ namespace PartyGame.Migrations
                         column: x => x.AuthorId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Places_Users_AuthorPlaceId",
                         column: x => x.AuthorPlaceId,
@@ -144,7 +145,7 @@ namespace PartyGame.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_GameSessions_UserId",
                 table: "GameSessions",
-                column: "PublicId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Places_AuthorId",
@@ -195,7 +196,7 @@ namespace PartyGame.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Nickname",
                 table: "Users",
-                column: "NicknameOrEmail",
+                column: "Nickname",
                 unique: true);
         }
 

@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UniGuesser.Application.Models.Enumerations;
-using UniGuesser.Domain.Entities;
 
-namespace UniGuesser.Infrastructure.Persistence
+namespace UniGuesser.Domain.Entities
 {
     public class GameDbContext : DbContext
     {
