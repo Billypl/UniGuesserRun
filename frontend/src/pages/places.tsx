@@ -43,7 +43,6 @@ const Places: React.FC = () => {
     formState: { errors },
   } = useForm<UpdatePlaceFormInputs>();
   
-  // zmiana dto przy zmianie bazy
   const showPlace = (place: ShowPlaceDto) => {
     return (
       <div className={styles.place_entry} key={place.name}>
@@ -167,10 +166,10 @@ const Places: React.FC = () => {
     );
   };
 
-  const saveChanges = (data: UpdatePlaceFormInputs) => {
+  const saveChanges = async (data: UpdatePlaceFormInputs) => {
     if (!selectedPlace) return;
-    // TODO: authorId jest null - nie przechodzi żądanie
-    placeService.updatePlace(
+
+    await placeService.updatePlace(
       selectedPlace?.id,
       data.name,
       data.description,

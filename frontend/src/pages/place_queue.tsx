@@ -186,10 +186,10 @@ const PlaceQueue: React.FC = () => {
 		showUpdatedPlaces()
 	}
 
-	const saveChanges = (data: UpdatePlaceFormInputs) => {
+	const saveChanges = async (data: UpdatePlaceFormInputs) => {
 		if (!selectedPlace) return
 
-		placeService.updatePlace(
+		await placeService.updatePlace(
 			selectedPlace?.id,
 			data.name,
 			data.description,
