@@ -20,7 +20,6 @@ export class PlaceService {
 
   async getAllPlaces(): Promise<ShowPlaceDto[]> {
     const result = await this.axiosInstance.get("");
-    console.log(result.data);
     return result.data;
   }
 
