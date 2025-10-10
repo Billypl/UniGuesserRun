@@ -150,7 +150,8 @@ namespace UniGuesser.Adapters.Outbound.Repositories
         {
             return await _dbSet.Where(g => g.GameState == GameStatus.InProgress)
                 .Include(g => g.Player)
-                .Include(r => r.Rounds)
+                .Include(g => g.Rounds)
+                .ThenInclude(r => r.PlaceToGuess)
                 .FirstOrDefaultAsync(g => g.PublicId == guid);
 
         }

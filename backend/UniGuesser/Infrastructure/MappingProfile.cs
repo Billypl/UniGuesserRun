@@ -41,8 +41,8 @@ namespace UniGuesser.Infrastructure
 
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
 
-            CreateMap<GameSession, GameSessionStateDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId.ToString())); // Map PublicId to Id as string
+            CreateMap<GameSession, GameSessionStateDto>();
+                // Map PublicId to Id as string
 
 
             CreateMap<Round, GuessingPlaceDto>()

@@ -79,6 +79,7 @@ const Game: React.FC = () => {
 		setLoading(true)
 		setError(null)
 
+		console.log("GETOWANIE GRY PO SPRAWDZENIU CZY ISTNIEJE")
 		try {
 			const response = await gameService.checkGameState(signal)
 			startRound(response.actualRoundNumber)
