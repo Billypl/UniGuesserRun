@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using UniGuesser.Application.Models.Enumerations;
-using UniGuesser.Application.Models.GameModels;
+using UniGuesser.Application.ValueObjects;
 using UniGuesser.Domain.Middleware.Exceptions;
 using UniGuesser.Domain.Services;
 

@@ -33,6 +33,7 @@ namespace UniGuesser.Adapters.Outbound.Repositories
         {
             return await _dbSet
                 .Include(r => r.PlaceToGuess)
+                    .ThenInclude(p => p.AuthorPlace)
                 .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
         }
 
@@ -40,6 +41,8 @@ namespace UniGuesser.Adapters.Outbound.Repositories
         {
             return await _dbSet
                 .Include(r => r.PlaceToGuess)
+                    .ThenInclude(p => p.AuthorPlace)
+                    
                 .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
         }
     }

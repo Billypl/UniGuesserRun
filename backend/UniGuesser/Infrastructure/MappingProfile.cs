@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using UniGuesser.Application.Models;
 using UniGuesser.Application.Models.AccountModels;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Models.PlaceModels;
+using UniGuesser.Application.ValueObjects;
 using UniGuesser.Domain.Entities;
 
 
@@ -14,7 +14,11 @@ namespace UniGuesser.Infrastructure
         public MappingProfile()
         {
             CreateMap<Place, GuessingPlaceDto>();
-            CreateMap<NewPlaceDto, Place>();
+
+
+            CreateMap<NewPlaceDto, Place>()
+                .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Coordinates.Latitude))
+                .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Coordinates.Longitude));
 
             CreateMap<User, AccountDetailsDto>()
                 .ForMember(dest => dest.Guid, opt => opt.MapFrom(src => src.PublicId.ToString()));

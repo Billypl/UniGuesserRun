@@ -1,4 +1,4 @@
-﻿namespace UniGuesser.Application.Models
+﻿namespace UniGuesser.Application.ValueObjects
 {
     public class PagedResult<T>
     {

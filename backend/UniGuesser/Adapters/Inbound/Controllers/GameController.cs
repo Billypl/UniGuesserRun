@@ -9,8 +9,7 @@ using UniGuesser.Application.UseCases.Game.GetActiveGame;
 using UniGuesser.Application.UseCases.Game.GetActualGameState;
 using UniGuesser.Application.UseCases.Game.GetPlaceToGuess;
 using UniGuesser.Application.UseCases.Game.StartNewGame;
-using UniGuesser.Domain.Services;
-using UniGuesser.Domain.Services.GameServices;
+using UniGuesser.Application.ValueObjects;
 
 namespace UniGuesser.Adapters.Inbound.Controllers
 {
@@ -18,8 +17,6 @@ namespace UniGuesser.Adapters.Inbound.Controllers
     [Route("api/game")]
     public class GameController : ControllerBase
     {
-
-
         private readonly IMediator _mediator;
 
         public GameController(IMediator mediator)

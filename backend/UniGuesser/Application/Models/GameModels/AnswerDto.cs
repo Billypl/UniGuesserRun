@@ -1,4 +1,6 @@
-﻿namespace UniGuesser.Application.Models.GameModels
+﻿using UniGuesser.Application.ValueObjects;
+
+namespace UniGuesser.Application.Models.GameModels
 {
     public class AnswerDto
     {

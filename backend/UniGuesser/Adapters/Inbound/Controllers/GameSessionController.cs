@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UniGuesser.Application.Models;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Models.ScoreboardModels;
 using UniGuesser.Application.UseCases.GameSessions.DeleteGameSession;
@@ -9,6 +8,7 @@ using UniGuesser.Application.UseCases.GameSessions.GetGameDetails;
 using UniGuesser.Application.UseCases.GameSessions.GetGameHistoryPageByUser;
 using UniGuesser.Application.UseCases.GameSessions.GetScoreboardPage;
 using UniGuesser.Application.UseCases.GameSessions.GetUserHistoryPage;
+using UniGuesser.Application.ValueObjects;
 using UniGuesser.Domain.Services;
 
 namespace UniGuesser.Adapters.Inbound.Controllers

@@ -37,6 +37,7 @@ namespace UniGuesser.Adapters.Outbound.Repositories
             return await _dbSet
                 .Include(g => g.Player)
                 .Include(g => g.Rounds)
+                .ThenInclude(r => r.PlaceToGuess)
                 .ToListAsync();
         }
 
@@ -76,6 +77,7 @@ namespace UniGuesser.Adapters.Outbound.Repositories
             return await _dbSet
                 .Include(gs => gs.Player)
                 .Include(gs => gs.Rounds)
+                .ThenInclude(r => r.PlaceToGuess)
                 .FirstOrDefaultAsync(gs =>
                     gs.Player != null && gs.Player.PublicId == userGuid &&
                     gs.GameState == GameStatus.InProgress);
@@ -158,7 +160,6 @@ namespace UniGuesser.Adapters.Outbound.Repositories
 
         public async Task<List<GameSession>> GetGameUserHistoryGames(UserHistoryQuery userHistoryQuery, Guid userGuid)
         {
- 
 
             var query = _dbSet
                 .Where(gs => gs.Player.PublicId == userGuid && gs.GameState != GameStatus.InProgress);
@@ -170,7 +171,6 @@ namespace UniGuesser.Adapters.Outbound.Repositories
             }
 
             
-
             query = userHistoryQuery.SortDirection == SortDirection.ASC
                 ? query.OrderBy(gs => gs.ExpirationDate)
                 : query.OrderByDescending(gs => gs.ExpirationDate);

@@ -8,6 +8,7 @@ using UniGuesser.Domain.Entities;
 using UniGuesser.Application.Models.Enumerations;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Models.PlaceModels;
+using UniGuesser.Application.ValueObjects;
 
 public class GameSession
 {

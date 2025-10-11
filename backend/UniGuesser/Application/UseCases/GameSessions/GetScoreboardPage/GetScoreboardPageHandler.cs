@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using UniGuesser.Adapters.Outbound.Repositories;
-using UniGuesser.Application.Models;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Models.ScoreboardModels;
+using UniGuesser.Application.ValueObjects;
 
 namespace UniGuesser.Application.UseCases.GameSessions.GetScoreboardPage
 {

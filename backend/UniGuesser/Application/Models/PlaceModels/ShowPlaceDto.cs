@@ -1,4 +1,4 @@
-﻿using UniGuesser.Application.Models.GameModels;
+﻿using UniGuesser.Application.ValueObjects;
 
 namespace UniGuesser.Application.Models.PlaceModels
 {
