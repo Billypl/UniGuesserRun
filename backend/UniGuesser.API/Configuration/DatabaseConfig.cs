@@ -21,10 +21,26 @@ namespace UniGuesser.API.Configuration
                 connectionString = configuration.GetConnectionString("PostgreSqlLocal");
             }
 
+
+            Console.WriteLine("######## DEBUG ########");
+            Console.WriteLine($"Using connection string: {connectionString}");
+
+
+            Console.WriteLine($"CurrentDirectory: {Directory.GetCurrentDirectory()}");
+            Console.WriteLine($"AppContext.BaseDirectory: {AppContext.BaseDirectory}");
+
+
+            var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            Console.WriteLine($"Checking path: {configPath}");
+            Console.WriteLine(File.Exists(configPath) ? "File exists" : "File missing!");
+
+
+
             services.AddDbContext<GameDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
-            }, ServiceLifetime.Singleton);
+            }, ServiceLifetime.Scoped);
+
 
 
             return services;

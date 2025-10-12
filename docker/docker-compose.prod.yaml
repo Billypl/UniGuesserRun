@@ -4,7 +4,7 @@ services:
     image: billypl/ugr-backend:latest # Replace with your actual image name
     restart: always
     ports:
-      - "${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}" # or use 443 if behind HTTPS proxy
+      - '${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}' # or use 443 if behind HTTPS proxy
     environment:
       - ASPNETCORE_URLS=http://+:${BACKEND_HTTP_PORT};https://+:${BACKEND_HTTPS_PORT}
       - ASPNETCORE_ENVIRONMENT=Production
@@ -24,7 +24,7 @@ services:
     image: billypl/ugr-frontend:latest # Replace with your actual image name
     restart: always
     ports:
-      - "80:80" # Consider using 80 if deploying publicly
+      - '80:80' # Consider using 80 if deploying publicly
     environment:
       - NODE_ENV=production
     depends_on:
@@ -50,7 +50,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - "${DB_ADMIN_PANEL_PORT}:${DB_ADMIN_PANEL_PORT}"
+      - '${DB_ADMIN_PANEL_PORT}:${DB_ADMIN_PANEL_PORT}'
     networks:
       - ugr-net
 

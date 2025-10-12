@@ -68,7 +68,8 @@ namespace UniGuesser.API.Extensions
                 Nickname = "Moderator",
                 Password = "ModeratorModerator",
                 ConfirmPassword = "ModeratorModerator",
-                Email = "Moderator@Moderator.com"
+                Email = "Moderator@Moderator.com",
+                Role = "Moderator"
             };
 
             var commandModerator = new RegisterAccountCommand(moderator);

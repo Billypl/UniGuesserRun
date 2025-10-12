@@ -30,7 +30,7 @@ async Task SeedDatabase(WebApplication app)
     Console.WriteLine("##### Seeding database...");
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<GameDbContext>();
-    db.Database.Migrate();
+   // db.Database.Migrate();
     Console.WriteLine("##### Db seeded...");
 
     var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
