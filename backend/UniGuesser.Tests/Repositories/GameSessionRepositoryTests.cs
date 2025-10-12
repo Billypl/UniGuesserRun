@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using UniGuesser.Adapters.Outbound.Repositories;
-using UniGuesser.Application.Models.Enumerations;
-using UniGuesser.Application.Models.ScoreboardModels;
 using UniGuesser.Domain.Entities;
-using Xunit;
+using UniGuesser.Domain.ValueObjects.Enumerations;
+using UniGuesser.Infrastructure.Persistence;
+using UniGuesser.Infrastructure.Repositories;
 
 namespace UniGuesser.Tests.Repositories
 {
@@ -61,7 +60,7 @@ namespace UniGuesser.Tests.Repositories
         {
             // Arrange
             var options = CreateNewContextOptions();
-            
+
             var user = new User
             {
                 Nickname = "TestUser",
@@ -70,7 +69,7 @@ namespace UniGuesser.Tests.Repositories
                 CreatedAt = DateTime.UtcNow,
                 Role = "User"
             };
-            
+
             var place = new Place
             {
                 Name = "Test Place",
@@ -83,16 +82,16 @@ namespace UniGuesser.Tests.Repositories
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
-            
+
             int createdSessionId;
-            
+
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);
-                
+
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
-                
+
                 await context.Places.AddAsync(place);
                 await context.SaveChangesAsync();
 
@@ -157,7 +156,7 @@ namespace UniGuesser.Tests.Repositories
         {
             // Arrange
             var options = CreateNewContextOptions();
-            
+
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);
@@ -321,7 +320,7 @@ namespace UniGuesser.Tests.Repositories
             // Arrange
             var options = CreateNewContextOptions();
             Guid createdSessionPublicId;
-            
+
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);
@@ -399,7 +398,7 @@ namespace UniGuesser.Tests.Repositories
             // Arrange
             var options = CreateNewContextOptions();
             Guid createdSessionPublicId;
-            
+
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);
@@ -547,7 +546,7 @@ namespace UniGuesser.Tests.Repositories
             // Arrange
             var options = CreateNewContextOptions();
             Guid userPublicId;
-            
+
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);
@@ -623,7 +622,7 @@ namespace UniGuesser.Tests.Repositories
             // Arrange
             var options = CreateNewContextOptions();
             Guid activeSessionPublicId;
-            
+
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);

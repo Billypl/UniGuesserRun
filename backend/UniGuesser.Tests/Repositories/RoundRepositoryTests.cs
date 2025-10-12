@@ -1,7 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using UniGuesser.Adapters.Outbound.Repositories;
-using UniGuesser.Domain.Entities;
-using Xunit;
 
 namespace UniGuesser.Tests.Repositories
 {

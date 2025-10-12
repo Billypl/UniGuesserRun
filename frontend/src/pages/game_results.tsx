@@ -11,7 +11,7 @@ const GameResults: React.FC = () => {
 	const navigate = useNavigate()
 	// userId is optional, if present we came from user profile
 	// if not, we came straight from the game
-	const { userId, gameId } = useParams<{ userId: string; gameId: string }>()
+	const { userId, gameId } = useParams<{ userId?: string; gameId?: string }>()
 	const [finishedGameData, setFinishedGameData] = useState<FinishedGameDto | null>(null)
 
 	useEffect(() => {
@@ -24,6 +24,7 @@ const GameResults: React.FC = () => {
 
 	const fetchFinishedGameData = async () => {
 		try {
+			console.log('Fetching game results for gameId:', gameId)
 			const response = await gameSessionService.getResultDetails(gameId!)
 			setFinishedGameData(response)
 		} catch (error) {

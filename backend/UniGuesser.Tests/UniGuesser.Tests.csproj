@@ -21,7 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UniGuesser\UniGuesser.csproj" />
+	  <ProjectReference Include="..\UniGuesser.Infrastructure\UniGuesser.Infrastructure.csproj" />
+	  <ProjectReference Include="..\UniGuesser.API\UniGuesser.API.csproj" />
+	  <ProjectReference Include="..\UniGuesser.Domain\UniGuesser.Domain.csproj" />
+	  <ProjectReference Include="..\UniGuesser.Application\UniGuesser.Application.csproj" />
+
   </ItemGroup>
 
 </Project>

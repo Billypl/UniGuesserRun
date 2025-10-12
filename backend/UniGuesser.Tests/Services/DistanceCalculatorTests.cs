@@ -1,7 +1,3 @@
-using UniGuesser.Application.Models.GameModels;
-using UniGuesser.Domain.Services;
-using Xunit;
-
 namespace UniGuesser.Tests.Services
 {
     public class DistanceCalculatorTests
