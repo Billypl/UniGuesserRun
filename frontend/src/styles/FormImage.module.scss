@@ -1,22 +1,22 @@
-@use "utilities/Mixins";
+@use 'utilities/Mixins';
 
 .button {
-    @include Mixins.dark-button;
+	@include Mixins.dark-button;
 
-    width: 300px;
-    padding: 14px 0; /* Better padding */
-    font-size: 18px;
-    max-width: 70vw;
-    font-weight: 600; /* Stronger weight */
-    letter-spacing: 0.5px; /* Better readability */
+	width: 300px;
+	padding: 14px 0; /* Better padding */
+	font-size: 18px;
+	max-width: 70vw;
+	font-weight: 600; /* Stronger weight */
+	letter-spacing: 0.5px; /* Better readability */
 }
 
 .photo_button {
-    @include Mixins.dark-button;
-    width: 300px;
-    padding: 14px 0; /* Better padding */
-    font-size: 18px;
-    max-width: 70vw;
-    font-weight: 600; /* Stronger weight */
-    letter-spacing: 0.5px; /* Better readability */
+	@include Mixins.dark-button;
+	width: 300px;
+	padding: 14px 0; /* Better padding */
+	font-size: 18px;
+	max-width: 70vw;
+	font-weight: 600; /* Stronger weight */
+	letter-spacing: 0.5px; /* Better readability */
 }

@@ -2,7 +2,8 @@
 @use 'utilities/Colors';
 
 .background {
-	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+	background-image:
+		linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
 		url('../assets/images/background-map-menu.png');
 	background-position: center;
 	background-size: cover;
@@ -21,7 +22,7 @@
 	padding: 20px;
 	padding-top: 150px;
 	min-height: 100vh; /* Changed from height to min-height for better content flow */
-	
+
 	/* Responsive padding */
 	@media (max-width: 768px) {
 		padding: 16px;
@@ -40,7 +41,7 @@
 		transform: translateX(-50%);
 		display: flex;
 		flex-direction: column;
-		
+
 		/* Responsive padding */
 		@media (max-width: 768px) {
 			padding: 20px 24px;
@@ -60,7 +61,7 @@
 				width: auto;
 				fill: Colors.$dark-blue;
 				transition: transform 0.3s ease; /* Smooth transition */
-				
+
 				&:hover {
 					transform: scale(1.1); /* Subtle scale on hover */
 				}
@@ -83,7 +84,7 @@
 
 		.games_table {
 			@include Mixins.table;
-			
+
 			margin-bottom: auto;
 
 			tbody {

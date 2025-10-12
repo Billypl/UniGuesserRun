@@ -1,61 +1,61 @@
-@use "utilities/Mixins";
-@use "utilities/Colors";
+@use 'utilities/Mixins';
+@use 'utilities/Colors';
 
 .settings {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-basis: auto;
-  margin-top: 22vh;
-  width: auto;
-  padding: 20px; /* Added padding */
-  
-  /* Responsive margin */
-  @media (max-width: 768px) {
-    margin-top: 15vh;
-    padding: 16px;
-  }
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-basis: auto;
+	margin-top: 22vh;
+	width: auto;
+	padding: 20px; /* Added padding */
 
-  .header {
-    font-size: clamp(24px, 5vw, 30px); /* Responsive font size */
-    font-weight: 700; /* Stronger weight */
-    margin-bottom: 8px; /* Better spacing */
-  }
+	/* Responsive margin */
+	@media (max-width: 768px) {
+		margin-top: 15vh;
+		padding: 16px;
+	}
 
-  .form {
-    margin: 20px 0; /* Better spacing */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px; /* Consistent spacing with gap */
+	.header {
+		font-size: clamp(24px, 5vw, 30px); /* Responsive font size */
+		font-weight: 700; /* Stronger weight */
+		margin-bottom: 8px; /* Better spacing */
+	}
 
-    .start_game {
-      @include Mixins.dark-button;
+	.form {
+		margin: 20px 0; /* Better spacing */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 16px; /* Consistent spacing with gap */
 
-      width: 300px;
-      padding: 14px 0; /* Better padding */
-      font-size: 18px;
-      max-width: 70vw;
-      font-weight: 600; /* Stronger weight */
-      letter-spacing: 0.5px; /* Better readability */
-    }
-  }
+		.start_game {
+			@include Mixins.dark-button;
 
-  .go_back {
-    @include Mixins.light-button;
+			width: 300px;
+			padding: 14px 0; /* Better padding */
+			font-size: 18px;
+			max-width: 70vw;
+			font-weight: 600; /* Stronger weight */
+			letter-spacing: 0.5px; /* Better readability */
+		}
+	}
 
-    width: 300px;
-    padding: 14px 0; /* Better padding */
-    font-size: 18px;
-    max-width: 70vw;
-    font-weight: 600; /* Stronger weight */
-    letter-spacing: 0.5px; /* Better readability */
-  }
+	.go_back {
+		@include Mixins.light-button;
 
-  .link {
-    @include Mixins.link;
-    margin-top: 12px; /* Better spacing */
-    font-size: 16px; /* Consistent size */
-  }
+		width: 300px;
+		padding: 14px 0; /* Better padding */
+		font-size: 18px;
+		max-width: 70vw;
+		font-weight: 600; /* Stronger weight */
+		letter-spacing: 0.5px; /* Better readability */
+	}
+
+	.link {
+		@include Mixins.link;
+		margin-top: 12px; /* Better spacing */
+		font-size: 16px; /* Consistent size */
+	}
 }

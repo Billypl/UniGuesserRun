@@ -14,12 +14,12 @@ h1 {
 	max-width: 1400px;
 	margin: 0 auto;
 	padding: 20px; /* Increased padding */
-	
+
 	/* Responsive padding */
 	@media (max-width: 768px) {
 		padding: 16px;
 	}
-	
+
 	& > * {
 		margin: 16px 0px;
 	}
@@ -36,12 +36,12 @@ h1 {
 		font-size: 18px; /* Slightly reduced */
 		font-weight: 500;
 		align-items: center; /* Better vertical alignment */
-		
+
 		label {
 			margin-right: 12px; /* Increased spacing */
 			white-space: nowrap; /* Prevent label wrapping */
 		}
-		
+
 		input,
 		select {
 			border-radius: 8px; /* More modern radius */
@@ -50,7 +50,7 @@ h1 {
 			flex: 1;
 			border: 1px solid Colors.$dark-blue;
 			transition: all 0.3s ease; /* Smooth transitions */
-			
+
 			/* Enhanced focus state */
 			&:focus {
 				outline: none;
@@ -62,7 +62,7 @@ h1 {
 		select {
 			background-color: Colors.$white;
 			cursor: pointer;
-			
+
 			&:hover {
 				border-color: Colors.$darker-blue;
 			}
@@ -85,7 +85,7 @@ h1 {
 		transition: all 0.3s ease; /* Improved transition */
 		cursor: pointer;
 		font-weight: 500; /* Better weight */
-		
+
 		/* Focus state for accessibility */
 		&:focus-visible {
 			outline: 3px solid Colors.$dark-blue;
@@ -98,7 +98,7 @@ h1 {
 			transform: translateY(-2px); /* Subtle lift effect */
 			box-shadow: 0 4px 12px rgba(0, 56, 101, 0.2); /* Shadow on hover */
 		}
-		
+
 		&:active {
 			transform: translateY(0);
 		}

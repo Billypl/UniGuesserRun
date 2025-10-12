@@ -21,7 +21,7 @@
 		user-select: none;
 		transition: all 0.3s ease; /* Smooth transitions */
 		font-weight: 500; /* Better weight */
-		
+
 		/* Focus state for accessibility */
 		&:focus-visible {
 			outline: 2px solid Colors.$dark-blue;
@@ -54,9 +54,9 @@
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 	}
 
-    .disabled {
-        cursor: default;
-        color: Colors.$light-grey;
-        opacity: 0.5; /* Visual indication of disabled state */
-    }
+	.disabled {
+		cursor: default;
+		color: Colors.$light-grey;
+		opacity: 0.5; /* Visual indication of disabled state */
+	}
 }

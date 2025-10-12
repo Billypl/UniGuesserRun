@@ -15,16 +15,16 @@ $white: #ffffff;
 
 // CSS Custom Properties for dynamic theming (optional future enhancement)
 :root {
-  --color-primary: #{$dark-blue};
-  --color-primary-dark: #{$darker-blue};
-  --color-white: #{$white};
-  --color-grey-light: #{$lighter-grey};
-  --spacing-unit: 4px;
-  --border-radius-sm: 8px;
-  --border-radius-md: 12px;
-  --border-radius-lg: 16px;
-  --transition-speed: 0.3s;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.2);
+	--color-primary: #{$dark-blue};
+	--color-primary-dark: #{$darker-blue};
+	--color-white: #{$white};
+	--color-grey-light: #{$lighter-grey};
+	--spacing-unit: 4px;
+	--border-radius-sm: 8px;
+	--border-radius-md: 12px;
+	--border-radius-lg: 16px;
+	--transition-speed: 0.3s;
+	--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+	--shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.2);
 }

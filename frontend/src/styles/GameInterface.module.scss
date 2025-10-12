@@ -18,7 +18,7 @@
 		border-bottom-left-radius: 12px;
 		border-bottom-right-radius: 12px;
 		padding: 12px 0; /* Added padding */
-		
+
 		/* Responsive width */
 		@media (max-width: 600px) {
 			width: 90%;
@@ -44,7 +44,7 @@
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
 		border: 2px solid Colors.$white;
 		overflow: hidden; /* Ensure rounded corners */
-		
+
 		/* Responsive positioning */
 		@media (max-width: 768px) {
 			margin-bottom: 10px;
@@ -62,7 +62,7 @@
 			max-width: fit-content;
 			height: 30vh;
 			transition: filter 0.3s ease; /* Smooth transition */
-			
+
 			/* Responsive height */
 			@media (max-width: 768px) {
 				height: 20vh;
@@ -122,7 +122,7 @@
 		border-top-left-radius: 12px;
 		border-top-right-radius: 12px;
 		padding: 16px; /* Added padding */
-		
+
 		/* Responsive width */
 		@media (max-width: 600px) {
 			width: 90%;
@@ -163,7 +163,7 @@
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
 		font-weight: 700; /* Stronger weight */
 		letter-spacing: 0.5px; /* Better readability */
-		
+
 		/* Responsive padding */
 		@media (max-width: 600px) {
 			padding: 14px 28px;

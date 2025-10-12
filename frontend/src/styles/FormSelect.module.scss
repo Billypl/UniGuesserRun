@@ -1,48 +1,48 @@
-@use "utilities/Colors";
+@use 'utilities/Colors';
 
 .field {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  margin-top: 10px;
-  max-width: 70vw;
+	display: flex;
+	flex-direction: column;
+	width: 300px;
+	margin-top: 10px;
+	max-width: 70vw;
 
-  label {
-    font-size: 18px;
-    font-weight: 500; /* Improved label weight */
-    margin-bottom: 6px; /* Better spacing */
-  }
+	label {
+		font-size: 18px;
+		font-weight: 500; /* Improved label weight */
+		margin-bottom: 6px; /* Better spacing */
+	}
 
-  select {
-    font-size: 18px; /* Slightly smaller */
-    border-radius: 8px; /* More modern radius */
-    border-color: Colors.$dark-grey;
-    border-style: solid;
-    border-width: 1px;
-    padding: 10px 14px; /* Better padding */
-    margin-top: 0; /* Removed as spacing is now on label */
-    background-color: Colors.$white;
-    cursor: pointer; /* Indicate interactivity */
-    transition: all 0.3s ease; /* Smooth transitions */
-    
-    /* Enhanced focus state */
-    &:focus {
-      outline: none;
-      border-color: Colors.$dark-blue;
-      box-shadow: 0 0 0 3px rgba(0, 56, 101, 0.1);
-    }
-    
-    /* Hover effect */
-    &:hover:not(:focus) {
-      border-color: lighten(Colors.$dark-grey, 20%);
-    }
-  }
+	select {
+		font-size: 18px; /* Slightly smaller */
+		border-radius: 8px; /* More modern radius */
+		border-color: Colors.$dark-grey;
+		border-style: solid;
+		border-width: 1px;
+		padding: 10px 14px; /* Better padding */
+		margin-top: 0; /* Removed as spacing is now on label */
+		background-color: Colors.$white;
+		cursor: pointer; /* Indicate interactivity */
+		transition: all 0.3s ease; /* Smooth transitions */
+
+		/* Enhanced focus state */
+		&:focus {
+			outline: none;
+			border-color: Colors.$dark-blue;
+			box-shadow: 0 0 0 3px rgba(0, 56, 101, 0.1);
+		}
+
+		/* Hover effect */
+		&:hover:not(:focus) {
+			border-color: lighten(Colors.$dark-grey, 20%);
+		}
+	}
 }
 
 .hint {
-  font-size: 14px; /* Slightly smaller */
-  margin-top: 4px;
-  margin-bottom: 5px;
-  color: Colors.$light-grey;
-  line-height: 1.4; /* Better readability */
+	font-size: 14px; /* Slightly smaller */
+	margin-top: 4px;
+	margin-bottom: 5px;
+	color: Colors.$light-grey;
+	line-height: 1.4; /* Better readability */
 }

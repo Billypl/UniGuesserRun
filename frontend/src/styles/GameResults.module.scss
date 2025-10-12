@@ -31,7 +31,7 @@
 		border-radius: 16px; /* Rounded corners */
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Subtle shadow */
 		min-height: 400px;
-		
+
 		/* Responsive adjustments */
 		@media (max-width: 768px) {
 			margin: 20px;
@@ -60,7 +60,7 @@
 			letter-spacing: 0.5px; /* Better readability */
 		}
 	}
-	
+
 	// Improved shadow effect
 	.map_container::after {
 		content: '';
@@ -70,7 +70,11 @@
 		bottom: 0;
 		height: 30px; /* Increased height */
 		width: 100%;
-		background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)); /* Stronger gradient */
+		background: linear-gradient(
+			to top,
+			rgba(0, 0, 0, 0.4),
+			rgba(0, 0, 0, 0)
+		); /* Stronger gradient */
 		z-index: 500;
 
 		@media (min-width: 768px) {
@@ -78,7 +82,11 @@
 			bottom: 0;
 			width: 30px; /* Increased width */
 			height: 100%;
-			background: linear-gradient(to left, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)); /* Stronger gradient */
+			background: linear-gradient(
+				to left,
+				rgba(0, 0, 0, 0.4),
+				rgba(0, 0, 0, 0)
+			); /* Stronger gradient */
 		}
 	}
 }

@@ -1,14 +1,13 @@
-@use "utilities/Mixins";
+@use 'utilities/Mixins';
 
 .logo {
-    @include Mixins.clickable;
-    display: flex;
-    align-items: center; /* Fixed: changed from 'right' to 'center' */
-    margin: 10px;
-    transition: transform 0.3s ease; /* Smooth hover effect */
-    
-    &:hover {
-        transform: scale(1.05); /* Subtle scale on hover */
-    }
-}
+	@include Mixins.clickable;
+	display: flex;
+	align-items: center; /* Fixed: changed from 'right' to 'center' */
+	margin: 10px;
+	transition: transform 0.3s ease; /* Smooth hover effect */
 
+	&:hover {
+		transform: scale(1.05); /* Subtle scale on hover */
+	}
+}

@@ -1,70 +1,70 @@
-@use "utilities/Mixins";
-@use "utilities/Colors";
+@use 'utilities/Mixins';
+@use 'utilities/Colors';
 
 .form_container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-basis: auto;
-  margin-top: 8vh;
-  width: auto;
-  padding: 20px; /* Added padding */
-  
-  /* Responsive margin */
-  @media (max-width: 768px) {
-    margin-top: 5vh;
-    padding: 16px;
-  }
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-basis: auto;
+	margin-top: 8vh;
+	width: auto;
+	padding: 20px; /* Added padding */
 
-  .header {
-    font-size: clamp(24px, 5vw, 30px); /* Responsive font size */
-    font-weight: 700; /* Stronger weight */
-    margin-bottom: 8px; /* Better spacing */
-  }
+	/* Responsive margin */
+	@media (max-width: 768px) {
+		margin-top: 5vh;
+		padding: 16px;
+	}
 
-  .logo_container {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 8px; /* Better spacing */
-  }
+	.header {
+		font-size: clamp(24px, 5vw, 30px); /* Responsive font size */
+		font-weight: 700; /* Stronger weight */
+		margin-bottom: 8px; /* Better spacing */
+	}
 
-  .form {
-    margin: 20px 0; /* Better spacing */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px; /* Consistent spacing */
-    width: 100%; /* Full width */
-    max-width: 400px; /* Max width for better readability */
+	.logo_container {
+		width: 80px;
+		height: 80px;
+		margin-bottom: 8px; /* Better spacing */
+	}
 
-    .error {
-      font-size: 14px; /* Slightly smaller */
-      color: Colors.$dark-red;
-      margin-top: 4px; /* Better spacing */
-      white-space: pre-wrap;
-      text-align: center;
-      background-color: lighten(Colors.$dark-red, 70%); /* Subtle background */
-      padding: 8px 12px; /* Better padding */
-      border-radius: 8px; /* Rounded corners */
-      border-left: 3px solid Colors.$dark-red; /* Accent border */
-    }
-  }
+	.form {
+		margin: 20px 0; /* Better spacing */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 8px; /* Consistent spacing */
+		width: 100%; /* Full width */
+		max-width: 400px; /* Max width for better readability */
 
-  .button {
-    @include Mixins.dark-button;
+		.error {
+			font-size: 14px; /* Slightly smaller */
+			color: Colors.$dark-red;
+			margin-top: 4px; /* Better spacing */
+			white-space: pre-wrap;
+			text-align: center;
+			background-color: lighten(Colors.$dark-red, 70%); /* Subtle background */
+			padding: 8px 12px; /* Better padding */
+			border-radius: 8px; /* Rounded corners */
+			border-left: 3px solid Colors.$dark-red; /* Accent border */
+		}
+	}
 
-    width: 300px;
-    padding: 14px 0; /* Better padding */
-    font-size: 18px;
-    max-width: 70vw;
-    font-weight: 600; /* Stronger weight */
-    letter-spacing: 0.5px; /* Better readability */
-  }
+	.button {
+		@include Mixins.dark-button;
 
-  .link {
-    @include Mixins.link;
-    margin-top: 12px; /* Better spacing */
-    font-size: 16px; /* Consistent size */
-  }
+		width: 300px;
+		padding: 14px 0; /* Better padding */
+		font-size: 18px;
+		max-width: 70vw;
+		font-weight: 600; /* Stronger weight */
+		letter-spacing: 0.5px; /* Better readability */
+	}
+
+	.link {
+		@include Mixins.link;
+		margin-top: 12px; /* Better spacing */
+		font-size: 16px; /* Consistent size */
+	}
 }
