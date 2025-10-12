@@ -4,19 +4,19 @@
     @include Mixins.dark-button;
 
     width: 300px;
-    margin-top: 15px;
-    padding: 10px 0 10px 0;
-    font-size: 1rem;
-    max-width: 70vw;
+    padding: 14px 0; /* Better padding */
     font-size: 18px;
+    max-width: 70vw;
+    font-weight: 600; /* Stronger weight */
+    letter-spacing: 0.5px; /* Better readability */
 }
 
 .photo_button {
     @include Mixins.dark-button;
     width: 300px;
-    margin-top: 10px;
-    padding: 10px 0 10px 0;
-    font-size: 1rem;
-    max-width: 70vw;
+    padding: 14px 0; /* Better padding */
     font-size: 18px;
+    max-width: 70vw;
+    font-weight: 600; /* Stronger weight */
+    letter-spacing: 0.5px; /* Better readability */
 }

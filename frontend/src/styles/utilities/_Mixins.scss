@@ -19,9 +19,22 @@
 	color: Colors.$white;
 	border-radius: 16px;
 	border: none;
+	/* Enhanced transitions for smoother interactions */
+	transition: all 0.3s ease;
+	/* Better focus state for accessibility */
+	&:focus-visible {
+		outline: 3px solid Colors.$dark-blue;
+		outline-offset: 2px;
+	}
 
 	&:hover {
 		background-color: Colors.$darker-blue;
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 56, 101, 0.3);
+	}
+
+	&:active {
+		transform: translateY(0);
 	}
 }
 
@@ -32,9 +45,22 @@
 	color: Colors.$dark-blue;
 	border-radius: 16px;
 	border: none;
+	/* Enhanced transitions for smoother interactions */
+	transition: all 0.3s ease;
+	/* Better focus state for accessibility */
+	&:focus-visible {
+		outline: 3px solid Colors.$dark-blue;
+		outline-offset: 2px;
+	}
 
 	&:hover {
 		background-color: Colors.$lighter-grey;
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	&:active {
+		transform: translateY(0);
 	}
 }
 

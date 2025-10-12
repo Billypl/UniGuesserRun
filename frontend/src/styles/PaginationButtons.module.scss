@@ -4,44 +4,59 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-wrap: wrap; /* Allow wrapping on small screens */
+	gap: 4px; /* Consistent spacing */
+	padding: 12px 0; /* Better vertical spacing */
 
 	.pageButton {
 		color: Colors.$dark-blue;
-
 		width: 40px;
+		height: 40px; /* Fixed height for consistency */
+		display: flex; /* Flexbox for centering */
+		align-items: center; /* Vertical centering */
+		justify-content: center; /* Horizontal centering */
 		text-align: center;
-        
-		padding: 8px 0;
-		border-radius: 20px;
-		margin: 4px 4px;
-
+		border-radius: 8px; /* More modern radius */
 		cursor: pointer;
 		user-select: none;
+		transition: all 0.3s ease; /* Smooth transitions */
+		font-weight: 500; /* Better weight */
+		
+		/* Focus state for accessibility */
+		&:focus-visible {
+			outline: 2px solid Colors.$dark-blue;
+			outline-offset: 2px;
+		}
 	}
 
 	.ellipsis {
 		width: 40px;
+		height: 40px; /* Fixed height for consistency */
+		display: flex; /* Flexbox for centering */
+		align-items: center; /* Vertical centering */
+		justify-content: center; /* Horizontal centering */
 		text-align: center;
-		padding: 8px 0;
-
 		color: Colors.$dark-blue;
-		border-radius: 20px;
-		margin: 4px 4px;
 		user-select: none;
+		font-weight: 500; /* Better weight */
 	}
 
 	.activePage {
 		background-color: Colors.$dark-blue;
 		color: Colors.$white;
-		font-weight: bold;
+		font-weight: 700; /* Stronger weight */
+		box-shadow: 0 2px 8px rgba(0, 56, 101, 0.3); /* Subtle shadow */
 	}
 
 	.pageButton:not(.activePage):not(.disabled):hover {
 		background-color: lighten(Colors.$dark-blue, 75%);
+		transform: translateY(-2px); /* Subtle lift effect */
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 	}
 
     .disabled {
         cursor: default;
         color: Colors.$light-grey;
+        opacity: 0.5; /* Visual indication of disabled state */
     }
 }

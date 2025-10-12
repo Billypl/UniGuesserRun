@@ -21,14 +21,22 @@
 
 	.summary_container {
 		margin: 30px;
-
+		padding: 24px; /* Added padding for better spacing */
 		text-align: center;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-
-		height: 400px;
+		background-color: rgba(255, 255, 255, 0.95); /* Subtle background */
+		border-radius: 16px; /* Rounded corners */
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+		min-height: 400px;
+		
+		/* Responsive adjustments */
+		@media (max-width: 768px) {
+			margin: 20px;
+			padding: 20px;
+		}
 
 		@media (min-width: 768px) {
 			width: 500px;
@@ -38,7 +46,7 @@
 			@include Mixins.table;
 
 			margin-top: 20px;
-			margin-bottom: 10px;
+			margin-bottom: 12px; /* Better spacing */
 			max-width: 300px;
 		}
 
@@ -46,29 +54,31 @@
 			@include Mixins.dark-button;
 
 			width: 12rem;
-			margin-top: 15px;
-			padding: 7px 0 7px 0;
-			font-size: 1rem;
+			padding: 12px 0; /* Better padding */
+			font-size: 18px;
+			font-weight: 600; /* Stronger weight */
+			letter-spacing: 0.5px; /* Better readability */
 		}
 	}
-	// fake shadow
+	
+	// Improved shadow effect
 	.map_container::after {
 		content: '';
 		pointer-events: none;
 		display: block;
 		position: absolute;
 		bottom: 0;
-		height: 20px;
+		height: 30px; /* Increased height */
 		width: 100%;
-		background: linear-gradient(to top, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
-		z-index: 500; // doesn't work when lower than 400
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)); /* Stronger gradient */
+		z-index: 500;
 
 		@media (min-width: 768px) {
 			right: 0;
 			bottom: 0;
-			width: 20px;
+			width: 30px; /* Increased width */
 			height: 100%;
-			background: linear-gradient(to left, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+			background: linear-gradient(to left, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)); /* Stronger gradient */
 		}
 	}
 }

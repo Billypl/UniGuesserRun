@@ -9,7 +9,7 @@
 }
 
 body {
-  line-height: 1.5;
+  line-height: 1.6; /* Improved line height for better readability */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -43,6 +43,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: $dark-blue;
   margin: 0;
+  /* Improved text rendering for better readability */
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
 }
 
 code {

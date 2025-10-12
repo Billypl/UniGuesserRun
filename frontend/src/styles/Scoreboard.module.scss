@@ -2,8 +2,10 @@
 @use 'utilities/Colors';
 
 h1 {
-	padding: 20px 0;
+	padding: 24px 0; /* Better spacing */
 	text-align: center;
+	font-size: clamp(24px, 5vw, 36px); /* Responsive font size */
+	font-weight: 700; /* Stronger emphasis for headers */
 }
 
 .container {
@@ -11,7 +13,13 @@ h1 {
 	flex-direction: column;
 	max-width: 1400px;
 	margin: 0 auto;
-	padding: 16px;
+	padding: 20px; /* Increased padding */
+	
+	/* Responsive padding */
+	@media (max-width: 768px) {
+		padding: 16px;
+	}
+	
 	& > * {
 		margin: 16px 0px;
 	}
@@ -20,27 +28,44 @@ h1 {
 		display: flex;
 		flex-direction: column;
 		flex-wrap: wrap;
+		gap: 12px; /* Using gap for better spacing */
 	}
 
 	.inputField {
 		display: flex;
-		font-size: 20px;
+		font-size: 18px; /* Slightly reduced */
 		font-weight: 500;
-		margin-bottom: 16px;
+		align-items: center; /* Better vertical alignment */
+		
 		label {
-			margin-right: 8px;
+			margin-right: 12px; /* Increased spacing */
+			white-space: nowrap; /* Prevent label wrapping */
 		}
+		
 		input,
 		select {
-			border-radius: 12px;
-			padding: 4px;
+			border-radius: 8px; /* More modern radius */
+			padding: 8px 12px; /* Better padding */
 			font-size: 16px;
 			flex: 1;
 			border: 1px solid Colors.$dark-blue;
+			transition: all 0.3s ease; /* Smooth transitions */
+			
+			/* Enhanced focus state */
+			&:focus {
+				outline: none;
+				border-color: Colors.$dark-blue;
+				box-shadow: 0 0 0 3px rgba(0, 56, 101, 0.1);
+			}
 		}
 
 		select {
 			background-color: Colors.$white;
+			cursor: pointer;
+			
+			&:hover {
+				border-color: Colors.$darker-blue;
+			}
 		}
 	}
 
@@ -51,18 +76,31 @@ h1 {
 	}
 
 	.rankingButton {
-		padding: 10px 20px;
+		padding: 12px 24px; /* Better padding */
 		background-color: Colors.$dark-blue;
 		border-radius: 16px;
 		text-align: center;
 		border: 1px solid Colors.$dark-blue;
 		color: Colors.$white;
-		transition: 0.3s color ease-in-out, 0.3s background-color ease-in-out;
+		transition: all 0.3s ease; /* Improved transition */
 		cursor: pointer;
+		font-weight: 500; /* Better weight */
+		
+		/* Focus state for accessibility */
+		&:focus-visible {
+			outline: 3px solid Colors.$dark-blue;
+			outline-offset: 2px;
+		}
 
 		&:hover {
 			color: Colors.$dark-blue;
 			background-color: Colors.$white;
+			transform: translateY(-2px); /* Subtle lift effect */
+			box-shadow: 0 4px 12px rgba(0, 56, 101, 0.2); /* Shadow on hover */
+		}
+		
+		&:active {
+			transform: translateY(0);
 		}
 	}
 

@@ -1,7 +1,18 @@
 @use "utilities/Colors";
+@use "utilities/Mixins";
 
 .container {
     margin-top: 100px;
+    padding: 20px; /* Added padding */
+    max-width: 1200px; /* Max width for better readability */
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* Responsive padding */
+    @media (max-width: 768px) {
+        padding: 16px;
+        margin-top: 80px;
+    }
 
     .place_queue {
         text-align: center;
@@ -9,19 +20,36 @@
         .place_entry {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
+            align-items: center; /* Better vertical alignment */
+            padding: 16px; /* Increased padding */
             border-bottom: 1px solid Colors.$lighter-grey;
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            border-radius: 8px; /* Rounded corners */
+            margin-bottom: 8px; /* Spacing between entries */
+            
+            &:hover {
+                background-color: lighten(Colors.$dark-blue, 75%); /* Subtle hover effect */
+            }
+            
+            /* Responsive layout */
+            @media (max-width: 600px) {
+                flex-direction: column;
+                gap: 12px;
+            }
         }
     }
 
     .place_details {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        gap: 20px; /* Better spacing */
+        
         img {
-            max-width: 1000px;
-            height: 100%;
+            max-width: 100%; /* Fully responsive */
+            height: auto; /* Maintain aspect ratio */
             display: block;
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
         }
     }
 }

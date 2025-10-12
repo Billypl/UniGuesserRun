@@ -10,13 +10,20 @@
 		position: absolute;
 		top: 0;
 		background-color: Colors.$white;
-		box-shadow: 0 3px 15px Colors.$dark-grey;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Softer shadow */
 		z-index: 1000;
-		width: 250px;
+		width: 280px; /* Slightly wider */
 		left: 50%;
 		transform: translate(-50%, 0);
 		border-bottom-left-radius: 12px;
 		border-bottom-right-radius: 12px;
+		padding: 12px 0; /* Added padding */
+		
+		/* Responsive width */
+		@media (max-width: 600px) {
+			width: 90%;
+			max-width: 280px;
+		}
 	}
 
 	.map_container {
@@ -34,19 +41,32 @@
 		margin-bottom: 20px;
 		margin-right: 20px;
 		border-radius: 12px;
-		box-shadow: 0 3px 15px Colors.$dark-grey;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
 		border: 2px solid Colors.$white;
+		overflow: hidden; /* Ensure rounded corners */
+		
+		/* Responsive positioning */
+		@media (max-width: 768px) {
+			margin-bottom: 10px;
+			margin-right: 10px;
+		}
 
 		img {
 			@include Mixins.clickable;
 
 			&:hover {
-				filter: brightness(0.8);
+				filter: brightness(0.9); /* Softer hover effect */
 			}
 			border-radius: 12px;
 			width: 100%;
 			max-width: fit-content;
 			height: 30vh;
+			transition: filter 0.3s ease; /* Smooth transition */
+			
+			/* Responsive height */
+			@media (max-width: 768px) {
+				height: 20vh;
+			}
 		}
 	}
 
@@ -55,13 +75,13 @@
 		width: 100vw;
 		height: 100vh;
 		z-index: 2000;
-		background-color: rgba(0, 0, 0, 0.8);
+		background-color: rgba(0, 0, 0, 0.85); /* Slightly darker */
 
 		img {
 			width: 100%;
 			height: 100%;
 			object-fit: contain;
-			border-radius: 12px;
+			border-radius: 0; /* No radius for fullscreen */
 		}
 
 		.fullscreen_exit {
@@ -69,13 +89,15 @@
 			position: absolute;
 			top: 20px;
 			right: 20px;
-			padding: 10px 10px;
+			padding: 12px; /* Better padding */
 			border-radius: 50%;
 			z-index: 2001;
-			background-color: rgba(0, 0, 0, 0.5);
+			background-color: rgba(0, 0, 0, 0.6); /* Slightly darker */
+			transition: all 0.3s ease; /* Smooth transition */
 
 			&:hover {
-				background-color: rgba(100, 100, 100, 0.5);
+				background-color: rgba(100, 100, 100, 0.7); /* Brighter on hover */
+				transform: scale(1.1); /* Slight scale effect */
 			}
 
 			svg {
@@ -92,26 +114,36 @@
 		flex-direction: column;
 		bottom: 0;
 		background-color: Colors.$white;
-		box-shadow: 0 3px 15px Colors.$dark-grey;
+		box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15); /* Top shadow */
 		z-index: 1000;
-		width: 300px;
+		width: 320px; /* Slightly wider */
 		left: 50%;
 		transform: translate(-50%, 0);
 		border-top-left-radius: 12px;
 		border-top-right-radius: 12px;
+		padding: 16px; /* Added padding */
+		
+		/* Responsive width */
+		@media (max-width: 600px) {
+			width: 90%;
+			max-width: 320px;
+		}
 
 		.distance {
 			color: Colors.$dark-blue;
+			font-weight: 600; /* Stronger weight */
+			margin-bottom: 12px; /* Better spacing */
 		}
 
 		.end_round_button {
 			@include Mixins.dark-button;
 			border-radius: 12px;
 			text-transform: uppercase;
-			padding: 20px 20px;
-			font-weight: bold;
-			font-size: 20px;
-			margin: 0 auto 20px;
+			padding: 16px 24px; /* Better padding */
+			font-weight: 700; /* Stronger weight */
+			font-size: 18px; /* Slightly smaller */
+			margin: 0 auto 12px; /* Better margins */
+			letter-spacing: 0.5px; /* Better readability */
 		}
 	}
 
@@ -125,10 +157,17 @@
 		text-transform: uppercase;
 		left: 50%;
 		transform: translate(-50%, 0);
-		font-size: 20px;
-		padding: 20px 20px;
+		font-size: 18px; /* Consistent size */
+		padding: 16px 32px; /* Better padding */
 		margin-bottom: 20px;
-		box-shadow: 0 3px 15px Colors.$dark-grey;
-		font-weight: bold;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+		font-weight: 700; /* Stronger weight */
+		letter-spacing: 0.5px; /* Better readability */
+		
+		/* Responsive padding */
+		@media (max-width: 600px) {
+			padding: 14px 28px;
+			font-size: 16px;
+		}
 	}
 }

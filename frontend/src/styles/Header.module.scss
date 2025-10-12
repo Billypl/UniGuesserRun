@@ -8,7 +8,8 @@
     left: 0;
     right: 0;
     background-color: Colors.$white;
-    box-shadow: 0 3px 15px Colors.$dark-grey;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    z-index: 1000; /* Ensure header stays on top */
 
     .nav {
         display: flex;
@@ -19,25 +20,44 @@
         max-width: 100vw;
         height: fit-content;
         box-sizing: border-box;
-        padding: 0px 10px 0px 10px;
-        margin: 10px 0px 10px 0px;
+        padding: 12px 20px; /* Better padding */
+        
+        /* Responsive padding */
+        @media (max-width: 650px) {
+            padding: 10px 16px;
+        }
 
         .title {
             @include Mixins.clickable;
-            font-size: 40px;
+            font-size: clamp(28px, 5vw, 40px); /* Responsive font size */
             margin-right: auto;
             padding-bottom: 0.1em;
             color: Colors.$dark-blue;
-            font-weight: bold;
+            font-weight: 700; /* Stronger weight */
+            transition: color 0.3s ease; /* Smooth transition */
+            
+            &:hover {
+                color: Colors.$darker-blue;
+            }
         }
 
         .item{
             padding: 10px 20px;
+            transition: opacity 0.3s ease; /* Smooth hover effect */
+            
+            &:hover {
+                opacity: 0.8;
+            }
         }
 
         img {
             height: 48px;
             width: 48px;
+            transition: transform 0.3s ease; /* Smooth hover effect */
+            
+            &:hover {
+                transform: scale(1.05);
+            }
         }
     }
 }

@@ -20,23 +20,37 @@
 .profile_container {
 	padding: 20px;
 	padding-top: 150px;
-	height: 100vh;
+	min-height: 100vh; /* Changed from height to min-height for better content flow */
+	
+	/* Responsive padding */
+	@media (max-width: 768px) {
+		padding: 16px;
+		padding-top: 120px;
+	}
 
 	.account_info {
-		padding: 20px 30px 20px 30px;
+		padding: 24px 32px; /* Better padding */
 		background-color: Colors.$white;
-		border-radius: 20px;
-		box-shadow: 0 0 8px Colors.$dark-grey;
-		max-width: 600px;
+		border-radius: 16px; /* Slightly smaller radius */
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); /* Improved shadow */
+		max-width: 700px; /* Slightly wider */
 		min-height: 480px;
 		position: relative;
 		left: 50%;
 		transform: translateX(-50%);
 		display: flex;
 		flex-direction: column;
+		
+		/* Responsive padding */
+		@media (max-width: 768px) {
+			padding: 20px 24px;
+			max-width: 100%;
+		}
 
 		.nickname {
-			font-size: 30px;
+			font-size: clamp(24px, 5vw, 30px); /* Responsive font size */
+			font-weight: 700; /* Stronger weight */
+			margin-bottom: 8px; /* Better spacing */
 
 			svg {
 				display: inline-block;
@@ -45,18 +59,25 @@
 				height: 30px;
 				width: auto;
 				fill: Colors.$dark-blue;
+				transition: transform 0.3s ease; /* Smooth transition */
+				
+				&:hover {
+					transform: scale(1.1); /* Subtle scale on hover */
+				}
 			}
 		}
 
 		.details {
 			font-size: 14px;
+			color: lighten(Colors.$dark-blue, 10%); /* Slightly lighter for hierarchy */
+			line-height: 1.6; /* Better readability */
 		}
 
 		.games_history_title {
-			font-size: 16px;
-			font-weight: bold;
-			margin-top: 20px;
-			margin-bottom: 6px;
+			font-size: 18px; /* Slightly larger */
+			font-weight: 700; /* Stronger weight */
+			margin-top: 24px; /* Better spacing */
+			margin-bottom: 12px; /* Better spacing */
 			text-align: center;
 		}
 
@@ -68,9 +89,10 @@
 			tbody {
 				.clickable_row {
 					@include Mixins.clickable;
+					transition: background-color 0.3s ease; /* Smooth transition */
 
 					&:hover {
-						background-color: lighten(Colors.$dark-blue, 60%);
+						background-color: lighten(Colors.$dark-blue, 65%); /* Slightly stronger hover */
 					}
 				}
 			}
@@ -80,6 +102,7 @@
 					tr {
 						td {
 							font-size: 16px;
+							padding: 12px 16px; /* Better padding */
 						}
 					}
 				}
@@ -90,11 +113,13 @@
 			@include Mixins.dark-button;
 
 			width: 12rem;
-			margin-top: 10px;
+			padding: 12px 0; /* Better padding */
+			margin-top: 16px; /* Better spacing */
 			margin-left: auto;
 			margin-right: auto;
-			padding: 7px 0 7px 0;
-			font-size: 1rem;
+			font-size: 18px;
+			font-weight: 600; /* Stronger weight */
+			letter-spacing: 0.5px; /* Better readability */
 		}
 	}
 }

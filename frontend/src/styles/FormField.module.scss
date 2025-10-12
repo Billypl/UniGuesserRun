@@ -9,22 +9,38 @@
 
   label {
     font-size: 18px;
+    font-weight: 500; /* Improved label weight for better hierarchy */
+    margin-bottom: 6px; /* Better spacing between label and input */
   }
 
   input {
-    font-size: 20px;
-    border-radius: 5px;
+    font-size: 18px; /* Slightly smaller for better proportions */
+    border-radius: 8px; /* More modern border radius */
     border-color: Colors.$dark-grey;
     border-style: solid;
     border-width: 1px;
-    padding: 3px 7px 3px 7px;
-    margin-top: 5px;
+    padding: 10px 14px; /* Better padding for easier interaction */
+    margin-top: 0; /* Removed as spacing is now on label */
+    transition: all 0.3s ease; /* Smooth transitions */
+    
+    /* Enhanced focus state */
+    &:focus {
+      outline: none;
+      border-color: Colors.$dark-blue;
+      box-shadow: 0 0 0 3px rgba(0, 56, 101, 0.1);
+    }
+    
+    /* Hover effect for better feedback */
+    &:hover:not(:focus) {
+      border-color: lighten(Colors.$dark-grey, 20%);
+    }
   }
 }
 
 .hint {
-  font-size: 15px;
-  margin-top: 2px;
+  font-size: 14px; /* Slightly smaller for better hierarchy */
+  margin-top: 4px;
   margin-bottom: 5px;
   color: Colors.$light-grey;
+  line-height: 1.4; /* Better readability for hints */
 }

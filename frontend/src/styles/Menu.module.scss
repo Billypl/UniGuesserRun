@@ -22,6 +22,7 @@
 	align-items: center;
 	justify-content: center;
 	flex-basis: auto;
+	padding: 20px; /* Added padding */
 
 	.catchy_phrase {
 		color: Colors.$white;
@@ -30,11 +31,14 @@
 		margin: 40px 0 80px 0;
 		justify-content: center;
 		text-align: center;
-		line-height: 125%;
+		line-height: 1.3; /* Improved line height */
 		padding: 0 50px 0 50px;
 		font-weight: 700;
+		
 		@media (max-width: 450px) {
 			font-size: 10vmin;
+			padding: 0 20px; /* Reduced padding on small screens */
+			margin: 30px 0 60px 0; /* Adjusted margins */
 		}
 
 		@media (min-width: 1000px) {
@@ -46,21 +50,34 @@
 		display: flex;
 		flex-direction: column;
 		flex-basis: auto;
-		row-gap: 20px;
+		gap: 20px; /* Using gap for consistent spacing */
+		width: 100%; /* Full width for better responsiveness */
+		max-width: 500px; /* Max width for larger screens */
+		padding: 0 20px; /* Horizontal padding */
 
 		.menu_option {
 			@include Mixins.light-button;
-			font-size: 25px;
+			font-size: clamp(18px, 4vw, 25px); /* Responsive font size */
 			background-color: Colors.$white;
 			color: Colors.$dark-blue;
 			border-radius: 100px;
-			padding: 20px 60px;
-			max-width: 90vw;
+			padding: 18px 60px; /* Better padding */
+			width: 100%; /* Full width */
 			text-align: center;
-			font-weight: 500;
-			text-shadow: 0px 2px 3px Colors.$light-grey;
+			font-weight: 600; /* Stronger weight */
+			text-shadow: 0px 2px 3px rgba(146, 146, 146, 0.3); /* Softer shadow */
 			text-transform: uppercase;
-			box-shadow: 3px 3px 8px Colors.$dark-grey;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Improved shadow */
+			letter-spacing: 0.5px; /* Better readability */
+			
+			/* Enhanced hover effect */
+			&:hover {
+				box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+			}
+			
+			@media (max-width: 450px) {
+				padding: 16px 40px; /* Adjusted padding for mobile */
+			}
 		}
 	}
 }
