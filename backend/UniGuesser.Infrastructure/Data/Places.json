@@ -116,15 +116,15 @@
         "Alt": "Zdjęcie przedstawiające Pub Polufka w Gdańsku",
         "DifficultyLevel": "normal"
     },
-    {
-        "Name": "Mural Joki z Kalibru 44",
-        "Description": "Mural Joki z Kalibru 44 – mural poświęcony pamięci rapera \"Joki\" (Michała Martena) z legendarnej grupy Kaliber 44. Namalowany w 2025 r. przez artystę Tusego (Piotra Jaworskiego) we Wrzeszczu (ul. Bohaterów Getta Warszawskiego 13). Przedstawia wizerunek rapera oraz cytat z jego twórczości.",
-        "Latitude": 54.37489863118276,
-        "Longitude": 18.61584069975795,
-        "ImageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/04/Bratniak_politech_gda.jpg",
-        "Alt": "Zdjęcie przedstawiające mural rapera Joki z zespołu Kaliber 44",
-        "DifficultyLevel": "hard"
-    },
+  {
+    "Name": "Mural Joki z Kalibru 44",
+    "Description": "Mural Joki z Kalibru 44 – mural poświęcony pamięci rapera \"Joki\" (Michała Martena) z legendarnej grupy Kaliber 44. Namalowany w 2025 r. przez artystę Tusego (Piotra Jaworskiego) we Wrzeszczu (ul. Bohaterów Getta Warszawskiego 13). Przedstawia wizerunek rapera oraz cytat z jego twórczości.",
+    "Latitude": 54.37489863118276,
+    "Longitude": 18.61584069975795,
+    "ImageUrl": "https://s-trojmiasto.pl/zdj/c/n/9/4019/1920x0/4019754-Mural-upamietniajacy-Joke-zmarlego-4-maja-rapera-zespolu-Kaliber-44__c_0_0_2827_1898.webp",
+    "Alt": "Zdjęcie przedstawiające mural rapera Joki z zespołu Kaliber 44",
+    "DifficultyLevel": "hard"
+  },
     {
         "Name": "Dom studencki nr 11",
         "Description": "Dom Studencki nr 11 – akademik PG (ul. Chodkiewicza 15) położony w Gdańsku-Brzeźno, najdalej od głównego kampusu (ok. 800 m od plaży). Oferuje około 160 miejsc noclegowych w pokojach 1- i 2-osobowych i jest przystosowany dla osób niepełnosprawnych. W budynku znajdują się kuchnie z jadalniami na każdym piętrze oraz całodobowa portiernia.",

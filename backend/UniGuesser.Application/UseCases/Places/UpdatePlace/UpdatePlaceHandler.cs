@@ -17,6 +17,7 @@ namespace UniGuesser.Application.UseCases.Places.UpdatePlace
                 throw new PlacesExceptions.PlaceNotFoundException(request.PlaceId);
             }
 
+
             mapper.Map(request.UpdatePlaceDto, place);
             await placesRepository.UpdateAsync(place);
 

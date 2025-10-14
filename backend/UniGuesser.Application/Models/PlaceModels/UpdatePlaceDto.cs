@@ -17,7 +17,5 @@ namespace UniGuesser.Application.Models.PlaceModels
         public string Alt { get; set; }
         [Required]
         public string Difficulty { get; set; }
-        [Required]
-        public string? AuthorId { get; set; }
     }
 }

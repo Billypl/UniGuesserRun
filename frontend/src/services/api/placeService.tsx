@@ -103,8 +103,7 @@ export class PlaceService {
     coordinates: Coordinates,
     imageUrl: string,
     alt: string,
-    difficulty: string,
-    authorId?: string | null
+    difficulty: string
   ) {
     const updateDto: UpdatePlaceDto = {
       name: name,
@@ -113,7 +112,6 @@ export class PlaceService {
       imageUrl: imageUrl,
       alt: alt,
       difficulty: difficulty,
-      authorId: authorId,
     };
     await this.axiosInstance.put(`/${placeId}`, updateDto, {
       headers: {

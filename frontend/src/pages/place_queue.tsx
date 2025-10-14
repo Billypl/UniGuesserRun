@@ -196,8 +196,7 @@ const PlaceQueue: React.FC = () => {
 			coordinates ?? selectedPlace.coordinates,
 			selectedPlace?.imageUrl,
 			data.alt,
-			data.difficulty,
-			selectedPlace?.authorId
+			data.difficulty
 		)
 
 		setIsEditing(false)

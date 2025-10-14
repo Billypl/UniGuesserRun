@@ -24,7 +24,10 @@ namespace UniGuesser.API
 
             CreateMap<AccountDetailsDto, User>();
 
-            CreateMap<UpdatePlaceDto, Place>();
+            CreateMap<UpdatePlaceDto, Place>()
+                .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Coordinates.Latitude))
+                .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Coordinates.Longitude))
+                .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.Difficulty)); 
             CreateMap<Place, ShowPlaceDto>()
                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PublicId.ToString()))
                   .ForMember(dest => dest.Coordinates, opt => opt.MapFrom(src =>
