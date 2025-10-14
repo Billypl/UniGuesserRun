@@ -1,0 +1,46 @@
+# LaTeX intermediate and output files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# Backup files
+*~
+*.bak
+*.sav
+*.dvi
+*.ps
+
+# Editor files
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# latexmk specific
+latexmkrc
+
+# Subfolders
+*/_minted*
+*/auto/*

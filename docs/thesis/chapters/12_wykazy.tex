@@ -1,0 +1,13 @@
+% Bibliografia, ignorujemy overfull box, bo są długie URL
+\hfuzz=50pt
+\printbibliography[title=\bibliographyname]
+\addcontentsline{toc}{chapter}{\bibliographyname}
+\hfuzz=0pt
+
+% Wykaz rysunków
+\listoffigures
+\addcontentsline{toc}{chapter}{\listfigurename}
+
+% Wykaz tabel
+\listoftables
+\addcontentsline{toc}{chapter}{\listtablename}

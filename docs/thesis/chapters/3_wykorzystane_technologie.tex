@@ -1,0 +1,97 @@
+\chapter{Wykorzystane technologiee}
+\label{chap:technology}
+
+\section{Frontendowe (Filip Jezierski)}
+
+Do implementacji frontendu zastosowano bibliotekę \textbf{React.js} z \textbf{TypeScriptem}, umożliwiającą tworzenie aplikacji w technologii \textbf{Progressive Web App}. Komunikację z backendem przez REST API zapewnia biblioteka \textbf{Axios}. Do obsługi map i lokalizacji użyto biblioteki \textbf{Leaflet}.
+
+\subsection{Progressive Web App}
+
+Progressive Web App (PWA) to podejście do tworzenia aplikacji webowych, które umożliwia działanie podobne do natywnej aplikacji mobilnej lub desktopowej. PWA można zarówno używać w przeglądarce, jak i zainstalować jako niezależną od przeglądarki aplikację na urządzeniu. Technologia ta zapewnia też działanie podstawowych funkcji aplikacji bez dostępu do internetu.
+
+Publikowanie PWA przez platformy dystrybucji cyfrowej takie jak Apple App Store czy Google Play jest możliwa, lecz opcjonalna - użytkownik może również zainstalować aplikację bezpośrednio z poziomu przeglądarki internetowej, wybierając opcję "Dodaj do ekranu głównego".
+
+Aplikacja webowa musi spełniać poniżej wymienione wymagania aby mogła być zainstalowana na urządzeniu jako PWA:
+
+\begin{itemize}
+
+    \item \textbf{Bezpieczne źródło} - aplikacja musi być serwowana przez HTTPS, aby zapewnić bezpieczeństwo i autentyczność danych.
+    
+    \item \textbf{Service Worker} - dzięki zastosowaniu tego mechanizmu aplikacja może ładować do pamięci podręcznej fragmenty, które jeszcze nie zostały użyte, co sprawia że można ją później uruchomić w trybie offline.
+    
+    \item \textbf{Plik manifestu} - w aplikacji powinien być zawarty plik JSON zawierający następujące informacje: \texttt{name} lub \texttt{short\_name}, zestaw ikon (w szczególności w rozdzielczościach 192 px i 512 px), \texttt{start\_url} oraz parametr \texttt{display} (z jedną z wartości: \texttt{fullscreen}, \texttt{standalone}, \texttt{minimal-ui} lub \texttt{window-controls-overlay}).
+    
+\end{itemize}
+
+\subsection{React}
+
+React to popularna biblioteka JavaScript stworzona przez Facebooka, służąca do budowy nowoczesnych interfejsów użytkownika w oparciu o komponenty. Dzięki wykorzystaniu wirtualnego DOM-u React umożliwia szybkie i wydajne aktualizacje widoku bez potrzeby bezpośrednich manipulacji w strukturze HTML.
+
+Architektura komponentowa pozwala na dzielenie aplikacji na niezależne, łatwo testowalne i ponownie wykorzystywane elementy. W projekcie wykorzystano komponenty funkcyjne oraz hooki (\texttt{useState}, \texttt{useEffect}) do zarządzania stanem i cyklem życia komponentów.
+
+React zapewnia dużą elastyczność oraz możliwość integracji z innymi bibliotekami frontendowymi. Do komunikacji z backendem wykorzystano funkcje asynchroniczne zdefiniowane w specjalnie wydzielonych serwisach. Dodatkowo, React umożliwia tworzenie aplikacji responsywnych, co było istotne w kontekście zapewnienia poprawnego działania na różnych typach urządzeń.
+
+W projekcie zdecydowaliśmy się również na użycie języka TypeScript - nadzbioru JavaScriptu, który wprowadza statyczne typowanie. TypeScript ułatwia wczesne wykrywanie błędów, usprawnia podpowiedzi edytora oraz poprawia czytelność i bezpieczeństwo kodu. Dodatkowo umożliwia łatwe modelowanie danych przesyłanych między komponentami oraz poprzez API.
+
+\subsection{Axios}
+
+Axios to biblioteka JavaScript służąca do wykonywania asynchronicznych zapytań HTTP. W projekcie została użyta do komunikacji pomiędzy frontendem i backendem poprzez REST API.
+
+W porównaniu do natywnej funkcji \texttt{fetch}, Axios oferuje uproszczoną składnię, automatyczne przetwarzanie odpowiedzi w formacie JSON oraz bardziej zaawansowane możliwości konfiguracji — takie jak ustawianie domyślnych nagłówków, bazowego URL, timeoutów i łatwiejsze przechwytywanie błędów. W połączeniu z TypeScriptem, Axios umożliwia również bardziej precyzyjne typowanie odpowiedzi serwera.
+
+\subsection{Leaflet}
+
+Leaflet to otwartoźródłowa biblioteka JavaScript, służąca do tworzenia interaktywnych map. W projekcie użyliśmy jej w połączeniu z React Leaflet - wrapperem, który udostępnia funkcjonalność Leafleta w postaci gotowych komponentów React.
+
+Biblioteka Leaflet umożliwia wyświetlanie map z zewnętrznych źródeł (np. OpenStreetMap) oraz nanoszenie na nie dodatkowych elementów, takich jak znaczniki, warstwy czy lokalizacja użytkownika z wykorzystaniem geolokalizacji przeglądarki. Dodatkowo umożliwia wykrywanie interakcji z mapą, np. kliknięć, oraz zwracanie odpowiadających im współrzędnych geograficznych.
+
+\section{Backendowe (Michał Turski)}
+
+W backendzie zastosowano język \textbf{C\#} z frameworkiem \textbf{.NET} oraz paczki NuGet w celu stworzenia aplikacji serwerowej realizującej wymagania biznesowe i obsługującej komunikację z bazą danych \textbf{PostgreSql}.
+
+
+\subsection{C\# ASP .NET Core}
+
+ASP .NET Core od lat utrzymuje się w czołówce najchętniej wybieranych frameworków do tworzenia aplikacji webowych i API. Jego popularność wynika przede wszystkim z wysokiej modularności oraz niezwykłej elastyczności w adaptowaniu się do różnych scenariuszy projektowych.
+
+Atutem ASP.NET Core jest jego pełna wieloplatformowość — aplikacje mogą być uruchamiane na systemach Windows, Linux oraz macOS bez konieczności wprowadzania zmian w kodzie. To znacząco ułatwia wdrażanie aplikacji w różnorodnych środowiskach, w tym także w kontenerach Docker czy chmurze. Aktualnie w trakcie procesu wytwarzania oprogramowania wykorzystywany jest system Windows, WSL, a także aplikacja odpalana jest w kontenerze Dockerowym.  
+
+Ponadto środowisko to w znacznym stopniu wspiera rozwój oprogramowania zgodnie z zasadami SOLID. Dzięki wbudowanemu mechanizmowi wstrzykiwania zależności (dependency injection), ułatwione jest tworzenie spójnych i jednoznacznie zdefiniowanych interfejsów, a także separacja odpowiedzialności pomiędzy warstwami aplikacji. 
+
+
+\subsection{Wykorzystane pakiety NuGet}
+
+W projekcie wykorzystano szereg pakietów NuGet, które usprawniają implementację kluczowych funkcjonalności oraz wspierają dobre praktyki projektowe. Pakiety NuGet to zewnętrzne biblioteki, które można łatwo zintegrować z projektem .NET w celu rozszerzenia jego możliwości. Umożliwiają one ponowne wykorzystanie sprawdzonego kodu oraz automatyzację zarządzania zależnościami, co znacząco przyspiesza proces tworzenia i utrzymania aplikacji.
+
+Wykorzystano następujące pakiety NuGet w aplikacji wraz z krótkim opisem:
+
+\begin{itemize}
+    \item \textbf{AutoMapper} – Ułatwia przekształcanie danych pomiędzy klasami, co jest szczególnie przydatne przy mapowaniu obiektów domenowych na klasy DTO (Data Transfer Object) oraz odwrotnie. Redukuje potrzebę ręcznego kopiowania właściwości, co przekłada się na większą czytelność i spójność kodu.
+
+    \item \textbf{FluentValidation} – Usprawnia proces walidacji danych, wprowadzając dedykowaną warstwę odpowiedzialną za sprawdzanie poprawności obiektów wejściowych. Pozwala na definiowanie reguł walidacyjnych w sposób deklaratywny, oddzielając je od logiki aplikacji.
+
+    \item \textbf{Microsoft.EntityFrameworkCore} – Biblioteka ORM umożliwiająca odwzorowywanie klas C\# na struktury relacyjnej bazy danych. Umożliwia pracę z bazą danych z użyciem LINQ oraz migracji, eliminując potrzebę pisania zapytań SQL.
+
+    \item \textbf{Npgsql.EntityFrameworkCore.PostgreSQL} – Dostarcza integrację Entity Framework Core z bazą danych PostgreSQL, umożliwiając pełne wsparcie dla tej platformy w środowisku .NET.
+
+    \item \textbf{Swashbuckle.AspNetCore.Swagger} – Narzędzie generujące dokumentację API w formacie OpenAPI (Swagger). Umożliwia wygodne testowanie endpointów poprzez interaktywny interfejs webowy oraz automatyczne tworzenie opisów metod HTTP.
+
+    \item \textbf{Microsoft.AspNetCore.Authentication.JwtBearer} – Zapewnia obsługę uwierzytelniania z użyciem tokenów JWT (JSON Web Token), które są powszechnym rozwiązaniem przy autoryzacji użytkowników w aplikacjach webowych typu REST API.
+
+    \item \textbf{xUnit} – Framework służący do tworzenia testów jednostkowych, umożliwiający automatyczne sprawdzanie poprawności działania kodu aplikacji.  
+    
+    \item \textbf{Moq} – Biblioteka wspierająca testowanie poprzez łatwe tworzenie atrap (mocków) i symulowanie zachowań obiektów, co pozwala izolować testowane elementy od zależności.
+
+    
+    
+    
+\end{itemize}
+
+
+\section{Baza danych (Michał Turski)}
+
+W projekcie zastosowano relacyjną bazę danych \textbf{PostgreSQL}, która jest darmowym i otwartym oprogramowaniem typu \textbf{Open Source}. Jest to szczególnie korzystne w przypadku projektów niekomercyjnych.
+
+Baza danych wyróżnia się zgodnością ze standardem SQL oraz obsługą zaawansowanych typów danych, takich jak \textbf{JSONB}, umożliwiając efektywne łączenie struktur relacyjnych z nierelacyjnymi.
+
+Do zarządzania bazą danych wykorzystano narzędzia administracyjne, takie jak \textbf{pgAdmin} i \textbf{DBeaver}, oferujące graficzne interfejsy ułatwiające pracę z bazą danych.
