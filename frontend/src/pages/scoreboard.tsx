@@ -144,8 +144,12 @@ const Scoreboard: React.FC = () => {
 									records.map(showRecord)
 								) : (
 									<tr>
-										<td colSpan={4} className={styles.no_results}>
-											No records found.
+										<td colSpan={4} className={styles.empty_state}>
+											<div className={styles.empty_content}>
+												<p className={styles.empty_icon}>🏆</p>
+												<h3>Brak wyników</h3>
+												<p>Nie znaleziono żadnych rekordów spełniających kryteria.</p>
+											</div>
 										</td>
 									</tr>
 								)}

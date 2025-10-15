@@ -2,7 +2,7 @@
 @use 'utilities/Colors';
 
 .background {
-	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+	background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
 		url('../assets/images/background-map-menu.png');
 	background-position: center;
 	background-size: cover;
@@ -14,6 +14,8 @@
 	top: 0;
 	left: 0;
 	z-index: -1;
+	filter: blur(2px);
+	-webkit-filter: blur(2px);
 }
 
 .profile_container {
@@ -138,6 +140,37 @@
 					&:hover {
 						background-color: rgba(0, 56, 101, 0.05);
 						transform: translateX(4px);
+					}
+				}
+
+				.empty_state {
+					text-align: center !important;
+					padding: 40px 20px !important;
+
+					.empty_content {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: center;
+
+						.empty_icon {
+							font-size: 3rem;
+							margin-bottom: 15px;
+							opacity: 0.5;
+						}
+
+						h4 {
+							font-size: 1.3rem;
+							color: Colors.$dark-blue;
+							margin: 0 0 8px 0;
+							font-weight: 600;
+						}
+
+						p {
+							font-size: 0.95rem;
+							color: Colors.$dark-grey;
+							margin: 0;
+						}
 					}
 				}
 			}

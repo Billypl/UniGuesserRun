@@ -62,6 +62,15 @@ const PlaceQueue: React.FC = () => {
 	}
 
 	const showAllPlaces = () => {
+		if (places.length === 0) {
+			return (
+				<div className={styles.empty_state}>
+					<p className={styles.empty_icon}>📋</p>
+					<h3>Brak miejsc w kolejce</h3>
+					<p>Nie ma żadnych miejsc oczekujących na weryfikację.</p>
+				</div>
+			)
+		}
 		return <div className={styles.places_list}>{places.map((place) => showPlace(place))}</div>
 	}
 

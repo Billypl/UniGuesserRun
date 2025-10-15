@@ -136,11 +136,35 @@
 			}
 		}
 
-		.no_results {
+		.empty_state {
 			text-align: center !important;
-			color: Colors.$light-grey !important;
-			font-style: italic;
-			padding: 32px !important;
+			padding: 60px 20px !important;
+
+			.empty_content {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+
+				.empty_icon {
+					font-size: 4rem;
+					margin-bottom: 20px;
+					opacity: 0.5;
+				}
+
+				h3 {
+					font-size: 1.5rem;
+					color: Colors.$dark-blue;
+					margin: 0 0 12px 0;
+					font-weight: 600;
+				}
+
+				p {
+					font-size: 1rem;
+					color: Colors.$dark-grey;
+					margin: 0;
+				}
+			}
 		}
 	}
 

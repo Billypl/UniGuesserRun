@@ -1,51 +1,81 @@
-@use "utilities/Mixins";
-@use "utilities/Colors";
+@use 'utilities/Mixins';
+@use 'utilities/Colors';
 
 .settings {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-basis: auto;
-  margin-top: 22vh;
-  width: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-basis: auto;
+	margin-top: 22vh;
+	width: auto;
 
-  .header {
-    font-size: 30px;
-  }
+	.header {
+		font-size: 30px;
+		color: Colors.$dark-blue;
+		font-weight: 600;
+		margin-bottom: 10px;
+	}
 
-  .form {
-    margin: 15px 0 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 25px;
+	.form {
+		margin: 15px 0 15px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		font-size: 25px;
 
-    .start_game {
-      @include Mixins.dark-button;
+		.start_game {
+			@include Mixins.dark-button;
 
-      width: 300px;
-      margin-top: 15px;
-      padding: 10px 0 10px 0;
-      font-size: 1rem;
-      max-width: 70vw;
-      font-size: 18px;
-    }
-  }
+			width: 300px;
+			margin-top: 15px;
+			padding: 12px 0;
+			font-size: 1rem;
+			max-width: 70vw;
+			font-size: 18px;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
-  .go_back {
-    @include Mixins.light-button;
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+			}
 
-    width: 300px;
-    margin-top: 0px;
-    padding: 10px 0 10px 0;
-    font-size: 1rem;
-    max-width: 70vw;
-    font-size: 18px;
-    border: solid 1px Colors.$dark-blue;
-  }
+			&:active {
+				transform: translateY(0);
+			}
+		}
+	}
 
-  .link {
-    @include Mixins.link;
-  }
+	.go_back {
+		@include Mixins.light-button;
+
+		width: 300px;
+		margin-top: 0px;
+		padding: 12px 0;
+		font-size: 1rem;
+		max-width: 70vw;
+		font-size: 18px;
+		border: solid 1px Colors.$dark-blue;
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+
+	.link {
+		@include Mixins.link;
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: translateX(3px);
+		}
+	}
 }

@@ -71,6 +71,15 @@ const Places: React.FC = () => {
 	}
 
 	const showAllPlaces = () => {
+		if (places.length === 0) {
+			return (
+				<div className={styles.empty_state}>
+					<p className={styles.empty_icon}>📍</p>
+					<h3>Brak miejsc</h3>
+					<p>Nie znaleziono żadnych miejsc w bazie danych.</p>
+				</div>
+			)
+		}
 		return <div className={styles.places_list}>{places.map((place) => showPlace(place))}</div>
 	}
 

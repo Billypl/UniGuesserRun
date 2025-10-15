@@ -108,11 +108,21 @@ const User: React.FC = () => {
 					<tbody>
 						{gamesHistory.items.length === 0 ? (
 							<tr>
-								<td colSpan={3}>No games found</td>
+								<td colSpan={3} className={styles.empty_state}>
+									<div className={styles.empty_content}>
+										<p className={styles.empty_icon}>🎮</p>
+										<h4>Brak gier</h4>
+										<p>Nie rozegrano jeszcze żadnych gier.</p>
+									</div>
+								</td>
 							</tr>
 						) : (
 							gamesHistory.items.map((game) => (
-								<tr key={game.id} onClick={() => navigateToResults(game.id)} className={styles.clickable_row}>
+								<tr
+									key={game.id}
+									onClick={() => navigateToResults(game.id)}
+									className={styles.clickable_row}
+								>
 									<td>{new Date().toLocaleDateString()}</td>
 									<td>{game.difficulty.toUpperCase()}</td>
 									<td>{game.finalScore.toFixed(0)}</td>

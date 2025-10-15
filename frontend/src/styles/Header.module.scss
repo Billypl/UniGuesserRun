@@ -1,49 +1,50 @@
-@use "utilities/Mixins";
-@use "utilities/Colors";
+@use 'utilities/Mixins';
+@use 'utilities/Colors';
 
 .header {
-    flex-grow: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: Colors.$white;
-    box-shadow: 0 3px 15px Colors.$dark-grey;
+	flex-grow: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: Colors.$white;
+	box-shadow: 0 3px 15px Colors.$dark-grey;
+	z-index: 5;
 
-    .nav {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        align-items: center;
-        width: 100vw;
-        max-width: 100vw;
-        height: fit-content;
-        box-sizing: border-box;
-        padding: 0px 10px 0px 10px;
-        margin: 10px 0px 10px 0px;
+	.nav {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		align-items: center;
+		width: 100vw;
+		max-width: 100vw;
+		height: fit-content;
+		box-sizing: border-box;
+		padding: 0px 10px 0px 10px;
+		margin: 10px 0px 10px 0px;
 
-        .title {
-            @include Mixins.clickable;
-            font-size: 40px;
-            margin-right: auto;
-            padding-bottom: 0.1em;
-            color: Colors.$dark-blue;
-            font-weight: bold;
-        }
+		.title {
+			@include Mixins.clickable;
+			font-size: 40px;
+			margin-right: auto;
+			padding-bottom: 0.1em;
+			color: Colors.$dark-blue;
+			font-weight: bold;
+		}
 
-        .item{
-            padding: 10px 20px;
-        }
+		.item {
+			padding: 10px 20px;
+		}
 
-        img {
-            height: 48px;
-            width: 48px;
-        }
-    }
+		img {
+			height: 48px;
+			width: 48px;
+		}
+	}
 }
 
 @media (max-width: 650px) {
-    .title {
-        display:none;
-    }
+	.title {
+		display: none;
+	}
 }

@@ -12,7 +12,7 @@ import styles from '../styles/GameInterface.module.scss'
 import { MAP_CENTER } from '../Constants'
 import { Coordinates } from '../models/Coordinates'
 
-import { ReactComponent as ExitIcon} from '../assets/images/x-lg.svg';
+import { ReactComponent as ExitIcon } from '../assets/images/x-lg.svg'
 
 interface GameInterfaceProps {
 	error: string | null
@@ -67,18 +67,17 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 				</div>
 			)}
 
-			{fullScreenImage ? (
-				<div className={styles.full_image_container} onClick={() => setFullScreenImage(false)}>
-					<img src={props.imageUrl!} />
+			<div
+				className={`${styles.image_container} ${fullScreenImage ? styles.fullscreen : ''}`}
+				onClick={() => setFullScreenImage(!fullScreenImage)}
+			>
+				<img src={props.imageUrl!} alt="Round location" />
+				{fullScreenImage && (
 					<div className={styles.fullscreen_exit}>
 						<ExitIcon />
 					</div>
-				</div>
-			) : (
-				<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
-					<img src={props.imageUrl!} />
-				</div>
-			)}
+				)}
+			</div>
 
 			{props.error && <p style={{ color: 'red' }}>{props.error}</p>}
 
