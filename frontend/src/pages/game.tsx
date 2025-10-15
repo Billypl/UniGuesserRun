@@ -149,8 +149,10 @@ const Game: React.FC = () => {
 	}
 
 	const finishGame = async () => {
+		console.log('Finishing game...')
+		const gameGuid = sessionStorage.getItem(GAME_GUID)
 		const response = await gameService.finishGame()
-		navigate(`${GAME_RESULTS_ROUTE}/${sessionStorage.getItem(GAME_GUID)}`)
+		navigate(`${GAME_RESULTS_ROUTE}/${gameGuid}`)
 	}
 
 	const resetGameState = () => {

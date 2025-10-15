@@ -6,6 +6,7 @@ import GameSummaryMap from '../components/GameSummaryMap'
 import GameSummaryTable from '../components/GameSummaryTable'
 import { FinishedGameDto } from '../models/game/FinishedGameDto'
 import gameSessionService from '../services/api/gameSessionService'
+import gameService from '../services/api/gameService'
 
 const GameResults: React.FC = () => {
 	const navigate = useNavigate()

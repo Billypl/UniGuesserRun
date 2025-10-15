@@ -33,7 +33,7 @@ namespace UniGuesser.Application.UseCases.Games.ChangeGameStatus
             }
             else
             {
-                await gameSessionService.DeleteSessionById(session.Id);
+                await gameSessionService.SetGameStatus(session, GameStatus.ToDelete);
             }
             return finishedGameDto;
         }

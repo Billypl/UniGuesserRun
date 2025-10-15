@@ -37,7 +37,7 @@ export class GameService {
 		signal?: AbortSignal
 	) {
 		const startData: StartGameData = { nickname, difficulty, gameMode }
-	
+
 		const response = await this.axiosInstance.post<StartGameResponse>('/start', startData, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
@@ -53,7 +53,6 @@ export class GameService {
 		const gameGuid = this.getGameGuid()
 		if (!gameGuid) throw new Error('Game GUID is missing')
 
-		
 		const url = `/${gameGuid}/game_state`
 		const response = await this.axiosInstance.get<GameSessionStateDto>(url, {
 			headers: {
@@ -106,16 +105,17 @@ export class GameService {
 		const gameGuid = this.getGameGuid()
 		if (!gameGuid) throw new Error('Game GUID is missing')
 
+		console.log(gameGuid)
 		const url = `/${gameGuid}/finish`
 		const response = await this.axiosInstance.patch<FinishedGameDto>(url, null, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
 			},
 		})
-		window.sessionStorage.removeItem(GAME_TOKEN_KEY)
-		window.sessionStorage.removeItem(GAME_GUID)
+		//window.sessionStorage.removeItem(GAME_TOKEN_KEY)
+		//window.sessionStorage.removeItem(GAME_GUID)
 
-		
+		console.log('Guid after finish:', this.getGameGuid()) // Debug log to check if the GUID is still present
 		return response.data
 	}
 

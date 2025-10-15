@@ -19,12 +19,13 @@ public class GameSessionUpdater : Repository<GameSession>
         var now = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
 
         IQueryable<GameSession> gameSessions = _dbSet
+            .Where(gs => gs.GameState != GameStatus.Finished)
             .Where(gs => gs.ExpirationDate <= now)
             .Include(gs => gs.Player);
 
         foreach (var session in gameSessions)
         {
-            if (session.Player == null)
+            if (session.Player == null || (session.GameState == GameStatus.ToDelete))
             {
                 _dbSet.Remove(session);
             }
