@@ -6,6 +6,7 @@
 		url('../assets/images/background-map-menu.png');
 	background-position: center;
 	background-size: cover;
+	background-attachment: fixed;
 	height: 100vh;
 	width: 100vw;
 	box-sizing: content-box;
@@ -13,21 +14,20 @@
 	top: 0;
 	left: 0;
 	z-index: -1;
-	filter: blur(1px);
-	-webkit-filter: blur(1px);
 }
 
 .profile_container {
 	padding: 20px;
 	padding-top: 150px;
-	height: 100vh;
+	min-height: 100vh;
 
 	.account_info {
-		padding: 20px 30px 20px 30px;
-		background-color: Colors.$white;
-		border-radius: 20px;
-		box-shadow: 0 0 8px Colors.$dark-grey;
-		max-width: 600px;
+		padding: 32px 40px;
+		background: linear-gradient(135deg, Colors.$white 0%, #f8f9fa 100%);
+		border-radius: 16px;
+		border: 2px solid Colors.$dark-blue;
+		box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
+		max-width: 700px;
 		min-height: 480px;
 		position: relative;
 		left: 50%;
@@ -36,41 +36,108 @@
 		flex-direction: column;
 
 		.nickname {
-			font-size: 30px;
+			font-size: 2rem;
+			font-weight: 700;
+			color: Colors.$dark-blue;
+			margin: 0 0 12px 0;
+			padding-bottom: 16px;
+			border-bottom: 3px solid Colors.$dark-blue;
 
 			svg {
 				display: inline-block;
-				margin-left: 10px;
+				margin-left: 12px;
 				margin-bottom: -4px;
-				height: 30px;
+				height: 32px;
 				width: auto;
 				fill: Colors.$dark-blue;
 			}
 		}
 
 		.details {
-			font-size: 14px;
+			font-size: 1rem;
+			color: Colors.$dark-grey;
+			margin: 0 0 24px 0;
+			font-weight: 500;
 		}
 
 		.games_history_title {
-			font-size: 16px;
-			font-weight: bold;
-			margin-top: 20px;
-			margin-bottom: 6px;
+			font-size: 1.2rem;
+			font-weight: 700;
+			margin: 24px 0 16px 0;
 			text-align: center;
+			color: Colors.$dark-blue;
 		}
 
 		.games_table {
-			@include Mixins.table;
-			
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
 			margin-bottom: auto;
+			background-color: Colors.$white;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 2px 8px rgba(5, 5, 21, 0.08);
+
+			thead {
+				background: linear-gradient(
+					135deg,
+					Colors.$dark-blue 0%,
+					darken(Colors.$dark-blue, 10%) 100%
+				);
+
+				tr {
+					th {
+						padding: 16px;
+						text-align: left;
+						font-weight: 600;
+						font-size: 1rem;
+						color: Colors.$white;
+						border: none;
+
+						&:first-child {
+							padding-left: 24px;
+						}
+
+						&:last-child {
+							padding-right: 24px;
+						}
+					}
+				}
+			}
 
 			tbody {
+				tr {
+					border-bottom: 1px solid Colors.$light-blue-grey;
+					transition: all 0.3s ease;
+
+					&:last-child {
+						border-bottom: none;
+					}
+
+					td {
+						padding: 16px;
+						font-size: 0.95rem;
+						color: Colors.$dark-grey;
+
+						&:first-child {
+							padding-left: 24px;
+							font-weight: 500;
+						}
+
+						&:last-child {
+							padding-right: 24px;
+							font-weight: 600;
+							color: Colors.$dark-blue;
+						}
+					}
+				}
+
 				.clickable_row {
-					@include Mixins.clickable;
+					cursor: pointer;
 
 					&:hover {
-						background-color: lighten(Colors.$dark-blue, 60%);
+						background-color: rgba(0, 56, 101, 0.05);
+						transform: translateX(4px);
 					}
 				}
 			}
@@ -79,7 +146,7 @@
 				tbody {
 					tr {
 						td {
-							font-size: 16px;
+							font-size: 1rem;
 						}
 					}
 				}
@@ -87,14 +154,28 @@
 		}
 
 		button {
-			@include Mixins.dark-button;
-
-			width: 12rem;
-			margin-top: 10px;
-			margin-left: auto;
-			margin-right: auto;
-			padding: 7px 0 7px 0;
+			padding: 12px 32px;
+			background-color: Colors.$dark-blue;
+			color: Colors.$white;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: 600;
 			font-size: 1rem;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 12px rgba(0, 56, 101, 0.15);
+			width: fit-content;
+			margin: 20px auto 0;
+
+			&:hover {
+				background-color: darken(Colors.$dark-blue, 8%);
+				transform: translateY(-2px);
+				box-shadow: 0 6px 16px rgba(0, 56, 101, 0.25);
+			}
+
+			&:active {
+				transform: translateY(0);
+			}
 		}
 	}
 }

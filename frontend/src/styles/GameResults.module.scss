@@ -1,5 +1,5 @@
 @use 'utilities/Mixins';
-
+@use 'utilities/Colors';
 .results_container {
 	width: 100vw;
 	height: 100vh;
@@ -39,7 +39,104 @@
 
 			margin-top: 20px;
 			margin-bottom: 10px;
-			max-width: 300px;
+			width: 100%;
+			max-width: 500px;
+			background-color: Colors.$white;
+			border-collapse: separate;
+			border-spacing: 0;
+			overflow: hidden;
+
+			thead {
+				background: linear-gradient(
+					135deg,
+					Colors.$dark-blue 0%,
+					darken(Colors.$dark-blue, 10%) 100%
+				);
+
+				tr {
+					th {
+						padding: 14px 12px;
+						text-align: center;
+						font-weight: 600;
+						font-size: 0.95rem;
+						color: Colors.$white;
+						text-transform: uppercase;
+						letter-spacing: 0.5px;
+						border: none;
+
+						&:first-child {
+							border-top-left-radius: 14px;
+						}
+
+						&:last-child {
+							border-top-right-radius: 14px;
+						}
+					}
+				}
+			}
+
+			tbody {
+				tr {
+					cursor: pointer;
+					transition: all 0.2s ease;
+					background-color: Colors.$white;
+
+					&:nth-child(2n + 1) {
+						background-color: lighten(Colors.$dark-blue, 75%);
+					}
+
+					&:hover {
+						background-color: lighten(Colors.$dark-blue, 70%) !important;
+						transform: translateX(4px);
+					}
+
+					&.highlighted {
+						background-color: lighten(Colors.$dark-blue, 65%) !important;
+						font-weight: 600;
+						box-shadow: inset 4px 0 0 Colors.$dark-blue;
+					}
+
+					td {
+						padding: 12px 12px;
+						text-align: center;
+						font-size: 0.9rem;
+						border: none;
+						color: Colors.$dark-grey;
+
+						&.round-number {
+							font-weight: 700;
+							color: Colors.$dark-blue;
+							font-size: 1rem;
+						}
+
+						&.place-name {
+							text-align: left;
+							padding-left: 16px;
+							font-weight: 500;
+							color: Colors.$dark-grey;
+						}
+
+						&.distance {
+							color: #e74c3c;
+							font-weight: 600;
+						}
+
+						&.score {
+							color: #2ecc71;
+							font-weight: 700;
+							font-size: 0.95rem;
+						}
+					}
+
+					&:last-child td:first-child {
+						border-bottom-left-radius: 14px;
+					}
+
+					&:last-child td:last-child {
+						border-bottom-right-radius: 14px;
+					}
+				}
+			}
 		}
 
 		button {
@@ -51,6 +148,70 @@
 			font-size: 1rem;
 		}
 	}
+
+	// Leaflet custom marker styles
+	:global {
+		.custom-numbered-marker {
+			.marker-content {
+				width: 32px;
+				height: 32px;
+				border-radius: 50%;
+				border: 2px solid white;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: bold;
+				font-size: 14px;
+				color: white;
+				text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+				transition: all 0.3s ease;
+				position: relative;
+
+				// Wewnętrzny pierścień dla lepszej widoczności
+				&::before {
+					content: '';
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					width: calc(100% - 6px);
+					height: calc(100% - 6px);
+					border-radius: 50%;
+					border: 1px solid rgba(255, 255, 255, 0.3);
+					pointer-events: none;
+				}
+
+				// Zewnętrzny efekt świecenia
+				&::after {
+					content: '';
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					width: 100%;
+					height: 100%;
+					border-radius: 50%;
+					box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+					pointer-events: none;
+				}
+
+				&.highlighted {
+					width: 40px;
+					height: 40px;
+					border: 3px solid white;
+					box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+					font-size: 16px;
+
+					&::before {
+						width: calc(100% - 8px);
+						height: calc(100% - 8px);
+					}
+				}
+			}
+		}
+	}
+
 	// fake shadow
 	.map_container::after {
 		content: '';

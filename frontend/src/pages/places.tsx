@@ -28,6 +28,7 @@ const Places: React.FC = () => {
 	const [selectedPlace, setSelectedPlace] = useState<ShowPlaceDto | null>(null)
 	const [coordinates, setCoordinates] = useState<Coordinates | null>(null)
 	const [isEditing, setIsEditing] = useState<boolean>(false)
+	const [viewMode, setViewMode] = useState<'image' | 'map'>('image')
 	let requestSent = useRef(false)
 
 	const getAllPlaces = async () => {
@@ -76,53 +77,69 @@ const Places: React.FC = () => {
 	const showPlaceDetails = () => {
 		return (
 			<>
-				<img className={styles.image} src={selectedPlace?.imageUrl} alt={selectedPlace?.alt} />
-				<div className={styles.map}>
-					<MapContainer
-						center={MAP_CENTER}
-						zoom={13}
-						scrollWheelZoom={true}
-						style={{ height: '100%', width: '100%' }}
+				<div className={styles.view_toggle}>
+					<button
+						className={`${styles.toggle_button} ${viewMode === 'image' ? styles.active : ''}`}
+						onClick={() => setViewMode('image')}
 					>
-						<TileLayer
-							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-						/>
-
-						{isEditing && coordinates ? (
-							<>
-								<LocationMarker coords={coordinates} icon={ClickedIcon} label="Place location:" />
-								<RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
-							</>
-						) : (
-							selectedPlace && (
-								<>
-									<LocationMarker
-										coords={selectedPlace.coordinates}
-										icon={ClickedIcon}
-										label="Place location:"
-									/>
-									<RecenterMap
-										location={[
-											selectedPlace.coordinates.latitude,
-											selectedPlace.coordinates.longitude,
-										]}
-									/>
-								</>
-							)
-						)}
-
-						{isEditing && <SelectMapLocation selectLocationFunction={setCoordinates} />}
-					</MapContainer>
+						Image
+					</button>
+					<button
+						className={`${styles.toggle_button} ${viewMode === 'map' ? styles.active : ''}`}
+						onClick={() => setViewMode('map')}
+					>
+						Map
+					</button>
 				</div>
+
+				{viewMode === 'image' ? (
+					<img className={styles.image} src={selectedPlace?.imageUrl} alt={selectedPlace?.alt} />
+				) : (
+					<div className={styles.map}>
+						<MapContainer
+							center={MAP_CENTER}
+							zoom={13}
+							scrollWheelZoom={true}
+							style={{ height: '100%', width: '100%' }}
+						>
+							<TileLayer
+								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+							/>
+
+							{isEditing && coordinates ? (
+								<>
+									<LocationMarker coords={coordinates} icon={ClickedIcon} label="Place location:" />
+									<RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
+								</>
+							) : (
+								selectedPlace && (
+									<>
+										<LocationMarker
+											coords={selectedPlace.coordinates}
+											icon={ClickedIcon}
+											label="Place location:"
+										/>
+										<RecenterMap
+											location={[
+												selectedPlace.coordinates.latitude,
+												selectedPlace.coordinates.longitude,
+											]}
+										/>
+									</>
+								)
+							)}
+
+							{isEditing && <SelectMapLocation selectLocationFunction={setCoordinates} />}
+						</MapContainer>
+					</div>
+				)}
 
 				{isEditing && coordinates ? (
 					<p>
-						{coordinates.latitude}, {coordinates.longitude}
+						<b>Selected coordinates:</b> {coordinates.latitude}, {coordinates.longitude}
 					</p>
-				) : (
-					<> </>
-				)}
+				) : null}
 
 				{isEditing && selectedPlace ? (
 					<>
@@ -211,7 +228,7 @@ const Places: React.FC = () => {
 			coordinates ?? selectedPlace.coordinates,
 			selectedPlace?.imageUrl,
 			data.alt,
-			data.difficulty,
+			data.difficulty
 		)
 
 		setIsEditing(false)
@@ -227,6 +244,7 @@ const Places: React.FC = () => {
 		setSelectedPlace(null)
 		setIsEditing(false)
 		setCoordinates(null)
+		setViewMode('image')
 	}
 
 	const deletePlace = async () => {
@@ -244,6 +262,12 @@ const Places: React.FC = () => {
 		if (requestSent.current) return
 		getAllPlaces()
 	}, [])
+
+	useEffect(() => {
+		if (isEditing) {
+			setViewMode('map')
+		}
+	}, [isEditing])
 
 	const currentUser = accountService.getCurrentUser()
 	if (currentUser === null || currentUser.role !== USER_ROLE_ADMIN) {

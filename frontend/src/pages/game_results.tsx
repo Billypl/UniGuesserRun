@@ -13,6 +13,11 @@ const GameResults: React.FC = () => {
 	// if not, we came straight from the game
 	const { userId, gameId } = useParams<{ userId?: string; gameId?: string }>()
 	const [finishedGameData, setFinishedGameData] = useState<FinishedGameDto | null>(null)
+	const [highlightedRound, setHighlightedRound] = useState<number | null>(null)
+
+	const handleRoundHover = (roundIndex: number | null) => {
+		setHighlightedRound(roundIndex)
+	}
 
 	useEffect(() => {
 		if (!gameId) {
@@ -43,7 +48,9 @@ const GameResults: React.FC = () => {
 	return (
 		<div className={styles.results_container}>
 			<div className={styles.map_container}>
-				{finishedGameData && <GameSummaryMap finishedGameData={finishedGameData} />}
+				{finishedGameData && (
+					<GameSummaryMap finishedGameData={finishedGameData} highlightedRound={highlightedRound} />
+				)}
 			</div>
 			<div className={styles.summary_container}>
 				{!finishedGameData ? (
@@ -58,7 +65,11 @@ const GameResults: React.FC = () => {
 							On <b>{finishedGameData?.difficulty}</b> difficulty
 						</p>
 
-						<GameSummaryTable finishedGameData={finishedGameData} />
+						<GameSummaryTable
+							finishedGameData={finishedGameData}
+							highlightedRound={highlightedRound}
+							onRoundHover={handleRoundHover}
+						/>
 					</>
 				)}
 

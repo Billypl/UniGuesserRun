@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Header from '../components/Header'
-import styles from '../styles/PlaceQueue.module.scss'
+import styles from '../styles/Places.module.scss'
 import placeService from '../services/api/placeService'
 import { PlaceToCheckDto } from '../models/place/PlaceToCheckDto'
 import { Navigate, useNavigate } from 'react-router-dom'
@@ -30,6 +30,7 @@ const PlaceQueue: React.FC = () => {
 	const [selectedPlace, setSelectedPlace] = useState<ShowPlaceDto | null>(null)
 	const [coordinates, setCoordinates] = useState<Coordinates | null>(null)
 	const [isEditing, setIsEditing] = useState<boolean>(false)
+	const [viewMode, setViewMode] = useState<'image' | 'map'>('image')
 	let requestSent = useRef(false)
 
 	const {
@@ -48,7 +49,7 @@ const PlaceQueue: React.FC = () => {
 	const showPlace = (place: ShowPlaceDto) => {
 		return (
 			<div className={styles.place_entry} key={place.id}>
-				<p>{place.id}</p>
+				<p>{place.name}</p>
 				<p>
 					{place.coordinates.latitude}, {place.coordinates.longitude}
 				</p>
@@ -61,90 +62,109 @@ const PlaceQueue: React.FC = () => {
 	}
 
 	const showAllPlaces = () => {
-		return places.map(place => showPlace(place))
+		return <div className={styles.places_list}>{places.map((place) => showPlace(place))}</div>
 	}
 
 	const showPlaceDetails = () => {
 		return (
 			<>
-				<img className={styles.image} src={selectedPlace?.imageUrl} alt={selectedPlace?.alt} />
-				<div className={styles.map}>
-					<MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
-						<TileLayer
-							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-							url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-						/>
-
-						{isEditing && coordinates ? (
-							<>
-								<LocationMarker coords={coordinates} icon={ClickedIcon} label='Place location:' />
-								<RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
-							</>
-						) : (
-							selectedPlace && (
-								<>
-									<LocationMarker
-										coords={selectedPlace.coordinates}
-										icon={ClickedIcon}
-										label='Place location:'
-									/>
-									<RecenterMap
-										location={[
-											selectedPlace.coordinates.latitude,
-											selectedPlace.coordinates.longitude,
-										]}
-									/>
-								</>
-							)
-						)}
-
-						{isEditing && <SelectMapLocation selectLocationFunction={setCoordinates} />}
-					</MapContainer>
+				<div className={styles.view_toggle}>
+					<button
+						className={`${styles.toggle_button} ${viewMode === 'image' ? styles.active : ''}`}
+						onClick={() => setViewMode('image')}
+					>
+						Image
+					</button>
+					<button
+						className={`${styles.toggle_button} ${viewMode === 'map' ? styles.active : ''}`}
+						onClick={() => setViewMode('map')}
+					>
+						Map
+					</button>
 				</div>
+
+				{viewMode === 'image' ? (
+					<img className={styles.image} src={selectedPlace?.imageUrl} alt={selectedPlace?.alt} />
+				) : (
+					<div className={styles.map}>
+						<MapContainer
+							center={MAP_CENTER}
+							zoom={13}
+							scrollWheelZoom={true}
+							style={{ height: '100%', width: '100%' }}
+						>
+							<TileLayer
+								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+							/>
+
+							{isEditing && coordinates ? (
+								<>
+									<LocationMarker coords={coordinates} icon={ClickedIcon} label="Place location:" />
+									<RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
+								</>
+							) : (
+								selectedPlace && (
+									<>
+										<LocationMarker
+											coords={selectedPlace.coordinates}
+											icon={ClickedIcon}
+											label="Place location:"
+										/>
+										<RecenterMap
+											location={[
+												selectedPlace.coordinates.latitude,
+												selectedPlace.coordinates.longitude,
+											]}
+										/>
+									</>
+								)
+							)}
+
+							{isEditing && <SelectMapLocation selectLocationFunction={setCoordinates} />}
+						</MapContainer>
+					</div>
+				)}
 
 				{isEditing && coordinates ? (
 					<p>
-						{coordinates.latitude}, {coordinates.longitude}
+						<b>Selected coordinates:</b> {coordinates.latitude}, {coordinates.longitude}
 					</p>
-				) : (
-					<p>
-						{selectedPlace?.coordinates.latitude}, {selectedPlace?.coordinates.longitude}
-					</p>
-				)}
+				) : null}
 
 				{isEditing && selectedPlace ? (
 					<>
 						<form onSubmit={handleSubmit(saveChanges)} className={styles.form}>
 							<FormField
-								label='Name'
-								name='name'
-								type='text'
+								label="Name"
+								name="name"
+								type="text"
 								defaultValue={selectedPlace.name}
 								register={register}
 								error={errors.name?.message}
 							/>
 
 							<FormField
-								label='Description'
-								name='description'
-								type='text'
+								label="Description"
+								name="description"
+								type="text"
 								defaultValue={selectedPlace.description}
 								register={register}
 								error={errors.description?.message}
 							/>
 
 							<FormField
-								label='alt'
-								name='alt'
-								type='text'
+								label="alt"
+								name="alt"
+								type="text"
 								defaultValue={selectedPlace.alt}
 								register={register}
 								error={errors.alt?.message}
 							/>
 
 							<FormSelect
-								label='Difficulty'
-								name='difficulty'
+								label="Difficulty"
+								name="difficulty"
 								options={[
 									{ value: 'easy', label: 'Easy' },
 									{ value: 'normal', label: 'Normal' },
@@ -156,20 +176,38 @@ const PlaceQueue: React.FC = () => {
 								error={errors.difficulty?.message}
 							/>
 
-							<button type='submit'>Save</button>
+							<button type="submit">Save</button>
 							<button onClick={() => cancelChanges()}>Cancel</button>
 						</form>
 					</>
 				) : (
 					<>
-						<p>{selectedPlace?.name}</p>
+						<h2>{selectedPlace?.name}</h2>
 						<p>{selectedPlace?.description}</p>
-						<button onClick={() => setIsEditing(true)}>Edit</button>
-						<button onClick={() => acceptPlace()}>Accept</button>
-						<button onClick={() => rejectPlace()}>Reject</button>
+						<p>
+							<b>Author: </b> {selectedPlace?.authorName}
+						</p>
+						<p>
+							<b>Difficulty: </b> {selectedPlace?.difficultyLevel}
+						</p>
+						<p>
+							<b>Coordinates: </b> {selectedPlace?.coordinates.latitude},{' '}
+							{selectedPlace?.coordinates.longitude}
+						</p>
+						<div className={styles.buttons}>
+							<button onClick={goBack}>Go back</button>
+							<div>
+								<button onClick={() => setIsEditing(true)}>Edit</button>
+								<button className={styles.accept_button} onClick={() => acceptPlace()}>
+									Accept
+								</button>
+								<button className={styles.delete_button} onClick={() => rejectPlace()}>
+									Reject
+								</button>
+							</div>
+						</div>
 					</>
 				)}
-				<button onClick={goBack}>Go back</button>
 			</>
 		)
 	}
@@ -212,6 +250,7 @@ const PlaceQueue: React.FC = () => {
 		setSelectedPlace(null)
 		setIsEditing(false)
 		setCoordinates(null)
+		setViewMode('image')
 	}
 
 	const showUpdatedPlaces = async () => {
@@ -224,20 +263,34 @@ const PlaceQueue: React.FC = () => {
 		getAllPlaces()
 	}, [])
 
+	useEffect(() => {
+		if (isEditing) {
+			setViewMode('map')
+		}
+	}, [isEditing])
+
 	const currentUser = accountService.getCurrentUser()
-	if (currentUser === null || (currentUser.role !== USER_ROLE_ADMIN && currentUser.role !== USER_ROLE_MODERATOR)) {
+	if (
+		currentUser === null ||
+		(currentUser.role !== USER_ROLE_ADMIN && currentUser.role !== USER_ROLE_MODERATOR)
+	) {
 		return <Navigate to={MENU_ROUTE} />
 	}
 
 	return (
 		<>
 			<Header />
-			<div className={styles.container}>
-				{selectedPlace ? (
-					<div className={styles.place_details}>{showPlaceDetails()}</div>
-				) : (
-					<div className={styles.place_queue}>{showAllPlaces()}</div>
-				)}
+			<div className={styles.page}>
+				<div className={styles.container}>
+					{selectedPlace ? (
+						<div className={styles.place_details}>{showPlaceDetails()}</div>
+					) : (
+						<>
+							<h1 className={styles.about_page}>Places Queue</h1>
+							<div className={styles.place_queue}>{showAllPlaces()}</div>
+						</>
+					)}
+				</div>
 			</div>
 		</>
 	)

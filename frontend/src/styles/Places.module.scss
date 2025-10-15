@@ -6,65 +6,100 @@
 	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
 		url('../assets/images/background-map-menu.png');
 	background-size: cover;
+	background-attachment: fixed;
 
 	button {
-		padding: 8px 20px;
+		padding: 12px 24px;
 		background-color: Colors.$dark-blue;
 		color: Colors.$white;
 		border: none;
 		border-radius: 8px;
 		cursor: pointer;
-		font-weight: 500;
-		transition: background 0.2s;
-		box-shadow: 0 2px 16px #05051520;
+		font-weight: 600;
+		font-size: 0.95rem;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 12px rgba(0, 56, 101, 0.15);
+
 		&:hover {
 			background-color: darken(Colors.$dark-blue, 8%);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(0, 56, 101, 0.25);
+		}
+
+		&:active {
+			transform: translateY(0);
 		}
 	}
 
 	.container {
-		max-width: 1000px;
+		max-width: 1200px;
 		margin: 0 auto;
-		padding: 40px 24px 24px 24px;
+		padding: 40px 24px;
 		display: flex;
 		flex-direction: column;
-		gap: 20px;
+		gap: 24px;
 
 		.about_page {
-			letter-spacing: 1px;
-			margin-top: 40px;
-			padding: 10px;
-			background-color: Colors.$white;
-			border-radius: 12px;
+			text-align: center;
+			font-size: 2rem;
+			font-weight: 700;
+			letter-spacing: 0.5px;
+			margin: 0;
+			padding: 24px;
+			background: linear-gradient(135deg, Colors.$white 0%, #f8f9fa 100%);
+			border-radius: 16px;
 			border: 2px solid Colors.$dark-blue;
-			box-shadow: 0 2px 16px #05051520;
+			box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
+			color: Colors.$dark-blue;
 		}
 
 		.place_queue {
-			background-color: Colors.$white;
-			padding: 24px;
-			text-align: center;
-			margin: 10px 0 0 0;
-			border-radius: 12px;
-			border: 1.5px solid Colors.$dark-blue;
-			box-shadow: 0 2px 16px #05051520;
+			background: linear-gradient(135deg, Colors.$white 0%, #f8f9fa 100%);
+			padding: 32px;
+			border-radius: 16px;
+			border: 2px solid Colors.$dark-blue;
+			box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
+
+			.places_list {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+			}
 
 			.place_entry {
 				display: grid;
 				grid-template-columns: 1.5fr 1fr auto;
 				align-items: center;
-				gap: 16px;
-				padding: 16px 0;
-				border-bottom: 1px solid Colors.$lighter-grey;
+				gap: 20px;
+				padding: 20px;
+				background-color: Colors.$white;
+				border-radius: 12px;
+				border: 1px solid Colors.$light-blue-grey;
+				transition: all 0.3s ease;
+				box-shadow: 0 2px 8px rgba(5, 5, 21, 0.08);
 
-				&:last-child {
-					border-bottom: none;
+				&:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 8px 20px rgba(5, 5, 21, 0.15);
+					border-color: Colors.$dark-blue;
 				}
 
 				p {
 					margin: 0;
 					font-size: 1.05rem;
-					color: Colors.$dark-blue;
+					font-weight: 500;
+					color: Colors.$dark-grey;
+
+					&:first-child {
+						font-weight: 600;
+						color: Colors.$dark-blue;
+						font-size: 1.1rem;
+					}
+				}
+
+				.review_button {
+					padding: 10px 20px;
+					font-size: 0.9rem;
 				}
 			}
 		}
@@ -72,77 +107,205 @@
 		.place_details {
 			display: flex;
 			flex-direction: column;
-			gap: 16px;
-			margin-top: 32px;
-			background-color: Colors.$white;
-			border-radius: 12px;
+			gap: 24px;
+			background: linear-gradient(135deg, Colors.$white 0%, #f8f9fa 100%);
+			border-radius: 16px;
 			border: 2px solid Colors.$dark-blue;
-			box-shadow: 0 2px 16px #05051520;
-			padding: 24px;
-			img {
-				max-width: 100%;
-				max-height: 500px;
-				height: auto;
-				border-radius: 12px;
-				box-shadow: 0 2px 12px #05051515;
-				display: block;
-				margin: 0 auto;
-			}
-			.buttons {
+			box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
+			padding: 32px;
+
+			.view_toggle {
 				display: flex;
-				flex-direction: column;
-				gap: 10px;
-				div {
-					display: flex;
-					flex-direction: column;
-					gap: 10px;
-				}
-				button {
-					padding: 8px 20px;
-					background-color: Colors.$dark-blue;
-					color: Colors.$white;
-					border: none;
+				gap: 12px;
+				padding: 6px;
+				background-color: Colors.$light-blue-grey;
+				border-radius: 12px;
+				width: fit-content;
+				margin: 0 auto;
+
+				.toggle_button {
+					padding: 12px 32px;
+					font-size: 1rem;
+					font-weight: 600;
 					border-radius: 8px;
+					background-color: transparent;
+					color: Colors.$dark-grey;
+					border: none;
 					cursor: pointer;
-					font-weight: 500;
-					transition: background 0.2s;
-					box-shadow: 0 2px 12px #05051515;
+					transition: all 0.3s ease;
+					box-shadow: none;
+
 					&:hover {
-						background-color: darken(Colors.$dark-blue, 8%);
+						background-color: rgba(255, 255, 255, 0.5);
+						transform: none;
 					}
-				}
-				.delete_button {
-					background-color: Colors.$dark-red;
-					&:hover {
-						background-color: darken(Colors.$dark-red, 8%);
+
+					&.active {
+						background-color: Colors.$dark-blue;
+						color: Colors.$white;
+						box-shadow: 0 4px 12px rgba(0, 56, 101, 0.25);
+
+						&:hover {
+							background-color: Colors.$dark-blue;
+							transform: translateY(-2px);
+						}
 					}
 				}
 			}
 
-			// edit mode
+			h2 {
+				margin: 0;
+				font-size: 2rem;
+				font-weight: 700;
+				color: Colors.$dark-blue;
+				border-bottom: 3px solid Colors.$dark-blue;
+				padding-bottom: 16px;
+			}
+
+			p {
+				margin: 8px 0;
+				font-size: 1.05rem;
+				line-height: 1.6;
+				color: Colors.$dark-grey;
+
+				b {
+					color: Colors.$dark-blue;
+					font-weight: 600;
+				}
+			}
+
+			img {
+				max-width: 100%;
+				max-height: 600px;
+				height: auto;
+				border-radius: 16px;
+				box-shadow: 0 8px 24px rgba(5, 5, 21, 0.2);
+				display: block;
+				margin: 0 auto;
+				transition: transform 0.3s ease;
+
+				&:hover {
+					transform: scale(1.02);
+				}
+			}
+
+			.map {
+				height: 400px;
+				width: 100%;
+				border-radius: 12px;
+				overflow: hidden;
+				box-shadow: 0 4px 16px rgba(5, 5, 21, 0.15);
+				border: 2px solid Colors.$light-blue-grey;
+			}
+
+			.buttons {
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+				margin-top: 16px;
+				padding-top: 24px;
+				border-top: 2px solid Colors.$light-blue-grey;
+
+				div {
+					display: flex;
+					flex-direction: column;
+					gap: 12px;
+				}
+
+				button {
+					width: 100%;
+				}
+
+				.delete_button {
+					background-color: Colors.$dark-red;
+
+					&:hover {
+						background-color: darken(Colors.$dark-red, 8%);
+					}
+				}
+
+				.accept_button {
+					background-color: #28a745;
+
+					&:hover {
+						background-color: darken(#28a745, 8%);
+					}
+				}
+			}
+
 			.form {
 				display: flex;
 				flex-direction: column;
-				gap: 10px;
+				gap: 20px;
+				padding: 24px;
+				background-color: Colors.$white;
+				border-radius: 12px;
+				border: 1px solid Colors.$light-blue-grey;
+				box-shadow: 0 2px 8px rgba(5, 5, 21, 0.08);
+
+				button {
+					margin-top: 8px;
+				}
 			}
 		}
 	}
 }
 
-// min width 1024 px
+// Responsive dla tabletów i większych ekranów
+@media (min-width: 768px) {
+	.page {
+		.container {
+			.place_queue {
+				.place_entry {
+					grid-template-columns: 2fr 1.5fr auto;
+					padding: 24px;
+				}
+			}
+
+			.place_details {
+				.map {
+					height: 500px;
+				}
+
+				.view_toggle {
+					.toggle_button {
+						padding: 14px 48px;
+						font-size: 1.05rem;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Responsive dla desktopów
 @media (min-width: 1024px) {
 	.page {
 		.container {
+			padding: 60px 40px;
+
 			.place_details {
+				padding: 40px;
+
 				.buttons {
 					flex-direction: row;
 					justify-content: space-between;
-					gap: 16px;
+					gap: 24px;
+
 					div {
 						display: flex;
 						flex-direction: row;
-						gap: 24px;
+						gap: 16px;
 					}
+
+					button {
+						width: auto;
+						min-width: 140px;
+					}
+				}
+
+				.form {
+					padding: 32px;
 				}
 			}
 		}
