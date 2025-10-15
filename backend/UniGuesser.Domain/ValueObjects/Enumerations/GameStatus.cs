@@ -12,5 +12,8 @@ namespace UniGuesser.Domain.ValueObjects.Enumerations
 
         [EnumMember(Value = "abandoned")]
         Abandoned,
+
+        [EnumMember(Value = "toDelete")]
+        ToDelete
     }
 }
