@@ -50,7 +50,7 @@ const Game: React.FC = () => {
 			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
 			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY)
 			const gameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE)
-			 // Reset game GUID before starting a new game
+			// Reset game GUID before starting a new game
 			if (!difficulty) {
 				throw new Error('Difficulty not selected')
 			}
@@ -149,8 +149,7 @@ const Game: React.FC = () => {
 	}
 
 	const finishGame = async () => {
-		//const response = await gameService.finishGame()
-		//console.log('Finished game, id: ' + response.id)
+		const response = await gameService.finishGame()
 		navigate(`${GAME_RESULTS_ROUTE}/${sessionStorage.getItem(GAME_GUID)}`)
 	}
 
