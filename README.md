@@ -34,12 +34,14 @@ docker-compose.dev.yaml
 
 ### Pushing new image
 ```sh
+cd [root_projektu/]
 docker build -t billypl/ugr-frontend:latest frontend
 docker push billypl/ugr-frontend:latest
 
 docker build -t billypl/ugr-backend:latest backend
 docker push billypl/ugr-backend:latest
 
+cd [docker/]
 docker compose -f docker-compose.prod.yaml up --build
 docker compose -f docker-compose.prod.yaml down
 ```

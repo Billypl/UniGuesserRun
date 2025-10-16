@@ -18,7 +18,7 @@ namespace UniGuesser.API.Extensions
         public Seeder(GameDbContext gameDbContext, IMediator mediator)
         {
             _gameDbContext = gameDbContext;
-            _filePath = "../UniGuesser.Infrastructure/Data/Places.json";
+            _filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Places.json");
             _mediator = mediator;
         }
 
