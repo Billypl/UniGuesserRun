@@ -30,7 +30,7 @@ async Task SeedDatabase(WebApplication app)
     Console.WriteLine("##### Seeding database...");
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<GameDbContext>();
-   // db.Database.Migrate();
+    // db.Database.Migrate();
     Console.WriteLine("##### Db seeded...");
 
     var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
@@ -43,7 +43,6 @@ void ConfigureMiddleware(WebApplication app)
     app.UseCors("AllowSpecificOrigins");
     app.UseMiddleware<ErrorHandlingMiddleware>();
     app.UseAuthentication();
-    app.UseHttpsRedirection();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {

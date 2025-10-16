@@ -1,19 +1,16 @@
 services:
   backend:
     container_name: ugr-api
-    image: billypl/ugr-backend:latest # Replace with your actual image name
+    image: billypl/ugr-backend:latest
     restart: always
     ports:
-      - '${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}' # or use 443 if behind HTTPS proxy
+      - '5223:5223' # or use 443 if behind HTTPS proxy
     environment:
-      - ASPNETCORE_URLS=http://+:${BACKEND_HTTP_PORT};https://+:${BACKEND_HTTPS_PORT}
+      - ASPNETCORE_URLS=http://+:5223;
       - ASPNETCORE_ENVIRONMENT=Production
       # convert to reverse proxy
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dev-cert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=admin
       - ASPNETCORE_Kestrel__Certificates__Default__AllowInvalid=true
-    volumes:
-      - ../https:/https
     depends_on:
       - db
     networks:
@@ -21,10 +18,10 @@ services:
 
   frontend:
     container_name: ugr-frontend
-    image: billypl/ugr-frontend:latest # Replace with your actual image name
+    image: billypl/ugr-frontend:latest
     restart: always
     ports:
-      - '80:80' # Consider using 80 if deploying publicly
+      - '80:80'
     environment:
       - NODE_ENV=production
     depends_on:
@@ -34,7 +31,7 @@ services:
 
   db:
     container_name: ugr-db
-    image: postgres:16
+    image: postgres:17
     restart: always
     volumes:
       - ../data/db:/var/lib/postgresql/data
