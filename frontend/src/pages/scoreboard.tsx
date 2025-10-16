@@ -71,13 +71,21 @@ const Scoreboard: React.FC = () => {
 	}
 
 	const showRecord = (record: UserStats) => (
-		<tr key={record.guid || record.nickname} className={styles.record}>
+		<tr
+			key={record.guid || record.nickname}
+			className={styles.record}
+			onClick={() => navigateToUserProfile(record.guid)}
+		>
 			<td>{record.guid}</td>
 			<td>{record.nickname}</td>
 			<td>{record.gamePlayed}</td>
 			<td>{Number(record.averageScore.toFixed(4))}</td>
 		</tr>
 	)
+
+	const navigateToUserProfile = (userId: string) => {
+		navigate(`/user/${userId}`)
+	}
 
 	return (
 		<>

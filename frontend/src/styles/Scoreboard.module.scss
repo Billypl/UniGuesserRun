@@ -90,7 +90,7 @@
 	.table {
 		width: 100%;
 		border-collapse: collapse;
-
+		
 		thead {
 			tr {
 				background-color: Colors.$dark-blue;
@@ -118,7 +118,7 @@
 			tr {
 				border-bottom: 1px solid Colors.$light-blue-grey;
 				transition: background-color 0.2s ease;
-
+				cursor: pointer;
 				&:hover {
 					background-color: rgba(0, 56, 101, 0.05);
 				}
