@@ -11,7 +11,8 @@ namespace UniGuesser.API.Configuration
             {
                 options.AddPolicy("AllowSpecificOrigins", policy =>
                 {
-                    policy.WithOrigins(configuration.GetConnectionString("CorsAllowIp"))
+                    var origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+                    policy.WithOrigins(origins)
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
