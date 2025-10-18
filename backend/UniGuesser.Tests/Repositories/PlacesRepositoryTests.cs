@@ -1,4 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using UniGuesser.Domain.Entities;
+using UniGuesser.Domain.ValueObjects.Enumerations;
+using UniGuesser.Infrastructure.Persistence;
+using UniGuesser.Infrastructure.Repositories;
 
 namespace UniGuesser.Tests.Repositories
 {
@@ -27,7 +31,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image.jpg",
                 Alt = "Test Alt",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -38,7 +42,7 @@ namespace UniGuesser.Tests.Repositories
             // Assert
             Assert.NotNull(result);
             Assert.Equal(place.Name, result.Name);
-            Assert.NotEqual(Guid.Empty, result.PublicId);
+            Assert.NotEqual(Guid.Empty, result.Id);
         }
 
         [Fact]
@@ -57,7 +61,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image.jpg",
                 Alt = "Test Alt",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -82,7 +86,7 @@ namespace UniGuesser.Tests.Repositories
             var repository = new PlacesRepository(context);
 
             // Act
-            var result = await repository.GetAsync(999);
+            var result = await repository.GetAsync(Guid.NewGuid());
 
             // Assert
             Assert.Null(result);
@@ -104,7 +108,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image1.jpg",
                 Alt = "Alt 1",
-                DifficultyLevel = "easy",
+                DifficultyLevel = DifficultyLevel.Easy,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -117,7 +121,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = -0.1278,
                 ImageUrl = "http://test.com/image2.jpg",
                 Alt = "Alt 2",
-                DifficultyLevel = "hard",
+                DifficultyLevel = DifficultyLevel.Hard,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -149,7 +153,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image.jpg",
                 Alt = "Test Alt",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -174,7 +178,7 @@ namespace UniGuesser.Tests.Repositories
             var repository = new PlacesRepository(context);
 
             // Act
-            var result = await repository.DeleteAsync(999);
+            var result = await repository.DeleteAsync(Guid.NewGuid());
 
             // Assert
             Assert.False(result);
@@ -196,7 +200,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image.jpg",
                 Alt = "Test Alt",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -204,11 +208,11 @@ namespace UniGuesser.Tests.Repositories
             var createdPlace = await repository.CreateAsync(place);
 
             // Act
-            var result = await repository.GetByPublicIdAsync(createdPlace.PublicId);
+            var result = await repository.GetAsync(createdPlace.Id);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(createdPlace.PublicId, result.PublicId);
+            Assert.Equal(createdPlace.Id, result.Id);
             Assert.Equal(createdPlace.Name, result.Name);
         }
 
@@ -228,7 +232,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image.jpg",
                 Alt = "Test Alt",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
@@ -236,11 +240,11 @@ namespace UniGuesser.Tests.Repositories
             var createdPlace = await repository.CreateAsync(place);
 
             // Act
-            var result = await repository.GetByPublicIdAsync(createdPlace.PublicId.ToString());
+            var result = await repository.GetAsync(createdPlace.Id);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(createdPlace.PublicId, result.PublicId);
+            Assert.Equal(createdPlace.Id, result.Id);
             Assert.Equal(createdPlace.Name, result.Name);
         }
 
@@ -260,7 +264,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image1.jpg",
                 Alt = "Alt 1",
-                DifficultyLevel = "easy",
+                DifficultyLevel = DifficultyLevel.Easy,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             });
@@ -273,7 +277,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = -0.1278,
                 ImageUrl = "http://test.com/image2.jpg",
                 Alt = "Alt 2",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             });
@@ -301,7 +305,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image1.jpg",
                 Alt = "Alt 1",
-                DifficultyLevel = "easy",
+                DifficultyLevel = DifficultyLevel.Easy,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             });
@@ -314,7 +318,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = -0.1278,
                 ImageUrl = "http://test.com/image2.jpg",
                 Alt = "Alt 2",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             });
@@ -327,13 +331,13 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = -74.0060,
                 ImageUrl = "http://test.com/image3.jpg",
                 Alt = "Alt 3",
-                DifficultyLevel = "hard",
+                DifficultyLevel = DifficultyLevel.Hard,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             });
 
             // Act
-            var easyPlaces = await repository.GetPlacesByDifficulty(DifficultyLevel.easy);
+            var easyPlaces = await repository.GetPlacesByDifficulty(DifficultyLevel.Easy);
 
             // Assert
             Assert.Single(easyPlaces);
@@ -356,7 +360,7 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image.jpg",
                 Alt = "Test Alt",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };

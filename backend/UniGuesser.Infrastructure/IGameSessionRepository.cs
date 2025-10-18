@@ -6,7 +6,7 @@ namespace UniGuesser.Infrastructure
 {
     public interface IGameSessionRepository : IRepository<GameSession>
     {
-        Task<bool> DeleteGameSessionByPlayerId(int userId);
+        Task<bool> DeleteGameSessionByPlayerId(Guid userId);
         Task<GameSession?> GetActiveGameSessionByPlayerId(Guid userGuid);
         Task<List<UserStats>> GetUsersStats(ScoreboardQuery scoreboardQuery);
         Task<List<GameSession>> GetGameHistoryPage(ScoreboardQuery scoreboardQuery);

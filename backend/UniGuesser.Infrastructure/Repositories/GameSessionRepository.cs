@@ -13,7 +13,7 @@ namespace UniGuesser.Infrastructure.Repositories
         {
         }
 
-        public override async Task<GameSession?> GetAsync(int id)
+        public override async Task<GameSession?> GetAsync(Guid id)
         {
             return await _dbSet
                 .Include(g => g.Player)
@@ -31,25 +31,8 @@ namespace UniGuesser.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public override async Task<GameSession?> GetByPublicIdAsync(Guid publicId)
-        {
-            return await _dbSet
-                .Include(g => g.Player)
-                .Include(g => g.Rounds)
-                .ThenInclude(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
-        }
 
-        public override async Task<GameSession?> GetByPublicIdAsync(string publicId)
-        {
-            return await _dbSet
-                .Include(g => g.Player)
-                .Include(g => g.Rounds)
-                .ThenInclude(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
-        }
-
-        public async Task<bool> DeleteGameSessionByPlayerId(int userId)
+        public async Task<bool> DeleteGameSessionByPlayerId(Guid userId)
         {
             var entities = await _dbSet.Where(gs => gs.UserId == userId).ToListAsync();
             if (entities.Any())
@@ -69,7 +52,7 @@ namespace UniGuesser.Infrastructure.Repositories
                 .Include(gs => gs.Rounds)
                 .ThenInclude(r => r.PlaceToGuess)
                 .FirstOrDefaultAsync(gs =>
-                    gs.Player != null && gs.Player.PublicId == userGuid &&
+                    gs.Player != null && gs.Player.Id == userGuid &&
                     gs.GameState == GameStatus.InProgress);
         }
 
@@ -78,9 +61,9 @@ namespace UniGuesser.Infrastructure.Repositories
             var query = _dbSet.AsQueryable()
                 .Where(gs => gs.UserId != null && gs.GameState != GameStatus.InProgress);
 
-            if (!string.IsNullOrEmpty(scoreboardQuery.DifficultyLevel))
+            if (scoreboardQuery.DifficultyLevel is not null)
             {
-                query = query.Where(gs => gs.Difficulty.Contains(scoreboardQuery.DifficultyLevel));
+                query = query.Where(gs => gs.Difficulty == scoreboardQuery.DifficultyLevel);
             }
 
             if (!string.IsNullOrEmpty(scoreboardQuery.SearchNickname))
@@ -106,14 +89,14 @@ namespace UniGuesser.Infrastructure.Repositories
         {
             var query = _dbSet.AsQueryable();
 
-            if (!string.IsNullOrEmpty(scoreboardQuery.DifficultyLevel))
+            if (scoreboardQuery.DifficultyLevel is not null)
             {
-                query = query.Where(gs => gs.Difficulty.Contains(scoreboardQuery.DifficultyLevel));
+                query = query.Where(gs => gs.Difficulty == scoreboardQuery.DifficultyLevel);
             }
 
             List<UserStats> stats = await query
                 .Where(gs => gs.UserId != null && gs.GameState != GameStatus.InProgress)
-                .GroupBy(gs => new { gs.UserId, gs.Player!.Nickname, gs.Player.PublicId })
+                .GroupBy(gs => new { gs.UserId, gs.Player!.Nickname, PublicId = gs.Player.Id })
                 .Select(g => new UserStats
                 {
                     Guid = g.Key.PublicId.ToString(),
@@ -144,7 +127,7 @@ namespace UniGuesser.Infrastructure.Repositories
                 .Include(g => g.Player)
                 .Include(g => g.Rounds)
                 .ThenInclude(r => r.PlaceToGuess)
-                .FirstOrDefaultAsync(g => g.PublicId == guid);
+                .FirstOrDefaultAsync(g => g.Id == guid);
 
         }
 
@@ -152,12 +135,12 @@ namespace UniGuesser.Infrastructure.Repositories
         {
 
             var query = _dbSet
-                .Where(gs => gs.Player.PublicId == userGuid && gs.GameState != GameStatus.InProgress);
+                .Where(gs => gs.Player.Id == userGuid && gs.GameState != GameStatus.InProgress);
 
-            if (!string.IsNullOrEmpty(userHistoryQuery.DifficultyLevel))
+            if (userHistoryQuery.DifficultyLevel is not null)
             {
                 query = query.Where(gs => gs.Difficulty != null &&
-                                          gs.Difficulty.Contains(userHistoryQuery.DifficultyLevel));
+                                          gs.Difficulty == userHistoryQuery.DifficultyLevel);
             }
 
 

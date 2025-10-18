@@ -5,18 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UniGuesser.Domain.Entities;
-using GameDbContext = UniGuesser.Infrastructure.Persistence.GameDbContext;
-
-
+using UniGuesser.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace UniGuesser.Migrations
+namespace UniGuesser.Infrastructure.Migrations
 {
     [DbContext(typeof(GameDbContext))]
-    [Migration("20251009144451_init")]
-    partial class init
+    [Migration("20251018170749_changeStringToEnumsInUserRole")]
+    partial class changeStringToEnumsInUserRole
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,13 +25,12 @@ namespace UniGuesser.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GameSession", b =>
+            modelBuilder.Entity("UniGuesser.Domain.Entities.GameSession", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<int>("ActualRoundNumber")
                         .HasColumnType("integer");
@@ -44,6 +40,9 @@ namespace UniGuesser.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FinishDateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("GameMode")
@@ -57,16 +56,11 @@ namespace UniGuesser.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
 
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("PlayerId")
+                        .HasColumnType("uuid");
 
-                    b.Property<Guid>("PublicId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -81,23 +75,21 @@ namespace UniGuesser.Migrations
                     b.ToTable("GameSessions");
                 });
 
-            modelBuilder.Entity("Place", b =>
+            modelBuilder.Entity("UniGuesser.Domain.Entities.Place", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Alt")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("AuthorId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int?>("AuthorPlaceId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("AuthorPlaceId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -130,9 +122,6 @@ namespace UniGuesser.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<Guid>("PublicId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
@@ -150,14 +139,12 @@ namespace UniGuesser.Migrations
 
             modelBuilder.Entity("UniGuesser.Domain.Entities.Round", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GameSessionId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("GameSessionId")
+                        .HasColumnType("uuid");
 
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision");
@@ -165,10 +152,7 @@ namespace UniGuesser.Migrations
                     b.Property<double>("Longitude")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("PlaceId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("PublicId")
+                    b.Property<Guid>("PlaceId")
                         .HasColumnType("uuid");
 
                     b.Property<double>("Score")
@@ -187,11 +171,9 @@ namespace UniGuesser.Migrations
 
             modelBuilder.Entity("UniGuesser.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -212,10 +194,6 @@ namespace UniGuesser.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("PublicId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
@@ -231,7 +209,7 @@ namespace UniGuesser.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("GameSession", b =>
+            modelBuilder.Entity("UniGuesser.Domain.Entities.GameSession", b =>
                 {
                     b.HasOne("UniGuesser.Domain.Entities.User", "Player")
                         .WithMany()
@@ -245,7 +223,7 @@ namespace UniGuesser.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("Place", b =>
+            modelBuilder.Entity("UniGuesser.Domain.Entities.Place", b =>
                 {
                     b.HasOne("UniGuesser.Domain.Entities.User", null)
                         .WithMany()
@@ -261,13 +239,13 @@ namespace UniGuesser.Migrations
 
             modelBuilder.Entity("UniGuesser.Domain.Entities.Round", b =>
                 {
-                    b.HasOne("GameSession", "GameSession")
+                    b.HasOne("UniGuesser.Domain.Entities.GameSession", "GameSession")
                         .WithMany("Rounds")
                         .HasForeignKey("GameSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Place", "PlaceToGuess")
+                    b.HasOne("UniGuesser.Domain.Entities.Place", "PlaceToGuess")
                         .WithMany()
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -278,7 +256,7 @@ namespace UniGuesser.Migrations
                     b.Navigation("PlaceToGuess");
                 });
 
-            modelBuilder.Entity("GameSession", b =>
+            modelBuilder.Entity("UniGuesser.Domain.Entities.GameSession", b =>
                 {
                     b.Navigation("Rounds");
                 });

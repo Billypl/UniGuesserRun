@@ -10,7 +10,7 @@ namespace UniGuesser.Application.UseCases.Places.UpdatePlace
     {
         public async Task<Unit> Handle(UpdatePlaceCommand request, CancellationToken cancellationToken)
         {
-            Place? place = await placesRepository.GetByPublicIdAsync(request.PlaceId);
+            Place? place = await placesRepository.GetAsync(request.PlaceId);
 
             if (place is null)
             {

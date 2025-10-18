@@ -55,10 +55,10 @@ namespace UniGuesser.Application.Services.GameStartStrategies
             List<Round> gameRounds = await _gameRoundsGenerator.GenerateRounds(difficulty);
             GameSession gameSession = new GameSession
             {
-                PublicId = GuestGuid,
+                Id = GuestGuid,
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
-                Difficulty = difficulty.ToString(),
+                Difficulty = difficulty,
                 GameMode = startGameCommand.startDataDto.GameMode
             };
 

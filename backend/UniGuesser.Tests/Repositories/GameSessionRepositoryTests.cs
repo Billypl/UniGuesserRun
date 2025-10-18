@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UniGuesser.Domain.Entities;
+using UniGuesser.Domain.ValueObjects;
 using UniGuesser.Domain.ValueObjects.Enumerations;
 using UniGuesser.Infrastructure.Persistence;
 using UniGuesser.Infrastructure.Repositories;
@@ -29,7 +30,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
@@ -41,7 +42,7 @@ namespace UniGuesser.Tests.Repositories
                 ExpirationDate = DateTime.UtcNow.AddHours(1),
                 ActualRoundNumber = 0,
                 GameScore = 0,
-                Difficulty = "normal",
+                Difficulty = DifficultyLevel.Normal,
                 GameState = GameStatus.InProgress,
                 Rounds = new List<Round>()
             };
@@ -52,7 +53,7 @@ namespace UniGuesser.Tests.Repositories
             // Assert
             Assert.NotNull(result);
             Assert.Equal(user.Id, result.UserId);
-            Assert.NotEqual(Guid.Empty, result.PublicId);
+            Assert.NotEqual(Guid.Empty, result.Id);
         }
 
         [Fact]
@@ -67,7 +68,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
 
             var place = new Place
@@ -78,12 +79,12 @@ namespace UniGuesser.Tests.Repositories
                 Longitude = 21.0122,
                 ImageUrl = "http://test.com/image.jpg",
                 Alt = "Test Alt",
-                DifficultyLevel = "normal",
+                DifficultyLevel = DifficultyLevel.Normal,
                 InQueue = false,
                 CreatedAt = DateTime.UtcNow
             };
 
-            int createdSessionId;
+            Guid createdSessionId;
 
             using (var context = new GameDbContext(options))
             {
@@ -102,7 +103,7 @@ namespace UniGuesser.Tests.Repositories
                     ExpirationDate = DateTime.UtcNow.AddHours(1),
                     ActualRoundNumber = 0,
                     GameScore = 0,
-                    Difficulty = "normal",
+                    Difficulty = DifficultyLevel.Normal,
                     GameState = GameStatus.InProgress,
                     Rounds = new List<Round>()
                 };
@@ -145,7 +146,7 @@ namespace UniGuesser.Tests.Repositories
             var repository = new GameSessionRepository(context);
 
             // Act
-            var result = await repository.GetAsync(999);
+            var result = await repository.GetAsync(Guid.NewGuid());
 
             // Assert
             Assert.Null(result);
@@ -167,7 +168,7 @@ namespace UniGuesser.Tests.Repositories
                     Email = "test@example.com",
                     PasswordHash = "hash",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 };
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
@@ -179,7 +180,7 @@ namespace UniGuesser.Tests.Repositories
                     ExpirationDate = DateTime.UtcNow.AddHours(1),
                     ActualRoundNumber = 0,
                     GameScore = 0,
-                    Difficulty = "easy",
+                    Difficulty = DifficultyLevel.Easy,
                     GameState = GameStatus.InProgress,
                     Rounds = new List<Round>()
                 };
@@ -191,7 +192,7 @@ namespace UniGuesser.Tests.Repositories
                     ExpirationDate = DateTime.UtcNow.AddHours(2),
                     ActualRoundNumber = 0,
                     GameScore = 0,
-                    Difficulty = "hard",
+                    Difficulty = DifficultyLevel.Hard,
                     GameState = GameStatus.Finished,
                     Rounds = new List<Round>()
                 };
@@ -226,7 +227,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
@@ -238,7 +239,7 @@ namespace UniGuesser.Tests.Repositories
                 ExpirationDate = DateTime.UtcNow.AddHours(1),
                 ActualRoundNumber = 0,
                 GameScore = 0,
-                Difficulty = "normal",
+                Difficulty = DifficultyLevel.Normal,
                 GameState = GameStatus.InProgress,
                 Rounds = new List<Round>()
             };
@@ -272,7 +273,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
@@ -284,7 +285,7 @@ namespace UniGuesser.Tests.Repositories
                 ExpirationDate = DateTime.UtcNow.AddHours(1),
                 ActualRoundNumber = 0,
                 GameScore = 0,
-                Difficulty = "normal",
+                Difficulty = DifficultyLevel.Normal,
                 GameState = GameStatus.InProgress,
                 Rounds = new List<Round>()
             };
@@ -308,7 +309,7 @@ namespace UniGuesser.Tests.Repositories
             var repository = new GameSessionRepository(context);
 
             // Act
-            var result = await repository.DeleteAsync(999);
+            var result = await repository.DeleteAsync(Guid.NewGuid());
 
             // Assert
             Assert.False(result);
@@ -331,7 +332,7 @@ namespace UniGuesser.Tests.Repositories
                     Email = "test@example.com",
                     PasswordHash = "hash",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 };
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
@@ -344,7 +345,7 @@ namespace UniGuesser.Tests.Repositories
                     Longitude = 21.0122,
                     ImageUrl = "http://test.com/image.jpg",
                     Alt = "Test Alt",
-                    DifficultyLevel = "normal",
+                    DifficultyLevel = DifficultyLevel.Normal,
                     InQueue = false,
                     CreatedAt = DateTime.UtcNow
                 };
@@ -358,12 +359,12 @@ namespace UniGuesser.Tests.Repositories
                     ExpirationDate = DateTime.UtcNow.AddHours(1),
                     ActualRoundNumber = 0,
                     GameScore = 0,
-                    Difficulty = "normal",
+                    Difficulty = DifficultyLevel.Normal,
                     GameState = GameStatus.InProgress,
                     Rounds = new List<Round>()
                 };
                 var createdSession = await repository.CreateAsync(gameSession);
-                createdSessionPublicId = createdSession.PublicId;
+                createdSessionPublicId = createdSession.Id;
 
                 var round = new Round
                 {
@@ -381,11 +382,11 @@ namespace UniGuesser.Tests.Repositories
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);
-                var result = await repository.GetByPublicIdAsync(createdSessionPublicId);
+                var result = await repository.GetAsync(createdSessionPublicId);
 
                 // Assert
                 Assert.NotNull(result);
-                Assert.Equal(createdSessionPublicId, result.PublicId);
+                Assert.Equal(createdSessionPublicId, result.Id);
                 Assert.NotNull(result.Rounds);
                 Assert.Single(result.Rounds);
                 Assert.NotNull(result.Rounds[0].PlaceToGuess);
@@ -409,7 +410,7 @@ namespace UniGuesser.Tests.Repositories
                     Email = "test@example.com",
                     PasswordHash = "hash",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 };
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
@@ -422,7 +423,7 @@ namespace UniGuesser.Tests.Repositories
                     Longitude = 21.0122,
                     ImageUrl = "http://test.com/image.jpg",
                     Alt = "Test Alt",
-                    DifficultyLevel = "normal",
+                    DifficultyLevel = DifficultyLevel.Normal,
                     InQueue = false,
                     CreatedAt = DateTime.UtcNow
                 };
@@ -436,12 +437,12 @@ namespace UniGuesser.Tests.Repositories
                     ExpirationDate = DateTime.UtcNow.AddHours(1),
                     ActualRoundNumber = 0,
                     GameScore = 0,
-                    Difficulty = "normal",
+                    Difficulty = DifficultyLevel.Normal,
                     GameState = GameStatus.InProgress,
                     Rounds = new List<Round>()
                 };
                 var createdSession = await repository.CreateAsync(gameSession);
-                createdSessionPublicId = createdSession.PublicId;
+                createdSessionPublicId = createdSession.Id;
 
                 var round = new Round
                 {
@@ -459,11 +460,11 @@ namespace UniGuesser.Tests.Repositories
             using (var context = new GameDbContext(options))
             {
                 var repository = new GameSessionRepository(context);
-                var result = await repository.GetByPublicIdAsync(createdSessionPublicId.ToString());
+                var result = await repository.GetAsync(createdSessionPublicId);
 
                 // Assert
                 Assert.NotNull(result);
-                Assert.Equal(createdSessionPublicId, result.PublicId);
+                Assert.Equal(createdSessionPublicId, result.Id);
                 Assert.NotNull(result.Rounds);
                 Assert.Single(result.Rounds);
                 Assert.NotNull(result.Rounds[0].PlaceToGuess);
@@ -484,7 +485,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
@@ -496,7 +497,7 @@ namespace UniGuesser.Tests.Repositories
                 ExpirationDate = DateTime.UtcNow.AddHours(1),
                 ActualRoundNumber = 0,
                 GameScore = 0,
-                Difficulty = "easy",
+                Difficulty = DifficultyLevel.Easy,
                 GameState = GameStatus.InProgress,
                 Rounds = new List<Round>()
             };
@@ -508,7 +509,7 @@ namespace UniGuesser.Tests.Repositories
                 ExpirationDate = DateTime.UtcNow.AddHours(2),
                 ActualRoundNumber = 0,
                 GameScore = 0,
-                Difficulty = "hard",
+                Difficulty = DifficultyLevel.Hard,
                 GameState = GameStatus.Finished,
                 Rounds = new List<Round>()
             };
@@ -534,7 +535,7 @@ namespace UniGuesser.Tests.Repositories
             var repository = new GameSessionRepository(context);
 
             // Act
-            var result = await repository.DeleteGameSessionByPlayerId(999);
+            var result = await repository.DeleteGameSessionByPlayerId(Guid.NewGuid());
 
             // Assert
             Assert.False(result);
@@ -557,11 +558,11 @@ namespace UniGuesser.Tests.Repositories
                     Email = "test@example.com",
                     PasswordHash = "hash",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 };
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
-                userPublicId = user.PublicId;
+                userPublicId = user.Id;
 
                 var activeSession = new GameSession
                 {
@@ -570,7 +571,7 @@ namespace UniGuesser.Tests.Repositories
                     ExpirationDate = DateTime.UtcNow.AddHours(1),
                     ActualRoundNumber = 0,
                     GameScore = 0,
-                    Difficulty = "normal",
+                    Difficulty = DifficultyLevel.Normal,
                     GameState = GameStatus.InProgress,
                     Rounds = new List<Round>()
                 };
@@ -604,13 +605,13 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
 
             // Act
-            var result = await repository.GetActiveGameSessionByPlayerId(user.PublicId);
+            var result = await repository.GetActiveGameSessionByPlayerId(user.Id);
 
             // Assert
             Assert.Null(result);
@@ -633,7 +634,7 @@ namespace UniGuesser.Tests.Repositories
                     Email = "test@example.com",
                     PasswordHash = "hash",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 };
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
@@ -646,7 +647,7 @@ namespace UniGuesser.Tests.Repositories
                     Longitude = 21.0122,
                     ImageUrl = "http://test.com/image.jpg",
                     Alt = "Test Alt",
-                    DifficultyLevel = "normal",
+                    DifficultyLevel = DifficultyLevel.Normal,
                     InQueue = false,
                     CreatedAt = DateTime.UtcNow
                 };
@@ -660,12 +661,12 @@ namespace UniGuesser.Tests.Repositories
                     ExpirationDate = DateTime.UtcNow.AddHours(1),
                     ActualRoundNumber = 0,
                     GameScore = 0,
-                    Difficulty = "normal",
+                    Difficulty = DifficultyLevel.Normal,
                     GameState = GameStatus.InProgress,
                     Rounds = new List<Round>()
                 };
                 var createdSession = await repository.CreateAsync(activeSession);
-                activeSessionPublicId = createdSession.PublicId;
+                activeSessionPublicId = createdSession.Id;
 
                 var round = new Round
                 {
@@ -708,7 +709,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
@@ -720,14 +721,14 @@ namespace UniGuesser.Tests.Repositories
                 ExpirationDate = DateTime.UtcNow.AddHours(1),
                 ActualRoundNumber = 5,
                 GameScore = 500,
-                Difficulty = "normal",
+                Difficulty = DifficultyLevel.Normal,
                 GameState = GameStatus.Finished,
                 Rounds = new List<Round>()
             };
             var createdSession = await repository.CreateAsync(completedSession);
 
             // Act
-            var result = await repository.GetActiveGameSession(createdSession.PublicId);
+            var result = await repository.GetActiveGameSession(createdSession.Id);
 
             // Assert
             Assert.Null(result);

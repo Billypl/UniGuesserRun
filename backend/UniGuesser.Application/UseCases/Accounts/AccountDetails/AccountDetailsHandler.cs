@@ -11,7 +11,7 @@ namespace UniGuesser.Application.UseCases.Accounts.AccountDetails
     {
         public async Task<AccountDetailsDto> Handle(AccountDetailsQuery request, CancellationToken cancellationToken)
         {
-            var account = await accountRepository.GetByPublicIdAsync(request.Id.ToString());
+            var account = await accountRepository.GetAsync(request.Id);
 
             if (account == null)
             {

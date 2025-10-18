@@ -32,7 +32,7 @@ namespace UniGuesser.Infrastructure.Repositories
             return entities;
         }
 
-        public virtual async Task<T?> GetAsync(int id)
+        public virtual async Task<T?> GetAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -48,7 +48,7 @@ namespace UniGuesser.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await GetAsync(id);
             if (entity != null)
@@ -58,16 +58,6 @@ namespace UniGuesser.Infrastructure.Repositories
                 return true;
             }
             return false;
-        }
-        public virtual async Task<T?> GetByPublicIdAsync(Guid publicId)
-        {
-            return await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
-        }
-
-        public virtual async Task<T?> GetByPublicIdAsync(string publicId)
-        {
-            var result = await _dbSet.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
-            return result;
         }
     }
 }

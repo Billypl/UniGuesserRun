@@ -9,7 +9,7 @@ namespace UniGuesser.Application.UseCases.Places.DeletePlace
     {
         public async Task<Unit> Handle(DeletePlaceCommand request, CancellationToken cancellationToken)
         {
-            Place? place = await placesRepository.GetByPublicIdAsync(request.guid);
+            Place? place = await placesRepository.GetAsync(request.guid);
 
             if (place is null)
             {

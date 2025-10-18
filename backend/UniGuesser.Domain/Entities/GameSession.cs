@@ -10,15 +10,15 @@ namespace UniGuesser.Domain.Entities;
 
 public class GameSession
 {
-    public int Id { get; set; }
-    public Guid PublicId { get; set; } = Guid.NewGuid();
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
     public virtual List<Round> Rounds { get; set; } = new();
     public GameMode GameMode { get; set; }
     public DateTime ExpirationDate { get; set; }
     public int ActualRoundNumber { get; set; }
     public double GameScore { get; set; }
-    public string Difficulty { get; set; }
-    public int? UserId { get; set; }
+    public DifficultyLevel Difficulty { get; set; }
+    public Guid? UserId { get; set; }
     public virtual User? Player { get; set; }
     public GameStatus GameState { get; set; } = GameStatus.InProgress;
     public DateTime FinishDateTime { get; set; }

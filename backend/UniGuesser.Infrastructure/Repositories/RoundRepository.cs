@@ -12,7 +12,7 @@ namespace UniGuesser.Infrastructure.Repositories
         {
         }
 
-        public override async Task<Round?> GetAsync(int id)
+        public override async Task<Round?> GetAsync(Guid id)
         {
             return await _dbSet
                 .Include(r => r.PlaceToGuess)
@@ -26,21 +26,5 @@ namespace UniGuesser.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public override async Task<Round?> GetByPublicIdAsync(Guid publicId)
-        {
-            return await _dbSet
-                .Include(r => r.PlaceToGuess)
-                    .ThenInclude(p => p.AuthorPlace)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
-        }
-
-        public override async Task<Round?> GetByPublicIdAsync(string publicId)
-        {
-            return await _dbSet
-                .Include(r => r.PlaceToGuess)
-                    .ThenInclude(p => p.AuthorPlace)
-
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
-        }
     }
 }

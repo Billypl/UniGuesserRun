@@ -13,7 +13,7 @@ namespace UniGuesser.Infrastructure.Repositories
         {
         }
 
-        public override async Task<Place?> GetAsync(int id)
+        public override async Task<Place?> GetAsync(Guid id)
         {
             return await _dbSet
                 .Include(p => p.AuthorPlace)
@@ -27,20 +27,6 @@ namespace UniGuesser.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public override async Task<Place?> GetByPublicIdAsync(Guid publicId)
-        {
-            return await _dbSet
-                .Include(p => p.AuthorPlace)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == publicId);
-        }
-
-        public override async Task<Place?> GetByPublicIdAsync(string publicId)
-        {
-            return await _dbSet
-                .Include(p => p.AuthorPlace)
-                .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "PublicId") == Guid.Parse(publicId));
-        }
-
         public async Task<long> GetPlacesCount()
         {
             return await _dbSet.CountAsync();
@@ -49,10 +35,8 @@ namespace UniGuesser.Infrastructure.Repositories
         public async Task<List<Place>> GetPlacesByDifficulty(DifficultyLevel difficultyLevel)
         {
 
-            string difficulty = difficultyLevel.ToString();
-
             return await _dbSet
-                .Where(p => p.DifficultyLevel == difficulty)
+                .Where(p => p.DifficultyLevel == difficultyLevel)
                 .ToListAsync();
         }
 

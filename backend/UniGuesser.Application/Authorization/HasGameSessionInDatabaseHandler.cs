@@ -59,8 +59,8 @@ namespace UniGuesser.Application.Authorization
 
             bool isAuthorized = tokenType switch
             {
-                "user" => session.Player?.PublicId == userGuid,
-                "guest" => session.PublicId == userGuid,
+                "user" => session.Player?.Id == userGuid,
+                "guest" => session.Id == userGuid,
                 _ => false
             };
 

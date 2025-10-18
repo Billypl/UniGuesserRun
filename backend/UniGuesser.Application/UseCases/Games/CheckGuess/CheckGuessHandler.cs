@@ -14,7 +14,7 @@ namespace UniGuesser.Application.UseCases.Games.CheckGuess
         {
             GameSession session = await gameSessionService.GetSessionByGuid(request.Guid);
 
-            var result = await gameSessionService.CheckGuess(session.PublicId, request.GuessingCoordinates, gameSettings.Value.RoundsNumber);
+            var result = await gameSessionService.CheckGuess(session.Id, request.GuessingCoordinates, gameSettings.Value.RoundsNumber);
             await gameSessionService.UpdateGameSession(session);
             return result;
         }

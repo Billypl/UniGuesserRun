@@ -11,7 +11,7 @@ namespace UniGuesser.Application.UseCases.Accounts.Delete
 
         public async Task<Unit> Handle(DeleteCommand deleteCommand, CancellationToken cancellationToken)
         {
-            User? user = await accountRepository.GetByPublicIdAsync(deleteCommand.Guid);
+            User? user = await accountRepository.GetAsync(deleteCommand.Guid);
 
             if (user is null)
             {

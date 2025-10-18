@@ -4,6 +4,7 @@ using UniGuesser.Application.Models.AccountModels;
 using UniGuesser.Application.Services;
 using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Repositories;
+using UniGuesser.Domain.ValueObjects.Enumerations;
 
 namespace UniGuesser.Application.UseCases.Places.AddNewPlace
 {
@@ -16,10 +17,10 @@ namespace UniGuesser.Application.UseCases.Places.AddNewPlace
             AccountDetailsFromTokenDto authorData = httpContextAccessorService.GetAuthenticatedUserProfile();
 
             // Ensure null safety by checking the result of GetByPublicIdAsync
-            User? user = await accountRepository.GetByPublicIdAsync(authorData.Guid);
+            User? user = await accountRepository.GetAsync(Guid.Parse(authorData.Guid));
             if (user == null)
             {
-                throw new InvalidOperationException($"User with PublicId {authorData.Guid} not found.");
+                throw new InvalidOperationException($"User with Id {authorData.Guid} not found.");
             }
 
             Place newPlaceToCheck = mapper.Map<Place>(newPlace.newPlaceDto);
@@ -27,7 +28,9 @@ namespace UniGuesser.Application.UseCases.Places.AddNewPlace
             newPlaceToCheck.CreatedAt = DateTime.Now;
             newPlaceToCheck.AuthorPlace = user;
             newPlaceToCheck.InQueue = true;
-            newPlaceToCheck.DifficultyLevel = newPlace.newPlaceDto.Difficulty;
+            newPlaceToCheck.DifficultyLevel =
+                (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), newPlace.newPlaceDto.Difficulty, true);
+
 
             await placesRepository.CreateAsync(newPlaceToCheck);
 

@@ -45,16 +45,26 @@ namespace UniGuesser.Application.Services.GameStartStrategies
 
             AccountDetailsFromTokenDto accountDetails = _httpContextAccessorService.GetAuthenticatedUserProfile();
 
-            var user = await _accountRepository.GetByPublicIdAsync(accountDetails.Guid);
+
+            if (!Guid.TryParse(accountDetails.Guid, out Guid parsedUserGuid))
+            {
+                throw new InvalidOperationException("Invalid user GUID found in the authenticated token.");
+            }
+
+            var user = await _accountRepository.GetAsync(parsedUserGuid);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"User not found for GUID: {parsedUserGuid}");
+            }
 
             GameSession gameSession = new GameSession
             {
-                PublicId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 Rounds = gameRounds,
                 ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
                 UserId = user.Id,
                 Player = user,
-                Difficulty = difficulty.ToString(),
+                Difficulty = difficulty,
                 GameMode = startGameCommand.startDataDto.GameMode
             };
 
@@ -68,7 +78,7 @@ namespace UniGuesser.Application.Services.GameStartStrategies
             return new StartedGameData
             {
                 Token = _httpContextAccessorService.GetTokenFromHeader(),
-                GameGuid = gameSession.PublicId.ToString()
+                GameGuid = gameSession.Id.ToString()
             };
         }
 

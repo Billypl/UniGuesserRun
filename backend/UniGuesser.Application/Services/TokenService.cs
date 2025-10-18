@@ -31,7 +31,7 @@ namespace UniGuesser.Application.Services
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier,user.PublicId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Email,$"{user.Email}"),
                 new Claim(ClaimTypes.Role,$"{user.Role}"),
                 new Claim(ClaimTypes.Name, $"{user.Nickname}"),

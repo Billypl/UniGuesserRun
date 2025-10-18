@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UniGuesser.Domain.Entities;
+using UniGuesser.Domain.ValueObjects;
 using UniGuesser.Infrastructure.Persistence;
 using UniGuesser.Infrastructure.Repositories;
 
@@ -28,7 +29,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hashedpassword123",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
 
             // Act
@@ -38,7 +39,7 @@ namespace UniGuesser.Tests.Repositories
             Assert.NotNull(result);
             Assert.Equal(user.Nickname, result.Nickname);
             Assert.Equal(user.Email, result.Email);
-            Assert.NotEqual(Guid.Empty, result.PublicId);
+            Assert.NotEqual(Guid.Empty, result.Id);
         }
 
         [Fact]
@@ -55,7 +56,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hashedpassword123",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             var createdUser = await repository.CreateAsync(user);
 
@@ -77,7 +78,7 @@ namespace UniGuesser.Tests.Repositories
             var repository = new AccountRepository(context);
 
             // Act
-            var result = await repository.GetAsync(999);
+            var result = await repository.GetAsync(Guid.NewGuid());
 
             // Assert
             Assert.Null(result);
@@ -97,7 +98,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "user1@example.com",
                 PasswordHash = "hash1",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
 
             var user2 = new User
@@ -106,7 +107,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "user2@example.com",
                 PasswordHash = "hash2",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
 
             await repository.CreateAsync(user1);
@@ -134,7 +135,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "original@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             var createdUser = await repository.CreateAsync(user);
 
@@ -164,7 +165,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             var createdUser = await repository.CreateAsync(user);
 
@@ -186,7 +187,7 @@ namespace UniGuesser.Tests.Repositories
             var repository = new AccountRepository(context);
 
             // Act
-            var result = await repository.DeleteAsync(999);
+            var result = await repository.DeleteAsync(Guid.NewGuid());
 
             // Assert
             Assert.False(result);
@@ -206,16 +207,16 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             var createdUser = await repository.CreateAsync(user);
 
             // Act
-            var result = await repository.GetByPublicIdAsync(createdUser.PublicId);
+            var result = await repository.GetAsync(createdUser.Id);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(createdUser.PublicId, result.PublicId);
+            Assert.Equal(createdUser.Id, result.Id);
             Assert.Equal(createdUser.Nickname, result.Nickname);
         }
 
@@ -233,16 +234,16 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             var createdUser = await repository.CreateAsync(user);
 
             // Act
-            var result = await repository.GetByPublicIdAsync(createdUser.PublicId.ToString());
+            var result = await repository.GetAsync(createdUser.Id);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(createdUser.PublicId, result.PublicId);
+            Assert.Equal(createdUser.Id, result.Id);
             Assert.Equal(createdUser.Nickname, result.Nickname);
         }
 
@@ -262,7 +263,7 @@ namespace UniGuesser.Tests.Repositories
                     Email = "user1@example.com",
                     PasswordHash = "hash1",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 },
                 new User
                 {
@@ -270,7 +271,7 @@ namespace UniGuesser.Tests.Repositories
                     Email = "user2@example.com",
                     PasswordHash = "hash2",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 },
                 new User
                 {
@@ -278,7 +279,7 @@ namespace UniGuesser.Tests.Repositories
                     Email = "user3@example.com",
                     PasswordHash = "hash3",
                     CreatedAt = DateTime.UtcNow,
-                    Role = "User"
+                    Role = UserRoles.User
                 }
             };
 
@@ -304,7 +305,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await repository.CreateAsync(user);
 
@@ -331,7 +332,7 @@ namespace UniGuesser.Tests.Repositories
                 Email = "test@example.com",
                 PasswordHash = "hash",
                 CreatedAt = DateTime.UtcNow,
-                Role = "User"
+                Role = UserRoles.User
             };
             await repository.CreateAsync(user);
 

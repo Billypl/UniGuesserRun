@@ -1,3 +1,6 @@
+using UniGuesser.Domain.Services;
+using UniGuesser.Domain.ValueObjects;
+
 namespace UniGuesser.Tests.Services
 {
     public class DistanceCalculatorTests

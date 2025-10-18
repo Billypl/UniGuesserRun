@@ -6,17 +6,15 @@ namespace UniGuesser.Domain.Entities
     public class Round
     {
         [Key]
-        public int Id { get; set; }
-        public Guid PublicId { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double Score { get; set; }
-
-        public int GameSessionId { get; set; }
+        public Guid GameSessionId { get; set; }
         [JsonIgnore]
         public virtual GameSession GameSession { get; set; }
 
-        public int PlaceId { get; set; }
+        public Guid PlaceId { get; set; }
         public virtual Place PlaceToGuess { get; set; }
 
     }

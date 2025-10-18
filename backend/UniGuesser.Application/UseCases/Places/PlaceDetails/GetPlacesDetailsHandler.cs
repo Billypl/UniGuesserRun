@@ -11,7 +11,7 @@ namespace UniGuesser.Application.UseCases.Places.PlaceDetails
     {
         public async Task<ShowPlaceDto> Handle(GetPlaceDetailsQuery request, CancellationToken cancellationToken)
         {
-            Place? place = await placesRepository.GetByPublicIdAsync(request.guid);
+            Place? place = await placesRepository.GetAsync(request.guid);
 
             if (place is null)
             {

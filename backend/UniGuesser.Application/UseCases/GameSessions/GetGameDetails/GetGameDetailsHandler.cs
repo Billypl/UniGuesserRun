@@ -10,7 +10,7 @@ namespace UniGuesser.Application.UseCases.GameSessions.GetGameDetails
     {
         public async Task<FinishedGameDto> Handle(GetGameDetailsQuery request, CancellationToken cancellationToken)
         {
-            var session = await gameSessionRepository.GetByPublicIdAsync(request.Guid);
+            var session = await gameSessionRepository.GetAsync(request.Guid);
             if (session is null)
             {
                 throw new GameSessionExceptions.GameNotFoundException(request.Guid);

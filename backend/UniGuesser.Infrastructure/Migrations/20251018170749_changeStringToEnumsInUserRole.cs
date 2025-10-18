@@ -1,12 +1,12 @@
-﻿#nullable disable
-
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace UniGuesser.Migrations
+#nullable disable
+
+namespace UniGuesser.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class changeStringToEnumsInUserRole : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,9 +15,7 @@ namespace UniGuesser.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PublicId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Nickname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
@@ -33,17 +31,16 @@ namespace UniGuesser.Migrations
                 name: "GameSessions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PublicId = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     GameMode = table.Column<int>(type: "integer", nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ActualRoundNumber = table.Column<int>(type: "integer", nullable: false),
                     GameScore = table.Column<double>(type: "double precision", nullable: false),
                     Difficulty = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: true),
-                    PlayerId = table.Column<int>(type: "integer", nullable: true),
-                    GameState = table.Column<int>(type: "integer", nullable: false, defaultValue: 0)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    PlayerId = table.Column<Guid>(type: "uuid", nullable: true),
+                    GameState = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    FinishDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,9 +62,7 @@ namespace UniGuesser.Migrations
                 name: "Places",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PublicId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Latitude = table.Column<double>(type: "double precision", nullable: false),
@@ -77,8 +72,8 @@ namespace UniGuesser.Migrations
                     DifficultyLevel = table.Column<string>(type: "text", nullable: false),
                     InQueue = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    AuthorId = table.Column<int>(type: "integer", nullable: true),
-                    AuthorPlaceId = table.Column<int>(type: "integer", nullable: true)
+                    AuthorId = table.Column<Guid>(type: "uuid", nullable: true),
+                    AuthorPlaceId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,14 +95,12 @@ namespace UniGuesser.Migrations
                 name: "Rounds",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PublicId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Latitude = table.Column<double>(type: "double precision", nullable: false),
                     Longitude = table.Column<double>(type: "double precision", nullable: false),
                     Score = table.Column<double>(type: "double precision", nullable: false),
-                    GameSessionId = table.Column<int>(type: "integer", nullable: false),
-                    PlaceId = table.Column<int>(type: "integer", nullable: false)
+                    GameSessionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlaceId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {

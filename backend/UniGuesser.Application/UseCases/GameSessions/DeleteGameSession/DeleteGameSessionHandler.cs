@@ -9,7 +9,7 @@ namespace UniGuesser.Application.UseCases.GameSessions.DeleteGameSession
     {
         public async Task<Unit> Handle(DeleteGameSessionCommand request, CancellationToken cancellationToken)
         {
-            GameSession? session = await gameSessionRepository.GetByPublicIdAsync(request.Guid);
+            GameSession? session = await gameSessionRepository.GetAsync(request.Guid);
 
             if (session is null)
             {

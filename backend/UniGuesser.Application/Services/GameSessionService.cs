@@ -11,7 +11,7 @@ namespace UniGuesser.Application.Services
 {
     public interface IGameSessionService
     {
-        Task DeleteSessionById(int id);
+        Task DeleteSessionById(Guid id);
         Task<GameSession> GetSessionByGuid(Guid guid);
         Task UpdateGameSession(GameSession session);
         Task AddNewGameSession(GameSession session);
@@ -36,7 +36,7 @@ namespace UniGuesser.Application.Services
             _mapper = mapper;
         }
 
-        public async Task DeleteSessionById(int id)
+        public async Task DeleteSessionById(Guid id)
         {
             var deleteResult = await _gameSessionRepository.DeleteAsync(id);
             if (deleteResult == false)

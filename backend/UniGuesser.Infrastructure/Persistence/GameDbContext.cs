@@ -36,6 +36,9 @@ namespace UniGuesser.Infrastructure.Persistence
 
                 entity.HasIndex(u => u.Nickname).IsUnique();
 
+                entity.Property(g => g.Role)
+                    .HasConversion<string>();
+
             });
 
 
@@ -49,10 +52,12 @@ namespace UniGuesser.Infrastructure.Persistence
                 entity.HasIndex(gs => gs.ExpirationDate);
                 entity.HasIndex(gs => gs.ActualRoundNumber);
 
-                entity.Property(gs => gs.PublicId)
+                entity.Property(gs => gs.Id)
                     .HasDefaultValueSql("gen_random_uuid()");
                 entity.Property(gs => gs.GameState)
                     .HasDefaultValue(GameStatus.InProgress);
+                entity.Property(g => g.Difficulty)
+                    .HasConversion<string>();
 
             });
 
@@ -74,6 +79,9 @@ namespace UniGuesser.Infrastructure.Persistence
                 entity.Property(p => p.Name)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(g => g.DifficultyLevel)
+                    .HasConversion<string>();
 
                 entity.Property(u => u.CreatedAt)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -99,6 +107,8 @@ namespace UniGuesser.Infrastructure.Persistence
                 entity.HasIndex(r => r.Score);
                 entity.HasIndex(r => r.GameSessionId);
             });
+
+
         }
     }
 }

@@ -29,7 +29,7 @@ namespace UniGuesser.Application.UseCases.Accounts.Register
                 Email = registerAccountCommand.Email,
                 Nickname = registerAccountCommand.Nickname,
                 CreatedAt = DateTime.Now,
-                Role = registerAccountCommand.Role.ToString(),
+                Role = registerAccountCommand.Role,
             };
 
             var passwordHash = passwordHasher.HashPassword(newUser, registerAccountCommand.Password);

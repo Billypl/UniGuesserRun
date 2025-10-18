@@ -9,7 +9,7 @@ namespace UniGuesser.Application.UseCases.Places.ChangeQueueStatus
     {
         public async Task<Unit> Handle(ChangeQueueStatusCommand request, CancellationToken cancellationToken)
         {
-            Place? placeToAccept = placesRepository.GetByPublicIdAsync(request.Guid).Result;
+            Place? placeToAccept = placesRepository.GetAsync(request.Guid).Result;
 
             if (placeToAccept == null)
             {
