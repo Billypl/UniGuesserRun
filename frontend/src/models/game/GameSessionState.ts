@@ -1,6 +1,6 @@
 export interface GameSessionStateDto {
-    publicId: string;
-    expirationDate: Date;
-    actualRoundNumber: number;
-    difficultyLevel: string;
+	id: string
+	actualRoundNumber: number
+	difficulty: string
+	expirationDate: Date
 }

@@ -79,3 +79,123 @@
 		}
 	}
 }
+
+.modal_backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+	animation: backdropFadeIn 0.3s ease;
+	cursor: pointer;
+}
+
+.existing_game_modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	padding: 32px 40px;
+	background-color: #fff;
+	border-radius: 16px;
+	box-shadow: 0 12px 40px rgba(5, 5, 21, 0.25);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	z-index: 1000;
+	min-width: 400px;
+	max-width: 90vw;
+	animation: modalFadeIn 0.3s ease;
+
+	h3 {
+		font-size: 24px;
+		color: Colors.$dark-blue;
+		font-weight: 600;
+		margin-bottom: 16px;
+	}
+
+	.game_info {
+		margin-bottom: 16px;
+
+		p {
+			font-size: 16px;
+			color: Colors.$dark-blue;
+			margin: 6px 0;
+
+			strong {
+				font-weight: 600;
+				color: Colors.$dark-blue;
+			}
+		}
+	}
+
+	.modal_question {
+		font-size: 16px;
+		color: Colors.$dark-blue;
+		margin: 16px 0 24px;
+		font-weight: 500;
+	}
+
+	.modal_actions {
+		display: flex;
+		gap: 16px;
+		width: 100%;
+		justify-content: center;
+
+		button {
+			flex: 1;
+			padding: 12px 24px;
+			font-size: 16px;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-weight: 500;
+			border: none;
+			max-width: 180px;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+			}
+
+			&:active {
+				transform: translateY(0);
+			}
+		}
+
+		.continue_game {
+			@include Mixins.dark-button;
+			background-color: Colors.$dark-blue;
+			color: white;
+		}
+
+		.start_new_game {
+			@include Mixins.light-button;
+			border: 2px solid Colors.$dark-blue;
+			color: Colors.$dark-blue;
+		}
+	}
+}
+
+@keyframes modalFadeIn {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -45%);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%);
+	}
+}
+
+@keyframes backdropFadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

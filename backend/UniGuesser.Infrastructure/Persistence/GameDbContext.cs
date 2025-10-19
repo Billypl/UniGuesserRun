@@ -58,6 +58,10 @@ namespace UniGuesser.Infrastructure.Persistence
                     .HasDefaultValue(GameStatus.InProgress);
                 entity.Property(g => g.Difficulty)
                     .HasConversion<string>();
+                entity.Property(g => g.GameState)
+                    .HasConversion<string>();
+                entity.Property(g => g.GameMode)
+                    .HasConversion<string>();
 
             });
 

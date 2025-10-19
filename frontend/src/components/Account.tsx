@@ -17,6 +17,7 @@ const Account: React.FC = () => {
 
 	const handleLogout = () => {
 		accountService.logout()
+		
 		navigate(MENU_ROUTE)
 	}
 
