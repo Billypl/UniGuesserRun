@@ -65,6 +65,7 @@ const User: React.FC = () => {
 		try {
 			const history = await gameSessionService.getHistoryPagesByUser(userId, userHistoryQuery)
 			setGamesHistory(history)
+			console.log('Fetched game history:', history)
 		} catch (error) {
 			console.error('Error fetching game history:', error)
 		}
@@ -103,6 +104,8 @@ const User: React.FC = () => {
 							<th>Date</th>
 							<th>Difficulty</th>
 							<th>Score</th>
+							<th>Game mode</th>
+							<th>Status</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -126,6 +129,8 @@ const User: React.FC = () => {
 									<td>{new Date().toLocaleDateString()}</td>
 									<td>{game.difficulty.toUpperCase()}</td>
 									<td>{game.finalScore.toFixed(0)}</td>
+									<td>{game.gameMode}</td>
+									<td>{game.gameState}</td>
 								</tr>
 							))
 						)}

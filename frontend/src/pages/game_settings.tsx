@@ -138,6 +138,9 @@ const GameSettings: React.FC = () => {
 								seconds
 							</strong>
 						</p>
+						<p>
+							Game Mode: <strong>{existingGameData.gameMode}</strong>
+						</p>
 					</div>
 					<p className={styles.modal_question}>
 						Would you like to continue your previous game or start a new one?

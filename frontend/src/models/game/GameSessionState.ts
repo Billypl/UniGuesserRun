@@ -3,4 +3,6 @@ export interface GameSessionStateDto {
 	actualRoundNumber: number
 	difficulty: string
 	expirationDate: Date
+	gameStatus: string
+	gameMode: string
 }
