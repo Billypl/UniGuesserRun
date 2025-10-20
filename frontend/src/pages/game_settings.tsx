@@ -30,6 +30,18 @@ const GAME_MODE_OPTIONS = [
 	{ value: 'classic', label: 'Classic' },
 	{ value: 'geolocation', label: 'Geolocation' },
 ]
+import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import styles from "../styles/GameSettings.module.scss";
+import { useForm } from "react-hook-form";
+import { StartGameData } from "../models/game/StartGameData";
+import FormField from "../components/FormField";
+import FormSelect from "../components/FormSelect";
+
+import { GAME_ROUTE, MENU_ROUTE, SELECTED_DIFFICULTY_KEY, USER_NICKNAME_KEY, SELECTED_GAME_MODE} from "../Constants";
+import accountService from "../services/api/accountService";
+import gameService from "../services/api/gameService";
+import { startGameManually } from "../utils/gameStartHelper";
 
 const GameSettings: React.FC = () => {
 	const [existingGameData, setExistingGameData] = useState<GameSessionStateDto | null>(null)
@@ -187,25 +199,21 @@ const GameSettings: React.FC = () => {
 					<FormSelect
 						label="Game mode"
 						name="gameMode"
-						options={GAME_MODE_OPTIONS}
+						options={[
+							{ value: 'classic', label: 'Classic' },
+							{ value: 'geolocation', label: 'Geolocation' },
+						]}
 						defaultValue="classic"
 						register={register}
 						error={errors.gameMode?.message}
 					/>
 
-					<button type="submit" className={styles.start_game}>
-						Start game
-					</button>
+					<button type="submit" className={styles.start_game}>Start game</button>
 				</form>
-
-				<button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>
-					Go back
-				</button>
+				<button className={styles.go_back} onClick={() => navigate(MENU_ROUTE)}>Go back</button>
 			</div>
-
-			{renderExistingGameModal()}
 		</>
-	)
+	);
 }
 
 export default GameSettings

@@ -27,19 +27,33 @@ interface GameInterfaceProps {
 }
 
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
-	const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null)
-	const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false)
-	const [fullScreenImage, setFullScreenImage] = useState<boolean>(false)
+  const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null);
+  const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false);
+
+  const [fullScreenImage, setFullScreenImage] = useState<boolean>(false);
+  const [zoomClass, setZoomClass] = useState<string>("");
 
 	const selectLocation = (coords: Coordinates | null) => {
 		if (playerChoiceConfirmed) return // cant move the marker after confirming your choice
 		setClickedLatLng(coords)
 	}
 
-	const confirmPlayerChoice = () => {
-		setPlayerChoiceConfirmed(true)
-		props.onConfirmPlayerChoice(clickedLatLng!)
-	}
+  const confirmPlayerChoice = () => {
+    setPlayerChoiceConfirmed(true);
+    props.onConfirmPlayerChoice(clickedLatLng!);
+  }
+
+  const showFullScreenImage = () => {
+    setZoomClass("zoomIn");
+    setFullScreenImage(true);
+  };
+
+  const hideFullScreenImage = () => {
+    setZoomClass("zoomOut");
+    setTimeout(() => {
+      setFullScreenImage(false);
+    }, 400); //time spent zooming out
+  };
 
 	const endRoundButton = () => {
 		return props.isLastRound ? (

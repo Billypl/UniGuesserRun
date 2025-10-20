@@ -22,10 +22,12 @@ export const ADD_PLACE_ROUTE = '/add_place'
 export const PLACE_QUEUE_ROUTE = '/place_queue'
 export const PLACES_ROUTE = '/places'
 export const GAME_SETTINGS_ROUTE = '/game_settings'
+export const PROFILE_ROUTE = '/profile'
 
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'
 export const GAME_STATE = '/game_state'
+export const GAME_ACTIVE_STATE = '/active'
 
 export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
 export const JWT_USER_ID_KEY =

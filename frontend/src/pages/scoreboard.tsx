@@ -79,7 +79,7 @@ const Scoreboard: React.FC = () => {
 			<td>{record.guid}</td>
 			<td>{record.nickname}</td>
 			<td>{record.gamePlayed}</td>
-			<td>{Number(record.averageScore.toFixed(4))}</td>
+			<td>{Number(record.averageScore.toFixed(2))}</td>
 		</tr>
 	)
 

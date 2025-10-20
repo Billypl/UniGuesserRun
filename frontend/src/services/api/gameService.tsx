@@ -12,7 +12,8 @@ import { StartGameResponse } from '../../models/game/StartGameResponse'
 import { GuessingPlaceDto } from '../../models/game/GuessingPlaceDto'
 import { RoundResultDto } from '../../models/game/RoundResultDto'
 import { FinishedGameDto } from '../../models/game/FinishedGameDto'
-import { GameSessionStateDto } from '../../models/game/GameSessionState'
+import { GameSessionStateDto } from '../../models/game/GameSessionStateDto'
+import { GameSession } from '../../models/game/GameSession'
 
 export class GameService {
 	private axiosInstance: AxiosInstance
@@ -48,6 +49,23 @@ export class GameService {
 		window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token)
 		window.sessionStorage.setItem(GAME_GUID, response.data.gameGuid)
 	}
+	
+	async checkActiveGameState(signal?: AbortSignal) {
+		try {
+			const response = await this.axiosInstance.get<GameSession>(GAME_ACTIVE_STATE, {
+				headers: {
+					Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+				},
+				signal,
+			})
+			console.log('active game state:', response)
+			return response.data
+		}
+		catch (error) {
+			console.log('User has no previous active game')
+			return null
+		}
+	}
 
 	async checkGameState(signal?: AbortSignal): Promise<GameSessionStateDto> {
 		const gameGuid = this.getGameGuid()
@@ -60,13 +78,11 @@ export class GameService {
 			},
 			signal,
 		})
-
 		return response.data
 	}
 
 	async checkGameForUser(signal?: AbortSignal): Promise<GameSessionStateDto> {
-		const url = `/active`
-		const response = await this.axiosInstance.get<GameSessionStateDto>(url, {
+		const response = await this.axiosInstance.get<GameSessionStateDto>(GAME_ACTIVE_STATE, {
 			headers: {
 				Authorization: `Bearer ${sessionStorage.getItem(ACCOUNT_TOKEN_KEY)}`,
 			},
@@ -134,7 +150,7 @@ export class GameService {
 	async setUpGameTokenIfUserHasGame() {
 		try {
 			const state = await this.checkGameForUser()
-			console.log('Active game found for user:', state)
+			console.log(state)
 			const accountToken = window.sessionStorage.getItem(ACCOUNT_TOKEN_KEY)
 			window.sessionStorage.setItem(GAME_GUID, state.id)
 			if (accountToken) {

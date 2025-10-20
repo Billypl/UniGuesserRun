@@ -47,9 +47,6 @@ namespace UniGuesser.API
 
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
 
-            CreateMap<GameSession, GameSessionStateDto>();
-            // Map Id to Id as string
-
 
             CreateMap<Round, GuessingPlaceDto>()
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.PlaceToGuess.ImageUrl));
