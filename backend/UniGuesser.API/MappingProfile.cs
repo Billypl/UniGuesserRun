@@ -45,6 +45,8 @@ namespace UniGuesser.API
 
             CreateMap<ShowPlaceDto, GuessingPlaceDto>();
 
+            CreateMap<GameSession, GameSessionStateDto>();
+
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
 
 
