@@ -14,37 +14,40 @@
 	.nav {
 		display: flex;
 		justify-content: space-between;
-		flex-wrap: wrap;
 		align-items: center;
 		width: 100vw;
 		max-width: 100vw;
 		height: fit-content;
 		box-sizing: border-box;
-		padding: 0px 10px 0px 10px;
-		margin: 10px 0px 10px 0px;
+		padding: 10px 15px;
+		margin: 0;
 
 		.title {
 			@include Mixins.clickable;
 			font-size: 40px;
 			margin-right: auto;
-			padding-bottom: 0.1em;
+			padding: 0 15px;
 			color: Colors.$dark-blue;
 			font-weight: bold;
-		}
+			transition: color 0.3s ease;
 
-		.item {
-			padding: 10px 20px;
+			&:hover {
+				color: darken(Colors.$dark-blue, 10%);
+			}
+
+			@media (max-width: 650px) {
+				display: none;
+			}
 		}
 
 		img {
 			height: 48px;
 			width: 48px;
-		}
-	}
-}
+			transition: transform 0.3s ease;
 
-@media (max-width: 650px) {
-	.title {
-		display: none;
+			&:hover {
+				transform: scale(1.1);
+			}
+		}
 	}
 }

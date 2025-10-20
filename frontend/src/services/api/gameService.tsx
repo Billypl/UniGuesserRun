@@ -5,6 +5,7 @@ import {
 	ACCOUNT_TOKEN_KEY,
 	GAME_STATE,
 	GAME_GUID,
+	GAME_ACTIVE_STATE,
 } from '../../Constants'
 import { Coordinates } from '../../models/Coordinates'
 import { StartGameData } from '../../models/game/StartGameData'
@@ -49,7 +50,7 @@ export class GameService {
 		window.sessionStorage.setItem(GAME_TOKEN_KEY, response.data.token)
 		window.sessionStorage.setItem(GAME_GUID, response.data.gameGuid)
 	}
-	
+
 	async checkActiveGameState(signal?: AbortSignal) {
 		try {
 			const response = await this.axiosInstance.get<GameSession>(GAME_ACTIVE_STATE, {
@@ -60,8 +61,7 @@ export class GameService {
 			})
 			console.log('active game state:', response)
 			return response.data
-		}
-		catch (error) {
+		} catch (error) {
 			console.log('User has no previous active game')
 			return null
 		}

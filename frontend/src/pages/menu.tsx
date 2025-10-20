@@ -65,13 +65,6 @@ const Menu: React.FC = () => {
 						<span className={styles.button_icon}>▶</span>
 						<span className={styles.button_text}>Zagraj teraz</span>
 					</button>
-					<button
-						className={`${styles.menu_option} ${styles.secondary}`}
-						onClick={() => navigate(SCOREBOARD_ROUTE)}
-					>
-						<span className={styles.button_icon}>★</span>
-						<span className={styles.button_text}>Ranking</span>
-					</button>
 				</div>
 			</div>
 		</>
