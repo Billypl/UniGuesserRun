@@ -59,7 +59,7 @@ Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (Entity-Relationship 
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{3cm}|p{9cm}|p{3cm}|}
+\begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
 \hline
 \textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
 ID & Unikalny identyfikator użytkownika. & Klucz główny \\ \hline
@@ -77,7 +77,7 @@ Role & Rola użytkownika w systemie (np. użytkownik, administrator). & Enumerac
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{3cm}|p{9cm}|p{3cm}|}
+\begin{tabular}{|p{2.8cm}|p{8.5cm}|p{2cm}|}
 \hline
 \textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
 ID & Unikalny identyfikator sesji gry. & Klucz główny \\ \hline
@@ -97,7 +97,7 @@ UserID & Identyfikator użytkownika. & Klucz obcy → Users \\ \hline
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{3cm}|p{9cm}|p{3cm}|}
+\begin{tabular}{|p{3cm}|p{8.5cm}|p{1.8cm}|}
 \hline
 \textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
 ID & Unikalny identyfikator rundy. & Klucz główny \\ \hline
@@ -115,7 +115,7 @@ LocationID & Identyfikator lokacji. & Klucz obcy → Places \\ \hline
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{3cm}|p{9cm}|p{3cm}|}
+\begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
 \hline
 \textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
 ID & Unikalny identyfikator lokacji. & Klucz główny \\ \hline
@@ -140,7 +140,7 @@ Diagram sekwencji przedstawiony na rysunku \ref{fig:sequence-diagram} ilustruje 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.2\textwidth]{./images/standardGameplaySequenceDiagram.png}
+    \makebox[\textwidth]{\includegraphics[width=1.2\textwidth]{./images/standardGameplaySequenceDiagram.png}}
     \caption{Diagram sekwencji przedstawiający przebieg rozgrywki w aplikacji UniGuesser}
     \label{fig:sequence-diagram}
 \end{figure}
