@@ -5,8 +5,74 @@
 \section{Przebieg gry}
 \section{Tryby rozgrywki}
 \section{Wymagania funkcjonalne}
-\section{Wymagania użytkowe}
-\section{Kryteria akceptacji}
-\section{Wybór platformy}
-\subsection{Aplikacja webowa PWA}
+
+\section{Wymagania niefunkcjonalne (Filip Jezierski)}
+Wymagania niefunkcjonalne określają kryteria jakościowe, które aplikacja powinna spełniać, aby zapewnić odpowiednie doświadczenie użytkownika oraz efektywne działanie systemu. W kontekście opracowywanej aplikacji mobilnej, kluczowe wymagania niefunkcjonalne obejmują aspekty takie jak wydajność, bezpieczeństwo oraz użyteczność.
+
+\subsection{Wymagania jakościowe}
+\begin{itemize}
+    \item obsługa różnych rozdzielczości ekranów i urządzeń mobilnych,
+    \item dostępność aplikacji na popularnych platformach mobilnych (Android, iOS), a także jako aplikacja webowa,
+    \item intuicyjny i responsywny interfejs użytkownika,
+    \item aplikacja powinna w odpowiedni sposób obsługiwać błędy i wyjątki, takie jak nieprawidłowe dane wejściowe czy brak internetu, zapewniając stabilność działania,
+    \item ochrona danych użytkowników poprzez implementację odpowiednich mechanizmów bezpieczeństwa - szyfrowanie danych, bezpieczne logowanie, ochrona przed atakami typu SQL Injection i XSS.
+\end{itemize}
+
+\subsection{Wymagania wydajnościowe}
+\begin{itemize}
+    \item szybkie (<2 s) ładowanie aplikacji i minimalny czas oczekiwania na reakcję interfejsu użytkownika,
+    \item ładowanie zdjęć lokalizacji w czasie nie dłuższym niż 3 sekundy,
+    \item szybkie (<10 s) ładowanie danych geolokalizacyjnych zapewniające płynne działanie trybu gry opartego na lokalizacji,
+\end{itemize}
+
+\section{Wybór platformy (Filip Jezierski)}
+Wybór odpowiedniej platformy dla opracowywanej aplikacji mobilnej jest kluczowym elementem procesu projektowego, mającym istotny wpływ na jej funkcjonalność, dostępność oraz doświadczenie użytkownika, a także łatwość wdrożenia i utrzymania. Na etapie analizy wymagań podjęto decyzję o stworzeniu dwóch testowych wersji aplikacji: aplikacji webowej typu PWA (Progressive Web App) oraz natywnej aplikacji mobilnej wykorzystującej technologię .NET MAUI (Multi-platform App UI). Obie platformy oferują unikalne korzyści i wyzwania, które zostały dokładnie rozważone w kontekście specyfiki projektu.
+
 \subsection{Natywna aplikacja mobilna}
+Aplikacje natywne są tworzone z wykorzystaniem dedykowanych narzędzi i języków programowania przeznaczonych dla konkretnych systemów operacyjnych, takich jak Android czy iOS. W przypadku technologii .NET MAUI możliwe jest tworzenie aplikacji wieloplatformowych przy zachowaniu wspólnej bazy kodu, co znacząco skraca czas implementacji i ułatwia utrzymanie.
+
+Jednakże proces publikacji aplikacji natywnych w sklepach takich jak Google Play czy Apple App Store wiąże się z dodatkowymi wymaganiami i procedurami zatwierdzania, a także z koniecznością budowania i testowania aplikacji na różne systemy operacyjne, co może wydłużyć czas wdrożenia.
+
+\subsection{Aplikacja webowa PWA}
+Aplikacja webowa typu PWA (Progressive Web App) łączy cechy klasycznej strony internetowej z funkcjonalnością aplikacji mobilnej. Dzięki wykorzystaniu nowoczesnych technologii webowych, możliwe jest stworzenie aplikacji działającej w trybie offline, instalowanej bezpośrednio z przeglądarki oraz zapewniającej wrażenia zbliżone do aplikacji natywnej.
+
+Ze względu na łatwość dostępu (poprzez przeglądarkę internetową) oraz brak konieczności przechodzenia przez proces zatwierdzania w sklepach aplikacji, PWA stanowi atrakcyjną opcję dla naszego projektu. Jednakże, pewne ograniczenia związane z dostępem do funkcji urządzenia (takich jak geolokalizacja) oraz wydajnością w porównaniu do aplikacji natywnych muszą być uwzględnione podczas projektowania i implementacji.
+
+\section{Ograniczenia projektu (Filip Jezierski)}
+Ograniczenia projektu wynikają przede wszystkim z przyjętych założeń technologicznych oraz charakteru opracowywanego rozwiązania. Kluczowe znaczenie mają tu specyfika aplikacji webowej typu PWA, zastosowanie mechanizmów geolokalizacji jako podstawowego elementu funkcjonalnego, a także decyzje dotyczące sposobu pozyskiwania i wykorzystania materiałów wizualnych. Wymienione czynniki w naturalny sposób wpływają na zakres możliwości implementacyjnych, wydajność rozwiązania oraz doświadczenie użytkownika końcowego.
+
+\subsection{Środowisko aplikacji}
+Aplikacja będzie udostępniana jako aplikacja webowa, dostępna przez przeglądarkę internetową, z możliwością instalacji na ekranie głównym urządzenia. Funkcjonalność trybu gry wykorzystującego geolokalizację będzie dostępna wyłącznie na urządzeniach mobilnych, które wspierają tę technologię. W przypadku urządzeń stacjonarnych, nawet jeśli geolokalizacja jest technicznie możliwa, jej dokładność jest niewystarczająca do zapewnienia poprawnego działania tej funkcji.
+
+\subsection{Zdjęcia lokalizacji}
+W projekcie zrezygnowano z wykorzystywania zdjęć 360° pochodzących z zewnętrznych źródeł, takich jak interfejsy API udostępniane przez firmy trzecie. Decyzję tę podjęto z uwagi na chęć uniknięcia potencjalnych problemów związanych z licencjonowaniem, ograniczoną dostępnością materiałów oraz zróżnicowaną jakością zdjęć. Dodatkowo korzystanie z takich źródeł mogłoby wprowadzać ograniczenia dotyczące liczby i różnorodności dostępnych lokalizacji.
+
+W celu uproszczenia procesu pozyskiwania materiałów wizualnych oraz umożliwienia użytkownikom współtworzenia bazy lokalizacji, aplikacja będzie wykorzystywać standardowe zdjęcia dwuwymiarowe. Tego typu fotografie nie wymagają specjalistycznego sprzętu i mogą być wykonywane przy użyciu dowolnego smartfona. Użytkownicy będą mieli możliwość przesyłania własnych zdjęć lokalizacji, które po weryfikacji przez moderatorów zostaną dodane do bazy danych aplikacji.
+
+Takie rozwiązanie zapewnia pełną kontrolę nad jakością i zgodnością materiałów z założeniami projektu, a jednocześnie pozwala na stopniowe rozszerzanie bazy lokalizacji o nowe zdjęcia, dostarczane zarówno przez zespół projektowy, jak i społeczność użytkowników.
+
+\section{Kryteria akceptacji (Filip Jezierski)}
+\textbf{Ogólne kryteria:}
+\begin{itemize}
+    \item Aplikacja działa na urządzeniach mobilnych z systemami Android i iOS, na komputerach stacjonarnych oraz w przeglądarkach internetowych
+    \item Intuicyjny interfejs użytkownika umożliwiający łatwe korzystanie z aplikacji
+    \item Responsywny design dostosowujący się do różnych rozmiarów ekranów, w szczególności urządzeń mobilnych
+    \item Stabilne działanie aplikacji bez krytycznych błędów i awarii
+    \item Testy manualne wszystkich zaplanowanych funkcjonalności przeprowadzone na wszystkich wspieranych platformach
+\end{itemize}
+
+\textbf{Zaimplementowane funkcjonalności:}
+\begin{itemize}
+    \item Rejestracja i logowanie użytkowników
+    \item Wybór trybu rozgrywki i poziomu trudności
+    \item Dwa tryby gry:
+    \begin{itemize}
+        \item odgadywanie lokalizacji na podstawie zdjęcia poprzez wskazanie jej na mapie
+        \item odnajdywanie lokalizacji na podstawie zdjęcia i potwierdzanie obecności poprzez geolokalizację
+    \end{itemize}
+    \item Możliwość przerywania i kontynuowania rozgrywki
+    \item Wyświetlanie podsumowania wyników każdej rundy gry
+    \item Historia rozgrywek dostępna w profilu użytkownika
+    \item Ogólnodostępny ranking graczy
+    \item Dodawanie lokalizacji przez użytkowników (po weryfikacji przez moderatorów)
+\end{itemize}
