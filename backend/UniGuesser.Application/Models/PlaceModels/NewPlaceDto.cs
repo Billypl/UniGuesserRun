@@ -11,10 +11,9 @@ namespace UniGuesser.Application.Models.PlaceModels
         public string Description { get; set; }
         [Required]
         public Coordinates Coordinates { get; set; }
+        public string? ImageUrl { get; set; }
         [Required]
-        public string ImageUrl { get; set; }
-        [Required]
-        public string Alt { get; set; }
+        public string Alt { get; set; } 
         [Required]
         public string Difficulty { get; set; }
     }

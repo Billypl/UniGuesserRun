@@ -14,6 +14,7 @@ public class Place
     public string ImageUrl { get; set; }
     public string Alt { get; set; }
     public DifficultyLevel DifficultyLevel { get; set; }
+    public ImageType ImageType { get; set; }
     public bool InQueue { get; set; } = true;
     public DateTime CreatedAt { get; set; }
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using UniGuesser.API.Configuration;
 using UniGuesser.API.Extensions;
@@ -12,6 +13,14 @@ ConfigureServices(builder);
 
 var app = builder.Build();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.WebRootPath, "uploads")),
+    RequestPath = "/uploads"
+});
+
+
 app.Services.MigrateDatabase();
 await SeedDatabase(app);
 ConfigureMiddleware(app);
@@ -21,6 +30,8 @@ app.Run();
 // Rejestracja usług
 void ConfigureServices(WebApplicationBuilder builder)
 {
+
+
     builder.Services.AddApplicationDependencies(builder.Configuration);
 }
 

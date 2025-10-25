@@ -38,6 +38,7 @@ const AddPlace: React.FC = () => {
 	const { coordinates, setCoordinates, readCoordinates, geolocationError } = useGeolocation()
 	const [placeAdded, setPlaceAdded] = useState<boolean>(false)
 	const [image, setImage] = useState<string | null>(null)
+	const [imageFile, setImageFile] = useState<File | null>(null)
 	const [imageInputMode, setImageInputMode] = useState<ImageInputMode>('url')
 
 	const {
@@ -69,17 +70,34 @@ const AddPlace: React.FC = () => {
 			return
 		}
 
+		console.log(data,event)
+
+		// Validate that user provided either URL or file
+		if (imageInputMode === 'url' && !data.imageUrl) {
+			setError('Please provide an image URL.')
+			return
+		}
+
+		if (imageInputMode === 'file' && !imageFile && !image) {
+			setError('Please upload or capture an image.')
+			return
+		}
+
 		const submitter = (event?.nativeEvent as SubmitEvent).submitter as HTMLButtonElement
 		const skipQueue = submitter && submitter.name === 'skipQueue'
+
+		// Use imageFile if in file mode, otherwise use imageUrl from form
+		const finalImageUrl = imageInputMode === 'file' ? '' : data.imageUrl
 
 		const errorMessage = await placeService.addNewPlace(
 			data.name,
 			data.description,
 			coordinates,
-			data.imageUrl,
+			finalImageUrl,
 			data.alt,
 			data.difficulty,
-			skipQueue
+			skipQueue,
+			imageInputMode === 'file' ? imageFile : null
 		)
 
 		setError(errorMessage)
@@ -98,6 +116,7 @@ const AddPlace: React.FC = () => {
 		setCoordinates(null)
 		setError(null)
 		setImage(null)
+		setImageFile(null)
 	}
 
 	const canSkipQueue = (): boolean => {
@@ -241,7 +260,12 @@ const AddPlace: React.FC = () => {
 								/>
 							) : (
 								<div className={styles.camera_container}>
-									<FormImage setImage={setImage} image={image} register={register} />
+									<FormImage
+										setImage={setImage}
+										image={image}
+										register={register}
+										setImageFile={setImageFile}
+									/>
 								</div>
 							)}
 
