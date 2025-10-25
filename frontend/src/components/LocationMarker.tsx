@@ -14,7 +14,7 @@ export const LocationMarker: React.FC<LocationMarkerProps> = ({ coords, icon, la
     <Marker position={[coords.latitude, coords.longitude]} icon={icon}>
       <Popup>
         {label} <br />
-        Latitude: {coords.latitude.toFixed(6)}, Longitude:{coords.longitude.toFixed(6)}
+        Latitude: {coords.latitude.toFixed(2)}, Longitude:{coords.longitude.toFixed(2)}
       </Popup>
     </Marker>
   );

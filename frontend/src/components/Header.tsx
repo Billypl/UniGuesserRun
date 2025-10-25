@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import Account from "./Account";
 import Logo from "./Logo";
 import { MENU_ROUTE } from '../Constants';
 import styles from "../styles/Header.module.scss"
+import UserMenu from "./UserMenu";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ const Header = () => {
       <nav className={styles.nav}>
         <Logo />
         <a className={styles.title} onClick={() => navigate(MENU_ROUTE)}>UniGuesser</a>
-        <Account />
+				<UserMenu/>
       </nav>
     </header> 
   );

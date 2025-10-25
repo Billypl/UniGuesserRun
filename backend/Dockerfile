@@ -3,11 +3,11 @@ WORKDIR /app
 
 COPY . .
 RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish UniGuesser.API/UniGuesser.API.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
 EXPOSE 7157
-ENTRYPOINT ["dotnet", "UniGuesser.dll"]
+ENTRYPOINT ["dotnet", "UniGuesser.API.dll"]

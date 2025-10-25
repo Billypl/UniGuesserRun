@@ -1,9 +1,8 @@
 @use "utilities/Mixins";
 
 .logo {
-    @include Mixins.clickable;
-    display: flex;
-    align-items: right;
-    margin: 10px;
+	@include Mixins.clickable;
+	display: flex;
+	align-items: right;
+	margin: 10px;
 }
-

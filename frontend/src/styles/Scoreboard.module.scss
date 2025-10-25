@@ -1,115 +1,244 @@
 @use 'utilities/Mixins';
 @use 'utilities/Colors';
 
-h1 {
-	padding: 20px 0;
-	text-align: center;
+.page {
+	min-height: 100vh;
+	padding: 40px 0;
+	background: linear-gradient(135deg, #e8eef2 0%, #d2dce5 100%);
 }
 
 .container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 40px 24px;
 	display: flex;
 	flex-direction: column;
-	max-width: 1400px;
-	margin: 0 auto;
-	padding: 16px;
-	& > * {
-		margin: 16px 0px;
+	gap: 24px;
+
+	.header {
+		text-align: center;
+		font-size: 2rem;
+		font-weight: 700;
+		margin: 0;
+		margin-top: 48px;
+		padding: 24px;
+		background: linear-gradient(135deg, Colors.$white 0%, #f8f9fa 100%);
+		border-radius: 16px;
+		border: 2px solid Colors.$dark-blue;
+		box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
+		color: Colors.$dark-blue;
+	}
+
+	.filters_container {
+		background: linear-gradient(135deg, Colors.$white 0%, #f8f9fa 100%);
+		padding: 24px;
+		border-radius: 16px;
+		border: 2px solid Colors.$dark-blue;
+		box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
 	}
 
 	.formBox {
 		display: flex;
 		flex-direction: column;
-		flex-wrap: wrap;
+		gap: 16px;
 	}
 
 	.inputField {
 		display: flex;
-		font-size: 20px;
-		font-weight: 500;
-		margin-bottom: 16px;
+		flex-direction: column;
+		gap: 8px;
+
 		label {
-			margin-right: 8px;
+			font-size: 0.95rem;
+			font-weight: 600;
+			color: Colors.$dark-blue;
 		}
+
 		input,
 		select {
-			border-radius: 12px;
-			padding: 4px;
-			font-size: 16px;
-			flex: 1;
-			border: 1px solid Colors.$dark-blue;
+			border-radius: 8px;
+			padding: 10px 12px;
+			font-size: 1rem;
+			border: 1px solid Colors.$light-blue-grey;
+			background-color: Colors.$white;
+			transition: all 0.3s ease;
+
+			&:focus {
+				outline: none;
+				border-color: Colors.$dark-blue;
+				box-shadow: 0 0 0 3px rgba(0, 56, 101, 0.1);
+			}
 		}
 
 		select {
-			background-color: Colors.$white;
+			cursor: pointer;
 		}
 	}
 
-	table {
-		@include Mixins.table;
-
-		width: 100%;
+	.table_container {
+		background: linear-gradient(135deg, Colors.$white 0%, #f8f9fa 100%);
+		border-radius: 16px;
+		border: 2px solid Colors.$dark-blue;
+		box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
+		padding: 24px;
+		overflow-x: auto;
 	}
 
-	.rankingButton {
-		padding: 10px 20px;
+	.table {
+		width: 100%;
+		border-collapse: collapse;
+		
+		thead {
+			tr {
+				background-color: Colors.$dark-blue;
+				color: Colors.$white;
+
+				th {
+					padding: 16px 12px;
+					text-align: left;
+					font-weight: 600;
+					font-size: 0.95rem;
+					border-bottom: 2px solid Colors.$darker-blue;
+
+					&:first-child {
+						border-top-left-radius: 8px;
+					}
+
+					&:last-child {
+						border-top-right-radius: 8px;
+					}
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				border-bottom: 1px solid Colors.$light-blue-grey;
+				transition: background-color 0.2s ease;
+				cursor: pointer;
+				&:hover {
+					background-color: rgba(0, 56, 101, 0.05);
+				}
+
+				&:last-child {
+					border-bottom: none;
+				}
+
+				td {
+					padding: 16px 12px;
+					text-align: left;
+					color: Colors.$dark-grey;
+					font-size: 0.95rem;
+				}
+			}
+		}
+
+		.empty_state {
+			text-align: center !important;
+			padding: 60px 20px !important;
+
+			.empty_content {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+
+				.empty_icon {
+					font-size: 4rem;
+					margin-bottom: 20px;
+					opacity: 0.5;
+				}
+
+				h3 {
+					font-size: 1.5rem;
+					color: Colors.$dark-blue;
+					margin: 0 0 12px 0;
+					font-weight: 600;
+				}
+
+				p {
+					font-size: 1rem;
+					color: Colors.$dark-grey;
+					margin: 0;
+				}
+			}
+		}
+	}
+
+	.applyButton,
+	.backButton {
+		padding: 12px 24px;
 		background-color: Colors.$dark-blue;
-		border-radius: 16px;
-		text-align: center;
-		border: 1px solid Colors.$dark-blue;
 		color: Colors.$white;
-		transition: 0.3s color ease-in-out, 0.3s background-color ease-in-out;
+		border: none;
+		border-radius: 8px;
 		cursor: pointer;
+		font-weight: 600;
+		font-size: 0.95rem;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 12px rgba(0, 56, 101, 0.15);
 
 		&:hover {
-			color: Colors.$dark-blue;
-			background-color: Colors.$white;
+			background-color: darken(Colors.$dark-blue, 8%);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 16px rgba(0, 56, 101, 0.25);
+		}
+
+		&:active {
+			transform: translateY(0);
 		}
 	}
 
-	@media (min-width: 768px) {
-		.findButton {
-			align-self: flex-end;
-			padding: 8px 36px;
-		}
-		.backToMenuButton {
-			align-self: flex-start;
+	.applyButton {
+		align-self: stretch;
+	}
+
+	.backButton {
+		align-self: flex-start;
+	}
+}
+
+@media (min-width: 768px) {
+	.container {
+		.filters_container {
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
 		}
 
 		.formBox {
 			flex-direction: row;
+			flex: 1;
+			gap: 24px;
 		}
 
 		.inputField {
-			margin-right: 16px;
-			input,
-			select {
-				flex: 0;
-			}
-
-			.pageSizeSelect {
-				padding-left: 16px;
-				padding-right: 16px;
-			}
+			flex: 1;
+			min-width: 150px;
 		}
 
-		table {
+		.applyButton {
+			align-self: auto;
+			min-width: 160px;
+		}
+
+		.table {
 			thead {
 				tr {
 					th {
-						padding: 12px 16px;
+						padding: 16px;
 					}
-					margin-bottom: 16px;
 				}
 			}
+
 			tbody {
 				tr {
 					td {
+						padding: 16px;
 						text-align: center;
-						white-space: nowrap;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						font-size: 16px;
-						padding: 12px 16px;
 					}
 				}
 			}

@@ -31,7 +31,9 @@ interface GameInterfaceProps {
 const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 	const [clickedLatLng, setClickedLatLng] = useState<Coordinates | null>(null)
 	const [playerChoiceConfirmed, setPlayerChoiceConfirmed] = useState<boolean>(false)
+
 	const [fullScreenImage, setFullScreenImage] = useState<boolean>(false)
+	const [zoomClass, setZoomClass] = useState<string>('')
 
 	useEffect(() => {
 		if (props.gameMode === GameMode.GEOLOCATION) {
@@ -95,6 +97,18 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 		props.onConfirmPlayerChoice(clickedLatLng!)
 	}
 
+	const showFullScreenImage = () => {
+		setZoomClass('zoomIn')
+		setFullScreenImage(true)
+	}
+
+	const hideFullScreenImage = () => {
+		setZoomClass('zoomOut')
+		setTimeout(() => {
+			setFullScreenImage(false)
+		}, 400) //time spent zooming out
+	}
+
 	const endRoundButton = () => {
 		return props.isLastRound ? (
 			<button className={styles.end_round_button} onClick={props.onFinishGame}>
@@ -127,18 +141,17 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 				</div>
 			)}
 
-			{fullScreenImage ? (
-				<div className={styles.full_image_container} onClick={() => setFullScreenImage(false)}>
-					<img src={props.imageUrl!} />
+			<div
+				className={`${styles.image_container} ${fullScreenImage ? styles.fullscreen : ''}`}
+				onClick={() => setFullScreenImage(!fullScreenImage)}
+			>
+				<img src={props.imageUrl!} alt="Round location" />
+				{fullScreenImage && (
 					<div className={styles.fullscreen_exit}>
 						<ExitIcon />
 					</div>
-				</div>
-			) : (
-				<div className={styles.image_container} onClick={() => setFullScreenImage(true)}>
-					<img src={props.imageUrl!} />
-				</div>
-			)}
+				)}
+			</div>
 
 			{props.error && <p style={{ color: 'red' }}>{props.error}</p>}
 

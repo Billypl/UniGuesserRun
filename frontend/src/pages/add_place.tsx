@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import FormField from '../components/FormField'
-import Logo from '../components/Logo'
+import Header from '../components/Header'
 import { MAP_CENTER, MENU_ROUTE, USER_ROLE_ADMIN, USER_ROLE_MODERATOR } from '../Constants'
 import { useUserContext } from '../hooks/useUserContext'
 import styles from '../styles/AddPlace.module.scss'
@@ -29,6 +29,8 @@ interface AddPlaceFormInputs {
 	longitude: number
 }
 
+type ImageInputMode = 'url' | 'file'
+
 const AddPlace: React.FC = () => {
 	const navigate = useNavigate()
 	const { setUsername } = useUserContext()
@@ -36,6 +38,7 @@ const AddPlace: React.FC = () => {
 	const { coordinates, setCoordinates, readCoordinates, geolocationError } = useGeolocation()
 	const [placeAdded, setPlaceAdded] = useState<boolean>(false)
 	const [image, setImage] = useState<string | null>(null)
+	const [imageInputMode, setImageInputMode] = useState<ImageInputMode>('url')
 
 	const {
 		register,
@@ -104,134 +107,184 @@ const AddPlace: React.FC = () => {
 
 	return placeAdded ? (
 		<>
-			<p className={styles.success}>Place added successfully!</p>
-			<a className={styles.option} onClick={() => navigate(MENU_ROUTE)}>
-				<button>Go back to menu</button>
-			</a>
-			<button className={styles.option} onClick={() => setPlaceAdded(false)}>
-				Add another place
-			</button>
+			<Header />
+			<div className={styles.page}>
+				<div className={styles.container}>
+					<div className={styles.form_container}>
+						<div className={styles.success_container}>
+							<p className={styles.success}>✓ Place added successfully!</p>
+							<div className={styles.buttons}>
+								<button className={styles.button} onClick={() => navigate(MENU_ROUTE)}>
+									Go back to menu
+								</button>
+								<button className={styles.button} onClick={() => setPlaceAdded(false)}>
+									Add another place
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</>
 	) : (
-		<div className={styles.form_container}>
-			<div className={styles.logo_container}>
-				<Logo />
-			</div>
-			<h2 className={styles.header}>Add new place to UniGuesser</h2>
+		<>
+			<Header />
+			<div className={styles.page}>
+				<div className={styles.container}>
+					<div className={styles.form_container}>
+						<h2 className={styles.header}>Add New Place to UniGuesser</h2>
 
-			<div className={styles.map}>
-				<MapContainer
-					center={MAP_CENTER}
-					zoom={13}
-					scrollWheelZoom={true}
-					style={{ height: '100%', width: '100%' }}
-				>
-					<TileLayer
-						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-					/>
+						<div className={styles.map}>
+							<MapContainer
+								center={MAP_CENTER}
+								zoom={13}
+								scrollWheelZoom={true}
+								style={{ height: '100%', width: '100%' }}
+							>
+								<TileLayer
+									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+								/>
 
-					{coordinates && (
-						<>
-							<LocationMarker coords={coordinates} icon={ClickedIcon} label="Clicked location:" />
-							<RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
-						</>
-					)}
+								{coordinates && (
+									<>
+										<LocationMarker
+											coords={coordinates}
+											icon={ClickedIcon}
+											label="Clicked location:"
+										/>
+										<RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
+									</>
+								)}
 
-					<SelectMapLocation selectLocationFunction={setCoordinates} />
-				</MapContainer>
-			</div>
+								<SelectMapLocation selectLocationFunction={setCoordinates} />
+							</MapContainer>
+						</div>
 
-			<button className={styles.button} onClick={readCoordinates}>
-				Read GPS coordinates
-			</button>
+						<button className={styles.button} onClick={readCoordinates}>
+							📍 Read GPS coordinates
+						</button>
 
-			<p className={styles.error}>{geolocationError && 'Geolocation error: ' + geolocationError}</p>
+						{geolocationError && (
+							<p className={styles.error}>Geolocation error: {geolocationError}</p>
+						)}
 
-			<form
-				onSubmit={handleSubmit((data, event) => addNewPlace(data, event))}
-				className={styles.form}
-			>
-				<FormField
-					label="Latitude"
-					name="latitude"
-					type="number"
-					onBlur={(e) => handleChangeCoordinateField('latitude', e.target.value)}
-					defaultValue={coordinates?.latitude.toString() || ''}
-					register={register}
-					error={errors.latitude?.message}
-				/>
-				<FormField
-					label="Longitude"
-					name="longitude"
-					type="number"
-					onBlur={(e) => handleChangeCoordinateField('longitude', e.target.value)}
-					defaultValue={coordinates?.longitude.toString() || ''}
-					register={register}
-					error={errors.longitude?.message}
-				/>
+						<form
+							onSubmit={handleSubmit((data, event) => addNewPlace(data, event))}
+							className={styles.form}
+						>
+							<div className={styles.coordinates_section}>
+								<FormField
+									label="Latitude"
+									name="latitude"
+									type="number"
+									onBlur={(e) => handleChangeCoordinateField('latitude', e.target.value)}
+									defaultValue={coordinates?.latitude.toString() || ''}
+									register={register}
+									error={errors.latitude?.message}
+								/>
+								<FormField
+									label="Longitude"
+									name="longitude"
+									type="number"
+									onBlur={(e) => handleChangeCoordinateField('longitude', e.target.value)}
+									defaultValue={coordinates?.longitude.toString() || ''}
+									register={register}
+									error={errors.longitude?.message}
+								/>
+							</div>
 
-				<div className={styles.camera_container}>
-					<FormImage setImage={setImage} image={image} register={register} />
+							<FormField
+								label="Name"
+								name="name"
+								type="text"
+								register={register}
+								error={errors.name?.message}
+							/>
+
+							<FormField
+								label="Description"
+								name="description"
+								type="text"
+								register={register}
+								error={errors.description?.message}
+							/>
+
+							<div className={styles.image_mode_toggle}>
+								<button
+									type="button"
+									className={`${styles.toggle_button} ${
+										imageInputMode === 'url' ? styles.active : ''
+									}`}
+									onClick={() => setImageInputMode('url')}
+								>
+									URL
+								</button>
+								<button
+									type="button"
+									className={`${styles.toggle_button} ${
+										imageInputMode === 'file' ? styles.active : ''
+									}`}
+									onClick={() => setImageInputMode('file')}
+								>
+									Upload File
+								</button>
+							</div>
+
+							{imageInputMode === 'url' ? (
+								<FormField
+									label="Image URL"
+									name="imageUrl"
+									type="text"
+									register={register}
+									error={errors.imageUrl?.message}
+								/>
+							) : (
+								<div className={styles.camera_container}>
+									<FormImage setImage={setImage} image={image} register={register} />
+								</div>
+							)}
+
+							<FormField
+								label="Alt Text"
+								name="alt"
+								type="text"
+								register={register}
+								error={errors.alt?.message}
+							/>
+
+							<FormSelect
+								label="Difficulty"
+								name="difficulty"
+								options={[
+									{ value: 'easy', label: 'Easy' },
+									{ value: 'normal', label: 'Normal' },
+									{ value: 'hard', label: 'Hard' },
+									{ value: 'ultra-nightmare', label: 'Ultra-Nightmare' },
+								]}
+								register={register}
+								error={errors.difficulty?.message}
+							/>
+
+							{error && <p className={styles.error}>{error}</p>}
+
+							<button type="submit" name="addToQueue" className={styles.button}>
+								Add place to queue
+							</button>
+							{canSkipQueue() && (
+								<button
+									type="submit"
+									name="skipQueue"
+									className={`${styles.button} ${styles.secondary}`}
+								>
+									Add place skipping queue
+								</button>
+							)}
+						</form>
+					</div>
 				</div>
-
-				<FormField
-					label="Name"
-					name="name"
-					type="text"
-					register={register}
-					error={errors.name?.message}
-				/>
-
-				<FormField
-					label="Description"
-					name="description"
-					type="text"
-					register={register}
-					error={errors.description?.message}
-				/>
-
-				<FormField
-					label="imageUrl"
-					name="imageUrl"
-					type="text"
-					register={register}
-					error={errors.imageUrl?.message}
-				/>
-
-				<FormField
-					label="alt"
-					name="alt"
-					type="text"
-					register={register}
-					error={errors.alt?.message}
-				/>
-
-				<FormSelect
-					label="Difficulty"
-					name="difficulty"
-					options={[
-						{ value: 'easy', label: 'Easy' },
-						{ value: 'normal', label: 'Normal' },
-						{ value: 'hard', label: 'Hard' },
-						{ value: 'ultra-nightmare', label: 'Ultra-Nightmare' },
-					]}
-					register={register}
-					error={errors.difficulty?.message}
-				/>
-
-				{error && <p className={styles.error}>{error}</p>}
-
-				<button type="submit" name="addToQueue" className={styles.button}>
-					Add place to queue
-				</button>
-				{canSkipQueue() && (
-					<button type="submit" name="skipQueue" className={styles.button}>
-						Add place skipping queue
-					</button>
-				)}
-			</form>
-		</div>
+			</div>
+		</>
 	)
 }
 

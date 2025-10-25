@@ -1,53 +1,72 @@
-@use "utilities/Mixins";
-@use "utilities/Colors";
+@use 'utilities/Mixins';
+@use 'utilities/Colors';
 
 .form_container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-basis: auto;
-  margin-top: 8vh;
-  width: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-basis: auto;
+	margin-top: 8vh;
+	width: auto;
 
-  .header {
-    font-size: 30px;
-  }
+	.header {
+		font-size: 30px;
+		color: Colors.$dark-blue;
+		font-weight: 600;
+		margin-bottom: 10px;
+	}
 
-  .logo_container {
-    width: 80px;
-    height: 80px;
-  }
+	.logo_container {
+		width: 80px;
+		height: 80px;
+	}
 
-  .form {
-    margin: 15px 0 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 25px;
+	.form {
+		margin: 15px 0 15px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		font-size: 25px;
 
-    .error {
-      font-size: 15px;
-      color: Colors.$dark-red;
-      margin-top: 5px;
-      margin-bottom: -5px;
-      white-space: pre-wrap;
-      text-align: center;
-    }
-  }
+		.error {
+			font-size: 15px;
+			color: Colors.$dark-red;
+			margin-top: 5px;
+			margin-bottom: -5px;
+			white-space: pre-wrap;
+			text-align: center;
+		}
+	}
 
-  .button {
-    @include Mixins.dark-button;
+	.button {
+		@include Mixins.dark-button;
 
-    width: 300px;
-    margin-top: 15px;
-    padding: 10px 0 10px 0;
-    font-size: 1rem;
-    max-width: 70vw;
-    font-size: 18px;
-  }
+		width: 300px;
+		margin-top: 15px;
+		padding: 12px 0;
+		font-size: 1rem;
+		max-width: 70vw;
+		font-size: 18px;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
-  .link {
-    @include Mixins.link;
-  }
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+
+	.link {
+		@include Mixins.link;
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: translateX(3px);
+		}
+	}
 }

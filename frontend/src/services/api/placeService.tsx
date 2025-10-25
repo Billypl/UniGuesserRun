@@ -21,7 +21,6 @@ export class PlaceService {
 
   async getAllPlaces(): Promise<ShowPlaceDto[]> {
     const result = await this.axiosInstance.get("");
-    console.log(result.data);
     return result.data;
   }
 
@@ -105,8 +104,7 @@ export class PlaceService {
     coordinates: Coordinates,
     imageUrl: string,
     alt: string,
-    difficulty: Difficulty,
-    authorId?: string | null
+    difficulty: Difficulty
   ) {
     const updateDto: UpdatePlaceDto = {
       name: name,
@@ -115,7 +113,6 @@ export class PlaceService {
       imageUrl: imageUrl,
       alt: alt,
       difficulty: difficulty,
-      authorId: authorId,
     };
     await this.axiosInstance.put(`/${placeId}`, updateDto, {
       headers: {

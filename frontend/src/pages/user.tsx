@@ -65,6 +65,7 @@ const User: React.FC = () => {
 		try {
 			const history = await gameSessionService.getHistoryPagesByUser(userId, userHistoryQuery)
 			setGamesHistory(history)
+			console.log('Fetched game history:', history)
 		} catch (error) {
 			console.error('Error fetching game history:', error)
 		}
@@ -103,19 +104,33 @@ const User: React.FC = () => {
 							<th>Date</th>
 							<th>Difficulty</th>
 							<th>Score</th>
+							<th>Game mode</th>
+							<th>Status</th>
 						</tr>
 					</thead>
 					<tbody>
 						{gamesHistory.items.length === 0 ? (
 							<tr>
-								<td colSpan={3}>No games found</td>
+								<td colSpan={3} className={styles.empty_state}>
+									<div className={styles.empty_content}>
+										<p className={styles.empty_icon}>🎮</p>
+										<h4>Brak gier</h4>
+										<p>Nie rozegrano jeszcze żadnych gier.</p>
+									</div>
+								</td>
 							</tr>
 						) : (
 							gamesHistory.items.map((game) => (
-								<tr key={game.id} onClick={() => navigateToResults(game.id)} className={styles.clickable_row}>
+								<tr
+									key={game.id}
+									onClick={() => navigateToResults(game.id)}
+									className={styles.clickable_row}
+								>
 									<td>{new Date().toLocaleDateString()}</td>
 									<td>{game.difficulty.toUpperCase()}</td>
 									<td>{game.finalScore.toFixed(0)}</td>
+									<td>{game.gameMode}</td>
+									<td>{game.gameState}</td>
 								</tr>
 							))
 						)}

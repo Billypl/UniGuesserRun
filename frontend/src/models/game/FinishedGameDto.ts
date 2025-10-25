@@ -7,6 +7,8 @@ export interface FinishedGameDto {
   finalScore: number;
   rounds: Round[];
   difficulty: Difficulty;
+  gameState: string;
+  gameMode: string;
 }
 
 export interface Round {

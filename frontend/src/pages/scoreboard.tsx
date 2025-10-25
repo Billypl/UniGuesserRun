@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Header from '../components/Header'
 import scoreboardService from '../services/api/scoreboardService'
 import UserStats from '../models/scoreboard/UserStats'
 import styles from '../styles/Scoreboard.module.scss'
@@ -70,92 +71,112 @@ const Scoreboard: React.FC = () => {
 	}
 
 	const showRecord = (record: UserStats) => (
-		<tr key={record.guid || record.nickname} className={styles.record}>
+		<tr
+			key={record.guid || record.nickname}
+			className={styles.record}
+			onClick={() => navigateToUserProfile(record.guid)}
+		>
 			<td>{record.guid}</td>
 			<td>{record.nickname}</td>
 			<td>{record.gamePlayed}</td>
-			<td>{Number(record.averageScore.toFixed(4))}</td>
+			<td>{Number(record.averageScore.toFixed(2))}</td>
 		</tr>
 	)
 
+	const navigateToUserProfile = (userId: string) => {
+		navigate(`/user/${userId}`)
+	}
+
 	return (
-		<div className={styles.container}>
-			<h1>USERS</h1>
+		<>
+			<Header />
+			<div className={styles.page}>
+				<div className={styles.container}>
+					<h1 className={styles.header}>User Scoreboard</h1>
 
-			<div className={styles.formBox}>
-				<div className={styles.inputField}>
-					<label htmlFor="nickname">Nickname:</label>
-					<input
-						type="text"
-						id="nickname"
-						name="nickname"
-						placeholder="Enter nickname"
-						ref={nicknameRef}
+					<div className={styles.filters_container}>
+						<div className={styles.formBox}>
+							<div className={styles.inputField}>
+								<label htmlFor="nickname">Nickname:</label>
+								<input
+									type="text"
+									id="nickname"
+									name="nickname"
+									placeholder="Enter nickname"
+									ref={nicknameRef}
+								/>
+							</div>
+
+							<div className={styles.inputField}>
+								<label htmlFor="difficulty">Difficulty:</label>
+								<select id="difficulty" name="difficulty" ref={difficultyRef}>
+									<option value="easy">Easy</option>
+									<option value="normal">Normal</option>
+									<option value="hard">Hard</option>
+								</select>
+							</div>
+
+							<div className={styles.inputField}>
+								<label htmlFor="pageSize">Page size:</label>
+								<select
+									className={styles.pageSizeSelect}
+									id="pageSize"
+									name="pageSize"
+									ref={pageSizeRef}
+									defaultValue="3"
+								>
+									<option value="1">1</option>
+									<option value="3">3</option>
+									<option value="5">5</option>
+								</select>
+							</div>
+						</div>
+
+						<button className={styles.applyButton} onClick={handleFindClick}>
+							Apply Filters
+						</button>
+					</div>
+
+					<div className={styles.table_container}>
+						<table className={styles.table}>
+							<thead>
+								<tr>
+									<th>User Id</th>
+									<th>Nickname</th>
+									<th>Games Played</th>
+									<th>Average Score</th>
+								</tr>
+							</thead>
+							<tbody>
+								{records.length > 0 ? (
+									records.map(showRecord)
+								) : (
+									<tr>
+										<td colSpan={4} className={styles.empty_state}>
+											<div className={styles.empty_content}>
+												<p className={styles.empty_icon}>🏆</p>
+												<h3>Brak wyników</h3>
+												<p>Nie znaleziono żadnych rekordów spełniających kryteria.</p>
+											</div>
+										</td>
+									</tr>
+								)}
+							</tbody>
+						</table>
+					</div>
+
+					<PaginationButtons
+						totalPages={pagedResult.totalPages}
+						currentPage={scoreboardQuery.pageNumber}
+						onChangePage={changePage}
 					/>
-				</div>
 
-				<div className={styles.inputField}>
-					<label htmlFor="difficulty">Difficulty:</label>
-					<select id="difficulty" name="difficulty" ref={difficultyRef}>
-						<option value="easy">Easy</option>
-						<option value="medium">Medium</option>
-						<option value="hard">Hard</option>
-					</select>
-				</div>
-
-				<div className={styles.inputField}>
-					<label htmlFor="difficulty">Page size:</label>
-					<select
-						className={styles.pageSizeSelect}
-						id="difficulty"
-						name="difficulty"
-						ref={pageSizeRef}
-						defaultValue="3"
-					>
-						<option value="1">1</option>
-						<option value="3">3</option>
-						<option value="5">5</option>
-					</select>
+					<button className={styles.backButton} onClick={() => navigate(MENU_ROUTE)}>
+						Back to menu
+					</button>
 				</div>
 			</div>
-
-			<button className={`${styles.rankingButton} ${styles.findButton}`} onClick={handleFindClick}>
-				Apply
-			</button>
-
-			<table>
-				<thead>
-					<tr>
-						<th>User Id</th>
-						<th>Nickname</th>
-						<th>Game Played</th>
-						<th>Average Score</th>
-					</tr>
-				</thead>
-				<tbody className="records-list">
-					{records.length > 0 ? (
-						records.map(showRecord)
-					) : (
-						<tr>
-							<td colSpan={4}>No records found.</td>
-						</tr>
-					)}
-				</tbody>
-			</table>
-
-			<PaginationButtons
-				totalPages={pagedResult.totalPages}
-				currentPage={scoreboardQuery.pageNumber}
-				onChangePage={changePage}
-			/>
-
-			<button
-				className={`${styles.rankingButton} ${styles.backToMenuButton}`}
-				onClick={() => navigate(MENU_ROUTE)}
-			>
-				Back to menu
-			</button>
-		</div>
+		</>
 	)
 }
 

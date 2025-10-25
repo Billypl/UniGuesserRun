@@ -9,6 +9,7 @@ import {
 	SELECTED_DIFFICULTY_KEY,
 	SELECTED_GAME_MODE,
 	USER_NICKNAME_KEY,
+	GAME_GUID,
 } from '../Constants'
 import { Difficulty } from '../models/game/Difficulty'
 import { GameMode } from '../models/game/GameMode'
@@ -26,13 +27,16 @@ const Game: React.FC = () => {
 	const ROUND_NUMBER: number = 5
 	const navigate = useNavigate()
 
+
 	useEffect(() => {
 		const controller = new AbortController()
 		const signal = controller.signal
 
 		if (gameService.hasToken()) {
+			console.log('Game token exists, fetching game state...')
 			getGame(signal)
 		} else {
+			console.log('Calling startGame')
 			startGame(signal)
 		}
 
@@ -49,6 +53,7 @@ const Game: React.FC = () => {
 			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
 			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY) as Difficulty | null
 			const gameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE) as GameMode | null
+			// Reset game GUID before starting a new game
 			if (!difficulty) {
 				throw new Error('Difficulty not selected')
 			}
@@ -76,8 +81,10 @@ const Game: React.FC = () => {
 		setLoading(true)
 		setError(null)
 
+		console.log('GETOWANIE GRY PO SPRAWDZENIU CZY ISTNIEJE')
 		try {
 			const response = await gameService.checkGameState(signal)
+			console.log('Game state fetched successfully:', response)
 			startRound(response.actualRoundNumber)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
@@ -86,7 +93,7 @@ const Game: React.FC = () => {
 			} else {
 				setError('Failed to fetch data. Please try again later.')
 				//console.error('Error fetching data:', err)
-				console.log('nieudalo sie wczytac stanu gry, tworzymy nowa gre \n', err)
+				console.log('nie udalo sie wczytac stanu gry, tworzymy nowa gre \n', err)
 				const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
 				const newController = new AbortController()
 				const newSignal = newController.signal
@@ -144,8 +151,10 @@ const Game: React.FC = () => {
 	}
 
 	const finishGame = async () => {
+		console.log('Finishing game...')
+		const gameGuid = sessionStorage.getItem(GAME_GUID)
 		const response = await gameService.finishGame()
-		navigate(`${GAME_RESULTS_ROUTE}/${response.id}`)
+		navigate(`${GAME_RESULTS_ROUTE}/${gameGuid}`)
 	}
 
 	const resetGameState = () => {

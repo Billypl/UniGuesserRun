@@ -1,0 +1,60 @@
+﻿using AutoMapper;
+using UniGuesser.Domain.Entities;
+using UniGuesser.Domain.ValueObjects;
+using UniGuesser.Application.Models.AccountModels;
+using UniGuesser.Application.Models.GameModels;
+using UniGuesser.Application.Models.PlaceModels;
+
+namespace UniGuesser.API
+{
+    // Konfiguracja AutoMappera
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<Place, GuessingPlaceDto>();
+
+
+            CreateMap<NewPlaceDto, Place>()
+                .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Coordinates.Latitude))
+                .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Coordinates.Longitude));
+
+            CreateMap<User, AccountDetailsDto>()
+                .ForMember(dest => dest.Guid, opt => opt.MapFrom(src => src.Id.ToString()));
+
+            CreateMap<AccountDetailsDto, User>();
+
+            CreateMap<UpdatePlaceDto, Place>()
+                .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Coordinates.Latitude))
+                .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Coordinates.Longitude))
+                .ForMember(dest => dest.DifficultyLevel, opt => opt.MapFrom(src => src.Difficulty)); 
+            CreateMap<Place, ShowPlaceDto>()
+                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                  .ForMember(dest => dest.Coordinates, opt => opt.MapFrom(src =>
+                  new Coordinates { Latitude = src.Latitude, Longitude = src.Longitude }))
+                  .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.AuthorPlace.Id))
+                  .ForMember(dest => dest.AuthorName, opt => opt.MapFrom(src => src.AuthorPlace.Nickname));
+
+            CreateMap<GameSession, FinishedGameDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))  // Map Id to Id as string
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId.HasValue ? src.UserId.ToString() : null))  // Map nullable Id to string
+            .ForMember(dest => dest.Nickname, opt => opt.MapFrom(src => src.Player != null ? src.Player.Nickname : null))  // Map nullable Player NicknameOrEmail
+            .ForMember(dest => dest.FinalScore, opt => opt.MapFrom(src => src.GameScore))  // Map GameScore to FinalScore
+            .ForMember(dest => dest.Rounds, opt => opt.MapFrom(src => src.Rounds))  // Map Rounds
+            .ForMember(dest => dest.Difficulty, opt => opt.MapFrom(src => src.Difficulty));  // Map Difficulty
+
+            CreateMap<ShowPlaceDto, GuessingPlaceDto>();
+
+            CreateMap<GameSession, GameSessionStateDto>();
+
+            CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
+
+
+            CreateMap<Round, GuessingPlaceDto>()
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.PlaceToGuess.ImageUrl));
+
+            CreateMap<Round, GuessingPlaceDto>();
+
+        }
+    }
+}
