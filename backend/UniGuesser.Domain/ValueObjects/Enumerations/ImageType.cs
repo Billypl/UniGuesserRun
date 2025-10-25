@@ -9,9 +9,9 @@ namespace UniGuesser.Domain.ValueObjects.Enumerations
 {
     public enum ImageType
     {
-        [EnumMember(Value = "local")]
-        Local,
-        [EnumMember(Value = "remote")]
-        Remote
+        [EnumMember(Value = "file")]
+        File,
+        [EnumMember(Value = "url")]
+        Url
     }
 }

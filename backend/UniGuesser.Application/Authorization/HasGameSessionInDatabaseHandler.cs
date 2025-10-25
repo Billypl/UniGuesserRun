@@ -3,20 +3,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using UniGuesser.Application.Services;
 using UniGuesser.Domain.Entities;
+using UniGuesser.Infrastructure;
+using IGameSessionRepository = UniGuesser.Infrastructure.IGameSessionRepository;
 
 namespace UniGuesser.Application.Authorization
 {
     public class HasGameSessionInDatabaseHandler
         : AuthorizationHandler<HasGameSessionInDatabase>
     {
-        private readonly IGameSessionService _gameSessionService;
+        private readonly IGameSessionRepository _gameSessionRepository;
         private readonly IHttpContextAccessorService _httpContextAccessorService;
 
         public HasGameSessionInDatabaseHandler(
-            IGameSessionService gameSessionService,
+            IGameSessionRepository gameSessionRepository,
             IHttpContextAccessorService httpContextAccessorService)
         {
-            _gameSessionService = gameSessionService;
+            _gameSessionRepository = gameSessionRepository;
             _httpContextAccessorService = httpContextAccessorService;
         }
 
@@ -59,11 +61,10 @@ namespace UniGuesser.Application.Authorization
             GameSession session;
             try
             {
-                session = await _gameSessionService.GetSessionByGuid(gameGuid);
+                session = await _gameSessionRepository.GetAsync(gameGuid);
             }
             catch
             {
-                throw(new Exception("333333333333333333333333333333333333333"));
 
                 context.Fail();
                 return;

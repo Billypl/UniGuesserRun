@@ -71,25 +71,7 @@ namespace UniGuesser.API.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AddNewPlace([FromForm] NewPlaceDto newPlace, IFormFile? imageFile)
         {
-            // If image file is provided, save it and update the imageUrl
-            if (imageFile != null && imageFile.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsFolder);
-
-                var uniqueFileName = $"{Guid.NewGuid()}_{imageFile.FileName}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(fileStream);
-                }
-
-                // Update the imageUrl to point to the uploaded file
-                newPlace.ImageUrl = $"http://localhost:5223/uploads/{uniqueFileName}";
-            }
-
-            var command = new AddNewPlaceCommand(newPlace, false);
+            var command = new AddNewPlaceCommand(newPlace, false,imageFile);
             var result = await _mediator.Send(command);
             return Ok(result);
         }

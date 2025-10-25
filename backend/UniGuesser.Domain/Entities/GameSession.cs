@@ -48,7 +48,7 @@ public class GameSession
         GameScore += distance;
         ActualRoundNumber++;
 
-        return distance; // Zwracamy tylko wynik domenowy
+        return distance; 
     }
 
     public void EnsureGameFinished(int roundsNumber)

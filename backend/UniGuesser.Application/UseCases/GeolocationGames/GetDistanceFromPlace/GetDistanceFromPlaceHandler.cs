@@ -14,6 +14,7 @@ using UniGuesser.Domain.Services;
 using UniGuesser.Domain.ValueObjects;
 using UniGuesser.Domain.ValueObjects.Enumerations;
 using UniGuesser.Infrastructure;
+using IGameSessionRepository = UniGuesser.Infrastructure.IGameSessionRepository;
 
 namespace UniGuesser.Application.UseCases.GeolocationGames.GetDistanceFromPlace
 {

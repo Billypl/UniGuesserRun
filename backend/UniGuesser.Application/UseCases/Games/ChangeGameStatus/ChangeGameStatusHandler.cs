@@ -4,13 +4,16 @@ using Microsoft.Extensions.Options;
 using UniGuesser.Application.Models.GameModels;
 using UniGuesser.Application.Services;
 using UniGuesser.Domain.Entities;
+using UniGuesser.Domain.Exceptions;
 using UniGuesser.Domain.ValueObjects.Enumerations;
+using UniGuesser.Infrastructure;
 using UniGuesser.Infrastructure.Settings;
+using IGameSessionRepository = UniGuesser.Infrastructure.IGameSessionRepository;
 
 namespace UniGuesser.Application.UseCases.Games.ChangeGameStatus
 {
     public class ChangeGameStatusHandler(
-        IGameSessionService gameSessionService,
+        IGameSessionRepository gameSessionRepository,
         IMapper mapper,
         IHttpContextAccessorService httpContextAccessorService,
         IOptions<GameSettings> gameSettings
@@ -18,7 +21,12 @@ namespace UniGuesser.Application.UseCases.Games.ChangeGameStatus
     {
         public async Task<FinishedGameDto> Handle(ChangeGameStatusCommand request, CancellationToken cancellationToken)
         {
-            GameSession session = await gameSessionService.GetSessionByGuid(request.Guid);
+            GameSession? session = await gameSessionRepository.GetAsync(request.Guid);
+
+            if (session == null)
+            {
+                throw new GameSessionExceptions.GameNotFoundException(request.Guid);
+            }
 
             if (request.GameStatus == GameStatus.Finished)
             {
@@ -27,14 +35,18 @@ namespace UniGuesser.Application.UseCases.Games.ChangeGameStatus
 
             string tokenType = httpContextAccessorService.GetTokenType();
             FinishedGameDto finishedGameDto = mapper.Map<FinishedGameDto>(session);
+
             if (tokenType == "user")
             {
-                await gameSessionService.SetGameStatus(session, request.GameStatus);
+                session.GameState = request.GameStatus;
             }
             else
             {
-                await gameSessionService.SetGameStatus(session, GameStatus.ToDelete);
+                session.GameState = GameStatus.ToDelete;
             }
+
+            await gameSessionRepository.UpdateAsync(session);
+
             return finishedGameDto;
         }
     }

@@ -5,6 +5,7 @@ using UniGuesser.Application.Services;
 using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Exceptions;
 using UniGuesser.Infrastructure;
+using IGameSessionRepository = UniGuesser.Infrastructure.IGameSessionRepository;
 
 namespace UniGuesser.Application.UseCases.Games.GetActualGameState
 {

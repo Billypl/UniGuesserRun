@@ -5,6 +5,7 @@ using UniGuesser.Application.UseCases.Games.StartNewGame;
 using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Exceptions;
 using UniGuesser.Domain.ValueObjects.Enumerations;
+using UniGuesser.Infrastructure;
 using UniGuesser.Infrastructure.Settings;
 
 namespace UniGuesser.Application.Services.GameStartStrategies
@@ -13,20 +14,20 @@ namespace UniGuesser.Application.Services.GameStartStrategies
     {
 
         private readonly ITokenService _accountTokenService;
-        private readonly IGameSessionService _gameSessionService;
+        private readonly IGameSessionRepository _gameSessionRepository;
         private readonly IGameRoundsGenerator _gameRoundsGenerator;
         private readonly AuthenticationSettings _authenticationSettings;
 
 
         public StartGameUnlogged(
             ITokenService accountService,
-            IGameSessionService gameSessionService,
+            IGameSessionRepository gameSessionRepository,
             IGameRoundsGenerator gameRoundsGenerator,
             IOptions<AuthenticationSettings> authenticationSettings
         )
         {
             _accountTokenService = accountService;
-            _gameSessionService = gameSessionService;
+            _gameSessionRepository = gameSessionRepository;
             _gameRoundsGenerator = gameRoundsGenerator;
             _authenticationSettings = authenticationSettings.Value;
         }
@@ -67,7 +68,7 @@ namespace UniGuesser.Application.Services.GameStartStrategies
                 gameRound.GameSession = gameSession;
             }
 
-            await _gameSessionService.AddNewGameSession(gameSession);
+            await _gameSessionRepository.CreateAsync(gameSession);
             return new StartedGameData
             {
                 Token = newGameToken,

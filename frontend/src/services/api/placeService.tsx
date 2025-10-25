@@ -58,6 +58,7 @@ export class PlaceService {
 			formData.append('ImageUrl', imageUrl || '')
 			formData.append('Alt', alt)
 			formData.append('Difficulty', difficulty)
+			formData.append('ImageType', imageFile ? 'file' : 'url')
 
 			if (imageFile) {
 				formData.append('imageFile', imageFile)

@@ -5,6 +5,7 @@ using UniGuesser.Application.UseCases.Games.StartNewGame;
 using UniGuesser.Domain.Entities;
 using UniGuesser.Domain.Repositories;
 using UniGuesser.Domain.ValueObjects.Enumerations;
+using UniGuesser.Infrastructure;
 using UniGuesser.Infrastructure.Settings;
 
 namespace UniGuesser.Application.Services.GameStartStrategies
@@ -12,7 +13,7 @@ namespace UniGuesser.Application.Services.GameStartStrategies
     public class StartGameLogged : IStartGameStrategy
     {
 
-        private readonly IGameSessionService _gameSessionService;
+        private readonly IGameSessionRepository _gameSessionRepository;
         private readonly IHttpContextAccessorService _httpContextAccessorService;
         private readonly IAccountRepository _accountRepository;
         private readonly AuthenticationSettings _authenticationSettings;
@@ -20,14 +21,14 @@ namespace UniGuesser.Application.Services.GameStartStrategies
 
 
         public StartGameLogged(
-            IGameSessionService gameSessionService,
+            IGameSessionRepository gameSessionRepository,
             IHttpContextAccessorService httpContextAccessorService,
             IAccountRepository accountRepository,
             IOptions<AuthenticationSettings> authenticationSettings,
             IGameRoundsGenerator gameRoundsGenerator
         )
         {
-            _gameSessionService = gameSessionService;
+            _gameSessionRepository = gameSessionRepository;
             _httpContextAccessorService = httpContextAccessorService;
             _accountRepository = accountRepository;
             _authenticationSettings = authenticationSettings.Value;
@@ -73,7 +74,7 @@ namespace UniGuesser.Application.Services.GameStartStrategies
                 gameRound.GameSession = gameSession;
             }
 
-            await _gameSessionService.AddNewGameSession(gameSession);
+            await _gameSessionRepository.CreateAsync(gameSession);
 
             return new StartedGameData
             {

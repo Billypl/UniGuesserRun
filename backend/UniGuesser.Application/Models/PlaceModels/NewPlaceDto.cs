@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using UniGuesser.Domain.ValueObjects;
+using UniGuesser.Domain.ValueObjects.Enumerations;
 
 namespace UniGuesser.Application.Models.PlaceModels
 {
@@ -16,5 +17,7 @@ namespace UniGuesser.Application.Models.PlaceModels
         public string Alt { get; set; } 
         [Required]
         public string Difficulty { get; set; }
+        [Required]
+        public ImageType ImageType { get; set; }
     }
 }

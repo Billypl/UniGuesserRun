@@ -25,24 +25,8 @@ namespace UniGuesser.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddNewPlaceToQueue([FromForm] NewPlaceDto newPlace, IFormFile? imageFile)
         {
-            if (imageFile != null && imageFile.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsFolder);
 
-                var uniqueFileName = $"{Guid.NewGuid()}_{imageFile.FileName}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(fileStream);
-                }
-
-                // Update the imageUrl to point to the uploaded file
-                newPlace.ImageUrl = $"http://localhost:5223/uploads/{uniqueFileName}";
-            }
-
-            var command = new AddNewPlaceCommand(newPlace, true);
+            var command = new AddNewPlaceCommand(newPlace, true,imageFile);
             var result = await _mediator.Send(command);
 
             return Ok(new { Message = "Place successfully added to queue" });
