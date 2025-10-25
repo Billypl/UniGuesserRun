@@ -14,8 +14,6 @@ namespace UniGuesser.API.Configuration
 
             services.AddScoped<IHttpContextAccessorService, HttpContextAccessorService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IRoundService, RoundService>();
-            services.AddScoped<IGameGeolocationService, GameGeolocationService>();
 
             services.AddScoped<IGameRoundsGenerator, GameRoundsGenerator>();
 

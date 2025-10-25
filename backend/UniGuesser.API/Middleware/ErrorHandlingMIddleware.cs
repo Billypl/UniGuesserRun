@@ -57,19 +57,6 @@ namespace UniGuesser.API.Middleware
                 var json = JsonSerializer.Serialize(problemDetails);
                 await context.Response.WriteAsync(json);
             }
-            catch (NotFoundException ex)
-            {
-                context.Response.StatusCode = 404;
-                context.Response.ContentType = "application/problem+json";
-                var problemDetails = new ProblemDetails
-                {
-                    Title = ex.Message,
-                    Status = 404,
-                    Instance = context.Request.Path
-                };
-                var json = JsonSerializer.Serialize(problemDetails);
-                await context.Response.WriteAsync(json);
-            }
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;

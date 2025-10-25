@@ -13,7 +13,7 @@ namespace UniGuesser.Application.UseCases.Places.ChangeQueueStatus
 
             if (placeToAccept == null)
             {
-                throw new NotFoundException("Place you want to add to the game doesn't exist");
+                throw new PlacesExceptions.PlaceNotFoundException(request.Guid);
             }
             placeToAccept.InQueue = request.InQueueStatus;
 
