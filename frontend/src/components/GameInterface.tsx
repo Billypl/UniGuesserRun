@@ -36,6 +36,8 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 	const [zoomClass, setZoomClass] = useState<string>('')
 
 	useEffect(() => {
+		console.log(props)
+
 		if (props.gameMode === GameMode.GEOLOCATION) {
 			forceUpdateGeolocation()
 			const watchId = watchGeolocation()
@@ -45,7 +47,7 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 				}
 			}
 		}
-	}, [])
+	}, [props.gameMode])
 
 	const selectLocation = (coords: Coordinates | null) => {
 		if (playerChoiceConfirmed) return // cant move the marker after confirming your choice
@@ -60,7 +62,11 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 		return navigator.geolocation.watchPosition(
 			(position) => {
 				console.log('Geolocation position obtained:', position)
-				selectLocation(position.coords)
+				const coords: Coordinates = {
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude,
+				}
+				selectLocation(coords)
 			},
 			(error) => {
 				console.error('Unable to retrieve location. Please enable location services.', error)
@@ -80,7 +86,11 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
 				console.log('Geolocation position obtained:', position)
-				selectLocation(position.coords)
+				const coords: Coordinates = {
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude,
+				}
+				selectLocation(coords)
 			},
 			(error) => {
 				console.error('Unable to retrieve location. Please enable location services.', error)
@@ -125,8 +135,7 @@ const GameInterface: React.FC<GameInterfaceProps> = (props) => {
 		setPlayerChoiceConfirmed(false)
 		if (props.gameMode === GameMode.CLASSIC) {
 			setClickedLatLng(null)
-		}
-		else if (props.gameMode === GameMode.GEOLOCATION) {
+		} else if (props.gameMode === GameMode.GEOLOCATION) {
 			console.log('Forcing geolocation update for next round')
 			forceUpdateGeolocation()
 		}

@@ -9,7 +9,7 @@ namespace UniGuesser.API.Configuration
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddScoped<ISaveFileService, SaveFileService>();
+            services.AddScoped<IFileService, FileService>();
             services.AddScoped<IHttpContextAccessorService, HttpContextAccessorService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IGameRoundsGenerator, GameRoundsGenerator>();

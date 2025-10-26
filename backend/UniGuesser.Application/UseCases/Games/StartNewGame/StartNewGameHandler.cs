@@ -20,7 +20,7 @@ namespace UniGuesser.Application.UseCases.Games.StartNewGame
 
             var result = await gameSessionRepository.GetActiveGameSession(playerGuid.Value);
 
-            if (playerGuid is not null && (result.GameState == GameStatus.InProgress))
+            if (result is not null && (result.GameState == GameStatus.InProgress))
             {
                 throw new GameSessionExceptions.UserHasActiveGameSessionException(playerGuid.Value);
             }

@@ -10,12 +10,13 @@ using UniGuesser.Infrastructure.Settings;
 namespace UniGuesser.Application.Services.SaveFileService
 {
 
-    public interface ISaveFileService
+    public interface IFileService
     {
         Task<string> SaveFile(IFormFile imageFile);
+        Task DeleteFile(string fileUrl);
     }
 
-    public class SaveFileService(IConfiguration configuration) : ISaveFileService
+    public class FileService(IConfiguration configuration) : IFileService
     {
         private string folderPath = configuration["FileSaveData:SaveFolder"];
         private string serverIp = configuration["FileSaveData:ServerIp"];
@@ -35,6 +36,20 @@ namespace UniGuesser.Application.Services.SaveFileService
 
             return  $"{serverIp}/{folderPath}/{uniqueFileName}";
 
+        }
+
+        public async Task DeleteFile(string fileUrl)
+        {
+
+           
+
+            var fileName = Path.GetFileName(new Uri(fileUrl).LocalPath);
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderPath);
+            var filePath = Path.Combine(uploadsFolder, fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
         }
     }
 }

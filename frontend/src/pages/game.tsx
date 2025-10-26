@@ -19,6 +19,7 @@ const Game: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(false)
 	const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null)
 	const [error, setError] = useState<string | null>(null)
+	const [gameMode, setGameMode] = useState<GameMode>(GameMode.CLASSIC)
 
 	const [imageUrl, setImage] = useState<string | null>(null)
 	const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null)
@@ -26,7 +27,6 @@ const Game: React.FC = () => {
 
 	const ROUND_NUMBER: number = 5
 	const navigate = useNavigate()
-
 
 	useEffect(() => {
 		const controller = new AbortController()
@@ -52,18 +52,19 @@ const Game: React.FC = () => {
 		try {
 			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
 			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY) as Difficulty | null
-			const gameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE) as GameMode | null
+			const selectedGameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE) as GameMode | null
 			// Reset game GUID before starting a new game
 			if (!difficulty) {
 				throw new Error('Difficulty not selected')
 			}
-			if (!gameMode) {
+			if (!selectedGameMode) {
 				throw new Error('Game mode not selected')
 			}
 			if (!nickname) {
 				throw new Error('User not logged in')
 			}
-			await gameService.startNewGameSession(nickname, difficulty, gameMode, signal)
+			setGameMode(selectedGameMode)
+			await gameService.startNewGameSession(nickname, difficulty, selectedGameMode, signal)
 			startRound(0)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
@@ -85,6 +86,13 @@ const Game: React.FC = () => {
 		try {
 			const response = await gameService.checkGameState(signal)
 			console.log('Game state fetched successfully:', response)
+
+			// Load game mode from session storage when resuming a game
+			const savedGameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE) as GameMode | null
+			if (savedGameMode) {
+				setGameMode(savedGameMode)
+			}
+
 			startRound(response.actualRoundNumber)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
@@ -168,7 +176,7 @@ const Game: React.FC = () => {
 			{imageUrl && currentRoundNumber != null && (
 				<GameInterface
 					error={error}
-					gameMode={GameMode.GEOLOCATION}
+					gameMode={gameMode}
 					currentRoundNumber={currentRoundNumber}
 					isLastRound={isLastRound(currentRoundNumber)}
 					imageUrl={imageUrl}

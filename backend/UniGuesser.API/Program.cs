@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -13,13 +14,17 @@ ConfigureServices(builder);
 
 var app = builder.Build();
 
+
+var filesFolder = app.Configuration["FileSaveData:SaveFolder"];
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.WebRootPath, "uploads")),
-    RequestPath = "/uploads"
+        Path.Combine(builder.Environment.WebRootPath, filesFolder)),
+    RequestPath = $"/{filesFolder}"
 });
 
+Console.WriteLine($"Path of the files: {Path.Combine(builder.Environment.WebRootPath, filesFolder)}");
 
 app.Services.MigrateDatabase();
 await SeedDatabase(app);
@@ -30,8 +35,6 @@ app.Run();
 // Rejestracja usług
 void ConfigureServices(WebApplicationBuilder builder)
 {
-
-
     builder.Services.AddApplicationDependencies(builder.Configuration);
 }
 

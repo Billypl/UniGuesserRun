@@ -10,7 +10,7 @@ using UniGuesser.Domain.ValueObjects.Enumerations;
 namespace UniGuesser.Application.UseCases.Places.AddNewPlace
 {
     public class AddNewPlaceHandle(IPlacesRepository placesRepository, IMapper mapper,
-            IAccountRepository accountRepository, IHttpContextAccessorService httpContextAccessorService, ISaveFileService saveFileService) : IRequestHandler<AddNewPlaceCommand, Unit>
+            IAccountRepository accountRepository, IHttpContextAccessorService httpContextAccessorService, IFileService fileService) : IRequestHandler<AddNewPlaceCommand, Unit>
     {
 
         public async Task<Unit> Handle(AddNewPlaceCommand newPlace, CancellationToken cancellationToken)
@@ -25,10 +25,11 @@ namespace UniGuesser.Application.UseCases.Places.AddNewPlace
             }
 
             Place newPlaceToCheck = mapper.Map<Place>(newPlace.NewPlaceDto);
+
             newPlaceToCheck.AuthorId = user.Id;
             newPlaceToCheck.CreatedAt = DateTime.Now;
             newPlaceToCheck.AuthorPlace = user;
-            newPlaceToCheck.InQueue = true;
+            newPlaceToCheck.InQueue = newPlace.InQueue;
             newPlaceToCheck.DifficultyLevel =
                 (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), newPlace.NewPlaceDto.Difficulty, true);
 
@@ -37,11 +38,12 @@ namespace UniGuesser.Application.UseCases.Places.AddNewPlace
                 throw new ArgumentNullException(nameof(newPlace.FormFile), "FormFile cannot be null when ImageType is File.");
             }
 
-            newPlaceToCheck.ImageUrl = await saveFileService.SaveFile(newPlace.FormFile);
+            if(newPlace.NewPlaceDto.ImageType == ImageType.File)
+                newPlaceToCheck.ImageUrl = await fileService.SaveFile(newPlace.FormFile);
 
             await placesRepository.CreateAsync(newPlaceToCheck);
 
-            return Unit.Value; // Ensure the method returns Unit as expected
+            return Unit.Value; 
         }
     }
 }
