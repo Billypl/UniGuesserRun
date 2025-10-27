@@ -1,10 +1,105 @@
 \chapter{Analiza wymagań}
 \label{chap:algs}
 
-\section{Koncepcja gry}
-\section{Przebieg gry}
-\section{Tryby rozgrywki}
-\section{Wymagania funkcjonalne}
+\section{Koncepcja gry (Karina Wołoszyn) }
+
+UniGuesser to interaktywna aplikacja edukacyjno-rozrywkowa, której celem jest odgadywanie lokalizacji związanych z kampusem Politechniki Gdańskiej. Gra łączy elementy zabawy, edukacji oraz eksploracji przestrzeni uczelni, a dzięki technologii PWA użytkownicy mogą korzystać z niej na komputerach i urządzeniach mobilnych bez konieczności instalacji.
+
+\subsection{Cel gry}
+Celem UniGuesser jest:
+\begin{itemize}
+    \item angażowanie graczy w interaktywną zabawę polegającą na identyfikacji lokalizacji na podstawie zdjęć,
+    \item rozwijanie orientacji przestrzennej w obrębie kampusu uczelni,
+    \item aktywne poznawanie nowych miejsc i życia akademickiego w formie przyjemnej i edukacyjnej.
+\end{itemize}
+
+\subsection{Grupa docelowa}
+Aplikacja jest skierowana do:
+\begin{itemize}
+    \item studentów Politechniki Gdańskiej, w tym nowych studentów poznających kampus,
+    \item pracowników uczelni,
+    \item osób odwiedzających kampus, np. podczas dni otwartych,
+    \item entuzjastów gier geolokalizacyjnych i edukacyjnych, którzy cenią naukę przez zabawę.
+\end{itemize}
+
+\subsection{Zastosowanie}
+UniGuesser może pełnić funkcję:
+\begin{itemize}
+    \item narzędzia integracyjnego dla studentów i pracowników uczelni,
+    \item elementu wydarzeń akademickich, takich jak dni otwarte czy spotkania organizacyjne,
+    \item gry terenowej zachęcającej do aktywnego zwiedzania kampusu.
+\end{itemize}
+
+\subsection{Mechanika gry}
+Podczas rozgrywki gracz otrzymuje losowo wybrane zdjęcie przedstawiające charakterystyczną lokalizację. Zadaniem użytkownika jest zaznaczenie jej na interaktywnej mapie. Po zatwierdzeniu odpowiedzi system:
+\begin{itemize}
+    \item oblicza odległość między wskazanym a faktycznym miejscem,
+    \item przyznaje punkty proporcjonalnie do dokładności,
+    \item pokazuje prawidłowe położenie lokalizacji na mapie.
+\end{itemize}
+
+\subsection{Zalety aplikacji}
+\begin{itemize}
+    \item dostępność na różnych urządzeniach dzięki technologii PWA,
+    \item połączenie zabawy z nauką i poznawaniem kampusu,
+    \item motywacja do rywalizacji poprzez system punktacji i rankingów,
+    \item zachęta do aktywnego odkrywania otoczenia w trybie terenowym,
+    \item wsparcie integracji społeczności akademickiej i współzawodnictwa między graczami.
+\end{itemize}
+
+\section{Przebieg gry (Karina Wołoszyn)}
+
+Rozgrywka w UniGuesser przebiega w kilku etapach, które zapewniają płynność gry i umożliwiają graczowi śledzenie swoich wyników:
+
+\begin{enumerate}
+    \item \textbf{Rozpoczęcie gry} - użytkownik wybiera tryb i trudność rozgrwyki, a w przypadku gdy nie jest zalogowany - wpisuje swój nick. System umożliwia także kontynuację poprzedniej gry wraz z zapisanymi punktami i historią odpowiedzi lub rozpoczęcie nowej sesji.
+    \item \textbf{Losowanie lokacji} - aplikacja losowo wybiera zdjęcie lokalizacji z bazy danych wraz z jej współrzędnymi, przy czym w danej sesji nie powtarzają się już wyświetlone miejsca.
+    \item \textbf{Odgadywanie lokalizacji} - gracz wskazuje na interaktywnej mapie miejsce odpowiadające wylosowanemu zdjęciu. Interfejs pozwala przybliżać i oddalać mapę oraz przesuwać ją w celu precyzyjnego wyboru. Gracz może wielokrotnie zaznaczać punkty, jednak decyduje ostatnie kliknięcie.
+    \item \textbf{Zatwierdzenie wyboru} - gracz potwierdza swój wybór, klikając przycisk zatwierdzający decyzję.
+    \item \textbf{Wyświetlenie wyniku} - po zatwierdzeniu odpowiedzi system oblicza odległość między wskazanym a faktycznym miejscem, przyznaje odpowiednią liczbę punktów i pokazuje prawidłowe położenie lokalizacji na mapie.
+    \item \textbf{Podsumowanie rundy} - gracz otrzymuje informacje o zdobytych punktach w danej rundzie oraz może przeglądać krótką statystykę swoich postępów.
+    \item \textbf{Kontynuacja lub zakończenie gry} - jeśli gracz nie rozegrał jeszcze wszystkich rund, system pozwala przejść do kolejnej. W przeciwnym wypadku wyświetlane jest podsumowanie całej gry w formie przejrzystej tabeli z możliwością podglądu wyników każdej rundy.
+\end{enumerate}
+
+Taka struktura rozgrywki sprawia, że gra jest czytelna, intuicyjna i pozwala zarówno na zabawę, jak i naukę poprzez aktywne poznawanie kampusu Politechniki Gdańskiej.
+
+\section{Tryby rozgrywki (Karina Wołoszyn)}
+
+Gra oferuje dwa tryby rozgrywki, które urozmaicają zgadywanie lokalizacji. Oprócz trybu podstawowego, rozgrywanego w miejscu, dostępny jest również tryb terenowy, przeznaczony do gry na zewnątrz i w ruchu. Poniżej przedstawiono szczegółowy opis trybu terenowego.
+
+Tryb terenowy pobiera lokalizację gracza za pomocą sygnału GPS dostępnego w urządzeniu przenośnym i wyświetla ją na mapie. Gracz może w prosty sposób zmieniać widok na ekranie, przełączając się między mapą a zdjęciem. Tryb terenowy posiada również system podpowiedzi oparty na mechanice „ciepło-zimno”, mający na celu ograniczenie potencjalnej frustracji gracza. Podpowiedź może być użyta maksymalnie trzy razy i działa poprzez wyświetlanie odpowiednich kolorów: czerwonego, jeśli gracz zbliża się do celu w ciągu ostatnich 30 sekund, lub niebieskiego, jeśli się oddala. Gdy gracz znajduje się w promieniu 5 metrów od miejsca docelowego i zatwierdzi swój „strzał”, system kończy rundę i wyświetla wynik tak jak w trybie podstawowym.
+
+W trybie terenowym kluczowa jest dokładność użytkownika. Poprzez aktywne poruszanie się i poszukiwanie miejsca na podstawie jego widoku, gracz w praktyczny sposób poznaje teren kampusu politechniki oraz lokalizacje związane z uczelnią.
+
+
+\section{Wymagania funkcjonalne (Karina Wołoszyn)}
+
+Wymagania funkcjonalne określają kluczowe funkcje, które aplikacja musi realizować. Definiują one, jak system powinien się zachowywać w określonych sytuacjach, jakie działania ma wykonywać oraz jakie rezultaty ma osiągać w odpowiedzi na określone dane wejściowe.
+
+Fundamentalnym wymogiem całego projektu było sprecyzowanie wymagań dotyczących podstawowej rozgrywki. To właśnie w tym trybie gracz spędza najwięcej czasu, dlatego kluczowe jest, aby była ona dopracowana, angażująca i zachęcająca do ponownego grania. W związku z tym wyróżniono następujące wymagania:
+
+\begin{itemize}
+    \item \textbf{Adekwatna punktacja} - aby gracz czuł się odpowiednio nagrodzony lub ukarany za swoją odpowiedź, system powinien przydzielać punkty proporcjonalnie do odległości pomiędzy faktycznym miejscem a wskazaniem gracza. Aplikacja musi zatem nie tylko obliczać tę odległość, lecz także przeliczać ją na odpowiednią liczbę punktów.
+    \item \textbf{Zapisywanie wyników pojedynczego gracza} - wyniki każdej rozgrywki są zapisywane, aby gracz mógł w przyszłości przeglądać swoje wcześniejsze sesje. Podgląd wyników umożliwia analizę i rozwój umiejętności, a także pozwala zobaczyć, gdzie dokładnie padły odpowiedzi na mapie wraz z informacjami o lokalizacjach.
+    \item \textbf{Tryby gry} - rozgrywka posiada dwa tryby gry: klasyczny (losowe lokacje z bazy danych) oraz tematyczny (lokacje powiązane z wybranym obszarem, np. kampusem uczelni lub konkretnym miastem).
+    \item \textbf{Rejestracja i logowanie} - system powinien rozróżniać role użytkowników poprzez proces rejestracji i logowania. Zwykły użytkownik ma ograniczone uprawnienia w porównaniu z Moderatorem czy Administratorem. Nowe konto można założyć za pomocą prostego formularza rejestracyjnego.
+    \item \textbf{Dodawanie nowych lokacji przez użytkowników} - zarejestrowani użytkownicy mogą zgłaszać nowe lokacje do bazy danych, dodając opis, współrzędne geograficzne oraz zdjęcie. Propozycje trafiają do weryfikacji przed publikacją.
+    \item \textbf{Nadzór lokacji} - role takie jak Administrator czy Moderator mają możliwość zatwierdzania, edytowania lub odrzucania dodanych lokalizacji, aby zapobiec nadużyciom, naruszeniom praw autorskich oraz publikacji niepożądanych treści.
+    \item \textbf{Ranking graczy} - ranking zwiększa element rywalizacji między graczami i wspiera rozwój społeczności. Przedstawia on nick gracza, jego wynik, tryb rozgrywki oraz poziom trudności. Ranking posiada paginację i ograniczenie do jednego rekordu dla danego zestawu ustawień, co usprawnia jego działanie.
+    \item \textbf{Prosty i intuicyjny interfejs} - użytkownik powinien już podczas pierwszego kontaktu z systemem intuicyjnie rozumieć jego działanie. Projekt interfejsu opiera się na minimalizmie i spójności wizualnej w całej aplikacji.
+    \item \textbf{Kolorystyka interfejsu} - zastosowana kolorystyka powinna być zgodna z barwami Politechniki Gdańskiej, zachowując estetykę i czytelność.
+    \item \textbf{Lokacje związane z życiem uczelnianym} - baza danych powinna zawierać lokacje związane z Politechniką Gdańską i życiem studenckim, np. budynki uczelni, akademiki, kawiarnie, parki czy znane miejsca spotkań studentów.
+    \item \textbf{Responsywne UI} - interfejs powinien poprawnie działać na komputerach oraz urządzeniach mobilnych, dostosowując układ elementów do rozmiaru ekranu, aby zachować komfort gry niezależnie od urządzenia.
+    \item \textbf{Responsywna mapa} - mapa powinna umożliwiać graczowi umieszczanie pinezek jako odpowiedzi, a także przybliżanie, oddalanie, przesuwanie i automatyczne wyśrodkowanie na docelową lokację po zakończeniu rundy.
+    \item \textbf{Aplikacja PWA} - aplikacja powinna wspierać instalację w formie PWA, umożliwiając korzystanie z niej offline i z poziomu ekranu głównego urządzenia.
+    \item \textbf{Kontynuacja gry} - system powinien pozwalać użytkownikowi na kontynuację niedokończonej rozgrywki z zachowaniem dotychczasowych punktów oraz historii odpowiedzi.
+    \item \textbf{Hamburger menu} - przy małym rozmiarze ekranu opcje z górnego paska menu powinny być zwijane do tzw. hamburger menu, przy zachowaniu kolejności i logiki nawigacji.
+    \item \textbf{System podpowiedzi „ciepło-zimno”} - w trybie terenowym gracz ma dostęp do systemu podpowiedzi, który pomaga mu zlokalizować docelowe miejsce, nie ujawniając go wprost.
+\end{itemize}
+
+Wymagania te stanowią podstawę do stworzenia aplikacji spełniającej główne założenia projektu, a jednocześnie podnoszącej jakość doświadczenia i satysfakcję użytkownika.
+
+
 
 \section{Wymagania niefunkcjonalne (Filip Jezierski)}
 Wymagania niefunkcjonalne określają kryteria jakościowe, które aplikacja powinna spełniać, aby zapewnić odpowiednie doświadczenie użytkownika oraz efektywne działanie systemu. W kontekście opracowywanej aplikacji mobilnej, kluczowe wymagania niefunkcjonalne obejmują aspekty takie jak wydajność, bezpieczeństwo oraz użyteczność.
