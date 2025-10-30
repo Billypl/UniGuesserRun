@@ -6,42 +6,38 @@ using UniGuesser.Domain.Exceptions;
 using UniGuesser.Domain.ValueObjects.Enumerations;
 using UniGuesser.Infrastructure.Settings;
 
-namespace UniGuesser.Application.Services.GameStartStrategies
+namespace UniGuesser.Application.Services.GameStartStrategies;
+
+public interface IGameRoundsGenerator
 {
-    public interface IGameRoundsGenerator
+    Task<List<Round>> GenerateRounds(DifficultyLevel difficulty);
+}
+
+public class GameRoundsGenerator : IGameRoundsGenerator
+{
+    private readonly GameSettings _gameSettings;
+    private readonly IMediator _mediator;
+
+
+    public GameRoundsGenerator(IMediator mediator, IOptions<GameSettings> gameSettings)
     {
-        Task<List<Round>> GenerateRounds(DifficultyLevel difficulty);
+        _mediator = mediator;
+        _gameSettings = gameSettings.Value;
     }
 
-    public class GameRoundsGenerator : IGameRoundsGenerator
+    public async Task<List<Round>> GenerateRounds(DifficultyLevel difficulty)
     {
-        private readonly IMediator _mediator;
-        private readonly GameSettings _gameSettings;
+        var query = new GetRandomPlacesQuery(_gameSettings.RoundsNumber, difficulty);
+        var places = await _mediator.Send(query);
 
+        if (places.Count < _gameSettings.RoundsNumber)
+            throw new PlacesExceptions.NotEnoughPlacesException(_gameSettings.RoundsNumber, places.Count);
 
-        public GameRoundsGenerator(IMediator mediator, IOptions<GameSettings> gameSettings)
+        return places.Select(p => new Round
         {
-            _mediator = mediator;
-            _gameSettings = gameSettings.Value;
-        }
-
-        public async Task<List<Round>> GenerateRounds(DifficultyLevel difficulty)
-        {
-            var query = new GetRandomPlacesQuery(_gameSettings.RoundsNumber, difficulty);
-            List<Place> places = await _mediator.Send(query);
-
-            if (places.Count < _gameSettings.RoundsNumber)
-            {
-                throw new PlacesExceptions.NotEnoughPlacesException(_gameSettings.RoundsNumber, places.Count);
-            }
-
-            return places.Select(p => new Round
-            {
-                PlaceId = p.Id,
-                PlaceToGuess = p,
-                Score = 0
-            }).ToList();
-        }
+            PlaceId = p.Id,
+            PlaceToGuess = p,
+            Score = 0
+        }).ToList();
     }
-
 }

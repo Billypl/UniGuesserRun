@@ -24,8 +24,7 @@ public class GameSessionUpdater : Repository<GameSession>
             .Include(gs => gs.Player);
 
         foreach (var session in gameSessions)
-        {
-            if (session.Player == null || (session.GameState == GameStatus.ToDelete))
+            if (session.Player == null || session.GameState == GameStatus.ToDelete)
             {
                 _dbSet.Remove(session);
             }
@@ -34,12 +33,10 @@ public class GameSessionUpdater : Repository<GameSession>
                 session.GameState = GameStatus.Abandoned;
                 _dbSet.Update(session);
             }
-        }
 
         _context.SaveChanges();
     }
 }
-
 
 public class GameSessionBackgroundUpdater : BackgroundService
 {

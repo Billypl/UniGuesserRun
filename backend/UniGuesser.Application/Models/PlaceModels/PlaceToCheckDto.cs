@@ -1,10 +1,9 @@
-﻿namespace UniGuesser.Application.Models.PlaceModels
+﻿namespace UniGuesser.Application.Models.PlaceModels;
+
+public class PlaceToCheckDto
 {
-    public class PlaceToCheckDto
-    {
-        public string Id { get; set; }
-        public NewPlaceDto NewPlace { get; set; }
-        public string AuthorId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    }
+    public string Id { get; set; }
+    public NewPlaceDto NewPlace { get; set; }
+    public string AuthorId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

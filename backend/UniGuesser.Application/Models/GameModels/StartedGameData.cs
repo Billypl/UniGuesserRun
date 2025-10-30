@@ -1,8 +1,7 @@
-﻿namespace UniGuesser.Application.Models.GameModels
+﻿namespace UniGuesser.Application.Models.GameModels;
+
+public class StartedGameData
 {
-    public class StartedGameData
-    {
-        public string Token { get; set; }
-        public string GameGuid { get; set; }
-    }
+    public string Token { get; set; }
+    public string GameGuid { get; set; }
 }

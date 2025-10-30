@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using UniGuesser.Application.Models.PlaceModels;
 
-namespace UniGuesser.Application.UseCases.Places.UpdatePlace
+namespace UniGuesser.Application.UseCases.Places.UpdatePlace;
+
+public record UpdatePlaceCommand(UpdatePlaceDto UpdatePlaceDto, Guid PlaceId) : IRequest<Unit>
 {
-    public record UpdatePlaceCommand(UpdatePlaceDto UpdatePlaceDto, Guid PlaceId) : IRequest<Unit>
+    public UpdatePlaceCommand(UpdatePlaceDto updatePlaceDto, string id) : this(updatePlaceDto, Guid.Parse(id))
     {
-        public UpdatePlaceCommand(UpdatePlaceDto updatePlaceDto, string id) : this(updatePlaceDto, Guid.Parse(id)) { }
     }
 }

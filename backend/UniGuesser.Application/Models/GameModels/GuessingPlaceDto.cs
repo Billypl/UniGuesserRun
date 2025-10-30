@@ -1,7 +1,6 @@
-﻿namespace UniGuesser.Application.Models.GameModels
+﻿namespace UniGuesser.Application.Models.GameModels;
+
+public class GuessingPlaceDto
 {
-    public class GuessingPlaceDto
-    {
-        public string ImageUrl { get; set; }
-    }
+    public string ImageUrl { get; set; }
 }

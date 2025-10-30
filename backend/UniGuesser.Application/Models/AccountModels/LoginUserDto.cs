@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UniGuesser.Application.Models.AccountModels
+namespace UniGuesser.Application.Models.AccountModels;
+
+public class LoginUserDto
 {
-    public class LoginUserDto
-    {
-        [Required]
-        public string NicknameOrEmail { get; set; }
-        [Required]
-        public string Password { get; set; }
-    }
+    [Required] public string NicknameOrEmail { get; set; }
+
+    [Required] public string Password { get; set; }
 }

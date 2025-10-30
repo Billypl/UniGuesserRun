@@ -5,12 +5,9 @@ namespace UniGuesser.Domain.ValueObjects.Enumerations;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DifficultyLevel
 {
-    [JsonPropertyName("Easy")]
-    Easy,
+    [JsonPropertyName("Easy")] Easy,
 
-    [JsonPropertyName("Normal")]
-    Normal,
+    [JsonPropertyName("Normal")] Normal,
 
-    [JsonPropertyName("Hard")]
-    Hard
+    [JsonPropertyName("Hard")] Hard
 }

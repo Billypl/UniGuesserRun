@@ -1,28 +1,30 @@
 using UniGuesser.Domain.ValueObjects;
 
-namespace UniGuesser.Domain.Services
+namespace UniGuesser.Domain.Services;
+
+public static class DistanceCalculator
 {
-    public static class DistanceCalculator
+    public static double CalculateDistanceBetweenCords(Coordinates first, Coordinates second)
     {
-        public static double CalculateDistanceBetweenCords(Coordinates first, Coordinates second)
+        const double EarthRadiusMeters = 6371000.0;
+
+        double ConvertToRadians(double degrees)
         {
-            const double EarthRadiusMeters = 6371000.0;
-
-            double ConvertToRadians(double degrees) => degrees * Math.PI / 180.0;
-
-            double deltaLatitude = ConvertToRadians(second.Latitude - first.Latitude);
-            double deltaLongitude = ConvertToRadians(second.Longitude - first.Longitude);
-
-            double firstLatitudeRadians = ConvertToRadians(first.Latitude);
-            double secondLatitudeRadians = ConvertToRadians(second.Latitude);
-
-            double a = Math.Sin(deltaLatitude / 2) * Math.Sin(deltaLatitude / 2) +
-                       Math.Cos(firstLatitudeRadians) * Math.Cos(secondLatitudeRadians) *
-                       Math.Sin(deltaLongitude / 2) * Math.Sin(deltaLongitude / 2);
-
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-
-            return EarthRadiusMeters * c;
+            return degrees * Math.PI / 180.0;
         }
+
+        var deltaLatitude = ConvertToRadians(second.Latitude - first.Latitude);
+        var deltaLongitude = ConvertToRadians(second.Longitude - first.Longitude);
+
+        var firstLatitudeRadians = ConvertToRadians(first.Latitude);
+        var secondLatitudeRadians = ConvertToRadians(second.Latitude);
+
+        var a = Math.Sin(deltaLatitude / 2) * Math.Sin(deltaLatitude / 2) +
+                Math.Cos(firstLatitudeRadians) * Math.Cos(secondLatitudeRadians) *
+                Math.Sin(deltaLongitude / 2) * Math.Sin(deltaLongitude / 2);
+
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+        return EarthRadiusMeters * c;
     }
 }

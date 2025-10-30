@@ -8,72 +8,64 @@ using UniGuesser.Domain.ValueObjects.Enumerations;
 using UniGuesser.Infrastructure;
 using UniGuesser.Infrastructure.Settings;
 
-namespace UniGuesser.Application.Services.GameStartStrategies
+namespace UniGuesser.Application.Services.GameStartStrategies;
+
+public class StartGameUnlogged : IStartGameStrategy
 {
-    public class StartGameUnlogged : IStartGameStrategy
+    private readonly ITokenService _accountTokenService;
+    private readonly AuthenticationSettings _authenticationSettings;
+    private readonly IGameRoundsGenerator _gameRoundsGenerator;
+    private readonly IGameSessionRepository _gameSessionRepository;
+
+
+    public StartGameUnlogged(
+        ITokenService accountService,
+        IGameSessionRepository gameSessionRepository,
+        IGameRoundsGenerator gameRoundsGenerator,
+        IOptions<AuthenticationSettings> authenticationSettings
+    )
     {
+        _accountTokenService = accountService;
+        _gameSessionRepository = gameSessionRepository;
+        _gameRoundsGenerator = gameRoundsGenerator;
+        _authenticationSettings = authenticationSettings.Value;
+    }
 
-        private readonly ITokenService _accountTokenService;
-        private readonly IGameSessionRepository _gameSessionRepository;
-        private readonly IGameRoundsGenerator _gameRoundsGenerator;
-        private readonly AuthenticationSettings _authenticationSettings;
+    public async Task<StartedGameData> StartGame(StartNewGameCommand startGameCommand)
+    {
+        if (startGameCommand.startDataDto.Nickname is null) throw new GameExceptions.EmptyNicknameException();
 
+        var difficulty =
+            (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startGameCommand.startDataDto.Difficulty, true);
 
-        public StartGameUnlogged(
-            ITokenService accountService,
-            IGameSessionRepository gameSessionRepository,
-            IGameRoundsGenerator gameRoundsGenerator,
-            IOptions<AuthenticationSettings> authenticationSettings
-        )
+        var GuestGuid = Guid.NewGuid();
+
+        var guestTokenData = new GuestTokenDataDto
         {
-            _accountTokenService = accountService;
-            _gameSessionRepository = gameSessionRepository;
-            _gameRoundsGenerator = gameRoundsGenerator;
-            _authenticationSettings = authenticationSettings.Value;
-        }
+            Nickname = startGameCommand.startDataDto.Nickname,
+            Difficulty = startGameCommand.startDataDto.Difficulty,
+            GameSessionId = GuestGuid.ToString()
+        };
 
-        public async Task<StartedGameData> StartGame(StartNewGameCommand startGameCommand)
+        var newGameToken = _accountTokenService.GenerateGuestToken(guestTokenData);
+
+        var gameRounds = await _gameRoundsGenerator.GenerateRounds(difficulty);
+        var gameSession = new GameSession
         {
-            if (startGameCommand.startDataDto.Nickname is null)
-            {
-                throw new GameExceptions.EmptyNicknameException();
-            }
+            Id = GuestGuid,
+            Rounds = gameRounds,
+            ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
+            Difficulty = difficulty,
+            GameMode = startGameCommand.startDataDto.GameMode
+        };
 
-            DifficultyLevel difficulty =
-                (DifficultyLevel)Enum.Parse(typeof(DifficultyLevel), startGameCommand.startDataDto.Difficulty, ignoreCase: true);
+        foreach (var gameRound in gameRounds) gameRound.GameSession = gameSession;
 
-            Guid GuestGuid = Guid.NewGuid();
-
-            GuestTokenDataDto guestTokenData = new GuestTokenDataDto
-            {
-                Nickname = startGameCommand.startDataDto.Nickname,
-                Difficulty = startGameCommand.startDataDto.Difficulty,
-                GameSessionId = GuestGuid.ToString(),
-            };
-
-            string newGameToken = _accountTokenService.GenerateGuestToken(guestTokenData);
-
-            List<Round> gameRounds = await _gameRoundsGenerator.GenerateRounds(difficulty);
-            GameSession gameSession = new GameSession
-            {
-                Id = GuestGuid,
-                Rounds = gameRounds,
-                ExpirationDate = DateTime.UtcNow.AddMinutes(_authenticationSettings.JwtExpireGame),
-                Difficulty = difficulty,
-                GameMode = startGameCommand.startDataDto.GameMode
-            };
-
-            foreach (Round gameRound in gameRounds)
-            {
-                gameRound.GameSession = gameSession;
-            }
-
-            await _gameSessionRepository.CreateAsync(gameSession);
-            return new StartedGameData
-            {
-                Token = newGameToken,
-                GameGuid = GuestGuid.ToString()
-            };
-        }
+        await _gameSessionRepository.CreateAsync(gameSession);
+        return new StartedGameData
+        {
+            Token = newGameToken,
+            GameGuid = GuestGuid.ToString()
+        };
     }
 }

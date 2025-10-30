@@ -4,22 +4,17 @@ using UniGuesser.Application.Models.AccountModels;
 using UniGuesser.Domain.Exceptions;
 using UniGuesser.Domain.Repositories;
 
-namespace UniGuesser.Application.UseCases.Accounts.AccountDetails
+namespace UniGuesser.Application.UseCases.Accounts.AccountDetails;
+
+public class AccountDetailsHandler(IAccountRepository accountRepository, IMapper mapper)
+    : IRequestHandler<AccountDetailsQuery, AccountDetailsDto>
 {
-
-    public class AccountDetailsHandler(IAccountRepository accountRepository, IMapper mapper) : IRequestHandler<AccountDetailsQuery, AccountDetailsDto>
+    public async Task<AccountDetailsDto> Handle(AccountDetailsQuery request, CancellationToken cancellationToken)
     {
-        public async Task<AccountDetailsDto> Handle(AccountDetailsQuery request, CancellationToken cancellationToken)
-        {
-            var account = await accountRepository.GetAsync(request.Id);
+        var account = await accountRepository.GetAsync(request.Id);
 
-            if (account == null)
-            {
-                throw new AccountExceptions.UserNotFoundException(request.Id);
-            }
+        if (account == null) throw new AccountExceptions.UserNotFoundException(request.Id);
 
-            return mapper.Map<AccountDetailsDto>(account);
-        }
+        return mapper.Map<AccountDetailsDto>(account);
     }
-
 }

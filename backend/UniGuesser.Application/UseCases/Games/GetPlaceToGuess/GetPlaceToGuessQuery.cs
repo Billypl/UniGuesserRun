@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using UniGuesser.Application.Models.GameModels;
 
-namespace UniGuesser.Application.UseCases.Games.GetPlaceToGuess
+namespace UniGuesser.Application.UseCases.Games.GetPlaceToGuess;
+
+public record GetPlaceToGuessQuery(Guid Guid, int RoundNumber) : IRequest<GuessingPlaceDto>
 {
-    public record GetPlaceToGuessQuery(Guid Guid, int RoundNumber) : IRequest<GuessingPlaceDto>
+    public GetPlaceToGuessQuery(string id, int roundNumber) : this(Guid.Parse(id), roundNumber)
     {
-        public GetPlaceToGuessQuery(string id, int roundNumber) : this(Guid.Parse(id), roundNumber) { }
     }
 }

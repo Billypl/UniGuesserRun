@@ -4,370 +4,369 @@ using UniGuesser.Domain.ValueObjects.Enumerations;
 using UniGuesser.Infrastructure.Persistence;
 using UniGuesser.Infrastructure.Repositories;
 
-namespace UniGuesser.Tests.Repositories
+namespace UniGuesser.Tests.Repositories;
+
+public class RoundRepositoryTests
 {
-    public class RoundRepositoryTests
+    private DbContextOptions<GameDbContext> CreateNewContextOptions()
     {
-        private DbContextOptions<GameDbContext> CreateNewContextOptions()
+        return new DbContextOptionsBuilder<GameDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+    }
+
+    [Fact]
+    public async Task CreateAsync_ValidRound_ReturnsRound()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
+
+        var place = new Place
         {
-            return new DbContextOptionsBuilder<GameDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-        }
+            Name = "Test Place",
+            Description = "Test Description",
+            Latitude = 52.2297,
+            Longitude = 21.0122,
+            ImageUrl = "http://test.com/image.jpg",
+            Alt = "Test Alt",
+            DifficultyLevel = DifficultyLevel.Normal,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await context.Places.AddAsync(place);
+        await context.SaveChangesAsync();
 
-        [Fact]
-        public async Task CreateAsync_ValidRound_ReturnsRound()
+        var round = new Round
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Latitude = 52.0,
+            Longitude = 21.0,
+            Score = 100.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place.Id
+        };
 
-            var place = new Place
-            {
-                Name = "Test Place",
-                Description = "Test Description",
-                Latitude = 52.2297,
-                Longitude = 21.0122,
-                ImageUrl = "http://test.com/image.jpg",
-                Alt = "Test Alt",
-                DifficultyLevel = DifficultyLevel.Normal,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-            await context.Places.AddAsync(place);
-            await context.SaveChangesAsync();
+        // Act
+        var result = await repository.CreateAsync(round);
 
-            var round = new Round
-            {
-                Latitude = 52.0,
-                Longitude = 21.0,
-                Score = 100.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place.Id
-            };
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(round.Latitude, result.Latitude);
+        Assert.NotEqual(Guid.Empty, result.Id);
+    }
 
-            // Act
-            var result = await repository.CreateAsync(round);
+    [Fact]
+    public async Task GetAsync_ExistingRound_ReturnsRoundWithPlace()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(round.Latitude, result.Latitude);
-            Assert.NotEqual(Guid.Empty, result.Id);
-        }
-
-        [Fact]
-        public async Task GetAsync_ExistingRound_ReturnsRoundWithPlace()
+        var place = new Place
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Name = "Test Place",
+            Description = "Test Description",
+            Latitude = 52.2297,
+            Longitude = 21.0122,
+            ImageUrl = "http://test.com/image.jpg",
+            Alt = "Test Alt",
+            DifficultyLevel = DifficultyLevel.Normal,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await context.Places.AddAsync(place);
+        await context.SaveChangesAsync();
 
-            var place = new Place
-            {
-                Name = "Test Place",
-                Description = "Test Description",
-                Latitude = 52.2297,
-                Longitude = 21.0122,
-                ImageUrl = "http://test.com/image.jpg",
-                Alt = "Test Alt",
-                DifficultyLevel = DifficultyLevel.Normal,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-            await context.Places.AddAsync(place);
-            await context.SaveChangesAsync();
-
-            var round = new Round
-            {
-                Latitude = 52.0,
-                Longitude = 21.0,
-                Score = 100.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place.Id
-            };
-            var createdRound = await repository.CreateAsync(round);
-
-            // Act
-            var result = await repository.GetAsync(createdRound.Id);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(createdRound.Id, result.Id);
-            Assert.NotNull(result.PlaceToGuess);
-            Assert.Equal(place.Name, result.PlaceToGuess.Name);
-        }
-
-        [Fact]
-        public async Task GetAsync_NonExistingRound_ReturnsNull()
+        var round = new Round
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Latitude = 52.0,
+            Longitude = 21.0,
+            Score = 100.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place.Id
+        };
+        var createdRound = await repository.CreateAsync(round);
 
-            // Act
-            var result = await repository.GetAsync(Guid.NewGuid());
+        // Act
+        var result = await repository.GetAsync(createdRound.Id);
 
-            // Assert
-            Assert.Null(result);
-        }
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(createdRound.Id, result.Id);
+        Assert.NotNull(result.PlaceToGuess);
+        Assert.Equal(place.Name, result.PlaceToGuess.Name);
+    }
 
-        [Fact]
-        public async Task GetAllAsync_MultipleRounds_ReturnsAllRoundsWithPlaces()
+    [Fact]
+    public async Task GetAsync_NonExistingRound_ReturnsNull()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
+
+        // Act
+        var result = await repository.GetAsync(Guid.NewGuid());
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_MultipleRounds_ReturnsAllRoundsWithPlaces()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
+
+        var place1 = new Place
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Name = "Place 1",
+            Description = "Description 1",
+            Latitude = 52.2297,
+            Longitude = 21.0122,
+            ImageUrl = "http://test.com/image1.jpg",
+            Alt = "Alt 1",
+            DifficultyLevel = DifficultyLevel.Easy,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
 
-            var place1 = new Place
-            {
-                Name = "Place 1",
-                Description = "Description 1",
-                Latitude = 52.2297,
-                Longitude = 21.0122,
-                ImageUrl = "http://test.com/image1.jpg",
-                Alt = "Alt 1",
-                DifficultyLevel = DifficultyLevel.Easy,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            var place2 = new Place
-            {
-                Name = "Place 2",
-                Description = "Description 2",
-                Latitude = 51.5074,
-                Longitude = -0.1278,
-                ImageUrl = "http://test.com/image2.jpg",
-                Alt = "Alt 2",
-                DifficultyLevel = DifficultyLevel.Hard,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await context.Places.AddAsync(place1);
-            await context.Places.AddAsync(place2);
-            await context.SaveChangesAsync();
-
-            var round1 = new Round
-            {
-                Latitude = 52.0,
-                Longitude = 21.0,
-                Score = 100.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place1.Id
-            };
-
-            var round2 = new Round
-            {
-                Latitude = 51.0,
-                Longitude = -0.1,
-                Score = 200.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place2.Id
-            };
-
-            await repository.CreateAsync(round1);
-            await repository.CreateAsync(round2);
-
-            // Act
-            var results = await repository.GetAllAsync();
-
-            // Assert
-            Assert.NotNull(results);
-            Assert.Equal(2, results.Count());
-            Assert.All(results, r => Assert.NotNull(r.PlaceToGuess));
-        }
-
-        [Fact]
-        public async Task UpdateAsync_ExistingRound_UpdatesRound()
+        var place2 = new Place
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Name = "Place 2",
+            Description = "Description 2",
+            Latitude = 51.5074,
+            Longitude = -0.1278,
+            ImageUrl = "http://test.com/image2.jpg",
+            Alt = "Alt 2",
+            DifficultyLevel = DifficultyLevel.Hard,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
 
-            var place = new Place
-            {
-                Name = "Test Place",
-                Description = "Test Description",
-                Latitude = 52.2297,
-                Longitude = 21.0122,
-                ImageUrl = "http://test.com/image.jpg",
-                Alt = "Test Alt",
-                DifficultyLevel = DifficultyLevel.Normal,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-            await context.Places.AddAsync(place);
-            await context.SaveChangesAsync();
+        await context.Places.AddAsync(place1);
+        await context.Places.AddAsync(place2);
+        await context.SaveChangesAsync();
 
-            var round = new Round
-            {
-                Latitude = 52.0,
-                Longitude = 21.0,
-                Score = 100.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place.Id
-            };
-            var createdRound = await repository.CreateAsync(round);
-
-            // Act
-            createdRound.Score = 150.0;
-            createdRound.Latitude = 53.0;
-            await repository.UpdateAsync(createdRound);
-
-            // Assert
-            var updatedRound = await repository.GetAsync(createdRound.Id);
-            Assert.NotNull(updatedRound);
-            Assert.Equal(150.0, updatedRound.Score);
-            Assert.Equal(53.0, updatedRound.Latitude);
-        }
-
-        [Fact]
-        public async Task DeleteAsync_ExistingRound_ReturnsTrue()
+        var round1 = new Round
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Latitude = 52.0,
+            Longitude = 21.0,
+            Score = 100.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place1.Id
+        };
 
-            var place = new Place
-            {
-                Name = "Test Place",
-                Description = "Test Description",
-                Latitude = 52.2297,
-                Longitude = 21.0122,
-                ImageUrl = "http://test.com/image.jpg",
-                Alt = "Test Alt",
-                DifficultyLevel = DifficultyLevel.Normal,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-            await context.Places.AddAsync(place);
-            await context.SaveChangesAsync();
-
-            var round = new Round
-            {
-                Latitude = 52.0,
-                Longitude = 21.0,
-                Score = 100.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place.Id
-            };
-            var createdRound = await repository.CreateAsync(round);
-
-            // Act
-            var result = await repository.DeleteAsync(createdRound.Id);
-
-            // Assert
-            Assert.True(result);
-            var deletedRound = await repository.GetAsync(createdRound.Id);
-            Assert.Null(deletedRound);
-        }
-
-        [Fact]
-        public async Task DeleteAsync_NonExistingRound_ReturnsFalse()
+        var round2 = new Round
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Latitude = 51.0,
+            Longitude = -0.1,
+            Score = 200.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place2.Id
+        };
 
-            // Act
-            var result = await repository.DeleteAsync(Guid.NewGuid());
+        await repository.CreateAsync(round1);
+        await repository.CreateAsync(round2);
 
-            // Assert
-            Assert.False(result);
-        }
+        // Act
+        var results = await repository.GetAllAsync();
 
-        [Fact]
-        public async Task GetByPublicIdAsync_ExistingRound_ReturnsRoundWithPlace()
+        // Assert
+        Assert.NotNull(results);
+        Assert.Equal(2, results.Count());
+        Assert.All(results, r => Assert.NotNull(r.PlaceToGuess));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ExistingRound_UpdatesRound()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
+
+        var place = new Place
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Name = "Test Place",
+            Description = "Test Description",
+            Latitude = 52.2297,
+            Longitude = 21.0122,
+            ImageUrl = "http://test.com/image.jpg",
+            Alt = "Test Alt",
+            DifficultyLevel = DifficultyLevel.Normal,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await context.Places.AddAsync(place);
+        await context.SaveChangesAsync();
 
-            var place = new Place
-            {
-                Name = "Test Place",
-                Description = "Test Description",
-                Latitude = 52.2297,
-                Longitude = 21.0122,
-                ImageUrl = "http://test.com/image.jpg",
-                Alt = "Test Alt",
-                DifficultyLevel = DifficultyLevel.Normal,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-            await context.Places.AddAsync(place);
-            await context.SaveChangesAsync();
-
-            var round = new Round
-            {
-                Latitude = 52.0,
-                Longitude = 21.0,
-                Score = 100.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place.Id
-            };
-            var createdRound = await repository.CreateAsync(round);
-
-            // Act
-            var result = await repository.GetAsync(createdRound.Id);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(createdRound.Id, result.Id);
-            Assert.NotNull(result.PlaceToGuess);
-            Assert.Equal(place.Name, result.PlaceToGuess.Name);
-        }
-
-        [Fact]
-        public async Task GetByPublicIdAsync_WithString_ExistingRound_ReturnsRoundWithPlace()
+        var round = new Round
         {
-            // Arrange
-            var options = CreateNewContextOptions();
-            using var context = new GameDbContext(options);
-            var repository = new RoundRepository(context);
+            Latitude = 52.0,
+            Longitude = 21.0,
+            Score = 100.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place.Id
+        };
+        var createdRound = await repository.CreateAsync(round);
 
-            var place = new Place
-            {
-                Name = "Test Place",
-                Description = "Test Description",
-                Latitude = 52.2297,
-                Longitude = 21.0122,
-                ImageUrl = "http://test.com/image.jpg",
-                Alt = "Test Alt",
-                DifficultyLevel = DifficultyLevel.Normal,
-                InQueue = false,
-                CreatedAt = DateTime.UtcNow
-            };
-            await context.Places.AddAsync(place);
-            await context.SaveChangesAsync();
+        // Act
+        createdRound.Score = 150.0;
+        createdRound.Latitude = 53.0;
+        await repository.UpdateAsync(createdRound);
 
-            var round = new Round
-            {
-                Latitude = 52.0,
-                Longitude = 21.0,
-                Score = 100.0,
-                GameSessionId = Guid.NewGuid(),
-                PlaceId = place.Id
-            };
-            var createdRound = await repository.CreateAsync(round);
+        // Assert
+        var updatedRound = await repository.GetAsync(createdRound.Id);
+        Assert.NotNull(updatedRound);
+        Assert.Equal(150.0, updatedRound.Score);
+        Assert.Equal(53.0, updatedRound.Latitude);
+    }
 
-            // Act
-            var result = await repository.GetAsync(createdRound.Id);
+    [Fact]
+    public async Task DeleteAsync_ExistingRound_ReturnsTrue()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(createdRound.Id, result.Id);
-            Assert.NotNull(result.PlaceToGuess);
-            Assert.Equal(place.Name, result.PlaceToGuess.Name);
-        }
+        var place = new Place
+        {
+            Name = "Test Place",
+            Description = "Test Description",
+            Latitude = 52.2297,
+            Longitude = 21.0122,
+            ImageUrl = "http://test.com/image.jpg",
+            Alt = "Test Alt",
+            DifficultyLevel = DifficultyLevel.Normal,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await context.Places.AddAsync(place);
+        await context.SaveChangesAsync();
+
+        var round = new Round
+        {
+            Latitude = 52.0,
+            Longitude = 21.0,
+            Score = 100.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place.Id
+        };
+        var createdRound = await repository.CreateAsync(round);
+
+        // Act
+        var result = await repository.DeleteAsync(createdRound.Id);
+
+        // Assert
+        Assert.True(result);
+        var deletedRound = await repository.GetAsync(createdRound.Id);
+        Assert.Null(deletedRound);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_NonExistingRound_ReturnsFalse()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
+
+        // Act
+        var result = await repository.DeleteAsync(Guid.NewGuid());
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public async Task GetByPublicIdAsync_ExistingRound_ReturnsRoundWithPlace()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
+
+        var place = new Place
+        {
+            Name = "Test Place",
+            Description = "Test Description",
+            Latitude = 52.2297,
+            Longitude = 21.0122,
+            ImageUrl = "http://test.com/image.jpg",
+            Alt = "Test Alt",
+            DifficultyLevel = DifficultyLevel.Normal,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await context.Places.AddAsync(place);
+        await context.SaveChangesAsync();
+
+        var round = new Round
+        {
+            Latitude = 52.0,
+            Longitude = 21.0,
+            Score = 100.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place.Id
+        };
+        var createdRound = await repository.CreateAsync(round);
+
+        // Act
+        var result = await repository.GetAsync(createdRound.Id);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(createdRound.Id, result.Id);
+        Assert.NotNull(result.PlaceToGuess);
+        Assert.Equal(place.Name, result.PlaceToGuess.Name);
+    }
+
+    [Fact]
+    public async Task GetByPublicIdAsync_WithString_ExistingRound_ReturnsRoundWithPlace()
+    {
+        // Arrange
+        var options = CreateNewContextOptions();
+        using var context = new GameDbContext(options);
+        var repository = new RoundRepository(context);
+
+        var place = new Place
+        {
+            Name = "Test Place",
+            Description = "Test Description",
+            Latitude = 52.2297,
+            Longitude = 21.0122,
+            ImageUrl = "http://test.com/image.jpg",
+            Alt = "Test Alt",
+            DifficultyLevel = DifficultyLevel.Normal,
+            InQueue = false,
+            CreatedAt = DateTime.UtcNow
+        };
+        await context.Places.AddAsync(place);
+        await context.SaveChangesAsync();
+
+        var round = new Round
+        {
+            Latitude = 52.0,
+            Longitude = 21.0,
+            Score = 100.0,
+            GameSessionId = Guid.NewGuid(),
+            PlaceId = place.Id
+        };
+        var createdRound = await repository.CreateAsync(round);
+
+        // Act
+        var result = await repository.GetAsync(createdRound.Id);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(createdRound.Id, result.Id);
+        Assert.NotNull(result.PlaceToGuess);
+        Assert.Equal(place.Name, result.PlaceToGuess.Name);
     }
 }

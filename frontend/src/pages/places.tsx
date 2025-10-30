@@ -77,8 +77,8 @@ const Places: React.FC = () => {
 			return (
 				<div className={styles.empty_state}>
 					<p className={styles.empty_icon}>📍</p>
-					<h3>Brak miejsc</h3>
-					<p>Nie znaleziono żadnych miejsc w bazie danych.</p>
+					<h3>No places</h3>
+					<p>No places found in the database.</p>
 				</div>
 			)
 		}

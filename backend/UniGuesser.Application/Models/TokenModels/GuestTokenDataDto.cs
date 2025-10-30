@@ -1,9 +1,8 @@
-﻿namespace UniGuesser.Application.Models.TokenModels
+﻿namespace UniGuesser.Application.Models.TokenModels;
+
+public class GuestTokenDataDto
 {
-    public class GuestTokenDataDto
-    {
-        public string Nickname { get; set; }
-        public string Difficulty { get; set; }
-        public string GameSessionId { get; set; }
-    }
+    public string Nickname { get; set; }
+    public string Difficulty { get; set; }
+    public string GameSessionId { get; set; }
 }

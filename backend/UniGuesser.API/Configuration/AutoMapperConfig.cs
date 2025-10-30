@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace UniGuesser.API.Configuration
+namespace UniGuesser.API.Configuration;
+
+public static class AutoMapperConfig
 {
-    public static class AutoMapperConfig
+    public static IServiceCollection AddAutoMapperConfig(this IServiceCollection services)
     {
-        public static IServiceCollection AddAutoMapperConfig(this IServiceCollection services)
-        {
-            services.AddAutoMapper(typeof(MappingProfile));
-            services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
-            return services;
-        }
+        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
+        return services;
     }
 }

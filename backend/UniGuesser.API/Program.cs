@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -17,14 +15,26 @@ var app = builder.Build();
 
 var filesFolder = app.Configuration["FileSaveData:SaveFolder"];
 
-app.UseStaticFiles(new StaticFileOptions
+if (!string.IsNullOrEmpty(filesFolder))
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.WebRootPath, filesFolder)),
-    RequestPath = $"/{filesFolder}"
-});
+    var webRootPath = builder.Environment.WebRootPath ?? Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+    var filesFolderPath = Path.Combine(webRootPath, filesFolder);
 
-Console.WriteLine($"Path of the files: {Path.Combine(builder.Environment.WebRootPath, filesFolder)}");
+    // Utwórz katalog jeśli nie istnieje
+    Directory.CreateDirectory(filesFolderPath);
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(filesFolderPath),
+        RequestPath = $"/{filesFolder}"
+    });
+
+    Console.WriteLine($"Path of the files: {filesFolderPath}");
+}
+else
+{
+    Console.WriteLine("WARNING: FileSaveData:SaveFolder not configured");
+}
 
 app.Services.MigrateDatabase();
 await SeedDatabase(app);
@@ -44,7 +54,7 @@ async Task SeedDatabase(WebApplication app)
     Console.WriteLine("##### Seeding database...");
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<GameDbContext>();
-   // db.Database.Migrate();
+    // db.Database.Migrate();
     Console.WriteLine("##### Db seeded...");
 
     var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
@@ -59,10 +69,7 @@ void ConfigureMiddleware(WebApplication app)
     app.UseAuthentication();
     app.UseHttpsRedirection();
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "UniGuesser API V1");
-    });
+    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "UniGuesser API V1"); });
 
 
     if (app.Environment.IsDevelopment())

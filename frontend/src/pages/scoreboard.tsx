@@ -155,8 +155,8 @@ const Scoreboard: React.FC = () => {
 										<td colSpan={4} className={styles.empty_state}>
 											<div className={styles.empty_content}>
 												<p className={styles.empty_icon}>🏆</p>
-												<h3>Brak wyników</h3>
-												<p>Nie znaleziono żadnych rekordów spełniających kryteria.</p>
+												<h3>No Results</h3>
+												<p>No records found matching the criteria.</p>
 											</div>
 										</td>
 									</tr>

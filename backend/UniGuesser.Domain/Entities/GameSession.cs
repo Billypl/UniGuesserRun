@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using AutoMapper;
 using UniGuesser.Domain.Exceptions;
 using UniGuesser.Domain.Services;
 using UniGuesser.Domain.ValueObjects;
@@ -10,8 +8,8 @@ namespace UniGuesser.Domain.Entities;
 
 public class GameSession
 {
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
+
     public virtual List<Round> Rounds { get; set; } = new();
     public GameMode GameMode { get; set; }
     public DateTime ExpirationDate { get; set; }
@@ -48,7 +46,7 @@ public class GameSession
         GameScore += distance;
         ActualRoundNumber++;
 
-        return distance; 
+        return distance;
     }
 
     public void EnsureGameFinished(int roundsNumber)
@@ -56,6 +54,4 @@ public class GameSession
         if (ActualRoundNumber != roundsNumber)
             throw new GameSessionExceptions.GameCannotBeFinishedException(roundsNumber - ActualRoundNumber);
     }
-
-
 }

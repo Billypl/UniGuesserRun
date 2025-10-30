@@ -1,15 +1,12 @@
 ﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace UniGuesser.Domain.ValueObjects.Enumerations
-{
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum GameMode
-    {
-        [EnumMember(Value = "classic")]
-        Classic,
+namespace UniGuesser.Domain.ValueObjects.Enumerations;
 
-        [EnumMember(Value = "geolocation")]
-        Geolocation
-    }
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum GameMode
+{
+    [EnumMember(Value = "classic")] Classic,
+
+    [EnumMember(Value = "geolocation")] Geolocation
 }

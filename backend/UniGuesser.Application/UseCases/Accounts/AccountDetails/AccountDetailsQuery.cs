@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using UniGuesser.Application.Models.AccountModels;
 
-namespace UniGuesser.Application.UseCases.Accounts.AccountDetails
+namespace UniGuesser.Application.UseCases.Accounts.AccountDetails;
+
+public record AccountDetailsQuery(Guid Id) : IRequest<AccountDetailsDto>
 {
-    public record AccountDetailsQuery(Guid Id) : IRequest<AccountDetailsDto>
+    public AccountDetailsQuery(string Id) : this(Guid.Parse(Id))
     {
-        public AccountDetailsQuery(string Id) : this(Guid.Parse(Id)) { }
-    };
+    }
 }

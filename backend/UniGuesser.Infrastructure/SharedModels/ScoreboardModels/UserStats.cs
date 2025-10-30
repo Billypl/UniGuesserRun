@@ -1,12 +1,9 @@
-﻿
+﻿namespace UniGuesser.Infrastructure.SharedModels.ScoreboardModels;
 
-namespace UniGuesser.Infrastructure.SharedModels.ScoreboardModels
+public class UserStats
 {
-    public class UserStats
-    {
-        public string Guid { get; set; }
-        public string Nickname { get; set; }
-        public int GamePlayed { get; set; }
-        public double AverageScore { get; set; }
-    }
+    public string Guid { get; set; }
+    public string Nickname { get; set; }
+    public int GamePlayed { get; set; }
+    public double AverageScore { get; set; }
 }

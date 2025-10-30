@@ -1,6 +1,5 @@
-﻿namespace UniGuesser.Application.Validations
+﻿namespace UniGuesser.Application.Validations;
+
+public class LoginUserValidator
 {
-    public class LoginUserValidator
-    {
-    }
 }

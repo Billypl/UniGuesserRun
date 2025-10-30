@@ -9,56 +9,53 @@ using UniGuesser.Application.Authorization;
 using UniGuesser.Domain.Entities;
 using UniGuesser.Infrastructure.Settings;
 
-namespace UniGuesser.API.Configuration
+namespace UniGuesser.API.Configuration;
+
+public static class Configuration
 {
-    public static class Configuration
+    public static IServiceCollection AddApplicationDependencies(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddApplicationDependencies(this IServiceCollection services, IConfiguration configuration)
-        {
-            services
-                .AddDatabaseConfig(configuration)   
-                .AddCorsConfiguration(configuration)
-                .AddAuthenticationConfig(configuration)
-                .AddRepositories()                    
-                .AddServices()                       
-                .AddValidatorsConfig()
-                .AddAutoMapperConfig();
+        services
+            .AddDatabaseConfig(configuration)
+            .AddCorsConfiguration(configuration)
+            .AddAuthenticationConfig(configuration)
+            .AddRepositories()
+            .AddServices()
+            .AddValidatorsConfig()
+            .AddAutoMapperConfig();
 
-            services.AddControllers();
+        services.AddControllers();
 
-            services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
-
-            services.Configure<GameSettings>(
-                configuration.GetSection("GameSettings"));
-
-            services.AddScoped<IAuthorizationHandler, HasGameSessionInDatabaseHandler>();
-
-            services.AddAuthorization(options =>
+        services.AddControllers()
+            .AddJsonOptions(options =>
             {
-                options.AddPolicy("HasGameSessionInDatabase", policy =>
-                    policy.Requirements.Add(new HasGameSessionInDatabase()));
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-            services.AddScoped<GameSessionUpdater>();
-            services.AddHostedService<GameSessionBackgroundUpdater>();
+        services.Configure<GameSettings>(
+            configuration.GetSection("GameSettings"));
 
-            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-            services.AddScoped<ErrorHandlingMiddleware>();
-            services.AddScoped<Seeder>();
-            services.AddEndpointsApiExplorer(); 
-            
-            //services.AddOpenApi();
-            services.AddSwaggerGen();
+        services.AddScoped<IAuthorizationHandler, HasGameSessionInDatabaseHandler>();
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("HasGameSessionInDatabase", policy =>
+                policy.Requirements.Add(new HasGameSessionInDatabase()));
+        });
+
+        services.AddScoped<GameSessionUpdater>();
+        services.AddHostedService<GameSessionBackgroundUpdater>();
+
+        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<ErrorHandlingMiddleware>();
+        services.AddScoped<Seeder>();
+        services.AddEndpointsApiExplorer();
+
+        //services.AddOpenApi();
+        services.AddSwaggerGen();
 
 
-
-
-            return services;
-        }
+        return services;
     }
-
 }

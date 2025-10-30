@@ -5,8 +5,8 @@ namespace UniGuesser.Domain.Entities;
 
 public class Place
 {
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
+
     public string Name { get; set; }
     public string Description { get; set; }
     public double Latitude { get; set; }
@@ -20,6 +20,4 @@ public class Place
 
     public Guid? AuthorId { get; set; }
     public virtual User? AuthorPlace { get; set; }
-
-
 }

@@ -114,8 +114,8 @@ const User: React.FC = () => {
 								<td colSpan={3} className={styles.empty_state}>
 									<div className={styles.empty_content}>
 										<p className={styles.empty_icon}>🎮</p>
-										<h4>Brak gier</h4>
-										<p>Nie rozegrano jeszcze żadnych gier.</p>
+										<h4>No games</h4>
+										<p>No games have been played yet.</p>
 									</div>
 								</td>
 							</tr>

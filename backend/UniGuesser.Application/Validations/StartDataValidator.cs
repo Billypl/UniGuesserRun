@@ -5,14 +5,12 @@ namespace UniGuesser.Application.Validations;
 
 public class StartDataValidator : AbstractValidator<StartDataDto>
 {
-    private readonly int MinimalNicknameLength = 3;
     private readonly int MaximalNicknameLength = 25;
+    private readonly int MinimalNicknameLength = 3;
 
 
     public StartDataValidator()
     {
-      
-
         RuleFor(dto => dto.Nickname)
             .MinimumLength(MinimalNicknameLength)
             .WithMessage($"Minimal length of nickname is {MinimalNicknameLength}.")

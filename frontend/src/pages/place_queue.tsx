@@ -68,8 +68,8 @@ const PlaceQueue: React.FC = () => {
 			return (
 				<div className={styles.empty_state}>
 					<p className={styles.empty_icon}>📋</p>
-					<h3>Brak miejsc w kolejce</h3>
-					<p>Nie ma żadnych miejsc oczekujących na weryfikację.</p>
+					<h3>No places in queue</h3>
+					<p>There are no places waiting for verification.</p>
 				</div>
 			)
 		}
@@ -281,7 +281,10 @@ const PlaceQueue: React.FC = () => {
 	}, [isEditing])
 
 	const currentUser = accountService.getCurrentUser()
-	if (currentUser === null || (currentUser.role !== UserRole.ADMIN && currentUser.role !== UserRole.MODERATOR)) {
+	if (
+		currentUser === null ||
+		(currentUser.role !== UserRole.ADMIN && currentUser.role !== UserRole.MODERATOR)
+	) {
 		return <Navigate to={MENU_ROUTE} />
 	}
 
