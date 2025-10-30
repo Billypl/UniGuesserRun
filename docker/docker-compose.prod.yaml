@@ -21,7 +21,12 @@ services:
 
   frontend:
     container_name: ugr-frontend
-    image: billypl/ugr-frontend:latest # Replace with your actual image name
+    # You can either point to a pre-built image (image:) or build locally from the frontend folder.
+    # Uncomment `build:` to build the image as part of compose. Keep `image:` if you push to a registry.
+    # image: billypl/ugr-frontend:latest # Replace with your actual image name
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     restart: always
     ports:
       - '80:80' # Consider using 80 if deploying publicly

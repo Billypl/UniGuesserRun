@@ -13,4 +13,6 @@ services:
       - /app/node_modules
     environment:
       WATCHPACK_POLLING: 'true'
-    command: sh -c "cd app && npm install && npm run start"
+    # Use Vite dev server (exposes on 0.0.0.0). We run `npm ci` to install locked deps
+    # and then start the vite dev server. The project exposes port 3000 in vite.config.ts.
+    command: sh -c "cd /app && npm ci && npm run dev -- --host 0.0.0.0"
