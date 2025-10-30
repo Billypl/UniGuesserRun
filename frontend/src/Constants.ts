@@ -30,11 +30,9 @@ export const GAME_STATE = '/game_state'
 export const GAME_ACTIVE_STATE = '/active'
 
 export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-export const JWT_USER_ID_KEY =
-	'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+export const JWT_USER_ID_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
 export const JWT_USER_NICKNAME_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-export const JWT_USER_EMAIL_KEY =
-	'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+export const JWT_USER_EMAIL_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
 
 export const USER_ROLE_ADMIN = 'Admin'
 export const USER_ROLE_MODERATOR = 'Moderator'
