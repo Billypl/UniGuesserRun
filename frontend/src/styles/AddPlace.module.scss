@@ -128,7 +128,7 @@
 		box-shadow: 0 4px 12px rgba(0, 56, 101, 0.15);
 
 		&:hover {
-			background-color: darken(Colors.$dark-blue, 8%);
+			background-color: Colors.darken-color(Colors.$dark-blue, 8%);
 			transform: translateY(-2px);
 			box-shadow: 0 6px 16px rgba(0, 56, 101, 0.25);
 		}
@@ -141,7 +141,7 @@
 			background-color: Colors.$grey;
 
 			&:hover {
-				background-color: darken(Colors.$grey, 8%);
+				background-color: Colors.darken-color(Colors.$grey, 8%);
 			}
 		}
 	}

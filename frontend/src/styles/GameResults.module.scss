@@ -50,7 +50,7 @@
 				background: linear-gradient(
 					135deg,
 					Colors.$dark-blue 0%,
-					darken(Colors.$dark-blue, 10%) 100%
+					Colors.darken-color(Colors.$dark-blue, 10%) 100%
 				);
 
 				tr {
@@ -82,16 +82,16 @@
 					background-color: Colors.$white;
 
 					&:nth-child(2n + 1) {
-						background-color: lighten(Colors.$dark-blue, 75%);
+						background-color: Colors.lighten-color(Colors.$dark-blue, 75%);
 					}
 
 					&:hover {
-						background-color: lighten(Colors.$dark-blue, 70%) !important;
+						background-color: Colors.lighten-color(Colors.$dark-blue, 70%) !important;
 						transform: translateX(4px);
 					}
 
 					&.highlighted {
-						background-color: lighten(Colors.$dark-blue, 65%) !important;
+						background-color: Colors.lighten-color(Colors.$dark-blue, 65%) !important;
 						font-weight: 600;
 						box-shadow: inset 4px 0 0 Colors.$dark-blue;
 					}

@@ -66,7 +66,7 @@
 				padding: 4px 16px;
 			}
 			&:nth-child(2n + 1) {
-				background-color: lighten(Colors.$dark-blue, 75%);
+				background-color: Colors.lighten-color(Colors.$dark-blue, 75%);
 			}
 		}
 	}

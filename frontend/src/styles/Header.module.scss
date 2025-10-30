@@ -32,7 +32,7 @@
 			transition: color 0.3s ease;
 
 			&:hover {
-				color: darken(Colors.$dark-blue, 10%);
+				color: Colors.darken-color(Colors.$dark-blue, 10%);
 			}
 
 			@media (max-width: 650px) {

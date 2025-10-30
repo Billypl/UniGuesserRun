@@ -179,14 +179,14 @@
 				background: linear-gradient(
 					135deg,
 					Colors.$dark-blue 0%,
-					darken(Colors.$dark-blue, 8%) 100%
+					Colors.darken-color(Colors.$dark-blue, 8%) 100%
 				);
 				color: Colors.$white;
 
 				&:hover {
 					background: linear-gradient(
 						135deg,
-						darken(Colors.$dark-blue, 5%) 0%,
+						Colors.darken-color(Colors.$dark-blue, 5%) 0%,
 						Colors.$dark-blue 100%
 					);
 				}

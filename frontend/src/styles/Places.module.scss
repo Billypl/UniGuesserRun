@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use 'utilities/Colors';
 
 .page {
@@ -23,7 +24,7 @@
 		box-shadow: 0 4px 12px rgba(0, 56, 101, 0.15);
 
 		&:hover {
-			background-color: darken(Colors.$dark-blue, 8%);
+			background-color: Colors.darken-color(Colors.$dark-blue, 8%);
 			transform: translateY(-2px);
 			box-shadow: 0 6px 16px rgba(0, 56, 101, 0.25);
 		}
@@ -250,7 +251,7 @@
 					background-color: Colors.$dark-red;
 
 					&:hover {
-						background-color: darken(Colors.$dark-red, 8%);
+						background-color: Colors.darken-color(Colors.$dark-red, 8%);
 					}
 				}
 
@@ -258,7 +259,7 @@
 					background-color: #28a745;
 
 					&:hover {
-						background-color: darken(#28a745, 8%);
+						background-color: color.adjust(#28a745, $lightness: -8%);
 					}
 				}
 			}

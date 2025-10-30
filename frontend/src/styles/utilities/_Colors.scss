@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $black: #000000;
 
 $grey: #272727;
@@ -13,3 +15,12 @@ $dark-red: #c10a27;
 $darker-red: #a40a23;
 
 $white: #ffffff;
+
+// Helper functions for color adjustments
+@function darken-color($color, $amount) {
+	@return color.adjust($color, $lightness: -$amount);
+}
+
+@function lighten-color($color, $amount) {
+	@return color.adjust($color, $lightness: $amount);
+}

@@ -37,7 +37,7 @@
 	}
 
 	.pageButton:not(.activePage):not(.disabled):hover {
-		background-color: lighten(Colors.$dark-blue, 75%);
+		background-color: Colors.lighten-color(Colors.$dark-blue, 75%);
 	}
 
     .disabled {

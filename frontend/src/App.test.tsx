@@ -1,9 +1,9 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import Game from './pages/game';
+import React from 'react'
+import { render } from '@testing-library/react'
+import Game from './pages/game'
 
 test('renders learn react link', () => {
-  render(<Game />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+	const { getByText } = render(<Game />)
+	const linkElement = getByText(/learn react/i)
+	expect(linkElement).toBeInTheDocument()
+})

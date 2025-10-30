@@ -70,7 +70,7 @@ const AddPlace: React.FC = () => {
 			return
 		}
 
-		console.log(data,event)
+		console.log(data, event)
 
 		// Validate that user provided either URL or file
 		if (imageInputMode === 'url' && !data.imageUrl) {
@@ -189,7 +189,9 @@ const AddPlace: React.FC = () => {
 						)}
 
 						<form
-							onSubmit={handleSubmit((data, event) => addNewPlace(data, event))}
+							onSubmit={handleSubmit((data: AddPlaceFormInputs, event?: React.BaseSyntheticEvent) =>
+								addNewPlace(data, event)
+							)}
 							className={styles.form}
 						>
 							<div className={styles.coordinates_section}>

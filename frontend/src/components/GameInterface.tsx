@@ -12,7 +12,7 @@ import styles from '../styles/GameInterface.module.scss'
 import { MAP_CENTER } from '../Constants'
 import { Coordinates } from '../models/Coordinates'
 
-import { ReactComponent as ExitIcon } from '../assets/images/x-lg.svg'
+import ExitIcon from '../assets/images/x-lg.svg?react'
 import { GameMode } from '../models/game/GameMode'
 
 interface GameInterfaceProps {
