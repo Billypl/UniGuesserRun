@@ -177,7 +177,7 @@ namespace UniGuesser.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Rounds_Score",
                 table: "Rounds",
-                column: "Score");
+                column: "Distance");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",

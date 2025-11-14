@@ -25,6 +25,7 @@ const Game: React.FC = () => {
 	const [imageUrl, setImage] = useState<string | null>(null)
 	const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null)
 	const [guessDistance, setGuessDistance] = useState<number | null>(null)
+	const [score, setScore] = useState<number>(0)
 
 	const ROUND_NUMBER: number = 5
 	const navigate = useNavigate()
@@ -148,6 +149,7 @@ const Game: React.FC = () => {
 		const roundResult = await gameService.checkGuess(clickedLatLng)
 		setTargetLatLng(roundResult.originalPlace.coordinates)
 		setGuessDistance(roundResult.distanceDifference)
+		setScore(roundResult.score)
 	}
 
 	const isLastRound = (currentRoundNumber: number): boolean => {
@@ -182,6 +184,7 @@ const Game: React.FC = () => {
 							currentRoundNumber={currentRoundNumber}
 							isLastRound={isLastRound(currentRoundNumber)}
 							imageUrl={imageUrl}
+							score={score}
 							guessDistance={guessDistance}
 							targetLatLng={targetLatLng}
 							onConfirmPlayerChoice={confirmPlayerChoice}
@@ -194,6 +197,7 @@ const Game: React.FC = () => {
 							currentRoundNumber={currentRoundNumber}
 							isLastRound={isLastRound(currentRoundNumber)}
 							imageUrl={imageUrl}
+							score={score}
 							guessDistance={guessDistance}
 							targetLatLng={targetLatLng}
 							onConfirmPlayerChoice={confirmPlayerChoice}

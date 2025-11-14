@@ -114,7 +114,7 @@ public class GameSessionRepositoryTests
             {
                 Latitude = 52.0,
                 Longitude = 21.0,
-                Score = 100.0,
+                Distance = 100.0,
                 GameSessionId = createdSession.Id,
                 PlaceId = place.Id
             };
@@ -370,7 +370,7 @@ public class GameSessionRepositoryTests
             {
                 Latitude = 52.0,
                 Longitude = 21.0,
-                Score = 100.0,
+                Distance = 100.0,
                 GameSessionId = createdSession.Id,
                 PlaceId = place.Id
             };
@@ -448,7 +448,7 @@ public class GameSessionRepositoryTests
             {
                 Latitude = 52.0,
                 Longitude = 21.0,
-                Score = 100.0,
+                Distance = 100.0,
                 GameSessionId = createdSession.Id,
                 PlaceId = place.Id
             };
@@ -672,7 +672,7 @@ public class GameSessionRepositoryTests
             {
                 Latitude = 52.0,
                 Longitude = 21.0,
-                Score = 100.0,
+                Distance = 100.0,
                 GameSessionId = createdSession.Id,
                 PlaceId = place.Id
             };

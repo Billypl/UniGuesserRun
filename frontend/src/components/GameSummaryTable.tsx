@@ -29,10 +29,10 @@ const GameSummaryTable = ({
 		<table>
 			<thead>
 				<tr>
-					<th>Runda</th>
-					<th>Miejsce</th>
-					<th>Odległość</th>
-					<th>Punkty</th>
+					<th>Round</th>
+					<th>Place</th>
+					<th>Distance</th>
+					<th>Score</th>
 				</tr>
 			</thead>
 			<tbody>

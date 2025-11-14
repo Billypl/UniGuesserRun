@@ -4,6 +4,21 @@ namespace UniGuesser.Domain.Services;
 
 public static class DistanceCalculator
 {
+    private const double MaxScorePerRound = 1000.0;
+    private const double PerfectDistance = 30.0;    // m
+    private const double ZeroScoreDistance = 750.0; // m
+
+    public static double CalculateScore(double distance)
+    {
+        if (distance <= PerfectDistance)
+            return MaxScorePerRound;
+
+        if (distance >= ZeroScoreDistance)
+            return 0;
+        var t = (distance - PerfectDistance) / (ZeroScoreDistance - PerfectDistance); // 0..1
+        return MaxScorePerRound * (1 - t);
+    }
+
     public static double CalculateDistanceBetweenCords(Coordinates first, Coordinates second)
     {
         const double EarthRadiusMeters = 6371000.0;

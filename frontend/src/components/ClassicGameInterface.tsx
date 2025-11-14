@@ -19,6 +19,7 @@ interface ClassicGameInterfaceProps {
 	isLastRound: boolean
 	imageUrl: string
 	guessDistance: number | null
+	score: number | null
 	targetLatLng: Coordinates | null
 	onConfirmPlayerChoice: (latlng: Coordinates) => void
 	onNextRound: () => void
@@ -62,7 +63,7 @@ const ClassicGameInterface: React.FC<ClassicGameInterfaceProps> = (props) => {
 		<div className={styles.game_interface}>
 			{!fullScreenImage && (
 				<div className={styles.game_header}>
-					<h1>Round {props.currentRoundNumber + 1}</h1>
+					<p>Round {props.currentRoundNumber + 1}</p>
 				</div>
 			)}
 
@@ -88,7 +89,14 @@ const ClassicGameInterface: React.FC<ClassicGameInterfaceProps> = (props) => {
 
 			{clickedLatLng && playerChoiceConfirmed && props.guessDistance && (
 				<div className={styles.round_result}>
-					<h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>
+					<p className={styles.distance}>Score: {props.score!.toFixed(2)} / 1000</p>
+					<p className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)} m </p>
+					<div className={styles.score_bar_container}>
+						<div
+							className={styles.score_bar}
+							style={{ width: `${Math.min((props.score! / 1000) * 100, 100)}%` }}
+						/>
+					</div>
 					{endRoundButton()}
 				</div>
 			)}

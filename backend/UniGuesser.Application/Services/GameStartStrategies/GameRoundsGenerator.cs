@@ -37,7 +37,7 @@ public class GameRoundsGenerator : IGameRoundsGenerator
         {
             PlaceId = p.Id,
             PlaceToGuess = p,
-            Score = 0
+            Distance = 0
         }).ToList();
     }
 }

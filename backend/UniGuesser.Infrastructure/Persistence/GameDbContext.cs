@@ -105,7 +105,7 @@ public class GameDbContext : DbContext
                 .HasForeignKey(r => r.PlaceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasIndex(r => r.Score);
+            entity.HasIndex(r => r.Distance);
             entity.HasIndex(r => r.GameSessionId);
         });
     }

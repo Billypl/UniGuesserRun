@@ -10,6 +10,7 @@ public class Round
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public double Score { get; set; }
+    public double Distance { get; set; }
     public Guid GameSessionId { get; set; }
 
     [JsonIgnore] public virtual GameSession GameSession { get; set; }

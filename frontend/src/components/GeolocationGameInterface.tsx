@@ -18,6 +18,7 @@ interface GeolocationGameInterfaceProps {
 	currentRoundNumber: number
 	isLastRound: boolean
 	imageUrl: string
+	score: number | null
 	guessDistance: number | null
 	targetLatLng: Coordinates | null
 	onConfirmPlayerChoice: (latlng: Coordinates) => void
@@ -124,7 +125,7 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 		<div className={styles.game_interface}>
 			{!isImageFullScreen && (
 				<div className={styles.game_header}>
-					<h1>Round {props.currentRoundNumber + 1}</h1>
+					<p>Round {props.currentRoundNumber + 1}</p>
 				</div>
 			)}
 
@@ -150,7 +151,14 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 
 			{playerPosition && isChoiceConfirmed && props.guessDistance && (
 				<div className={styles.round_result}>
-					<h1 className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</h1>
+					<p className={styles.distance}>Score: {props.score!.toFixed(2)}</p>
+					<p className={styles.distance}>Guess distance: {props.guessDistance.toFixed(2)}</p>
+					<div className={styles.score_bar_container}>
+						<div
+							className={styles.score_bar}
+							style={{ width: `${Math.min((props.score! / 1000) * 100, 100)}%` }}
+						/>
+					</div>
 					{endRoundButton()}
 				</div>
 			)}

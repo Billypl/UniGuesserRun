@@ -42,7 +42,7 @@ public class RoundRepositoryTests
         {
             Latitude = 52.0,
             Longitude = 21.0,
-            Score = 100.0,
+            Distance = 100.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place.Id
         };
@@ -83,7 +83,7 @@ public class RoundRepositoryTests
         {
             Latitude = 52.0,
             Longitude = 21.0,
-            Score = 100.0,
+            Distance = 100.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place.Id
         };
@@ -156,7 +156,7 @@ public class RoundRepositoryTests
         {
             Latitude = 52.0,
             Longitude = 21.0,
-            Score = 100.0,
+            Distance = 100.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place1.Id
         };
@@ -165,7 +165,7 @@ public class RoundRepositoryTests
         {
             Latitude = 51.0,
             Longitude = -0.1,
-            Score = 200.0,
+            Distance = 200.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place2.Id
         };
@@ -209,21 +209,21 @@ public class RoundRepositoryTests
         {
             Latitude = 52.0,
             Longitude = 21.0,
-            Score = 100.0,
+            Distance = 100.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place.Id
         };
         var createdRound = await repository.CreateAsync(round);
 
         // Act
-        createdRound.Score = 150.0;
+        createdRound.Distance = 150.0;
         createdRound.Latitude = 53.0;
         await repository.UpdateAsync(createdRound);
 
         // Assert
         var updatedRound = await repository.GetAsync(createdRound.Id);
         Assert.NotNull(updatedRound);
-        Assert.Equal(150.0, updatedRound.Score);
+        Assert.Equal(150.0, updatedRound.Distance);
         Assert.Equal(53.0, updatedRound.Latitude);
     }
 
@@ -254,7 +254,7 @@ public class RoundRepositoryTests
         {
             Latitude = 52.0,
             Longitude = 21.0,
-            Score = 100.0,
+            Distance = 100.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place.Id
         };
@@ -311,7 +311,7 @@ public class RoundRepositoryTests
         {
             Latitude = 52.0,
             Longitude = 21.0,
-            Score = 100.0,
+            Distance = 100.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place.Id
         };
@@ -354,7 +354,7 @@ public class RoundRepositoryTests
         {
             Latitude = 52.0,
             Longitude = 21.0,
-            Score = 100.0,
+            Distance = 100.0,
             GameSessionId = Guid.NewGuid(),
             PlaceId = place.Id
         };

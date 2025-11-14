@@ -40,7 +40,8 @@ public class GameSession
         var distance = DistanceCalculator.CalculateDistanceBetweenCords(
             new Coordinates { Latitude = place.Latitude, Longitude = place.Longitude }, guess);
 
-        round.Score = distance;
+        round.Distance = distance;
+        round.Score = DistanceCalculator.CalculateScore(distance);
         round.Latitude = guess.Latitude;
         round.Longitude = guess.Longitude;
         GameScore += distance;
