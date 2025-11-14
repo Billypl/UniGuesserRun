@@ -19,10 +19,14 @@ public class StartNewGameHandler(
         var tokenType = httpContextAccessorService.GetTokenTypeSafe();
         var playerGuid = httpContextAccessorService.GetUserIdFromHeaderSafe();
 
-        var result = await gameSessionRepository.GetActiveGameSession(playerGuid.Value);
+        if (playerGuid != null)
+        {
+            var result = await gameSessionRepository.GetActiveGameSession(playerGuid.Value);
 
-        if (result is not null && result.GameState == GameStatus.InProgress)
-            throw new GameSessionExceptions.UserHasActiveGameSessionException(playerGuid.Value);
+            if (result is not null && result.GameState == GameStatus.InProgress)
+                throw new GameSessionExceptions.UserHasActiveGameSessionException(playerGuid.Value);
+
+        }
 
         var strategy = ChooseStrategy(tokenType);
 

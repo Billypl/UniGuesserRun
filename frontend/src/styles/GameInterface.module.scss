@@ -188,3 +188,12 @@
 		font-weight: bold;
 	}
 }
+
+// Rotated marker styles
+:global {
+	.rotated-marker-container {
+		background: transparent !important;
+		border: none !important;
+		box-shadow: none !important;
+	}
+}

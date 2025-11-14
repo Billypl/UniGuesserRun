@@ -3,7 +3,8 @@ import 'leaflet/dist/leaflet.css'
 import gameService from '../services/api/gameService'
 import { Coordinates } from '../models/Coordinates'
 import { useNavigate } from 'react-router-dom'
-import GameInterface from '../components/GameInterface'
+import ClassicGameInterface from '../components/ClassicGameInterface'
+import GeolocationGameInterface from '../components/GeolocationGameInterface'
 import {
 	GAME_RESULTS_ROUTE,
 	SELECTED_DIFFICULTY_KEY,
@@ -174,18 +175,33 @@ const Game: React.FC = () => {
 		<div>
 			{loading && <h1>Loading...</h1>}
 			{imageUrl && currentRoundNumber != null && (
-				<GameInterface
-					error={error}
-					gameMode={gameMode}
-					currentRoundNumber={currentRoundNumber}
-					isLastRound={isLastRound(currentRoundNumber)}
-					imageUrl={imageUrl}
-					guessDistance={guessDistance}
-					targetLatLng={targetLatLng}
-					onConfirmPlayerChoice={confirmPlayerChoice}
-					onNextRound={nextRound}
-					onFinishGame={finishGame}
-				/>
+				<>
+					{gameMode === GameMode.CLASSIC ? (
+						<ClassicGameInterface
+							error={error}
+							currentRoundNumber={currentRoundNumber}
+							isLastRound={isLastRound(currentRoundNumber)}
+							imageUrl={imageUrl}
+							guessDistance={guessDistance}
+							targetLatLng={targetLatLng}
+							onConfirmPlayerChoice={confirmPlayerChoice}
+							onNextRound={nextRound}
+							onFinishGame={finishGame}
+						/>
+					) : (
+						<GeolocationGameInterface
+							error={error}
+							currentRoundNumber={currentRoundNumber}
+							isLastRound={isLastRound(currentRoundNumber)}
+							imageUrl={imageUrl}
+							guessDistance={guessDistance}
+							targetLatLng={targetLatLng}
+							onConfirmPlayerChoice={confirmPlayerChoice}
+							onNextRound={nextRound}
+							onFinishGame={finishGame}
+						/>
+					)}
+				</>
 			)}
 		</div>
 	)

@@ -34,7 +34,12 @@ export class GameService {
 		return window.sessionStorage.getItem(GAME_GUID)
 	}
 
-	async startNewGameSession(nickname: string, difficulty: Difficulty, gameMode: GameMode, signal?: AbortSignal) {
+	async startNewGameSession(
+		nickname: string,
+		difficulty: Difficulty,
+		gameMode: GameMode,
+		signal?: AbortSignal
+	) {
 		const startData: StartGameData = { nickname, difficulty, gameMode }
 
 		const response = await this.axiosInstance.post<StartGameResponse>('/start', startData, {
@@ -163,6 +168,16 @@ export class GameService {
 
 	hasToken(): boolean {
 		return !!window.sessionStorage.getItem(GAME_TOKEN_KEY)
+	}
+
+	async getDistanceFromPlace(gameId: string, playerPosition: Coordinates): Promise<number> {
+		const url = `/geolocation/${gameId}/distance`
+		const response = await this.axiosInstance.post<number>(url, playerPosition, {
+			headers: {
+				Authorization: `Bearer ${sessionStorage.getItem(GAME_TOKEN_KEY)}`,
+			},
+		})
+		return response.data
 	}
 }
 
