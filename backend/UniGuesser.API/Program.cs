@@ -64,10 +64,13 @@ async Task SeedDatabase(WebApplication app)
 // Konfiguracja middleware
 void ConfigureMiddleware(WebApplication app)
 {
+    // CORS must be first to handle preflight requests properly
     app.UseCors("AllowSpecificOrigins");
+    
     app.UseMiddleware<ErrorHandlingMiddleware>();
-    app.UseAuthentication();
     app.UseHttpsRedirection();
+    app.UseAuthentication();
+    
     app.UseSwagger();
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "UniGuesser API V1"); });
 

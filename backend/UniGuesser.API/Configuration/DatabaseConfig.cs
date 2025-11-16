@@ -11,28 +11,15 @@ public static class DatabaseConfig
     {
         services.AddHttpContextAccessor();
 
-        string connectionString;
-        if (File.Exists("/.dockerenv"))
-            connectionString = configuration.GetConnectionString("PostgreSql");
-        else
-            connectionString = configuration.GetConnectionString("PostgreSqlLocal");
+        // Always use localhost connection (Docker database on port 5432)
+        // Backend running on Windows connects to Docker PostgreSQL container
+        var connectionString = configuration.GetConnectionString("PostgreSqlLocal");
 
-
-        Console.WriteLine("######## DEBUG ########");
+        Console.WriteLine("######## DATABASE CONNECTION ########");
         Console.WriteLine($"Using connection string: {connectionString}");
-
-
-        Console.WriteLine($"CurrentDirectory: {Directory.GetCurrentDirectory()}");
-        Console.WriteLine($"AppContext.BaseDirectory: {AppContext.BaseDirectory}");
-
-
-        var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
-        Console.WriteLine($"Checking path: {configPath}");
-        Console.WriteLine(File.Exists(configPath) ? "File exists" : "File missing!");
-
+        Console.WriteLine($"Environment: {(File.Exists("/.dockerenv") ? "Docker" : "Local")}");
 
         services.AddDbContext<GameDbContext>(options => { options.UseNpgsql(connectionString); });
-
 
         return services;
     }
