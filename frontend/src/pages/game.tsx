@@ -193,6 +193,7 @@ const Game: React.FC = () => {
 						/>
 					) : (
 						<GeolocationGameInterface
+							gameId={sessionStorage.getItem(GAME_GUID) || ''}
 							error={error}
 							currentRoundNumber={currentRoundNumber}
 							isLastRound={isLastRound(currentRoundNumber)}

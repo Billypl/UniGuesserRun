@@ -12,8 +12,11 @@ import { MAP_CENTER } from '../Constants'
 import { Coordinates } from '../models/Coordinates'
 
 import ExitIcon from '../assets/images/x-lg.svg?react'
+import LightBubbleIcon from '../assets/images/light-bulb-svgrepo-com.svg?react'
+import gameService from '../services/api/gameService'
 
 interface GeolocationGameInterfaceProps {
+	gameId: string
 	error: string | null
 	currentRoundNumber: number
 	isLastRound: boolean
@@ -31,6 +34,9 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 	const [isChoiceConfirmed, setIsChoiceConfirmed] = useState<boolean>(false)
 	const [isImageFullScreen, setIsImageFullScreen] = useState<boolean>(false)
 	const [geoError, setGeoError] = useState<string | null>(null)
+	const [totalHintsUsed, setTotalHintsUsed] = useState<number>(0)
+	const [lastHintDistance, setLastHintDistance] = useState<number | null>(null)
+	const [hintModalMessage, setHintModalMessage] = useState<string | null>(null)
 
 	useEffect(() => {
 		// Always use geolocation in this component
@@ -127,17 +133,67 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 	const nextRound = () => {
 		setIsChoiceConfirmed(false)
 		setPlayerPosition(null)
+		setLastHintDistance(null)
 		// In geolocation mode, update position for next round
 		forceUpdateGeolocation()
 		props.onNextRound()
 	}
 
+	// Check distance from target (3 hints per entire game)
+	const showHint = async () => {
+		console.log('Hint clicked!', { totalHintsUsed, playerPosition })
+
+		if (totalHintsUsed >= 3) {
+			console.log('Hint blocked: no hints remaining')
+			setHintModalMessage('No hints remaining for this game')
+			return
+		}
+
+		if (!playerPosition) {
+			console.log('Hint blocked: no player position')
+			setHintModalMessage('Waiting for your GPS position...')
+			return
+		}
+
+		if (isChoiceConfirmed) {
+			console.log('Hint blocked: choice already confirmed')
+			return
+		}
+
+		try {
+			const distance = await gameService.getDistanceFromPlace(props.gameId, playerPosition)
+			setLastHintDistance(distance)
+			setTotalHintsUsed((prev) => prev + 1)
+
+			const distanceKm = (distance / 1000).toFixed(2)
+			setHintModalMessage(`You are ${distanceKm} km away from the target`)
+		} catch (error) {
+			console.error('Failed to get hint:', error)
+			setHintModalMessage('Failed to get distance. Please try again.')
+		}
+	}
+
 	return (
 		<div className={styles.game_interface}>
 			{!isImageFullScreen && (
-				<div className={styles.game_header}>
-					<p>Round {props.currentRoundNumber + 1}</p>
-				</div>
+				<>
+					<div
+						className={styles.game_hint}
+						onClick={showHint}
+						style={{
+							opacity: totalHintsUsed >= 3 ? 0.5 : 1,
+							cursor: totalHintsUsed >= 3 ? 'not-allowed' : 'pointer',
+						}}
+					>
+						<LightBubbleIcon />
+						{totalHintsUsed < 3 && (
+							<span className={styles.hint_counter}>{3 - totalHintsUsed}</span>
+						)}
+					</div>
+					<div className={styles.game_header}>
+						<p>Round {props.currentRoundNumber + 1}</p>
+					</div>
+				</>
 			)}
 
 			<div
@@ -221,6 +277,17 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 					{/* No manual location selection in GEOLOCATION mode - position is tracked automatically */}
 				</MapContainer>
 			</div>
+
+			{hintModalMessage && (
+				<div className={styles.hint_modal_overlay} onClick={() => setHintModalMessage(null)}>
+					<div className={styles.hint_modal} onClick={(e) => e.stopPropagation()}>
+						<div className={styles.hint_modal_close} onClick={() => setHintModalMessage(null)}>
+							<ExitIcon />
+						</div>
+						<p className={styles.hint_modal_message}>{hintModalMessage}</p>
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }

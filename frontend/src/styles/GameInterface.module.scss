@@ -6,6 +6,39 @@
 	height: 100dvh;
 	width: 100vw;
 
+	.game_hint {
+		@include Mixins.clickable;
+		position: absolute;
+		right: 0px;
+		top: 0px;
+		width: 44px;
+		height: 44px;
+		padding: 6px;
+		border-bottom-left-radius: 12px;
+		background-color: Colors.$white;
+		z-index: 1000;
+		box-shadow: 0 3px 15px Colors.$dark-grey;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		.hint_counter {
+			position: absolute;
+			top: 4px;
+			right: 4px;
+			background-color: Colors.$dark-blue;
+			color: Colors.$white;
+			border-radius: 50%;
+			width: 18px;
+			height: 18px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 11px;
+			font-weight: bold;
+		}
+	}
+
 	.game_header {
 		position: absolute;
 		top: 0;
@@ -19,12 +52,8 @@
 		border-bottom-right-radius: 12px;
 		text-align: center;
 		padding: 10px 20px;
-
-		h1 {
-			margin: 0;
-			font-size: 1.5rem;
-			color: Colors.$dark-blue;
-		}
+		font-size: 1.5rem;
+		font-weight: 700;
 	}
 
 	.map_container {
@@ -202,6 +231,60 @@
 		margin-bottom: 20px;
 		box-shadow: 0 3px 15px Colors.$dark-grey;
 		font-weight: bold;
+	}
+
+	.hint_modal_overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100dvh;
+		background-color: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 2000;
+	}
+
+	.hint_modal {
+		background-color: Colors.$white;
+		border-radius: 16px;
+		padding: 40px 30px;
+		max-width: 400px;
+		width: 90%;
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+		position: relative;
+
+		.hint_modal_close {
+			@include Mixins.clickable;
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			padding: 8px;
+			border-radius: 50%;
+			background-color: Colors.$lighter-grey;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&:hover {
+				background-color: Colors.$dark-grey;
+			}
+
+			svg {
+				fill: Colors.$dark-blue;
+				width: 20px;
+				height: 20px;
+			}
+		}
+
+		.hint_modal_message {
+			color: Colors.$dark-blue;
+			font-size: 1.2rem;
+			text-align: center;
+			margin: 0;
+			line-height: 1.5;
+		}
 	}
 }
 

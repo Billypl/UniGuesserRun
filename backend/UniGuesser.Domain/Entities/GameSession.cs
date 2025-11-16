@@ -44,7 +44,7 @@ public class GameSession
         round.Score = DistanceCalculator.CalculateScore(distance);
         round.Latitude = guess.Latitude;
         round.Longitude = guess.Longitude;
-        GameScore += distance;
+        GameScore += round.Score;
         ActualRoundNumber++;
 
         return distance;
