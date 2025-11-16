@@ -3,7 +3,7 @@
 
 .game_interface {
 	position: relative;
-	height: 100vh;
+	height: 100dvh;
 	width: 100vw;
 
 	.game_header {
@@ -28,7 +28,7 @@
 	}
 
 	.map_container {
-		height: 100vh;
+		height: 100dvh;
 		width: 100vw;
 		z-index: -1;
 	}
@@ -69,7 +69,7 @@
 			right: auto;
 			transform: translate(-50%, -50%);
 			width: calc(100vw - 80px);
-			height: calc(100vh - 80px);
+			height: calc(100dvh - 80px);
 			background-color: rgba(0, 0, 0, 0.95);
 			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
 			border: 3px solid Colors.$white;
@@ -98,7 +98,7 @@
 
 			&.fullscreen {
 				width: calc(100vw - 40px);
-				height: calc(100vh - 40px);
+				height: calc(100dvh - 40px);
 			}
 		}
 
@@ -112,7 +112,7 @@
 
 			&.fullscreen {
 				width: calc(100vw - 20px);
-				height: calc(100vh - 20px);
+				height: calc(100dvh - 20px);
 			}
 		}
 
@@ -177,7 +177,6 @@
 			border-radius: 10px;
 			overflow: hidden;
 			margin-bottom: 20px;
-			
 
 			.score_bar {
 				height: 100%;

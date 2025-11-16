@@ -2,7 +2,7 @@
 @use 'utilities/Colors';
 .results_container {
 	width: 100vw;
-	height: 100vh;
+	height: 100dvh;
 
 	display: flex;
 	flex-direction: column;
@@ -16,7 +16,7 @@
 	.map_container {
 		position: relative;
 		width: 100%;
-		height: 100vh;
+		height: 100dvh;
 	}
 
 	.summary_container {

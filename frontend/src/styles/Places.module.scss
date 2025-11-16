@@ -2,7 +2,7 @@
 @use 'utilities/Colors';
 
 .page {
-	min-height: 100vh;
+	min-height: 100dvh;
 	padding: 40px 0;
 	background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
 		url('../assets/images/background-map-menu.png');
@@ -59,7 +59,7 @@
 			border-radius: 16px;
 			border: 2px solid Colors.$dark-blue;
 			box-shadow: 0 8px 24px rgba(5, 5, 21, 0.15);
-			min-height: 100vh;
+			min-height: 100dvh;
 			margin-top: 26px;
 
 			.empty_state {

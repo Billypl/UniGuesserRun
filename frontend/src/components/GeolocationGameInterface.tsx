@@ -30,6 +30,7 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 	const [playerPosition, setPlayerPosition] = useState<Coordinates | null>(null)
 	const [isChoiceConfirmed, setIsChoiceConfirmed] = useState<boolean>(false)
 	const [isImageFullScreen, setIsImageFullScreen] = useState<boolean>(false)
+	const [geoError, setGeoError] = useState<string | null>(null)
 
 	useEffect(() => {
 		// Always use geolocation in this component
@@ -59,9 +60,19 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 					longitude: position.coords.longitude,
 				}
 				selectLocation(coords)
+				setGeoError(null)
 			},
 			(error) => {
 				console.error('Unable to retrieve location. Please enable location services.', error)
+				if (error.code === 1) {
+					setGeoError(
+						'Location access denied. Please allow location access in your browser settings.'
+					)
+				} else if (error.code === 2) {
+					setGeoError('Location unavailable. Please check your GPS settings.')
+				} else {
+					setGeoError('Unable to retrieve location. Please try again.')
+				}
 			},
 			{
 				enableHighAccuracy: true,
@@ -142,6 +153,25 @@ const GeolocationGameInterface: React.FC<GeolocationGameInterfaceProps> = (props
 			</div>
 
 			{props.error && <p style={{ color: 'red' }}>{props.error}</p>}
+			{geoError && (
+				<div
+					style={{
+						position: 'absolute',
+						top: '80px',
+						left: '50%',
+						transform: 'translateX(-50%)',
+						background: 'rgba(255, 0, 0, 0.9)',
+						color: 'white',
+						padding: '15px 25px',
+						borderRadius: '12px',
+						zIndex: 1000,
+						maxWidth: '80%',
+						textAlign: 'center',
+					}}
+				>
+					⚠️ {geoError}
+				</div>
+			)}
 
 			{playerPosition && !isChoiceConfirmed && !isImageFullScreen && (
 				<button className={styles.confirm_button} onClick={confirmPlayerChoice}>

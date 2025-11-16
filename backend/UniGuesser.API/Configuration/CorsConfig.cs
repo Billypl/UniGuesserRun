@@ -12,7 +12,7 @@ public static class CorsConfig
         {
             options.AddPolicy("AllowSpecificOrigins", policy =>
             {
-                policy.WithOrigins(configuration.GetConnectionString("CorsAllowIp"))
+                policy.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });

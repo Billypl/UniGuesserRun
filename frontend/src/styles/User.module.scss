@@ -7,7 +7,7 @@
 	background-position: center;
 	background-size: cover;
 	background-attachment: fixed;
-	height: 100vh;
+	height: 100dvh;
 	width: 100vw;
 	box-sizing: content-box;
 	position: absolute;
@@ -21,7 +21,7 @@
 .profile_container {
 	padding: 20px;
 	padding-top: 150px;
-	min-height: 100vh;
+	min-height: 100dvh;
 
 	.account_info {
 		padding: 32px 40px;

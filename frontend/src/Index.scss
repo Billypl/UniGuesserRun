@@ -60,6 +60,15 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 	color: Colors.$dark-blue;
 	margin: 0;
+
+	/* Fix for mobile viewport height with browser UI bars */
+	--vh: 1vh;
+}
+
+@supports (height: 100dvh) {
+	body {
+		--vh: 1dvh;
+	}
 }
 
 code {
