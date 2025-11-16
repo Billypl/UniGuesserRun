@@ -12,7 +12,9 @@ public interface IFileService
 public class FileService(IConfiguration configuration) : IFileService
 {
     private readonly string folderPath = configuration["FileSaveData:SaveFolder"];
-    private readonly string serverIp = configuration["FileSaveData:ServerIp"];
+    private readonly string serverIp = configuration["FileSaveData:ServerIp"] ?? 
+                                        Environment.GetEnvironmentVariable("SERVER_IP") ?? 
+                                        "https://localhost:5223";
 
     public async Task<string> SaveFile(IFormFile imageFile)
     {

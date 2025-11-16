@@ -1,5 +1,18 @@
-// API URL from environment variable
-const API_URL = import.meta.env.VITE_API_TARGET + '/api'
+// API URL - automatically uses the same host as the current page for better compatibility
+// Falls back to VITE_API_TARGET from .env if needed
+const getApiUrl = () => {
+	if (typeof window !== 'undefined') {
+		// Use the same protocol and host as the current page
+		const protocol = window.location.protocol
+		const hostname = window.location.hostname
+		const port = import.meta.env.VITE_BACKEND_PORT || '5223'
+		return `${protocol}//${hostname}:${port}/api`
+	}
+	// Fallback for SSR or build time
+	return import.meta.env.VITE_API_TARGET + '/api'
+}
+
+const API_URL = getApiUrl()
 
 export const GAME_API_URL = `${API_URL}/games`
 export const SESSIONS_API_URL = `${API_URL}/game_sessions`

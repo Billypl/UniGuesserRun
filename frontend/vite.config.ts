@@ -68,9 +68,10 @@ export default defineConfig({
 		},
 	},
 	server: {
-		host: '0.0.0.0',
+		host: '0.0.0.0', // Bind to all network interfaces (allows both localhost and network IP access)
 		port: 3000,
 		open: true,
+		strictPort: false, // Allow fallback to another port if 3000 is taken
 		watch: {
 			usePolling: true,
 		},

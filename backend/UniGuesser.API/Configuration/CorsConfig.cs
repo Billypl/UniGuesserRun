@@ -12,9 +12,40 @@ public static class CorsConfig
         {
             options.AddPolicy("AllowSpecificOrigins", policy =>
             {
-                policy.AllowAnyOrigin()
+                // Get HOST_IP from environment variable (from root .env file)
+                var hostIp = Environment.GetEnvironmentVariable("HOST_IP") ?? 
+                             configuration["ServerEnvironment:HostIp"] ?? 
+                             "localhost";
+                
+                var frontendPort = Environment.GetEnvironmentVariable("FRONTEND_PORT") ?? "3000";
+                
+                // Build allowed origins list
+                var allowedOrigins = new List<string>
+                {
+                    "https://localhost:3000",
+                    "https://127.0.0.1:3000",
+                    $"https://localhost:{frontendPort}",
+                    $"https://127.0.0.1:{frontendPort}"
+                };
+                
+                // Add network IP if not localhost
+                if (hostIp != "localhost" && !string.IsNullOrEmpty(hostIp))
+                {
+                    allowedOrigins.Add($"https://{hostIp}:{frontendPort}");
+                }
+                
+                // Also read from appsettings for additional origins
+                var configOrigins = configuration["CorsSettings:AllowedOrigins"];
+                if (!string.IsNullOrEmpty(configOrigins))
+                {
+                    allowedOrigins.AddRange(configOrigins.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(o => o.Trim()));
+                }
+                
+                policy.WithOrigins(allowedOrigins.Distinct().ToArray())
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             });
         });
 
