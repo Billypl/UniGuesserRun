@@ -1,13 +1,13 @@
 \chapter{Implementacja}
 \label{chap:implementation}
-
 \section{Implementacja wyglądu i funkcjonalności frontendu}
+% Przykladowe jakies subsections, dodajcie wedle uznania jakie chcecie
 
-\section{Leaflet i integracja z mapami}
+\subsection{Leaflet i integracja z mapami}
 
-\section{Responsywność i dostępność aplikacji}
+\subsection{Responsywność i dostępność aplikacji}
 
-\section{Problemy napotkane  przy implementacji frontendu}
+\subsection{Problemy napotkane  przy implementacji frontendu}
 
 
 
@@ -15,15 +15,36 @@
 
 
 \subsection{Autoryzacja i uwierzytelnianie użytkowników}
-    -Mechanizm JWT w aplikacji ASP .NET Core
-        -Uzasadnienie wyboru JWT  
-        -Struktura tokenu JWT  
-    -Generowanie i walidacja tokenów JWT 
-    -Przykładowa implementacja w aplikacji [Authorize]
-    -Struktura JWT w aplikacji    
-    -W jaki sposób aplikacja generuje tokeny JWT podczas logowania użytkownika
-    -Hashowanie haseł użytkowników przy użyciu biblioteki BCrypt
-    
+
+W celu uwierzytelniania wykorzystany został JSON Web Token. Jest to standard wymiany informacji między dwoma stronami w formie obiektu JSON, który jest bezpiecznie podpisany cyfrowo. 
+
+Składa się on z trzech niezależnych części: nagłówka (header), ładunku (payload) oraz podpisu (signature). Nagłówek zawiera informacje o algorytmie podpisu i typie tokenu, ładunek zawiera dane użytkownika i inne informacje, a podpis służy do weryfikacji integralności tokenu i autentyczności nadawcy.
+
+
+\textbf{Mechanizm JWT w aplikacji ASP.NET Core}
+
+% Uzasadnienie wyboru JWT
+
+% Struktura tokenu JWT
+
+\textbf{Generowanie i walidacja tokenów JWT}
+
+% W jaki sposób aplikacja generuje tokeny JWT podczas logowania użytkownika
+
+% Walidacja tokenów
+
+\textbf{Implementacja autoryzacji w aplikacji}
+
+% Przykładowa implementacja atrybutu [Authorize]
+
+% Struktura JWT w aplikacji
+
+\textbf{Hashowanie haseł użytkowników}
+
+% Zastosowanie biblioteki BCrypt
+
+% Proces hashowania i weryfikacji haseł
+
 \subsection{Walidacja danych}
     -Zastosowanie fluent validation w projekcie
     -Przykłady reguł dla rejestracji 
