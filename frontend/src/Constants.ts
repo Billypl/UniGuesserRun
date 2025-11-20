@@ -1,7 +1,23 @@
-export const GAME_API_URL = 'https://localhost:7157/api/game'
-export const SESSIONS_API_URL = 'https://localhost:7157/api/game_sessions'
-export const ACCOUNT_API_URL = 'https://localhost:7157/api/account'
-export const PLACE_API_URL = 'https://localhost:7157/api/place'
+// API URL - automatically uses the same host as the current page for better compatibility
+// Falls back to VITE_API_TARGET from .env if needed
+const getApiUrl = () => {
+	if (typeof window !== 'undefined') {
+		// Use the same protocol and host as the current page
+		const protocol = window.location.protocol
+		const hostname = window.location.hostname
+		const port = import.meta.env.VITE_BACKEND_PORT || '5223'
+		return `${protocol}//${hostname}:${port}/api`
+	}
+	// Fallback for SSR or build time
+	return import.meta.env.VITE_API_TARGET + '/api'
+}
+
+const API_URL = getApiUrl()
+
+export const GAME_API_URL = `${API_URL}/games`
+export const SESSIONS_API_URL = `${API_URL}/game_sessions`
+export const ACCOUNT_API_URL = `${API_URL}/accounts`
+export const PLACE_API_URL = `${API_URL}/places`
 
 export const GAME_TOKEN_KEY = 'game_token'
 export const ACCOUNT_TOKEN_KEY = 'account_token'
@@ -22,15 +38,19 @@ export const ADD_PLACE_ROUTE = '/add_place'
 export const PLACE_QUEUE_ROUTE = '/place_queue'
 export const PLACES_ROUTE = '/places'
 export const GAME_SETTINGS_ROUTE = '/game_settings'
+export const PROFILE_ROUTE = '/profile'
 
 export const RANKING = '/scoreboard'
 export const GAME_HISTORY = '/history'
 export const GAME_STATE = '/game_state'
+export const GAME_ACTIVE_STATE = '/active'
 
 export const JWT_USER_ROLE_KEY = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-export const JWT_USER_ID_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+export const JWT_USER_ID_KEY =
+	'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
 export const JWT_USER_NICKNAME_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-export const JWT_USER_EMAIL_KEY = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+export const JWT_USER_EMAIL_KEY =
+	'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
 
 export const USER_ROLE_ADMIN = 'Admin'
 export const USER_ROLE_MODERATOR = 'Moderator'

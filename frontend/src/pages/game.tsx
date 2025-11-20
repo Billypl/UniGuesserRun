@@ -3,26 +3,29 @@ import 'leaflet/dist/leaflet.css'
 import gameService from '../services/api/gameService'
 import { Coordinates } from '../models/Coordinates'
 import { useNavigate } from 'react-router-dom'
-import GameInterface from '../components/GameInterface'
+import ClassicGameInterface from '../components/ClassicGameInterface'
+import GeolocationGameInterface from '../components/GeolocationGameInterface'
 import {
-	GAME_GUID,
 	GAME_RESULTS_ROUTE,
-	GAME_TOKEN_KEY,
 	SELECTED_DIFFICULTY_KEY,
 	SELECTED_GAME_MODE,
 	USER_NICKNAME_KEY,
+	GAME_GUID,
 } from '../Constants'
+import { Difficulty } from '../models/game/Difficulty'
+import { GameMode } from '../models/game/GameMode'
 
 // Latitude: 54.371513, Longitude: 18.619164 <- Gmach Główny
 const Game: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(false)
 	const [currentRoundNumber, setCurrentRoundNumber] = useState<number | null>(null)
 	const [error, setError] = useState<string | null>(null)
+	const [gameMode, setGameMode] = useState<GameMode>(GameMode.CLASSIC)
 
 	const [imageUrl, setImage] = useState<string | null>(null)
-	const [playerLatLng, setPlayerLatLng] = useState<Coordinates | null>(null)
 	const [targetLatLng, setTargetLatLng] = useState<Coordinates | null>(null)
 	const [guessDistance, setGuessDistance] = useState<number | null>(null)
+	const [score, setScore] = useState<number>(0)
 
 	const ROUND_NUMBER: number = 5
 	const navigate = useNavigate()
@@ -32,8 +35,10 @@ const Game: React.FC = () => {
 		const signal = controller.signal
 
 		if (gameService.hasToken()) {
+			console.log('Game token exists, fetching game state...')
 			getGame(signal)
 		} else {
+			console.log('Calling startGame')
 			startGame(signal)
 		}
 
@@ -48,20 +53,20 @@ const Game: React.FC = () => {
 
 		try {
 			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
-			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY)
-			const gameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE)
+			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY) as Difficulty | null
+			const selectedGameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE) as GameMode | null
+			// Reset game GUID before starting a new game
 			if (!difficulty) {
 				throw new Error('Difficulty not selected')
+			}
+			if (!selectedGameMode) {
+				throw new Error('Game mode not selected')
 			}
 			if (!nickname) {
 				throw new Error('User not logged in')
 			}
-			await gameService.startNewGameSession(
-				nickname ?? '',
-				difficulty ?? '',
-				gameMode ?? '',
-				signal
-			)
+			setGameMode(selectedGameMode)
+			await gameService.startNewGameSession(nickname, difficulty, selectedGameMode, signal)
 			startRound(0)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
@@ -79,8 +84,17 @@ const Game: React.FC = () => {
 		setLoading(true)
 		setError(null)
 
+		console.log('GETOWANIE GRY PO SPRAWDZENIU CZY ISTNIEJE')
 		try {
 			const response = await gameService.checkGameState(signal)
+			console.log('Game state fetched successfully:', response)
+
+			// Load game mode from session storage when resuming a game
+			const savedGameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE) as GameMode | null
+			if (savedGameMode) {
+				setGameMode(savedGameMode)
+			}
+
 			startRound(response.actualRoundNumber)
 		} catch (err: any) {
 			if (err.name === 'CanceledError') {
@@ -89,7 +103,7 @@ const Game: React.FC = () => {
 			} else {
 				setError('Failed to fetch data. Please try again later.')
 				//console.error('Error fetching data:', err)
-				console.log('nieudalo sie wczytac stanu gry, tworzymy nowa gre \n', err)
+				console.log('nie udalo sie wczytac stanu gry, tworzymy nowa gre \n', err)
 				const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
 				const newController = new AbortController()
 				const newSignal = newController.signal
@@ -135,6 +149,7 @@ const Game: React.FC = () => {
 		const roundResult = await gameService.checkGuess(clickedLatLng)
 		setTargetLatLng(roundResult.originalPlace.coordinates)
 		setGuessDistance(roundResult.distanceDifference)
+		setScore(roundResult.score)
 	}
 
 	const isLastRound = (currentRoundNumber: number): boolean => {
@@ -147,8 +162,10 @@ const Game: React.FC = () => {
 	}
 
 	const finishGame = async () => {
+		console.log('Finishing game...')
+		const gameGuid = sessionStorage.getItem(GAME_GUID)
 		const response = await gameService.finishGame()
-		navigate(`${GAME_RESULTS_ROUTE}/${response.id}`)
+		navigate(`${GAME_RESULTS_ROUTE}/${gameGuid}`)
 	}
 
 	const resetGameState = () => {
@@ -156,41 +173,40 @@ const Game: React.FC = () => {
 		setTargetLatLng(null)
 	}
 
-	const getCoordinates = () => {
-		if (!('geolocation' in navigator)) {
-			setError('Geolocation is not supported by your browser.')
-			return
-		}
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				setPlayerLatLng(position.coords)
-				setError(null)
-			},
-			(error) => {
-				setError('Unable to retrieve location. Please enable location services.')
-				console.error(error)
-			},
-			{
-				enableHighAccuracy: true,
-			}
-		)
-	}
-
 	return (
 		<div>
 			{loading && <h1>Loading...</h1>}
 			{imageUrl && currentRoundNumber != null && (
-				<GameInterface
-					error={error}
-					currentRoundNumber={currentRoundNumber}
-					isLastRound={isLastRound(currentRoundNumber)}
-					imageUrl={imageUrl}
-					guessDistance={guessDistance}
-					targetLatLng={targetLatLng}
-					onConfirmPlayerChoice={confirmPlayerChoice}
-					onNextRound={nextRound}
-					onFinishGame={finishGame}
-				/>
+				<>
+					{gameMode === GameMode.CLASSIC ? (
+						<ClassicGameInterface
+							error={error}
+							currentRoundNumber={currentRoundNumber}
+							isLastRound={isLastRound(currentRoundNumber)}
+							imageUrl={imageUrl}
+							score={score}
+							guessDistance={guessDistance}
+							targetLatLng={targetLatLng}
+							onConfirmPlayerChoice={confirmPlayerChoice}
+							onNextRound={nextRound}
+							onFinishGame={finishGame}
+						/>
+					) : (
+						<GeolocationGameInterface
+							gameId={sessionStorage.getItem(GAME_GUID) || ''}
+							error={error}
+							currentRoundNumber={currentRoundNumber}
+							isLastRound={isLastRound(currentRoundNumber)}
+							imageUrl={imageUrl}
+							score={score}
+							guessDistance={guessDistance}
+							targetLatLng={targetLatLng}
+							onConfirmPlayerChoice={confirmPlayerChoice}
+							onNextRound={nextRound}
+							onFinishGame={finishGame}
+						/>
+					)}
+				</>
 			)}
 		</div>
 	)

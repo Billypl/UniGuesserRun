@@ -68,3 +68,5 @@ desktop.ini
 
 # Generated files
 *.sln.ide
+
+wwwroot/

@@ -1,0 +1,60 @@
+﻿using Microsoft.EntityFrameworkCore;
+using UniGuesser.Domain.Repositories;
+using UniGuesser.Infrastructure.Persistence;
+
+namespace UniGuesser.Infrastructure.Repositories;
+
+public abstract class Repository<T> : IRepository<T> where T : class
+{
+    protected readonly GameDbContext _context;
+    protected readonly DbSet<T> _dbSet;
+
+    public Repository(GameDbContext context)
+    {
+        _context = context;
+        _dbSet = context.Set<T>();
+    }
+
+    public async Task<T> CreateAsync(T entity)
+    {
+        await _dbSet.AddAsync(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+
+    public async Task<IEnumerable<T>> CreateManyAsync(IEnumerable<T> entities)
+    {
+        await _dbSet.AddRangeAsync(entities);
+        await _context.SaveChangesAsync();
+        return entities;
+    }
+
+    public virtual async Task<T?> GetAsync(Guid id)
+    {
+        return await _dbSet.FindAsync(id);
+    }
+
+    public virtual async Task<IEnumerable<T>> GetAllAsync()
+    {
+        return await _dbSet.ToListAsync();
+    }
+
+    public async Task UpdateAsync(T entity)
+    {
+        _dbSet.Update(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var entity = await GetAsync(id);
+        if (entity != null)
+        {
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+}

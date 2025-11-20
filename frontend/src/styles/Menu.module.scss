@@ -2,43 +2,118 @@
 @use 'utilities/Colors';
 
 .background {
-	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+	background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
 		url('../assets/images/background-map-menu.png');
 	background-position: center;
 	background-size: cover;
-	height: 100vh;
+	height: 100dvh;
 	width: 100vw;
 	box-sizing: content-box;
 	position: absolute;
 	z-index: -1;
-	filter: blur(1px);
-	-webkit-filter: blur(1px);
+	filter: blur(2px);
+	-webkit-filter: blur(2px);
+}
+
+// Floating decorations
+.decorations {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100dvh;
+	pointer-events: none;
+	overflow: hidden;
+	z-index: 0;
+
+	.decoration {
+		position: absolute;
+		font-size: 2.5rem;
+		opacity: 0.15;
+		animation: float 25s ease-in-out infinite;
+
+		&.decoration1 {
+			top: 15%;
+			left: 10%;
+			animation-delay: 0s;
+		}
+		&.decoration2 {
+			top: 25%;
+			right: 12%;
+			animation-delay: -8s;
+		}
+		&.decoration3 {
+			bottom: 20%;
+			left: 8%;
+			animation-delay: -15s;
+		}
+		&.decoration4 {
+			bottom: 30%;
+			right: 15%;
+			animation-delay: -20s;
+		}
+	}
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-30px);
+	}
 }
 
 .main_menu {
-	height: 100vh;
+	height: 100dvh;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	flex-basis: auto;
+	position: relative;
+	z-index: 1;
+
+	.title_container {
+		position: relative;
+		margin-bottom: 70px;
+		animation: fadeIn 1s ease-out;
+	}
 
 	.catchy_phrase {
 		color: Colors.$white;
-		text-shadow: 3px 3px 10px Colors.$black;
-		font-size: 8vmin;
-		margin: 40px 0 80px 0;
+		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 0, 0, 0.5);
+		font-size: 6.5vmin;
+		margin: 0;
 		justify-content: center;
 		text-align: center;
-		line-height: 125%;
-		padding: 0 50px 0 50px;
+		line-height: 115%;
+		padding: 0 40px;
 		font-weight: 700;
+
 		@media (max-width: 450px) {
-			font-size: 10vmin;
+			font-size: 8vmin;
 		}
 
 		@media (min-width: 1000px) {
-			font-size: 6vmin;
+			font-size: 4.5vmin;
+		}
+
+		.highlight {
+			display: inline-block;
+		}
+
+		.subtitle {
+			font-size: 3.5vmin;
+			margin-top: 25px;
+			font-weight: 400;
+			color: rgba(255, 255, 255, 0.9);
+			font-style: italic;
+
+			@media (min-width: 1000px) {
+				font-size: 2.5vmin;
+			}
 		}
 	}
 
@@ -47,20 +122,104 @@
 		flex-direction: column;
 		flex-basis: auto;
 		row-gap: 20px;
+		animation: fadeIn 1.2s ease-out;
+		position: relative;
+		z-index: 10;
 
 		.menu_option {
 			@include Mixins.light-button;
-			font-size: 25px;
+			position: relative;
+			z-index: 10;
+			font-size: 1.3rem;
 			background-color: Colors.$white;
 			color: Colors.$dark-blue;
-			border-radius: 100px;
-			padding: 20px 60px;
+			border-radius: 50px;
+			padding: 18px 55px;
 			max-width: 90vw;
+			min-width: 280px;
 			text-align: center;
-			font-weight: 500;
-			text-shadow: 0px 2px 3px Colors.$light-grey;
+			font-weight: 600;
 			text-transform: uppercase;
-			box-shadow: 3px 3px 8px Colors.$dark-grey;
+			letter-spacing: 1px;
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+			border: none;
+			cursor: pointer;
+			overflow: visible;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			pointer-events: auto;
+
+			.button_icon {
+				font-size: 1.2rem;
+				transition: transform 0.3s ease;
+			}
+
+			.button_text {
+				position: relative;
+				z-index: 2;
+			}
+
+			&:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+
+				.button_icon {
+					transform: scale(1.15);
+				}
+			}
+
+			&:active {
+				transform: translateY(-1px);
+			}
+
+			&.primary {
+				background: linear-gradient(
+					135deg,
+					Colors.$dark-blue 0%,
+					Colors.darken-color(Colors.$dark-blue, 8%) 100%
+				);
+				color: Colors.$white;
+
+				&:hover {
+					background: linear-gradient(
+						135deg,
+						Colors.darken-color(Colors.$dark-blue, 5%) 0%,
+						Colors.$dark-blue 100%
+					);
+				}
+			}
+
+			&.secondary {
+				background: rgba(255, 255, 255, 0.95);
+				color: Colors.$dark-blue;
+
+				&:hover {
+					background: Colors.$white;
+				}
+			}
 		}
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeInDown {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }

@@ -6,13 +6,19 @@ import GameSummaryMap from '../components/GameSummaryMap'
 import GameSummaryTable from '../components/GameSummaryTable'
 import { FinishedGameDto } from '../models/game/FinishedGameDto'
 import gameSessionService from '../services/api/gameSessionService'
+import gameService from '../services/api/gameService'
 
 const GameResults: React.FC = () => {
 	const navigate = useNavigate()
 	// userId is optional, if present we came from user profile
 	// if not, we came straight from the game
-	const { userId, gameId } = useParams<{ userId: string; gameId: string }>()
+	const { userId, gameId } = useParams<{ userId?: string; gameId?: string }>()
 	const [finishedGameData, setFinishedGameData] = useState<FinishedGameDto | null>(null)
+	const [highlightedRound, setHighlightedRound] = useState<number | null>(null)
+
+	const handleRoundHover = (roundIndex: number | null) => {
+		setHighlightedRound(roundIndex)
+	}
 
 	useEffect(() => {
 		if (!gameId) {
@@ -24,6 +30,7 @@ const GameResults: React.FC = () => {
 
 	const fetchFinishedGameData = async () => {
 		try {
+			console.log('Fetching game results for gameId:', gameId)
 			const response = await gameSessionService.getResultDetails(gameId!)
 			setFinishedGameData(response)
 		} catch (error) {
@@ -42,7 +49,9 @@ const GameResults: React.FC = () => {
 	return (
 		<div className={styles.results_container}>
 			<div className={styles.map_container}>
-				{finishedGameData && <GameSummaryMap finishedGameData={finishedGameData} />}
+				{finishedGameData && (
+					<GameSummaryMap finishedGameData={finishedGameData} highlightedRound={highlightedRound} />
+				)}
 			</div>
 			<div className={styles.summary_container}>
 				{!finishedGameData ? (
@@ -57,7 +66,11 @@ const GameResults: React.FC = () => {
 							On <b>{finishedGameData?.difficulty}</b> difficulty
 						</p>
 
-						<GameSummaryTable finishedGameData={finishedGameData} />
+						<GameSummaryTable
+							finishedGameData={finishedGameData}
+							highlightedRound={highlightedRound}
+							onRoundHover={handleRoundHover}
+						/>
 					</>
 				)}
 

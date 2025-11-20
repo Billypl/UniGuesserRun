@@ -1,234 +1,307 @@
-import React, { useEffect, useRef, useState } from "react";
-import Header from "../components/Header";
-import styles from "../styles/Places.module.scss";
-import placeService from "../services/api/placeService";
-import { Navigate } from "react-router-dom";
-import accountService from "../services/api/accountService";
-import { MAP_CENTER, MENU_ROUTE, USER_ROLE_ADMIN } from "../Constants";
-import { ShowPlaceDto } from "../models/place/ShowPlaceDto";
-import { MapContainer, TileLayer } from "react-leaflet";
-import { LocationMarker } from "../components/LocationMarker";
-import { RecenterMap } from "../components/RecenterMap";
-import { SelectMapLocation } from "../components/SelectMapLocation";
-import { Coordinates } from "../models/Coordinates";
-import { ClickedIcon } from "../components/MarkerIcons";
-import FormField from "../components/FormField";
-import { useForm } from "react-hook-form";
-import FormSelect from "../components/FormSelect";
+import React, { useEffect, useRef, useState } from 'react'
+import Header from '../components/Header'
+import styles from '../styles/Places.module.scss'
+import placeService from '../services/api/placeService'
+import { Navigate } from 'react-router-dom'
+import accountService from '../services/api/accountService'
+import { MAP_CENTER, MENU_ROUTE, USER_ROLE_ADMIN } from '../Constants'
+import { ShowPlaceDto } from '../models/place/ShowPlaceDto'
+import { MapContainer, TileLayer } from 'react-leaflet'
+import { LocationMarker } from '../components/LocationMarker'
+import { RecenterMap } from '../components/RecenterMap'
+import { SelectMapLocation } from '../components/SelectMapLocation'
+import { Coordinates } from '../models/Coordinates'
+import { ClickedIcon } from '../components/MarkerIcons'
+import FormField from '../components/FormField'
+import { useForm } from 'react-hook-form'
+import FormSelect from '../components/FormSelect'
+import { UserRole } from '../models/account/UserRole'
+import { Difficulty } from '../models/game/Difficulty'
 
 interface UpdatePlaceFormInputs {
-  name: string;
-  description: string;
-  alt: string;
-  difficulty: string;
+	name: string
+	description: string
+	alt: string
+	difficulty: Difficulty
 }
 
 const Places: React.FC = () => {
-  const [places, setPlaces] = useState<ShowPlaceDto[]>([]);
-  const [selectedPlace, setSelectedPlace] = useState<ShowPlaceDto | null>(null);
-  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  let requestSent = useRef(false);
+	const [places, setPlaces] = useState<ShowPlaceDto[]>([])
+	const [selectedPlace, setSelectedPlace] = useState<ShowPlaceDto | null>(null)
+	const [coordinates, setCoordinates] = useState<Coordinates | null>(null)
+	const [isEditing, setIsEditing] = useState<boolean>(false)
+	const [viewMode, setViewMode] = useState<'image' | 'map'>('image')
+	let requestSent = useRef(false)
 
-  const getAllPlaces = async () => {
-    const result = await placeService.getAllPlaces();
-    setPlaces(result);
-    requestSent.current = true;
-  };
+	const getAllPlaces = async () => {
+		const result = await placeService.getAllPlaces()
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<UpdatePlaceFormInputs>();
-  
-  // zmiana dto przy zmianie bazy
-  const showPlace = (place: ShowPlaceDto) => {
-    return (
-      <div className={styles.place_entry} key={place.name}>
-        <p>{place.name}</p>
-        
-        <p>
-          {place.coordinates.latitude}, {place.coordinates.longitude}
-        </p>
+		const formattedResult = result.map((place) => ({
+			...place,
+			coordinates: {
+				latitude: Math.round(place.coordinates.latitude * 1e6) / 1e6,
+				longitude: Math.round(place.coordinates.longitude * 1e6) / 1e6,
+			},
+		}))
 
-        <button className={styles.review_button} onClick={() => setSelectedPlace(place)}>
-          Review
-        </button>
-      </div>
-    );
-  };
+		console.log(formattedResult)
+		setPlaces(formattedResult)
+		requestSent.current = true
+	}
 
-  const showAllPlaces = () => {
-    return places.map((place) => showPlace(place));
-  };
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm<UpdatePlaceFormInputs>()
 
-  const showPlaceDetails = () => {
-    return (
-      <>
-        <img className={styles.image} src={selectedPlace?.imageUrl} alt={selectedPlace?.alt} />
-        <p>autor: {selectedPlace?.authorId}</p>
-        <div className={styles.map}>
-          <MapContainer center={MAP_CENTER} zoom={13} scrollWheelZoom={true} style={{ height: "100%", width: "100%" }}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+	const showPlace = (place: ShowPlaceDto) => {
+		return (
+			<div className={styles.place_entry} key={place.name}>
+				<p>{place.name}</p>
 
-            {isEditing && coordinates ? (
-              <>
-                <LocationMarker coords={coordinates} icon={ClickedIcon} label="Place location:" />
-                <RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
-              </>
-            ) : (
-              selectedPlace && (
-                <>
-                  <LocationMarker
-                    coords={selectedPlace.coordinates}
-                    icon={ClickedIcon}
-                    label="Place location:" />
-                  <RecenterMap
-                    location={[
-                      selectedPlace.coordinates.latitude,
-                      selectedPlace.coordinates.longitude,
-                    ]} />
-                </>
-              )
-            )}
+				<p>
+					{place.coordinates.latitude}, {place.coordinates.longitude}
+				</p>
 
-            {isEditing && <SelectMapLocation selectLocationFunction={setCoordinates} />}
-          </MapContainer>
-        </div>
+				<button className={styles.review_button} onClick={() => setSelectedPlace(place)}>
+					Details
+				</button>
+			</div>
+		)
+	}
 
-        {isEditing && coordinates ? (
-          <p>
-            {coordinates.latitude}, {coordinates.longitude}
-          </p>
-        ) : (
-          <p>
-            {selectedPlace?.coordinates.latitude}, {selectedPlace?.coordinates.longitude}
-          </p>
-        )}
+	const showAllPlaces = () => {
+		if (places.length === 0) {
+			return (
+				<div className={styles.empty_state}>
+					<p className={styles.empty_icon}>📍</p>
+					<h3>No places</h3>
+					<p>No places found in the database.</p>
+				</div>
+			)
+		}
+		return <div className={styles.places_list}>{places.map((place) => showPlace(place))}</div>
+	}
 
-        {isEditing && selectedPlace ? (
-          <>
-            <form onSubmit={handleSubmit(saveChanges)} className={styles.form}>
-              <FormField
-                label="Name"
-                name="name"
-                type="text"
-                defaultValue={selectedPlace.name}
-                register={register}
-                error={errors.name?.message} />
+	const showPlaceDetails = () => {
+		return (
+			<>
+				<div className={styles.view_toggle}>
+					<button
+						className={`${styles.toggle_button} ${viewMode === 'image' ? styles.active : ''}`}
+						onClick={() => setViewMode('image')}
+					>
+						Image
+					</button>
+					<button
+						className={`${styles.toggle_button} ${viewMode === 'map' ? styles.active : ''}`}
+						onClick={() => setViewMode('map')}
+					>
+						Map
+					</button>
+				</div>
 
-              <FormField
-                label="Description"
-                name="description"
-                type="text"
-                defaultValue={selectedPlace.description}
-                register={register}
-                error={errors.description?.message} />
+				{viewMode === 'image' ? (
+					<img className={styles.image} src={selectedPlace?.imageUrl} alt={selectedPlace?.alt} />
+				) : (
+					<div className={styles.map}>
+						<MapContainer
+							center={MAP_CENTER}
+							zoom={13}
+							scrollWheelZoom={true}
+							style={{ height: '100%', width: '100%' }}
+						>
+							<TileLayer
+								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+							/>
 
-              <FormField
-                label="alt"
-                name="alt"
-                type="text"
-                defaultValue={selectedPlace.alt}
-                register={register}
-                error={errors.alt?.message} />
+							{isEditing && coordinates ? (
+								<>
+									<LocationMarker coords={coordinates} icon={ClickedIcon} label="Place location:" />
+									<RecenterMap location={[coordinates.latitude, coordinates.longitude]} />
+								</>
+							) : (
+								selectedPlace && (
+									<>
+										<LocationMarker
+											coords={selectedPlace.coordinates}
+											icon={ClickedIcon}
+											label="Place location:"
+										/>
+										<RecenterMap
+											location={[
+												selectedPlace.coordinates.latitude,
+												selectedPlace.coordinates.longitude,
+											]}
+										/>
+									</>
+								)
+							)}
 
-              <FormSelect
-                label="Difficulty"
-                name="difficulty"
-                options={[
-                  { value: "easy", label: "Easy" },
-                  { value: "normal", label: "Normal" },
-                  { value: "hard", label: "Hard" },
-                  { value: "ultra-nightmare", label: "Ultra-Nightmare" },
-                ]}
-                defaultValue={selectedPlace.difficultyLevel}
-                register={register}
-                error={errors.difficulty?.message} />
+							{isEditing && <SelectMapLocation selectLocationFunction={setCoordinates} />}
+						</MapContainer>
+					</div>
+				)}
 
-              <button type="submit">Save</button>
-              <button onClick={() => cancelChanges()}>Cancel</button>
-            </form>
-          </>
-        ) : (
-          <>
-            <p>{selectedPlace?.name}</p>
-            <p>{selectedPlace?.description}</p>
-            <button onClick={() => setIsEditing(true)}>Edit</button>
-            <button onClick={() => deletePlace()}>Delete</button>
-          </>
-        )}
-        <button onClick={goBack}>Go back</button>
-      </>
-    );
-  };
+				{isEditing && coordinates ? (
+					<p>
+						<b>Selected coordinates:</b> {coordinates.latitude}, {coordinates.longitude}
+					</p>
+				) : null}
 
-  const saveChanges = (data: UpdatePlaceFormInputs) => {
-    if (!selectedPlace) return;
-    // TODO: authorId jest null - nie przechodzi żądanie
-    placeService.updatePlace(
-      selectedPlace?.id,
-      data.name,
-      data.description,
-      coordinates ?? selectedPlace.coordinates,
-      selectedPlace?.imageUrl,
-      data.alt,
-      data.difficulty,
-      selectedPlace?.authorId
-    );
+				{isEditing && selectedPlace ? (
+					<>
+						<form onSubmit={handleSubmit(saveChanges)} className={styles.form}>
+							<FormField
+								label="Name"
+								name="name"
+								type="text"
+								defaultValue={selectedPlace.name}
+								register={register}
+								error={errors.name?.message}
+							/>
 
-    setIsEditing(false);
-  };
-  
-  const cancelChanges = () => {
-    setIsEditing(false);
-    setCoordinates(null);
-    reset();
-  };
+							<FormField
+								label="Description"
+								name="description"
+								type="text"
+								defaultValue={selectedPlace.description}
+								register={register}
+								error={errors.description?.message}
+							/>
 
-  const goBack = () => {
-    setSelectedPlace(null);
-    setIsEditing(false);
-    setCoordinates(null);
-  };
-  
-  const deletePlace = async () => {
-    if (!selectedPlace) return;
-    await placeService.deletePlace(selectedPlace.id);
-    showUpdatedPlaces();
-  }
+							<FormField
+								label="alt"
+								name="alt"
+								type="text"
+								defaultValue={selectedPlace.alt}
+								register={register}
+								error={errors.alt?.message}
+							/>
 
-  const showUpdatedPlaces = async () => {
-    setSelectedPlace(null);
-    await getAllPlaces();
-  }
+							<FormSelect
+								label="Difficulty"
+								name="difficulty"
+								options={[
+									{ value: 'easy', label: 'Easy' },
+									{ value: 'normal', label: 'Normal' },
+									{ value: 'hard', label: 'Hard' },
+									{ value: 'ultra-nightmare', label: 'Ultra-Nightmare' },
+								]}
+								defaultValue={selectedPlace.difficultyLevel}
+								register={register}
+								error={errors.difficulty?.message}
+							/>
 
-  useEffect(() => {
-    if (requestSent.current) return;
-    getAllPlaces();
-  }, []);
+							<button type="submit">Save</button>
+							<button onClick={() => cancelChanges()}>Cancel</button>
+						</form>
+					</>
+				) : (
+					<>
+						<h2>{selectedPlace?.name}</h2>
+						<p>{selectedPlace?.description}</p>
+						<p>
+							<b>Author: </b> {selectedPlace?.authorName}
+						</p>
+						<p>
+							<b>Difficulty: </b> {selectedPlace?.difficultyLevel}
+						</p>
+						<p>
+							<b>Coordinates: </b> {selectedPlace?.coordinates.latitude},{' '}
+							{selectedPlace?.coordinates.longitude}
+						</p>
+						<div className={styles.buttons}>
+							<button onClick={goBack}>Go back</button>
+							<div>
+								<button onClick={() => setIsEditing(true)}>Edit</button>
+								<button className={styles.delete_button} onClick={() => deletePlace()}>
+									Delete
+								</button>
+							</div>
+						</div>
+					</>
+				)}
+			</>
+		)
+	}
 
-  const currentUser = accountService.getCurrentUser();
-  if (currentUser === null || currentUser.role !== USER_ROLE_ADMIN) {
-    return <Navigate to={MENU_ROUTE} />;
-  }
+	const saveChanges = async (data: UpdatePlaceFormInputs) => {
+		if (!selectedPlace) return
 
-  return (
-    <>
-      <Header />
-      <div className={styles.container}>
-        {selectedPlace ? (
-          <div className={styles.place_details}>{showPlaceDetails()}</div>
-        ) : (
-          <div className={styles.place_queue}>{showAllPlaces()}</div>
-        )}
-      </div>
-    </>
-  );
-};
+		await placeService.updatePlace(
+			selectedPlace?.id,
+			data.name,
+			data.description,
+			coordinates ?? selectedPlace.coordinates,
+			selectedPlace?.imageUrl,
+			data.alt,
+			data.difficulty
+		)
 
-export default Places;
+		setIsEditing(false)
+	}
+
+	const cancelChanges = () => {
+		setIsEditing(false)
+		setCoordinates(null)
+		reset()
+	}
+
+	const goBack = () => {
+		setSelectedPlace(null)
+		setIsEditing(false)
+		setCoordinates(null)
+		setViewMode('image')
+	}
+
+	const deletePlace = async () => {
+		if (!selectedPlace) return
+		await placeService.deletePlace(selectedPlace.id)
+		showUpdatedPlaces()
+	}
+
+	const showUpdatedPlaces = async () => {
+		setSelectedPlace(null)
+		await getAllPlaces()
+	}
+
+	useEffect(() => {
+		if (requestSent.current) return
+		getAllPlaces()
+	}, [])
+
+	useEffect(() => {
+		if (isEditing) {
+			setViewMode('map')
+		}
+	}, [isEditing])
+
+	const currentUser = accountService.getCurrentUser()
+	if (currentUser === null || currentUser.role !== UserRole.ADMIN) {
+		return <Navigate to={MENU_ROUTE} />
+	}
+
+	return (
+		<>
+			<Header />
+			<div className={styles.page}>
+				<div className={styles.container}>
+					{selectedPlace ? (
+						<div className={styles.place_details}>{showPlaceDetails()}</div>
+					) : (
+						<>
+							<h1 className={styles.about_page}>Places on website</h1>
+							<div className={styles.place_queue}>{showAllPlaces()}</div>
+						</>
+					)}
+				</div>
+			</div>
+		</>
+	)
+}
+
+export default Places

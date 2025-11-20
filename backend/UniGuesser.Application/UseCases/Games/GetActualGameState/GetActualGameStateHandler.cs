@@ -1,0 +1,24 @@
+﻿using AutoMapper;
+using MediatR;
+using UniGuesser.Application.Models.GameModels;
+using UniGuesser.Application.Services;
+using UniGuesser.Domain.Exceptions;
+using IGameSessionRepository = UniGuesser.Infrastructure.IGameSessionRepository;
+
+namespace UniGuesser.Application.UseCases.Games.GetActualGameState;
+
+public class GetActualGameStateHandler(
+    IGameSessionRepository gameSessionRepository,
+    IMapper mapper,
+    IHttpContextAccessorService httpContextAccessorService)
+    : IRequestHandler<GetActualGameStateQuery, GameSessionStateDto>
+{
+    public async Task<GameSessionStateDto> Handle(GetActualGameStateQuery request, CancellationToken cancellationToken)
+    {
+        var session = await gameSessionRepository.GetActiveGameSession(request.Guid);
+
+        if (session is null) throw new GameSessionExceptions.GameNotFoundException(request.Guid);
+
+        return mapper.Map<GameSessionStateDto>(session);
+    }
+}

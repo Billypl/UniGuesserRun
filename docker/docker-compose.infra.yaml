@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: always
     volumes:
-      - ../data/db:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
     ports:
       - '${DB_PORT}:${DB_PORT}'
     environment:
@@ -18,3 +18,8 @@ services:
     restart: always
     ports:
       - '${DB_ADMIN_PANEL_PORT}:${DB_ADMIN_PANEL_PORT}'
+
+volumes:
+  db_data:
+    # optional: uncomment driver or options if needed
+    # driver: local

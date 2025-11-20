@@ -9,6 +9,7 @@ import {
 	JWT_USER_NICKNAME_KEY,
 	JWT_USER_EMAIL_KEY,
 	GAME_TOKEN_KEY,
+	GAME_GUID,
 } from '../../Constants'
 import { RegisterUserDto } from '../../models/account/RegisterUserDto'
 import { LoginUserDto } from '../../models/account/LoginUserDto'
@@ -16,6 +17,7 @@ import { AccountDetailsFromTokenDto } from '../../models/account/AccountDetailsF
 import { LoginResultDto } from '../../models/account/LoginResultDto'
 import { jwtDecode } from 'jwt-decode'
 import { AccountDetailsDto } from '../../models/account/AccountDetailsDto'
+import { UserRole } from '../../models/account/UserRole'
 
 export class AccountService {
 	private axiosInstance: AxiosInstance
@@ -100,7 +102,7 @@ export class AccountService {
 		})
 		return response.data
 	}
-	
+
 	async getAccountDetails(userId: string): Promise<AccountDetailsDto> {
 		const response = await this.axiosInstance.get<AccountDetailsDto>(`/${userId}`, {
 			headers: {
@@ -115,6 +117,7 @@ export class AccountService {
 		window.sessionStorage.removeItem(REFRESH_TOKEN_KEY)
 		window.sessionStorage.removeItem(USER_NICKNAME_KEY)
 		window.sessionStorage.removeItem(GAME_TOKEN_KEY)
+		window.sessionStorage.removeItem(GAME_GUID)
 	}
 
 	async getLoggedInUser(): Promise<AccountDetailsFromTokenDto> {
@@ -128,7 +131,7 @@ export class AccountService {
 			userId: '123',
 			nickname: 'test',
 			email: 'test@wp.pl',
-			role: 'user',
+			role: UserRole.USER,
 		}
 		return response
 	}
@@ -148,11 +151,12 @@ export class AccountService {
 		}
 		try {
 			const decoded: any = jwtDecode(token)
+			console.log('Decoded token:', decoded)
 			return {
 				userId: decoded[JWT_USER_ID_KEY],
 				nickname: decoded[JWT_USER_NICKNAME_KEY],
 				email: decoded[JWT_USER_EMAIL_KEY],
-				role: decoded[JWT_USER_ROLE_KEY],
+				role: decoded[JWT_USER_ROLE_KEY].toLowerCase() as UserRole,
 			}
 		} catch (error) {
 			console.error('Invalid token', error)

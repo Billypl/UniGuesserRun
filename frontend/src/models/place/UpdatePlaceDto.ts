@@ -1,4 +1,5 @@
 import { Coordinates } from "../Coordinates";
+import { Difficulty } from "../game/Difficulty";
 
 export interface UpdatePlaceDto {
     name: string;
@@ -6,6 +7,6 @@ export interface UpdatePlaceDto {
     coordinates: Coordinates;
     imageUrl: string;
     alt: string;
-    difficulty: string;
+    difficulty: Difficulty;
     authorId?: string | null;
 }

@@ -4,7 +4,7 @@ services:
     image: billypl/ugr-backend:latest # Replace with your actual image name
     restart: always
     ports:
-      - "${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}" # or use 443 if behind HTTPS proxy
+      - '${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}' # or use 443 if behind HTTPS proxy
     environment:
       - ASPNETCORE_URLS=http://+:${BACKEND_HTTP_PORT};https://+:${BACKEND_HTTPS_PORT}
       - ASPNETCORE_ENVIRONMENT=Production
@@ -21,10 +21,15 @@ services:
 
   frontend:
     container_name: ugr-frontend
-    image: billypl/ugr-frontend:latest # Replace with your actual image name
+    # You can either point to a pre-built image (image:) or build locally from the frontend folder.
+    # Uncomment `build:` to build the image as part of compose. Keep `image:` if you push to a registry.
+    # image: billypl/ugr-frontend:latest # Replace with your actual image name
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     restart: always
     ports:
-      - "80:80" # Consider using 80 if deploying publicly
+      - '80:80' # Consider using 80 if deploying publicly
     environment:
       - NODE_ENV=production
     depends_on:
@@ -34,10 +39,10 @@ services:
 
   db:
     container_name: ugr-db
-    image: postgres:16
+    image: postgres:18
     restart: always
     volumes:
-      - ../data/db:/var/lib/postgresql/data
+      - ../data/db:/var/lib/postgresql
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_USER=${DB_USER}
@@ -50,7 +55,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - "${DB_ADMIN_PANEL_PORT}:${DB_ADMIN_PANEL_PORT}"
+      - '${DB_ADMIN_PANEL_PORT}:${DB_ADMIN_PANEL_PORT}'
     networks:
       - ugr-net
 

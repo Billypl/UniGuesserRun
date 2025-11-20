@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Header from '../components/Header'
 import styles from '../styles/User.module.scss'
@@ -8,8 +8,8 @@ import gameSessionService from '../services/api/gameSessionService'
 import { SortDirection } from '../models/scoreboard/SortDirection'
 import { PagedResult } from '../models/scoreboard/PagedResult'
 import { FinishedGameDto } from '../models/game/FinishedGameDto'
-import { ReactComponent as CrownIcon } from '../assets/images/crown.svg'
-import { ReactComponent as ShieldIcon } from '../assets/images/shield.svg'
+import CrownIcon from '../assets/images/crown.svg?react'
+import ShieldIcon from '../assets/images/shield.svg?react'
 import { GAME_RESULTS_ROUTE, USER_ROUTE } from '../Constants'
 import { UserHistoryQuery } from '../models/game/UserHistoryQuery'
 import PaginationButtons from '../components/PaginationButtons'
@@ -65,6 +65,7 @@ const User: React.FC = () => {
 		try {
 			const history = await gameSessionService.getHistoryPagesByUser(userId, userHistoryQuery)
 			setGamesHistory(history)
+			console.log('Fetched game history:', history)
 		} catch (error) {
 			console.error('Error fetching game history:', error)
 		}
@@ -103,19 +104,33 @@ const User: React.FC = () => {
 							<th>Date</th>
 							<th>Difficulty</th>
 							<th>Score</th>
+							<th>Game mode</th>
+							<th>Status</th>
 						</tr>
 					</thead>
 					<tbody>
 						{gamesHistory.items.length === 0 ? (
 							<tr>
-								<td colSpan={3}>No games found</td>
+								<td colSpan={3} className={styles.empty_state}>
+									<div className={styles.empty_content}>
+										<p className={styles.empty_icon}>🎮</p>
+										<h4>No games</h4>
+										<p>No games have been played yet.</p>
+									</div>
+								</td>
 							</tr>
 						) : (
 							gamesHistory.items.map((game) => (
-								<tr key={game.id} onClick={() => navigateToResults(game.id)} className={styles.clickable_row}>
+								<tr
+									key={game.id}
+									onClick={() => navigateToResults(game.id)}
+									className={styles.clickable_row}
+								>
 									<td>{new Date().toLocaleDateString()}</td>
 									<td>{game.difficulty.toUpperCase()}</td>
 									<td>{game.finalScore.toFixed(0)}</td>
+									<td>{game.gameMode}</td>
+									<td>{game.gameState}</td>
 								</tr>
 							))
 						)}

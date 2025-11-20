@@ -6,17 +6,20 @@ services:
   backend:
     container_name: ugr-api
     image: mcr.microsoft.com/dotnet/sdk:9.0
+    working_dir: /src/UniGuesser.API
     ports:
-      - '${BACKEND_HTTP_PORT}:${BACKEND_HTTP_PORT}'
-      - '${BACKEND_HTTPS_PORT}:${BACKEND_HTTPS_PORT}'
+      - '${BACKEND_PORT:-5223}:5223'
+      - '7157:7157'
     volumes:
-      - ../backend/UniGuesser:/app
-      - ../https/dev-cert.pfx:/https/dev-cert.pfx
+      - ../backend:/src
+      - ../https:/https:ro
+
     environment:
       - ASPNETCORE_URLS=http://+:5223;https://+:7157
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dev-cert.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=admin
-      - ASPNETCORE_Kestrel__Certificates__Default__AllowInvalid=true
       - ASPNETCORE_ENVIRONMENT=Development
-    command: dotnet watch --project /app/UniGuesser.csproj run --launch-profile https
+      - HOST_IP=${HOST_IP:-localhost}
+      - FRONTEND_PORT=${FRONTEND_PORT:-3000}
 
+    command: dotnet watch --project UniGuesser.API.csproj run
