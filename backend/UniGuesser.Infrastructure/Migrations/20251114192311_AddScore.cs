@@ -10,10 +10,6 @@ namespace UniGuesser.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_Rounds_Score",
-                table: "Rounds");
-
             migrationBuilder.AddColumn<double>(
                 name: "Distance",
                 table: "Rounds",
@@ -37,11 +33,6 @@ namespace UniGuesser.Infrastructure.Migrations
             migrationBuilder.DropColumn(
                 name: "Distance",
                 table: "Rounds");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Rounds_Score",
-                table: "Rounds",
-                column: "Score");
         }
     }
 }

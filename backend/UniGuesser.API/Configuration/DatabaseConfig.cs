@@ -11,13 +11,17 @@ public static class DatabaseConfig
     {
         services.AddHttpContextAccessor();
 
-        // Always use localhost connection (Docker database on port 5432)
-        // Backend running on Windows connects to Docker PostgreSQL container
-        var connectionString = configuration.GetConnectionString("PostgreSqlLocal");
+        // Select connection string depending on runtime environment.
+        // - When running inside Docker, use 'PostgreSql' (service name 'db').
+        // - When running locally (developer machine), use 'PostgreSqlLocal' (localhost:5432 - Docker database).
+        var isInDocker = File.Exists("/.dockerenv") || string.Equals(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), "true", StringComparison.OrdinalIgnoreCase);
+        var connectionString = isInDocker
+            ? configuration.GetConnectionString("PostgreSql")
+            : configuration.GetConnectionString("PostgreSqlLocal");
 
         Console.WriteLine("######## DATABASE CONNECTION ########");
         Console.WriteLine($"Using connection string: {connectionString}");
-        Console.WriteLine($"Environment: {(File.Exists("/.dockerenv") ? "Docker" : "Local")}");
+        Console.WriteLine($"Environment: {(isInDocker ? "Docker (using service name 'db')" : "Local (connecting to localhost:5432 - Docker database)")}");
 
         services.AddDbContext<GameDbContext>(options => { options.UseNpgsql(connectionString); });
 
