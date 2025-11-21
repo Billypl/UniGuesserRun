@@ -80,6 +80,105 @@ Składa się on z trzech niezależnych części: nagłówka (header), ładunku (
 
 \section{Devops i wdrożenie aplikacji}
 
+W tej sekcji opisano proces przygotowania, uruchamiania oraz wdrażania aplikacji w środowiskach deweloperskim i produkcyjnym z wykorzystaniem konteneryzacji Docker, plików konfiguracyjnych oraz reverse proxy Nginx. Przedstawiono również decyzje projektowe dotyczące zarządzania certyfikatami oraz publikacji obrazów w zewnętrznym rejestrze (Docker Hub).
+
+\subsection{Środowisko deweloperskie}
+
+Środowisko deweloperskie zostało zaprojektowane tak, aby umożliwić szybkie iteracje oraz łatwe debugowanie. Kluczowe założenia:
+\begin{itemize}
+    \item Oddzielne kontenery dla frontendu (React/TypeScript) i backendu (ASP.NET Core) uruchamiane w trybie \texttt{watch/hot reload}.
+    \item Kontener bazy danych PostgreSQL oraz (opcjonalnie) narzędzie \texttt{Adminer} do inspekcji danych.
+    \item Użycie pliku \texttt{docker-compose.dev.yaml} do orkiestracji wielokontenerowego środowiska.
+\end{itemize}
+
+Nasza konfiguracja usług w pliku compose dla środowiska deweloperskiego może zawierać sekcje z wolumenami mapowanymi na katalogi źródłowe, aby kod był automatycznie odświeżany. Backend korzysta z \texttt{dotnet watch run}, frontend z \texttt{npm start}. Daje to krótki cykl: edycja $\rightarrow$ zapis $\rightarrow$ natychmiastowy efekt. Eliminuje to długie czasy rekompilacji całej aplikacji.
+
+\paragraph{Debugowanie w kontenerze} Dla backendu możliwe jest podłączenie zdalnego debuggera (np. VS Code / Rider) przez port udostępniony w kontenerze. W środowisku deweloperskim certyfikaty HTTPS nie są wymagane, ponieważ komunikacja odbywa się po \texttt{http://localhost}.
+
+\subsection{Środowisko produkcyjne}
+
+W środowisku produkcyjnym nacisk położono na izolację usług, bezpieczeństwo i skalowalność. Kluczowe elementy:
+\begin{itemize}
+    \item Użycie pliku \texttt{docker-compose.prod.yaml} z obrazami już zbudowanymi (bez mountowania kodu źródłowego).
+    \item Wprowadzenie reverse proxy Nginx jako pojedynczego punktu wejścia (terminacja TLS, routing do usług wewnętrznych).
+    \item Minimalizacja rozmiaru obrazów przez wykorzystanie wieloetapowych buildów (multi-stage) w Dockerfile backendu i frontendu.
+    \item Brak narzędzi administracyjnych (np. Adminer) w docelowym środowisku - uruchamiane jedynie tymczasowo przy potrzebie migracji lub analizy.
+\end{itemize}
+
+\subsection{Pliki docker-compose i ich role}
+
+W projekcie zastosowano kilka wariantów plików \texttt{docker-compose}. Mają one strukturę kaskadową:
+\begin{description}
+    \item[\texttt{docker-compose.infra.yaml}] Definicje infrastrukturalne (baza danych, narzędzia pomocnicze). Pozwala odseparować warstwę aplikacyjną od zasobów zewnętrznych.
+    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną, umożliwia uruchomienie backendu poza kontenerem. 
+    \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe rzeczy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
+    \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji, brak wolumenów źródłowych, zmienne środowiskowe wczytywane z plików \texttt{.env}, integracja z Nginx.
+\end{description}
+
+co pozwala na nadpisywanie sekcji (
+	extit{override}) dla danego środowiska.
+
+\subsection{Decyzja o użyciu reverse proxy Nginx}
+
+Pierwotnie rozważano generowanie i instalację certyfikatów HTTPS w każdej części aplikacji osobno (frontend i backend). Takie rozwiązanie zwiększało złożoność utrzymania (odnawianie, dystrybucja, synchronizacja dat ważności). Zamiast tego wprowadzono warstwę \texttt{Nginx} jako reverse proxy z terminacją TLS:
+\begin{itemize}
+    \item Jeden certyfikat (np. Let's Encrypt) dla domeny głównej.
+    \item Uproszczona konfiguracja \texttt{appsettings.json} - backend może działać na HTTP wewnątrz sieci Docker.
+    \item Brak potrzeby modyfikowania konfiguracji frontendu przy odnowieniu certyfikatu - zmiana dotyczy wyłącznie proxy.
+    \item Możliwość dodania reguł bezpieczeństwa (rate limiting, nagłówki CSP, HSTS) w jednym miejscu.
+\end{itemize}
+
+\paragraph{Korzyści architektoniczne} Centralizacja TLS redukuje liczbę punktów potencjalnych błędów i przyspiesza automatyzację (skrypt odnawiający certyfikat uruchamiany cyklicznie w kontenerze \texttt{certbot}).
+
+\subsection{Certyfikaty i ich zarządzanie}
+
+W katalogu \texttt{https/} znajdował się lokalny certyfikat deweloperski \texttt{dev-cert.pfx} używany w fazie wczesnego rozwoju do testów lokalnych. Po wdrożeniu Nginx rola tego pliku została ograniczona wyłącznie do scenariuszy developerskich. W produkcji certyfikaty są pobierane automatycznie (np. przez \texttt{certbot}) i przechowywane w zamontowanym wolumenie na hosta, dzięki czemu ich odnowienie nie wymaga przebudowy obrazów.
+
+\subsection{Budowa i publikacja obrazów Docker}
+
+Proces publikacji obrazu na \texttt{Docker Hub} obejmuje kroki:
+\begin{enumerate}
+    \item Budowa obrazu (np. \texttt{docker build -t użytkownik/nazwa:tag .}).
+    \item Logowanie do rejestru (\texttt{docker login}).
+    \item Wysłanie obrazu (\texttt{docker push użytkownik/nazwa:tag}).
+    \item Opcjonalne użycie wersjonowania semantycznego (\texttt{1.2.0}, \texttt{latest}).
+\end{enumerate}
+
+Multi-stage build pozwala oddzielić etap kompilacji (cięższy obraz z SDK) od etapu wykonawczego (lżejszy runtime). Zmniejsza to czas pobierania i powierzchnię ataku.
+
+\paragraph{Tagowanie i automatyzacja} Przy każdej zmianie głównej funkcjonalności można generować nowy tag. W przyszłości możliwe jest dodanie pipeline CI (GitHub Actions) automatyzującej budowę i publikację na podstawie tagów w repozytorium Git.
+
+\subsection{Konfiguracja aplikacji}
+
+Konfiguracja jest rozproszona pomiędzy kilka plików i mechanizmów:
+\begin{itemize}
+    \item Pliki \texttt{.env} Zawierają wrażliwe lub zmienne środowiskowe (np. connection string do PostgreSQL, sekrety JWT). W plikach compose referencje przez \texttt{\$\{NAZWA\_ZMIENNEJ\}}.
+    \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} Warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
+    \item \texttt{launchSettings.json} Używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpione przez konfigurację kontenera + reverse proxy.
+    \item Frontend \texttt{Constants.ts} Zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
+    \item Zmienne środowiskowe kontenerów Nadawane w plikach compose lub w CI/CD 
+    (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
+\end{itemize}
+
+Mechanizm konfiguracji w ASP.NET Core scalający źródła (pliki, zmienne środowiskowe, sekrety użytkownika) umożliwia elastyczne przełączanie środowisk bez modyfikacji kodu.
+
+\paragraph{Bezpieczeństwo konfiguracji} Sekrety (klucz do podpisu JWT, hasło do bazy) nie powinny być wersjonowane --- w środowisku deweloperskim mogą być przechowywane w pliku \texttt{.env.local} dodanym do \texttt{.gitignore}. W produkcji zalecane jest ich wstrzykiwanie poprzez menedżera sekretów (np. HashiCorp Vault / Docker Swarm secrets / Kubernetes secrets).
+
+\subsection{Przepływ uruchomienia aplikacji}
+
+Cały proces startu w produkcji można streścić następująco:
+\begin{enumerate}
+    \item Nginx startuje i ładuje certyfikat TLS.
+    \item Backend uruchamia się w trybie HTTP wewnątrz sieci Docker, migracje bazy wykonywane automatycznie na starcie (opcjonalnie sterowane flagą).
+    \item Frontend serwowany jako statyczne pliki (np. z \texttt{nginx}) lub z dedykowanego kontenera serwera plików.
+    \item Nginx przekazuje żądania \texttt{/api} do backendu, a pozostałe ścieżki obsługuje przez serwowanie SPA.
+\end{enumerate}
+
+\subsection{Podsumowanie sekcji DevOps}
+
+Zastosowana architektura DevOps upraszcza cykl życia aplikacji: deweloperzy otrzymują szybkie iteracje dzięki mountowaniu kodu, produkcja korzysta z odchudzonych i bezpiecznych obrazów oraz centralnego zarządzania TLS. Decyzja o użyciu reverse proxy Nginx z jednym certyfikatem poprawiła bezpieczeństwo i zmniejszyła nakład operacyjny, tworząc solidną bazę pod dalsze skalowanie i obserwowalność.
+
+
 
 \section{Integracja komponentów systemu}
 
