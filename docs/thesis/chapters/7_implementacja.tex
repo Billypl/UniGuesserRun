@@ -13,42 +13,140 @@
 
 \section{Implementacja backendu i logiki aplikacji}
 
+W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, w tym mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy które napotkano podczas implementacji.
 
 \subsection{Autoryzacja i uwierzytelnianie użytkowników}
 
-W celu uwierzytelniania wykorzystany został JSON Web Token. Jest to standard wymiany informacji między dwoma stronami w formie obiektu JSON, który jest bezpiecznie podpisany cyfrowo. 
 
-Składa się on z trzech niezależnych części: nagłówka (header), ładunku (payload) oraz podpisu (signature). Nagłówek zawiera informacje o algorytmie podpisu i typie tokenu, ładunek zawiera dane użytkownika i inne informacje, a podpis służy do weryfikacji integralności tokenu i autentyczności nadawcy.
+\textbf{Generowanie i struktura Tokenu JWT słuącego do autoryzacji użytkowników}
+
+W celu autoryzacji wykorzystany został JSON Web Token. Jest to standard wymiany informacji między dwoma stronami w formie obiektu JSON, który jest bezpiecznie podpisany cyfrowo. 
+
+Składa się on z trzech niezależnych części zakodowanych w formacie Base64: nagłówka (header), ładunku (payload) oraz podpisu (signature). Nagłówek zawiera informacje o algorytmie podpisu i typie tokenu, ładunek zawiera dane użytkownika i inne informacje, a podpis służy do weryfikacji integralności tokenu i autentyczności nadawcy.
+
+Przykładowy token JWT:
+\begin{lstlisting}
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI
+6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3n
+MiGM6H9FNFUROf3wh7SmqJp-QV30
+\end{lstlisting}
+
+Nagłówek przedstawia zakodowane informacje o algorytmie podpisu oraz typie tokenu (w tym przypadku HS256):
+
+\begin{lstlisting}
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+\end{lstlisting}
+
+Payload zawiera zakodowane informacje które chcemy przekazać, jak np. identyfikator użytkownika, nazwa użytkownika, role itp.:
+
+\begin{lstlisting}
+{
+  "ID": "23141",
+  "name": "Jan Kowalski",
+  "admin": true,
+  "iat": 1516239022
+}
+\end{lstlisting}
+
+Podpis jest generowany przez zakodowanie nagłówka i payloadu oraz podpisanie ich kluczem prywatnym przy użyciu algorytmu określonego w nagłówku.
+
+W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięku temu jesteśmy w stanie generować w efektywny sposób tokeny które wykorzystywane są do autoryzacji. 
+
+\begin{lstlisting}[language={[Sharp]C}, caption={Generowanie tokenu JWT w warstwie backendu}, label={lst:jwt-generation}]
+var claims = new List<Claim>
+{
+    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+    new(ClaimTypes.Email, user.Email),
+    new(ClaimTypes.Role, user.Role),
+    new(ClaimTypes.Name, user.Nickname),
+    new("token_type", "user")
+};
+
+// Klucz podpisujacy token (HMAC SHA-256)
+var key = new SymmetricSecurityKey(
+    Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
+
+// Poswiadczenia podpisu
+var credentials = new SigningCredentials(
+    key, SecurityAlgorithms.HmacSha256);
+
+// Czas wygasniecia tokenu
+var expires = DateTime.Now.AddMinutes(
+    _authenticationSettings.JwtExpireAccount);
+
+// Utworzenie obiektu tokenu JWT
+var token = new JwtSecurityToken(
+    issuer: _authenticationSettings.JwtIssuer,
+    audience: _authenticationSettings.JwtIssuer,
+    claims: claims,
+    expires: expires,
+    signingCredentials: credentials
+);
+\end{lstlisting}
+
+\textbf{Identyfikowanie użytkowników i autoryzacja dostępu do zasobów}
+
+W aplikacji wykorzystano mechanizm autoryzacji oparty na atrybutach \texttt{[Authorize]} dostępnych w ASP.NET Core. Atrybut ten pozwala na zabezpieczenie kontrolerów lub konkretnych akcji, wymagając od użytkownika posiadania ważnego tokenu JWT oraz odpowiednich uprawnień (ról) do dostępu do zasobów. 
+Na etapie przetwarzania żądania, middleware uwierzytelniające sprawdza obecność i ważność tokenu JWT w nagłówku autoryzacji. Jeśli token jest poprawny, użytkownik zostaje zidentyfikowany, a jego rola jest sprawdzana w kontekście żądanej akcji.
 
 
-\textbf{Mechanizm JWT w aplikacji ASP.NET Core}
+\textbf{Hashowanie haseł użytkowników i uwierzytelnianie}
 
-% Uzasadnienie wyboru JWT
+Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano .NET Core Identity, który implementuje algorytm BCrypt. Algorytm ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu. W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
 
-% Struktura tokenu JWT
+\begin{lstlisting}[language={[Sharp]C}, caption={Hashowanie i weryfikacja hasła użytkownika}]
+// Hashowanie hasla podczas rejestracji
+var passwordHash = passwordHasher.HashPassword(
+    newUser, 
+    registerAccountCommand.Password
+);
 
-\textbf{Generowanie i walidacja tokenów JWT}
-
-% W jaki sposób aplikacja generuje tokeny JWT podczas logowania użytkownika
-
-% Walidacja tokenów
-
-\textbf{Implementacja autoryzacji w aplikacji}
-
-% Przykładowa implementacja atrybutu [Authorize]
-
-% Struktura JWT w aplikacji
-
-\textbf{Hashowanie haseł użytkowników}
-
-% Zastosowanie biblioteki BCrypt
-
-% Proces hashowania i weryfikacji haseł
+// Weryfikacja hasla podczas logowania
+var result = passwordHasher.VerifyHashedPassword(
+    user, 
+    user.PasswordHash, 
+    loginCommand.Password
+);
+\end{lstlisting}
 
 \subsection{Walidacja danych}
-    -Zastosowanie fluent validation w projekcie
-    -Przykłady reguł dla rejestracji 
+    W celu zadbania o poprawność danych wejściowyych w aplikacji zastosowano bibliotekę Fluent Validation. Pozwala ona na definiowanie reguł walidacyjnych w sposób deklaratywny i czytelny. Przykładowo, podczas rejestracji użytkownika można zdefiniować reguły dotyczące długości hasła, formatu adresu e-mail oraz unikalności nazwy użytkownika. Dzięki temu można łatwo zarządzać walidacją i zapewnić spójność danych w całej aplikacji. Ponadto jest ona zintegrowana z mechanizmem model binding w ASP.NET Core, co umożliwia automatyczne wywoływanie walidacji podczas przetwarzania żądań HTTP. 
 
+\begin{lstlisting}[language={[Sharp]C}, caption={Przykład walidacji danych użytkownika podczas rejestracji}, label={lst:fluent-validation}]
+public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
+{
+    private readonly IAccountRepository _accountRepository;
+
+    public RegisterUserDtoValidator(IAccountRepository accountRepository)
+    {
+        _accountRepository = accountRepository;
+        RuleFor(u => u.Email)
+            .NotEmpty()
+            .EmailAddress();
+
+        RuleFor(u => u.Nickname)
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(25);
+
+        RuleFor(u => u.Password)
+            .NotEmpty()
+            .MinimumLength(8)
+            .WithMessage("Minimum length of password is 8");
+
+        RuleFor(x => x.ConfirmPassword)
+            .Equal(e => e.Password)
+            .WithMessage("Passwords are not the same ");
+    }
+}
+\end{lstlisting}
+
+Dzięki temu podejściu, walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przyczynia się do poprawy jakości oraz bezpieczeństwa aplikacji.
+
+% potencjalnie napisze moze cos o mediator i flunet validation tutaj
 
 \subsection{Obsługa błędów w aplikacji}
     -Globalna obsługa błędów przy użyciu middleware

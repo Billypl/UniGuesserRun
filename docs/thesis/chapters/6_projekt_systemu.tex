@@ -2,7 +2,7 @@
 \label{chap:system_project}
 Niniejszy rozdział przedstawia szczegółowy projekt systemu aplikacji webowej \textbf{UniGuesser}. Opisane zostaną kluczowe elementy architektury systemu, w tym warstwy aplikacji, baza danych oraz najbardziej kluczowe interakcje użytkownika z systemem. Zaczynając od ogólnego przeglądu architektury, przejdziemy do szczegółowego omówienia poszczególnych komponentów i ich wzajemnych relacji.
 
-W aplikacji zastosowano architekturę warstwową, której szczegółowa implementacja zostanie opisana w niniejszym rozdziale. Na najwyższym poziomie abstrakcji system można podzielić na trzy główne warstwy: warstwę prezentacji (frontend), warstwę logiki biznesowej (backend) oraz warstwę persystencji danych (baza danych). Podział ten odzwierciedla sposób izolowania odpowiedzialności poszczególnych komponentów. Dzięki temu nasza logika gry która nie powinna być widoczna dla użytkownika 
+W aplikacji zastosowano architekturę warstwową, której szczegółowa implementacja zostanie opisana w niniejszym rozdziale. Na najwyższym poziomie abstrakcji system można podzielić na trzy główne warstwy: warstwę prezentacji (frontend), warstwę logiki biznesowej (backend) oraz warstwę persystencji danych (baza danych). Podział ten odzwierciedla sposób izolowania odpowiedzialności poszczególnych komponentów. Dzięki temu użytkownik komunikuje się z aplikacją poprzez interfejs użytkownika, który następnie przekazuje żądania do warstwy logiki biznesowej. Ta z kolei przetwarza żądania, wykonuje odpowiednie operacje i komunikuje się z bazą danych w celu przechowywania lub pobierania danych.
 
 \begin{figure}[h]
     \centering
