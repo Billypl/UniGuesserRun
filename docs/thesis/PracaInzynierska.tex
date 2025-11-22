@@ -35,6 +35,30 @@
   tabsize=4,
 }
 
+% Konfiguracja dla JavaScript
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  sensitive=true
+}
+\lstset{
+  language=JavaScript,
+  basicstyle=\small\ttfamily,
+  keywordstyle=\color{blue},
+  stringstyle=\color{teal},
+  commentstyle=\color{gray},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  frame=single,
+  breaklines=true,
+  tabsize=4,
+}
+
 \newcommand\PDFtitle{Tytuł pracy}
 \newcommand\PDFauthors{Filip Jezierski, Michał Pawiłojć, Michał Turski, Karina Wołoszyn}
 \hypersetup{
