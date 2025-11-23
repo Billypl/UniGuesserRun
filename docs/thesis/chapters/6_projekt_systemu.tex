@@ -66,6 +66,7 @@ CreatedAt & Data i czas utworzenia konta. & Data/Czas \\ \hline
 Role & Rola użytkownika w systemie (np. użytkownik, administrator). & Enumeracja \\ \hline
 \end{tabular}
 \caption{Tabela \texttt{Users}}
+
 \end{table}
 
 \textbf{GameSessions (Sesje gier)} – tabela przechowująca informacje o aktywnych i zakończonych rozgrywkach.
@@ -86,6 +87,7 @@ FinishedTime & Data zakończenia rozgrywki. & Data/Czas \\ \hline
 UserID & Identyfikator użytkownika. & Klucz obcy → Users \\ \hline
 \end{tabular}
 \caption{Tabela \texttt{GameSessions}}
+\label{tab:game-sessions}
 \end{table}
 
 \textbf{Rounds (Rundy)} – tabela przechowująca informacje o poszczególnych rundach w sesji gry.
@@ -103,7 +105,8 @@ Score & Punkty zdobyte w rundzie. & Liczba całkowita \\ \hline
 GameSessionID & Identyfikator sesji gry. & Klucz obcy → GameSessions \\ \hline
 LocationID & Identyfikator lokacji. & Klucz obcy → Places \\ \hline
 \end{tabular}
-\caption{Tabela \texttt{Rounds}}
+\caption{Tabela \texttt{Rounds}} 
+\label{tab:rounds}
 \end{table}
 
 \textbf{Places (Lokacje)} – tabela przechowująca informacje o lokacjach dostępnych w grze.

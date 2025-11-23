@@ -7,18 +7,41 @@
 
 \subsection{Responsywność i dostępność aplikacji}
 
-\subsection{Problemy napotkane  przy implementacji frontendu}
+\subsection{Problemy napotkane przy implementacji frontendu}
 
 
 
 \section{Implementacja backendu i logiki aplikacji}
 
-W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, w tym mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy które napotkano podczas implementacji.
+W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, rozgrywki  mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy, które napotkano podczas implementacji.
+
+\subsection{Implementacja rozgrywki}
+
+Przedstawienie sposobu w jaki została zaimplementowana rozgrywka z \ref{fig:sequence-diagram} w aplikacji. 
+
+Proces rozpoczęcia rozgrywki inicjuje wywołanie kontrolera \texttt{api/game/start}, który odpowiada za utworzenie nowej \textit{Sesji Rozgrywki} (\ref{tab:game-sessions}).
+W ramach tego etapu backend generuje odpowiednią liczbę rund (\ref), przypisuje im losowe miejsca do zgadnięcia, nadaje sesji status \texttt{InProgress}, a następnie zwraca unikalny identyfikator gry w postaci GUID.
+W przypadku użytkownika niezalogowanego aplikacja dodatkowo generuje i zwraca tymczasowy token, który umożliwia jego uwierzytelnienie w kolejnych żądaniach.
+
+Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
+\texttt{api/game/{gameId}/round/{roundNumber}},
+gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} – numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
+
+
+Odpowiedź użytkownika jest obsługiwana przez endpoint
+\texttt{api/game/{gameId}/round/{roundNumber}/check}.
+Aplikacja weryfikuje lokalizację podaną przez użytkownika, oblicza odległość pomiędzy faktycznym miejscem a wskazanym punktem oraz na tej podstawie przyznaje punkty za daną rundę.
+
+Po zakończeniu wszystkich rund gracz wywołuje endpoint
+\texttt{api/game/{gameId}/finish},
+który finalizuje rozgrywkę. Backend podsumowuje wyniki, aktualizuje status sesji na \texttt{Completed} i zwraca końcowy rezultat użytkownikowi.
+Dla użytkowników zalogowanych rezultat jest trwale zapisywany w bazie, natomiast dla użytkowników niezalogowanych sesja jest automatycznie usuwana po upływie jednej godziny.
+
 
 \subsection{Autoryzacja i uwierzytelnianie użytkowników}
 
 
-\textbf{Generowanie i struktura Tokenu JWT słuącego do autoryzacji użytkowników}
+\textbf{Generowanie i struktura tokenu JWT służącego do autoryzacji użytkowników}
 
 W celu autoryzacji wykorzystany został JSON Web Token. Jest to standard wymiany informacji między dwoma stronami w formie obiektu JSON, który jest bezpiecznie podpisany cyfrowo. 
 
@@ -40,7 +63,7 @@ Nagłówek przedstawia zakodowane informacje o algorytmie podpisu oraz typie tok
 }
 \end{lstlisting}
 
-Payload zawiera zakodowane informacje które chcemy przekazać, jak np. identyfikator użytkownika, nazwa użytkownika, role itp.:
+Payload zawiera zakodowane informacje, które chcemy przekazać, jak np. identyfikator użytkownika, nazwa użytkownika, role itp.:
 
 \begin{lstlisting}
 {
@@ -53,7 +76,7 @@ Payload zawiera zakodowane informacje które chcemy przekazać, jak np. identyfi
 
 Podpis jest generowany przez zakodowanie nagłówka i payloadu oraz podpisanie ich kluczem prywatnym przy użyciu algorytmu określonego w nagłówku.
 
-W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięku temu jesteśmy w stanie generować w efektywny sposób tokeny które wykorzystywane są do autoryzacji. 
+W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji. 
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Generowanie tokenu JWT w warstwie backendu}, label={lst:jwt-generation}]
 var claims = new List<Claim>
@@ -65,15 +88,15 @@ var claims = new List<Claim>
     new("token_type", "user")
 };
 
-// Klucz podpisujacy token (HMAC SHA-256)
+// Klucz podpisujący token (HMAC SHA-256)
 var key = new SymmetricSecurityKey(
     Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
 
-// Poswiadczenia podpisu
+// Poświadczenia podpisu
 var credentials = new SigningCredentials(
     key, SecurityAlgorithms.HmacSha256);
 
-// Czas wygasniecia tokenu
+// Czas wygaśnięcia tokenu
 var expires = DateTime.Now.AddMinutes(
     _authenticationSettings.JwtExpireAccount);
 
@@ -95,16 +118,16 @@ Na etapie przetwarzania żądania, middleware uwierzytelniające sprawdza obecno
 
 \textbf{Hashowanie haseł użytkowników i uwierzytelnianie}
 
-Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano .NET Core Identity, który implementuje algorytm BCrypt. Algorytm ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu. W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
+Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano .NET Core Identity, który implementuje algorytm HMAC-SHA256. Algorytm ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu. W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Hashowanie i weryfikacja hasła użytkownika}]
-// Hashowanie hasla podczas rejestracji
+// Hashowanie hasła podczas rejestracji
 var passwordHash = passwordHasher.HashPassword(
     newUser, 
     registerAccountCommand.Password
 );
 
-// Weryfikacja hasla podczas logowania
+// Weryfikacja hasła podczas logowania
 var result = passwordHasher.VerifyHashedPassword(
     user, 
     user.PasswordHash, 
@@ -113,7 +136,11 @@ var result = passwordHasher.VerifyHashedPassword(
 \end{lstlisting}
 
 \subsection{Walidacja danych}
-    W celu zadbania o poprawność danych wejściowyych w aplikacji zastosowano bibliotekę Fluent Validation. Pozwala ona na definiowanie reguł walidacyjnych w sposób deklaratywny i czytelny. Przykładowo, podczas rejestracji użytkownika można zdefiniować reguły dotyczące długości hasła, formatu adresu e-mail oraz unikalności nazwy użytkownika. Dzięki temu można łatwo zarządzać walidacją i zapewnić spójność danych w całej aplikacji. Ponadto jest ona zintegrowana z mechanizmem model binding w ASP.NET Core, co umożliwia automatyczne wywoływanie walidacji podczas przetwarzania żądań HTTP. 
+    W celu zapewnienia poprawności danych wejściowych w aplikacji zastosowano bibliotekę FluentValidation. Umożliwia ona definiowanie reguł walidacyjnych w sposób deklaratywny, czytelny i łatwy w utrzymaniu. Przykładowo, podczas rejestracji użytkownika można zdefiniować reguły dotyczące minimalnej i maksymalnej długości hasła, prawidłowego formatu adresu e-mail oraz unikalności nazwy użytkownika w systemie. Dzięki temu możliwe jest centralne zarządzanie walidacją oraz zapewnienie spójności danych w całej aplikacji. 
+    
+    Biblioteka FluentValidation jest w pełni zintegrowana z mechanizmem wiązania modeli (model binding) w ASP.NET Core, co umożliwia automatyczne wywoływanie walidacji podczas przetwarzania żądań HTTP. W przypadku wykrycia błędów walidacji framework automatycznie zwraca odpowiedź HTTP 400 (Bad Request) wraz ze szczegółowym opisem napotkanych problemów, co znacząco ułatwia debugowanie i poprawia komunikację z klientem API.
+
+    Niektóre reguły walidacyjne wymagają dostępu do warstwy persystencji, na przykład w celu sprawdzenia, czy w bazie danych nie istnieje już użytkownik o podanym adresie e-mail lub nazwie. W takich przypadkach do konstruktora klasy walidatora wstrzykiwane są odpowiednie repozytoria poprzez mechanizm wstrzykiwania zależności (Dependency Injection). 
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Przykład walidacji danych użytkownika podczas rejestracji}, label={lst:fluent-validation}]
 public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
@@ -144,13 +171,19 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
 }
 \end{lstlisting}
 
-Dzięki temu podejściu, walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przyczynia się do poprawy jakości oraz bezpieczeństwa aplikacji.
+
+Dzięki takiemu podejściu walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przyczynia się do poprawy jakości oraz bezpieczeństwa aplikacji. Dodatkowo każda reguła walidacyjna jest umieszczona w osobnej klasie, co pozwala przestrzegać zasady pojedynczej odpowiedzialności oraz zachować czytelność i modularność kodu. Umożliwia to również łatwe testowanie poszczególnych walidatorów w izolacji od pozostałych komponentów systemu.
+
 
 % potencjalnie napisze moze cos o mediator i flunet validation tutaj
 
 \subsection{Obsługa błędów w aplikacji}
-    -Globalna obsługa błędów przy użyciu middleware
-    -Przykłady obsługi różnych typów błędów (404, 500, itp.)
+    W aplikacji do obsługi błędów wykorzystano mechanizm dostępyn w ASP .NET Core, polegający na tworzeniu globalnego middleware odpowiedzialnego za przechwytywanie wyjątków. Middleware jest ten w stanie obsłużyć wyjątki rzucane w dowolnym miejscu w aplikacji i zwrócić odpowiednią odpowiedż z kodem statusu HTTP oraz komunikatem błędu do klienta. Dzieki temu użytkownik otrzymuje spójne i czytelne informacje o błędach, bez widocznego stosu wywołan i komunikatów serwera.  Dzięki temu podejściu możemy łatwo zarządzać obsługą błędów w jednym miejscu i zapewnić lepsze doświadczenie użytkownika.
+
+    Dodatkowo dla każdej encji w warstwie domeny zdefiniowano oddzielny plik z wyjątkami, które mogą wystapić podczas operacji na tych encjach. Dzięki temu łatwiej jest zarządzać różnymi typami błędów, charakterystycznymi dla danej encji.
+
+    
+
 
 \subsection{Warstwa persystencji - Entity Framework Core}
     
@@ -159,7 +192,7 @@ Dzięki temu podejściu, walidacja danych jest centralnie zarządzana i łatwo r
     -Migracje bazy danych
     -Repozytoria w aplikacji
 
-\subsection{Problemy napotkane  przy implementacji backendu}
+\subsection{Problemy napotkane przy implementacji backendu}
     -Eager loading vs lazy loading w EF Core
     -Konflikty migracji bazy danych
     -Obsługa błędów w aplikacji ASP .NET Core
@@ -167,9 +200,10 @@ Dzięki temu podejściu, walidacja danych jest centralnie zarządzana i łatwo r
 
 \section{Baza danych i zarządzanie danymi}
 
-\subsection{Postgres}
 
-\subsection{Adminer}
+
+\subsection{Postgres i adminer}
+
 
 \subsection{Przechowywanie plików }
 
@@ -189,7 +223,7 @@ W tej sekcji opisano proces przygotowania, uruchamiania oraz wdrażania aplikacj
     \item Użycie pliku \texttt{docker-compose.dev.yaml} do orkiestracji wielokontenerowego środowiska.
 \end{itemize}
 
-Nasza konfiguracja usług w pliku compose dla środowiska deweloperskiego może zawierać sekcje z wolumenami mapowanymi na katalogi źródłowe, aby kod był automatycznie odświeżany. Backend korzysta z \texttt{dotnet watch run}, frontend z \texttt{npm start}. Daje to krótki cykl: edycja $\rightarrow$ zapis $\rightarrow$ natychmiastowy efekt. Eliminuje to długie czasy rekompilacji całej aplikacji.
+Konfiguracja usług w pliku compose dla środowiska deweloperskiego może zawierać sekcje z wolumenami mapowanymi na katalogi źródłowe, aby kod był automatycznie odświeżany. Backend korzysta z \texttt{dotnet watch run}, frontend z \texttt{npm start}. Daje to krótki cykl: edycja $\rightarrow$ zapis $\rightarrow$ natychmiastowy efekt. Eliminuje to długie czasy rekompilacji całej aplikacji.
 
 \paragraph{Debugowanie w kontenerze} Dla backendu możliwe jest podłączenie zdalnego debuggera (np. VS Code / Rider) przez port udostępniony w kontenerze. W środowisku deweloperskim certyfikaty HTTPS nie są wymagane, ponieważ komunikacja odbywa się po \texttt{http://localhost}.
 
@@ -213,8 +247,7 @@ W projekcie zastosowano kilka wariantów plików \texttt{docker-compose}. Mają 
     \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji, brak wolumenów źródłowych, zmienne środowiskowe wczytywane z plików \texttt{.env}, integracja z Nginx.
 \end{description}
 
-co pozwala na nadpisywanie sekcji (
-	extit{override}) dla danego środowiska.
+co pozwala na nadpisywanie sekcji (\textit{override}) dla danego środowiska.
 
 \subsection{Decyzja o użyciu reverse proxy Nginx}
 
