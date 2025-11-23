@@ -28,10 +28,10 @@ W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacj
 
 \subsection{Implementacja rozgrywki}
 
-Przedstawienie sposobu w jaki została zaimplementowana rozgrywka z \ref{fig:sequence-diagram} w aplikacji. 
+Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku \ref{fig:sequence-diagram}. 
 
 Proces rozpoczęcia rozgrywki inicjuje wywołanie kontrolera \texttt{api/game/start}, który odpowiada za utworzenie nowej \textit{Sesji Rozgrywki} (\ref{tab:game-sessions}).
-W ramach tego etapu backend generuje odpowiednią liczbę rund (\ref), przypisuje im losowe miejsca do zgadnięcia, nadaje sesji status \texttt{InProgress}, a następnie zwraca unikalny identyfikator gry w postaci GUID.
+W ramach tego etapu backend generuje odpowiednią liczbę rund, przypisuje im losowe miejsca do zgadnięcia, nadaje sesji status \texttt{InProgress}, a następnie zwraca unikalny identyfikator gry w postaci GUID.
 W przypadku użytkownika niezalogowanego aplikacja dodatkowo generuje i zwraca tymczasowy token, który umożliwia jego uwierzytelnienie w kolejnych żądaniach.
 
 Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
@@ -78,9 +78,10 @@ Payload zawiera zakodowane informacje, które chcemy przekazać, jak np. identyf
 
 \begin{lstlisting}
 {
-  "ID": "23141",
-  "name": "Jan Kowalski",
-  "admin": true,
+  "ID": "76dc77d7-8dfc-4c79-8426-4d40568bd612",
+  "nickname": "miksiu120",
+  "role": "admin",
+  "token-type": "user",
   "iat": 1516239022
 }
 \end{lstlisting}
@@ -129,7 +130,8 @@ Na etapie przetwarzania żądania, middleware uwierzytelniające sprawdza obecno
 
 \textbf{Hashowanie haseł użytkowników i uwierzytelnianie}
 
-Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano .NET Core Identity, który implementuje algorytm HMAC-SHA256. Algorytm ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu. W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
+Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano mechanizm \texttt{PasswordHasher<TUser>} udostępniony przez .NET Core Identity. Hasher ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu. 
+W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Hashowanie i weryfikacja hasła użytkownika}]
 // Hashowanie hasła podczas rejestracji
@@ -149,9 +151,9 @@ var result = passwordHasher.VerifyHashedPassword(
 \subsection{Walidacja danych}
     W celu zapewnienia poprawności danych wejściowych w aplikacji zastosowano bibliotekę FluentValidation. Umożliwia ona definiowanie reguł walidacyjnych w sposób deklaratywny, czytelny i łatwy w utrzymaniu. Przykładowo, podczas rejestracji użytkownika można zdefiniować reguły dotyczące minimalnej i maksymalnej długości hasła, prawidłowego formatu adresu e-mail oraz unikalności nazwy użytkownika w systemie. Dzięki temu możliwe jest centralne zarządzanie walidacją oraz zapewnienie spójności danych w całej aplikacji. 
     
-    Biblioteka FluentValidation jest w pełni zintegrowana z mechanizmem wiązania modeli (model binding) w ASP.NET Core, co umożliwia automatyczne wywoływanie walidacji podczas przetwarzania żądań HTTP. W przypadku wykrycia błędów walidacji framework automatycznie zwraca odpowiedź HTTP 400 (Bad Request) wraz ze szczegółowym opisem napotkanych problemów, co znacząco ułatwia debugowanie i poprawia komunikację z klientem API.
+    Biblioteka FluentValidation jest zintegrowana z mechanizmem wiązania modeli (model binding) w ASP.NET Core, co umożliwia automatyczne wywoływanie walidacji podczas przetwarzania żądań HTTP. W przypadku wykrycia błędów walidacji framework automatycznie zwraca odpowiedź HTTP 400 (Bad Request) wraz ze szczegółowym opisem napotkanych problemów, co znacząco ułatwia debugowanie i poprawia komunikację z klientem API.
 
-    Niektóre reguły walidacyjne wymagają dostępu do warstwy persystencji, na przykład w celu sprawdzenia, czy w bazie danych nie istnieje już użytkownik o podanym adresie e-mail lub nazwie. W takich przypadkach do konstruktora klasy walidatora wstrzykiwane są odpowiednie repozytoria poprzez mechanizm wstrzykiwania zależności (Dependency Injection). 
+    Niektóre reguły walidacyjne wymagają dostępu do warstwy persystencji, na przykład w celu sprawdzenia, czy w bazie danych nie istnieje już użytkownik o podanym adresie e-mail lub nazwie. W takich przypadkach do konstruktora walidatora wstrzykiwane są odpowiednie repozytoria poprzez mechanizm wstrzykiwania zależności (Dependency Injection). 
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Przykład walidacji danych użytkownika podczas rejestracji}, label={lst:fluent-validation}]
 public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
@@ -183,41 +185,59 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
 \end{lstlisting}
 
 
-Dzięki takiemu podejściu walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przyczynia się do poprawy jakości oraz bezpieczeństwa aplikacji. Dodatkowo każda reguła walidacyjna jest umieszczona w osobnej klasie, co pozwala przestrzegać zasady pojedynczej odpowiedzialności oraz zachować czytelność i modularność kodu. Umożliwia to również łatwe testowanie poszczególnych walidatorów w izolacji od pozostałych komponentów systemu.
+ Dzięki takiemu podejściu walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przekłada się na wyższą jakość oraz bezpieczeństwo aplikacji. Każda reguła walidacyjna znajduje się w osobnej klasie, co pozwala zachować zasadę pojedynczej odpowiedzialności, zwiększa modularność kodu oraz umożliwia łatwe testowanie poszczególnych walidatorów w izolacji od pozostałych komponentów systemu.
 
 
 % potencjalnie napisze moze cos o mediator i flunet validation tutaj
 
 \subsection{Obsługa błędów w aplikacji}
-    W aplikacji do obsługi błędów wykorzystano mechanizm dostępyn w ASP .NET Core, polegający na tworzeniu globalnego middleware odpowiedzialnego za przechwytywanie wyjątków. Middleware jest ten w stanie obsłużyć wyjątki rzucane w dowolnym miejscu w aplikacji i zwrócić odpowiednią odpowiedż z kodem statusu HTTP oraz komunikatem błędu do klienta. Dzieki temu użytkownik otrzymuje spójne i czytelne informacje o błędach, bez widocznego stosu wywołan i komunikatów serwera.  Dzięki temu podejściu możemy łatwo zarządzać obsługą błędów w jednym miejscu i zapewnić lepsze doświadczenie użytkownika.
+    W aplikacji wykorzystano globalne middleware w ASP.NET Core, odpowiedzialne za przechwytywanie wyjątków w dowolnym miejscu w kodzie. Middleware konwertuje je na spójne odpowiedzi HTTP z odpowiednim kodem statusu oraz komunikatem błędu — dzięki temu użytkownik otrzymuje czytelne informacje, bez ujawniania stosu wywołań ani szczegółów serwera. Cały mechanizm dostępny jest w jednym miejscu, co ułatwia zarządzanie błędami i poprawia doświadczenie użytkownika.
 
-    Dodatkowo dla każdej encji w warstwie domeny zdefiniowano oddzielny plik z wyjątkami, które mogą wystapić podczas operacji na tych encjach. Dzięki temu łatwiej jest zarządzać różnymi typami błędów, charakterystycznymi dla danej encji.
+Dodatkowo, dla każdej encji w warstwie domeny zdefiniowano osobny plik z wyjątkami specyficznymi dla danej encji.
+Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
 
 
+    Przykład definicji wyjątku domenowego dla encji użytkownika przedstawiono poniżej:
+\begin{lstlisting}[language={[Sharp]C}, caption={Przykład definicji wyjątku domenowego dla encji użytkownika}]
+
+    // Definicja przykladowego wyjatku 
+        public class UserNotFoundException(Guid userGuid) :
+        BaseException($"User with GUID {userGuid} was not found")
+    {
+        public override int StatusCode => 404;
+    }
+    //  Rzucanie wyjatku w przypadku braku uzytkownika
+    throw new UserNotFoundException(userGuid);
+    \end{lstlisting}
+
+    Dzięki takiemu podejściu możliwe jest precyzyjne zarządzanie typerami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
 
 
-\subsection{Warstwa persystencji - Entity Framework Core}
-    
-    -Rola orm w aplikacji
-    -DbContext i mapowanie encji na tabele bazy danych
-    -Migracje bazy danych
-    -Repozytoria w aplikacji
+\section{Baza danych i zarządzanie danymi}
+
+\subsection{Repozytoria — komunikacja z bazą danych}
+
+W celu oddzielenia logiki biznesowej od warstwy dostępu do danych zastosowano wzorzec repozytorium. Jeśli obiekt chce uzyskać dostęp do danych, zamiast komunikować się bezpośrednio z bazą danych, korzysta z interfejsu repozytorium. Repozytorium udostępnia metody do wykonywania operacji CRUD (Create, Read, Update, Delete) na encjach, ukrywając szczegóły implementacji dostępu do danych. Dzięki temu logika biznesowa pozostaje niezależna od konkretnej technologii bazy danych, co ułatwia testowanie i utrzymanie kodu.
+
+W aplikacji wszystkie repozytoria dziedziczą po wspólnym interfejsie bazowym \texttt{IRepository<T>}, który definiuje podstawowe operacje CRUD. Każde repozytorium specyficzne dla danej encji rozszerza ten interfejs, dodając metody charakterystyczne dla konkretnej domeny. Przykładowo, repozytorium użytkowników może zawierać dodatkowe metody do wyszukiwania użytkowników według adresu e-mail lub nazwy użytkownika.
+
+\subsection{Warstwa persystencji — Entity Framework Core}
+
+Wykorzystując Entity Framework jako ORM (Object-Relational Mapping), w pierwszej kolejności zaimplementowano modele encji odpowiadające tabelom w bazie danych. Następnie została zdefiniowana klasa dziedzicząca po \texttt{DbContext} — klasie, w której definiujemy związki i relacje wykorzystywane przy mapowaniu, ustalając przy tym zasady działania kaskadowego usuwania powiązanych encji.
+
+Chcąc zaktualizować bazę danych, stosujemy migracje, które pozwalają na dodawanie, usuwanie i modyfikowanie istniejących już definicji obiektów. Ponadto dzięki nim możemy wersjonować stan bazy, aby w razie błędu cofnąć się do poprzedniej definicji. Za pomocą polecenia \texttt{add-migration \textless nazwa\_migracji\textgreater} tworzymy nową migrację, a następnie poleceniem \texttt{update-database} stosujemy zmiany w bazie danych.
+W folderze \texttt{Migrations} przechowywane są pliki migracji, które zawierają instrukcje dotyczące zmian w strukturze bazy danych. Są one generowane automatycznie i mają strukturę nazwy \texttt{\textless timestamp\textgreater\_\textless nazwa\_migracji\textgreater.cs}.
+
+\subsection{Adminer}
+
+W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzie Adminer. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej.
+
 
 \subsection{Problemy napotkane przy implementacji backendu}
     -Eager loading vs lazy loading w EF Core
     -Konflikty migracji bazy danych
     -Obsługa błędów w aplikacji ASP .NET Core
     -Debuggowanie aplikacji w kontenerze Docker
-
-\section{Baza danych i zarządzanie danymi}
-
-
-
-\subsection{Postgres i adminer}
-
-
-\subsection{Przechowywanie plików }
-
 
 
 
