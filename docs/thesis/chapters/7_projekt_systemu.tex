@@ -13,11 +13,11 @@ W aplikacji zastosowano architekturę warstwową, której szczegółowa implemen
 
 
 \section{Architektura logiki biznesowej (Michał Turski)}
-Architektura w aplikacji \textbf{UniGuesser} została zbudowana w oparciu o Command-Query Responsibility Segregation (CQRS) oraz Domain-Driven Design (DDD), które
+Architektura w aplikacji \textbf{UniGuesser} została zbudowana w oparciu o CQRS (ang. \textit{Command Query Responsibility Segregation}) oraz DDD (ang. \textit{Domain-Driven Design}), które
 są obecnie standardem w wytwarzaniu oprogramowania. [dodać źródło na potwierdznie słów]
 Ponadto zdecydowaliśmy na wybór architektury monolitycznej ze względu na szybkość rozwoju i łatwość wdrożenia, co pomogło skupić się nam na aspekcie funkcjonalnym aplikacji w początkowej fazie jej tworzenia.
 
-\subsection{Wzorzec CQRS (Command Query Responsibility Segregation)}
+\subsection{Wzorzec CQRS}
 Wykorzystany został również wzorzec CQRS. Zakłada on rozdzielenie operacji modyfikujących stan systemu (komendy) od operacji, które odczytują dane (zapytania). Pozwala to na lepsze skalowanie i rozdzielenie logiki aplikacji. Dzięki temu można optymalizować każdą z tych operacji niezależnie, co przekłada się na wydajność i czytelność kodu. W kontekście skalowalności systemu zastosowano uproszczoną implementację wzorca CQRS z pojedynczą bazą danych, która jest wystarczająca przy przewidywanym obciążeniu nieprzekraczającym 50 zapytań na sekundę. Taka architektura zapewnia odpowiednią wydajność przy jednoczesnym zachowaniu prostoty infrastruktury.
 
 \begin{figure}[h]
@@ -29,20 +29,20 @@ Wykorzystany został również wzorzec CQRS. Zakłada on rozdzielenie operacji m
 
 
 
-\subsection{Zastosowanie DDD (Domain-Driven Design)}
-Model systemu został zaprojektowany zgodnie z podejściem Domain-Driven Design (DDD), które kładzie nacisk na zrozumienie i modelowanie domeny problemowej. W aplikacji definiujemy trzy główne warstwy DDD: warstwę domeny, warstwę aplikacji oraz warstwę infrastruktury. Każda z warstw znajduje się w osobnym module, co ułatwia zarządzanie kodem i jego rozwój. Dodatkowo w aplikacji wydzielony został czwarty moduł „API”, który odpowiada za komunikację z warstwą prezentacji, co zmniejsza złożoność warstwy aplikacji. Moduł „API” obsługuje zarówno zapytania, jak i komendy, delegując je odpowiednio do warstwy aplikacji, która następnie komunikuje się z warstwą domeny i infrastruktury w celu realizacji żądanych operacji.
+\subsection{Zastosowanie DDD}
+Model systemu został zaprojektowany zgodnie z podejściem DDD, które kładzie nacisk na zrozumienie i modelowanie domeny problemowej. W aplikacji definiujemy trzy główne warstwy DDD: warstwę domeny, warstwę aplikacji oraz warstwę infrastruktury. Każda z warstw znajduje się w osobnym module, co ułatwia zarządzanie kodem i jego rozwój. Dodatkowo w aplikacji wydzielony został czwarty moduł „API”, który odpowiada za komunikację z warstwą prezentacji, co zmniejsza złożoność warstwy aplikacji. Moduł „API” obsługuje zarówno zapytania, jak i komendy, delegując je odpowiednio do warstwy aplikacji, która następnie komunikuje się z warstwą domeny i infrastruktury w celu realizacji żądanych operacji.
 
 \section{Baza danych (Michał Turski)}
 
 W aplikacji zastosowano relacyjną bazę danych, do przechowywania informacji o aktualnych i przeszłych sesjach gier, użytkownikach, lokalizacjach oraz wynikach. Zdecydowaliśmy się na wykorzystanie relacyjnej bazy danych ze względu na duża ilość powiąza między encjami oraz potrzebę zapewnienia integralności danych między nimi. Relacyjne bazy danych zapewniaja ACID (Atomicity, Consistency, Isolation, Durability), co jest kluczowe dla zachowania spójności danych w rozgrywce. 
 
 \subsection{Diagram ERD}
-Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (Entity-Relationship Diagram) ilustruje strukturę bazy danych aplikacji UniGuesser, pokazując główne tabele oraz relacje między nimi. Użytkownik może posiadać wiele sesji gier, a każda sesja ma określoną liczbę rund, z których każda posiada przypisaną do siebie lokacje. Ponadto każde miejsce może mieć swojego autora (użytkownika), który dodał je do bazy danych. 
+Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-Relationship Diagram}) ilustruje strukturę bazy danych aplikacji UniGuesser, pokazując główne tabele oraz relacje między nimi. Użytkownik może posiadać wiele sesji gier, a każda sesja ma określoną liczbę rund, z których każda posiada przypisaną do siebie lokacje. Ponadto każde miejsce może mieć swojego autora (użytkownika), który dodał je do bazy danych. 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\textwidth]{./images/erdDiagram.png}
-    \caption{Diagram ERD (Entity-Relationship Diagram) dla bazy danych aplikacji UniGuesser}
+    \caption{Diagram ERD dla bazy danych aplikacji UniGuesser}
     \label{fig:erd-diagram}
 \end{figure}
 
@@ -53,6 +53,7 @@ Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (Entity-Relationship 
 \end{itemize}
 
 \begin{table}[H]
+\caption{Tabela \texttt{Users}}
 \centering
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
@@ -65,14 +66,13 @@ PasswordHash & Zaszyfrowane hasło użytkownika. & Tekst \\ \hline
 CreatedAt & Data i czas utworzenia konta. & Data/Czas \\ \hline
 Role & Rola użytkownika w systemie (np. użytkownik, administrator). & Enumeracja \\ \hline
 \end{tabular}
-\caption{Tabela \texttt{Users}}
-
 \end{table}
 
 \textbf{GameSessions (Sesje gier)} – tabela przechowująca informacje o aktywnych i zakończonych rozgrywkach.
 
 \begin{table}[H]
 \centering
+\caption{Tabela \texttt{GameSessions}}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|p{2.8cm}|p{8.5cm}|p{2cm}|}
 \hline
@@ -86,7 +86,6 @@ Difficulty & Poziom trudności sesji. & Enumeracja \\ \hline
 FinishedTime & Data zakończenia rozgrywki. & Data/Czas \\ \hline
 UserID & Identyfikator użytkownika. & Klucz obcy → Users \\ \hline
 \end{tabular}
-\caption{Tabela \texttt{GameSessions}}
 \label{tab:game-sessions}
 \end{table}
 
@@ -94,6 +93,7 @@ UserID & Identyfikator użytkownika. & Klucz obcy → Users \\ \hline
 
 \begin{table}[H]
 \centering
+\caption{Tabela \texttt{Rounds}} 
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|p{3cm}|p{8.5cm}|p{1.8cm}|}
 \hline
@@ -105,7 +105,6 @@ Score & Punkty zdobyte w rundzie. & Liczba całkowita \\ \hline
 GameSessionID & Identyfikator sesji gry. & Klucz obcy → GameSessions \\ \hline
 LocationID & Identyfikator lokacji. & Klucz obcy → Places \\ \hline
 \end{tabular}
-\caption{Tabela \texttt{Rounds}} 
 \label{tab:rounds}
 \end{table}
 
@@ -113,6 +112,7 @@ LocationID & Identyfikator lokacji. & Klucz obcy → Places \\ \hline
 
 \begin{table}[H]
 \centering
+\caption{Tabela \texttt{Places}}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
 \hline
@@ -128,7 +128,6 @@ AltImage & Tekst alternatywny dla obrazu lokacji. & Tekst \\ \hline
 CreationTime & Data i czas dodania lokacji. & Data/Czas \\ \hline
 AuthorID & Identyfikator autora lokacji. & Klucz obcy → Users \\ \hline
 \end{tabular}
-\caption{Tabela \texttt{Places}}
 \end{table}
 
 \section{Analiza interakcji użytkownika z systemem (Michał Turski)}

@@ -5,7 +5,7 @@
 
 W trakcie realizacji projektu \textit{UniGuesser} kluczową rolę odegrało zastosowanie systemu kontroli wersji Git oraz platformy GitHub. Ich wykorzystanie umożliwiło efektywne zarządzanie kodem źródłowym, koordynację pracy zespołu oraz utrzymanie przejrzystości i historii zmian w projekcie.
 
-Git to rozproszony system kontroli wersji VCS(ang. \textit{Version Control System}), stworzony przez Linusa Torvaldsa w 2005 roku. Jego podstawowym zadaniem jest śledzenie zmian w plikach projektu, umożliwienie pracy wielu programistów nad tym samym kodem oraz szybkie cofanie się do wcześniejszych wersji w razie potrzeby. Git opiera się na repozytorium lokalnym i zdalnym, co zapewnia dużą elastyczność pracy – możliwa jest nawet praca offline z późniejszą synchronizacją.
+Git to rozproszony system kontroli wersji VCS (ang. \textit{Version Control System}), stworzony przez Linusa Torvaldsa w 2005 roku. Jego podstawowym zadaniem jest śledzenie zmian w plikach projektu, umożliwienie pracy wielu programistów nad tym samym kodem oraz szybkie cofanie się do wcześniejszych wersji w razie potrzeby. Git opiera się na repozytorium lokalnym i zdalnym, co zapewnia dużą elastyczność pracy – możliwa jest nawet praca offline z późniejszą synchronizacją.
 
 Do podstawowych operacji należą:
 
@@ -26,7 +26,7 @@ Natomiast GitHub to jedna z najpopularniejszych platform umożliwiających przec
     \item pull requesty (prośby o połączenie zmian z główną gałęzią projektu),
     \item code review (wzajemna kontrola kodu w zespole),
     \item zarządzanie zgłoszeniami (issues),
-    \item integracja z narzędziami CI/CD (np. GitHub Actions).
+    \item integracja z narzędziami CI/CD (ang. \textit{Continuous Integration/Continuous Delivery lub Deployment}) jak GitHub Actions.
 \end{itemize}
 
 W projekcie \textit{UniGuesser} GitHub pełnił rolę centralnego punktu współpracy, umożliwiając m.in. zgłaszanie błędów, przeglądanie zmian oraz automatyczne uruchamianie testów jednostkowych i wdrożeń (CI/CD).
@@ -59,7 +59,7 @@ Projekt \textit{UniGuesser} składa się z kilku współdziałających usług:
   \item Baza danych (PostgreSQL).
 \end{itemize}
 
-Do zarządzania tymi usługami wykorzystano \textbf{Docker Compose}. Umożliwia ono deklaratywne opisanie całego środowiska w jednym pliku YAML. W ten sposób tworzona jest wewnętrzna sieć, w której poszczególne usługi są w stanie się komunikować.
+Do zarządzania tymi usługami wykorzystano \textbf{Docker Compose}. Umożliwia ono deklaratywne opisanie całego środowiska w jednym pliku YAML	. W ten sposób tworzona jest wewnętrzna sieć, w której poszczególne usługi są w stanie się komunikować.
 
 Całe środowisko można uruchomić jedną komendą:
 
@@ -92,7 +92,7 @@ Pomimo tych wyzwań, konteneryzacja odegrała kluczową rolę w sukcesie projekt
 
 \section{Zarządzanie projektem - YouTrack (Karina Wołoszyn)}
 
-Do zarządzania projektem wykorzystany został Youtrack, który jest narzędziem typu ITS (ang. Issue Tracker System) stworzonym przez firmę JetBrains. Opiera się on na technologii Ajax i wspiera szeroki zakres metodyk zarządzania projektem, w tym podejść zwinnych, które również zostało wykonane do realizacji tego projektu.
+Do zarządzania projektem wykorzystany został Youtrack, który jest narzędziem typu ITS (ang. \textit{Issue Tracker System}) stworzonym przez firmę JetBrains. Opiera się on na technologii Ajax i wspiera szeroki zakres metodyk zarządzania projektem, w tym podejść zwinnych, które również zostało wykonane do realizacji tego projektu.
 
 System Youtrack umożliwia m.in. planowanie i organizacje zadań, przypisywanie ich do konkretnych członków, ustalanie priorytetów, śledzenia postępów prac, dodawanie tagów, załączników czy tworzenie raportów. Dzięki rozbudowanym możliwościom filtrowania, szacowania i określania ilości spędzonego czasu, personalizacji widoków możliwe było bieżące monitorowanie i reagowanie na pojawiające się ewentualne problemy. 
 
@@ -149,7 +149,7 @@ Pomimo stosowania różnych środowisk, zespół utrzymywał spójne praktyki pr
 
 Różnorodność wykorzystywanych środowisk nie stanowiła problemu dzięki modularnej architekturze projektu oraz konteneryzacji, która gwarantowała, że kod backendu i frontend działał w identycznym środowisku niezależnie od lokalnych ustawień IDE.
 
-Zastosowanie odpowiednich IDE w zależności od warstwy aplikacji pozwoliło zwiększyć produktywność zespołu. Visual Studio oraz Rider znakomicie sprawdziły się przy rozwoju backendu w .NET, natomiast VS Code był naturalnym wyborem do pracy nad frontendem w React. Elastyczność i rozszerzalność tych środowisk umożliwiła sprawną pracę zespołową oraz efektywne wdrażanie zmian w całym cyklu życia aplikacji.
+Zastosowanie odpowiednich IDE w zależności od warstwy aplikacji pozwoliło zwiększyć produktywność zespołu. Visual Studio oraz Rider znakomicie sprawdziły się przy rozwoju backendu w .NET, natomiast VS Code (ang. \textit{Visual Studio Code}) był naturalnym wyborem do pracy nad frontendem w React. Elastyczność i rozszerzalność tych środowisk umożliwiła sprawną pracę zespołową oraz efektywne wdrażanie zmian w całym cyklu życia aplikacji.
 
 \section{Projektowanie interfejsu użytkownika - Figma (Karina Wołoszyn)}
 

@@ -7,7 +7,7 @@ Do implementacji frontendu zastosowano bibliotekę \textbf{React.js} z \textbf{T
 
 \subsection{Progressive Web App}
 
-Progressive Web App (PWA) to podejście do tworzenia aplikacji webowych, które umożliwia działanie podobne do natywnej aplikacji mobilnej lub desktopowej. PWA można zarówno używać w przeglądarce, jak i zainstalować jako niezależną od przeglądarki aplikację na urządzeniu. Technologia ta zapewnia też działanie podstawowych funkcji aplikacji bez dostępu do internetu.
+PWA (ang. \textit{Progressive Web App}) to podejście do tworzenia aplikacji webowych, które umożliwia działanie podobne do natywnej aplikacji mobilnej lub desktopowej. PWA można zarówno używać w przeglądarce, jak i zainstalować jako niezależną od przeglądarki aplikację na urządzeniu. Technologia ta zapewnia też działanie podstawowych funkcji aplikacji bez dostępu do internetu.
 
 Publikowanie PWA przez platformy dystrybucji cyfrowej takie jak Apple App Store czy Google Play jest możliwa, lecz opcjonalna - użytkownik może również zainstalować aplikację bezpośrednio z poziomu przeglądarki internetowej, wybierając opcję "Dodaj do ekranu głównego".
 
@@ -15,17 +15,17 @@ Aplikacja webowa musi spełniać poniżej wymienione wymagania aby mogła być z
 
 \begin{itemize}
 
-    \item \textbf{Bezpieczne źródło} - aplikacja musi być serwowana przez HTTPS, aby zapewnić bezpieczeństwo i autentyczność danych.
+    \item \textbf{Bezpieczne źródło} - aplikacja musi być serwowana przez HTTPS (ang. \textit{Hypertext Transfer Protocol Secure}), aby zapewnić bezpieczeństwo i autentyczność danych.
     
     \item \textbf{Service Worker} - dzięki zastosowaniu tego mechanizmu aplikacja może ładować do pamięci podręcznej fragmenty, które jeszcze nie zostały użyte, co sprawia że można ją później uruchomić w trybie offline.
     
-    \item \textbf{Plik manifestu} - w aplikacji powinien być zawarty plik JSON zawierający następujące informacje: \texttt{name} lub \texttt{short\_name}, zestaw ikon (w szczególności w rozdzielczościach 192 px i 512 px), \texttt{start\_url} oraz parametr \texttt{display} (z jedną z wartości: \texttt{fullscreen}, \texttt{standalone}, \texttt{minimal-ui} lub \texttt{window-controls-overlay}).
+    \item \textbf{Plik manifestu} - w aplikacji powinien być zawarty plik JSON (ang. \textit{JavaScript Object Notation}) zawierający następujące informacje: \texttt{name} lub \texttt{short\_name}, zestaw ikon (w szczególności w rozdzielczościach 192 px i 512 px), \texttt{start\_url} oraz parametr \texttt{display} (z jedną z wartości: \texttt{fullscreen}, \texttt{standalone}, \texttt{minimal-ui} lub \texttt{window-controls-overlay}).
     
 \end{itemize}
 
 \subsection{React}
 
-React to popularna biblioteka JavaScript stworzona przez Facebooka, służąca do budowy nowoczesnych interfejsów użytkownika w oparciu o komponenty. Dzięki wykorzystaniu wirtualnego DOM-u React umożliwia szybkie i wydajne aktualizacje widoku bez potrzeby bezpośrednich manipulacji w strukturze HTML.
+React to popularna biblioteka JavaScript stworzona przez Facebooka, służąca do budowy nowoczesnych interfejsów użytkownika w oparciu o komponenty. Dzięki wykorzystaniu wirtualnego DOM-u (ang. \textit{Document Object Model}) React umożliwia szybkie i wydajne aktualizacje widoku bez potrzeby bezpośrednich manipulacji w strukturze HTML.
 
 Architektura komponentowa pozwala na dzielenie aplikacji na niezależne, łatwo testowalne i ponownie wykorzystywane elementy. W projekcie wykorzystano komponenty funkcyjne oraz hooki (\texttt{useState}, \texttt{useEffect}) do zarządzania stanem i cyklem życia komponentów.
 
@@ -66,17 +66,17 @@ W projekcie wykorzystano szereg pakietów NuGet, które usprawniają implementac
 Wykorzystano następujące pakiety NuGet w aplikacji wraz z krótkim opisem:
 
 \begin{itemize}
-    \item \textbf{AutoMapper} – Ułatwia przekształcanie danych pomiędzy klasami, co jest szczególnie przydatne przy mapowaniu obiektów domenowych na klasy DTO (Data Transfer Object) oraz odwrotnie. Redukuje potrzebę ręcznego kopiowania właściwości, co przekłada się na większą czytelność i spójność kodu.
+    \item \textbf{AutoMapper} – Ułatwia przekształcanie danych pomiędzy klasami, co jest szczególnie przydatne przy mapowaniu obiektów domenowych na klasy DTO (ang. \textit{Data Transfer Object}) oraz odwrotnie. Redukuje potrzebę ręcznego kopiowania właściwości, co przekłada się na większą czytelność i spójność kodu.
 
     \item \textbf{FluentValidation} – Usprawnia proces walidacji danych, wprowadzając dedykowaną warstwę odpowiedzialną za sprawdzanie poprawności obiektów wejściowych. Pozwala na definiowanie reguł walidacyjnych w sposób deklaratywny, oddzielając je od logiki aplikacji.
 
-    \item \textbf{Microsoft.EntityFrameworkCore} – Biblioteka ORM umożliwiająca odwzorowywanie klas C\# na struktury relacyjnej bazy danych. Umożliwia pracę z bazą danych z użyciem LINQ oraz migracji, eliminując potrzebę pisania zapytań SQL.
+    \item \textbf{Microsoft.EntityFrameworkCore} – Biblioteka ORM umożliwiająca odwzorowywanie klas C\# na struktury relacyjnej bazy danych. Umożliwia pracę z bazą danych z użyciem LINQ (ang. \textit{Language Integrated Query}) oraz migracji, eliminując potrzebę pisania zapytań SQL (ang. \textit{Structured Query Language}).
 
     \item \textbf{Npgsql.EntityFrameworkCore.PostgreSQL} – Dostarcza integrację Entity Framework Core z bazą danych PostgreSQL, umożliwiając pełne wsparcie dla tej platformy w środowisku .NET.
 
     \item \textbf{Swashbuckle.AspNetCore.Swagger} – Narzędzie generujące dokumentację API w formacie OpenAPI (Swagger). Umożliwia wygodne testowanie endpointów poprzez interaktywny interfejs webowy oraz automatyczne tworzenie opisów metod HTTP.
 
-    \item \textbf{Microsoft.AspNetCore.Authentication.JwtBearer} – Zapewnia obsługę uwierzytelniania z użyciem tokenów JWT (JSON Web Token), które są powszechnym rozwiązaniem przy autoryzacji użytkowników w aplikacjach webowych typu REST API.
+    \item \textbf{Microsoft.AspNetCore.Authentication.JwtBearer} – Zapewnia obsługę uwierzytelniania z użyciem tokenów JWT (ang. \textit{JSON Web Token}), które są powszechnym rozwiązaniem przy autoryzacji użytkowników w aplikacjach webowych typu REST API.
 
     \item \textbf{xUnit} – Framework służący do tworzenia testów jednostkowych, umożliwiający automatyczne sprawdzanie poprawności działania kodu aplikacji.  
     
