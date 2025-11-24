@@ -8,7 +8,7 @@
 % Allow [H] placement for floats (tables/figures)
 \usepackage{float}
 
-
+\usepackage{pdfpages}
 
 
 % Konfiguracja dla listings
@@ -71,8 +71,10 @@
 \renewcommand{\verbatim@font}{\ttfamily\small}
 \makeatother
 
+
 % Część właściwa pracy
 \begin{document}
+\includepdf[pages=-]{StronaTytulowa_196333.pdf}
 \include{chapters/0a_streszczenie}
 \include{chapters/0b_spis_tresci}
 \include{chapters/0c_wykaz_skrotow}
