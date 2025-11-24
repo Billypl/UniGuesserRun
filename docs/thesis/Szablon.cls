@@ -251,7 +251,6 @@
 \usepackage{fontspec}
 \setmainfont{Arial} 
 
-
 % Zablokowanie przeskakiwania figur (tabel, obrazków) między sekcjami
 \usepackage[section]{placeins} 
 

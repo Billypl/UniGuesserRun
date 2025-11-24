@@ -1,11 +1,9 @@
 \chapter{Narzędzia}
 \label{chap:tools}
 
-\section{System kontroli wersji - Git i GitHub (Michał Pawiłojć)}
+\section{System kontroli wersji (Michał Pawiłojć)}
 
 W trakcie realizacji projektu \textit{UniGuesser} kluczową rolę odegrało zastosowanie systemu kontroli wersji Git oraz platformy GitHub. Ich wykorzystanie umożliwiło efektywne zarządzanie kodem źródłowym, koordynację pracy zespołu oraz utrzymanie przejrzystości i historii zmian w projekcie.
-
-\subsection{Git}
 
 Git to rozproszony system kontroli wersji VCS(ang. \textit{Version Control System}), stworzony przez Linusa Torvaldsa w 2005 roku. Jego podstawowym zadaniem jest śledzenie zmian w plikach projektu, umożliwienie pracy wielu programistów nad tym samym kodem oraz szybkie cofanie się do wcześniejszych wersji w razie potrzeby. Git opiera się na repozytorium lokalnym i zdalnym, co zapewnia dużą elastyczność pracy – możliwa jest nawet praca offline z późniejszą synchronizacją.
 
@@ -22,9 +20,7 @@ Do podstawowych operacji należą:
 
 Stosowanie Gita pozwala na łatwe śledzenie błędów, eksperymentowanie z nowymi funkcjonalnościami bez wpływu na główny kod oraz pracę równoległą wielu osób. W przypadku zmian powodujących błąd powrót do działającej wersji jest praktycznie bezkosztowy.
 
-\subsection{GitHub}
-
-GitHub to jedna z najpopularniejszych platform umożliwiających przechowywanie zdalnych repozytoriów Git. Oferuje dodatkowe funkcje, takie jak:
+Natomiast GitHub to jedna z najpopularniejszych platform umożliwiających przechowywanie zdalnych repozytoriów Git. Oferuje dodatkowe funkcje, takie jak:
 
 \begin{itemize}
     \item pull requesty (prośby o połączenie zmian z główną gałęzią projektu),
@@ -41,7 +37,7 @@ Repozytorium projektu zostało zorganizowane w sposób modularny – z podziałe
 
 Współczesne aplikacje webowe, takie jak \textit{UniGuesser}, składają się z wielu komponentów - frontend, backend, baza danych - muszą one współdziałać w spójnym środowisku. Tradycyjna metoda instalowania zależności lokalnie prowadzi do problemów ze zgodnością, trudnością odtworzenia środowiska oraz błędami zależnymi od platformy. Rozwiązaniem tego problemu jest konteneryzacja - technika, która pozwala zbudować przenośne, spójne środowisko dla każdego komponentu aplikacji.
 
-\subsection{Czym jest konteneryzacja?}
+\subsection{Konteneryzacja}
 
 Konteneryzacja to proces pakowania aplikacji wraz z całym jej środowiskiem uruchomieniowym (zależnościami, bibliotekami, konfiguracją, itd.) do jednego, samodzielnego pakietu zwanego \textbf{kontenerem}. Taki kontener może być uruchomiony na dowolnym systemie operacyjnym, który obsługuje kontenery, bez potrzeby rekonfiguracji lub instalacji dodatkowego oprogramowania.
 
@@ -82,9 +78,9 @@ Użycie Dockera i Composa przyniosło wiele korzyści:
   \item \textbf{Integracja z CI/CD} — obrazy mogły być budowane i testowane w GitHub Actions.
 \end{itemize}
 
-\subsection{Przemyślenia i ograniczenia}
+\subsection{Ograniczenia}
 
-Choć konteneryzacja znacząco uprościła zarządzanie środowiskiem, napotkano również pewne trudności:
+Choć konteneryzacja znacząco uprościła zarządzanie środowiskiem, zostały również napotkane pewne trudności:
 
 \begin{itemize}
   \item \textbf{Krzywa uczenia} — wymagana była znajomość Dockera i Composa.
@@ -96,7 +92,7 @@ Pomimo tych wyzwań, konteneryzacja odegrała kluczową rolę w sukcesie projekt
 
 \section{Zarządzanie projektem - YouTrack (Karina Wołoszyn)}
 
-Do zarządzania projektem wykorzystane został Youtrack, który jest narzędziem typu ITS (ang. Issue Tracker System) stworzonym przez firmę JetBrains. Opiera się on na technologii Ajax i wspiera szeroki zakres metodyk zarządzania projektem, w tym podejść zwinnych, które również zostało wykonane do realizacji tego projektu.
+Do zarządzania projektem wykorzystany został Youtrack, który jest narzędziem typu ITS (ang. Issue Tracker System) stworzonym przez firmę JetBrains. Opiera się on na technologii Ajax i wspiera szeroki zakres metodyk zarządzania projektem, w tym podejść zwinnych, które również zostało wykonane do realizacji tego projektu.
 
 System Youtrack umożliwia m.in. planowanie i organizacje zadań, przypisywanie ich do konkretnych członków, ustalanie priorytetów, śledzenia postępów prac, dodawanie tagów, załączników czy tworzenie raportów. Dzięki rozbudowanym możliwościom filtrowania, szacowania i określania ilości spędzonego czasu, personalizacji widoków możliwe było bieżące monitorowanie i reagowanie na pojawiające się ewentualne problemy. 
 
@@ -105,15 +101,15 @@ W ramach projektu przyjęto podejście oparte na zmodyfikowanej wersji metodyki 
 \begin{itemize}
     \item \textbf{Backlog} - przeznaczony do przechowywania wszystkich potrzebnych zadań do zrealizowania projektu. Te zadania obejmują duży zakres obowiązków, które są w następnym etapie rozdzielane na mniejsze, bardziej precyzyjne zadania, jeżeli są wybrane do realizacji w najbliższym sprincie.
     \item \textbf{Backlog sprintu} - zbierane są tu zadania do bieżącego sprintu. Dokładnie jest określany zakres wymagań, który musi spełnić, aby w pełni je zrealizować.
-    \item \textbf{Wykonanie} -  aktualnie wykonywane zadania. Przydzielone są one do konkretnego członka zespołu i maja ustawiony priorytet oraz liczbę ustalonych story points'ów.
-    \item \textbf{Testowanie} -  zbierane są tutaj wykonane zadania oczekujące na przetestowanie przez innego członka zespołu albo osobę wykonującą dane zadanie. W przypadku błędów lub niespełnienia wymagań, zadanie zostaje zwrócone do poprzedniego etapu w celu wprowadzenia poprawek.
+    \item \textbf{Wykonanie} - aktualnie wykonywane zadania. Przydzielone są one do konkretnego członka zespołu i maja ustawiony priorytet oraz liczbę ustalonych story points'ów.
+    \item \textbf{Testowanie} - zbierane są tutaj wykonane zadania oczekujące na przetestowanie przez innego członka zespołu albo osobę wykonującą dane zadanie. W przypadku błędów lub niespełnienia wymagań, zadanie zostaje zwrócone do poprzedniego etapu w celu wprowadzenia poprawek.
     \item \textbf{Recenzja} - wykonane zadania oczekują na recenzję przez innego członka zespołu niż ten, który go wykonywał. Pozwala to na lepszą identyfikację błędów lub potencjalnych błędów. Podobnie jak w przypadku testowania, w przypadku niespełnienia kryteriów zadanie wraca do etapu 'Wykonanie'.
     \item \textbf{Zrobione} - przeznaczony do przechowywania wykonanych, przetestowanych i zrecenzowanych zadań.
 \end{itemize}
 
 \section{Zintegrowane środowisko programistyczne - VSC, VS, Rider (Michał Pawiłojć)}
 
-W trakcie realizacji projektu wykorzystano różne zintegrowane środowiska programistyczne (IDE), dostosowane do technologii używanych w poszczególnych komponentach aplikacji. Odpowiedni dobór narzędzi znacząco przyczynił się do efektywnej pracy zespołu, ułatwiając zarówno pisanie kodu, jak i jego debugowanie, testowanie oraz integrację z systemem kontroli wersji Git.
+W trakcie realizacji projektu wykorzystano różne zintegrowane środowiska programistyczne IDE, dostosowane do technologii używanych w poszczególnych komponentach aplikacji. Odpowiedni dobór narzędzi znacząco przyczynił się do efektywnej pracy zespołu, ułatwiając zarówno pisanie kodu, jak i jego debugowanie, testowanie oraz integrację z systemem kontroli wersji Git.
 
 \subsection{Backend: Visual Studio i Rider}
 
@@ -155,12 +151,9 @@ Różnorodność wykorzystywanych środowisk nie stanowiła problemu dzięki mod
 
 Zastosowanie odpowiednich IDE w zależności od warstwy aplikacji pozwoliło zwiększyć produktywność zespołu. Visual Studio oraz Rider znakomicie sprawdziły się przy rozwoju backendu w .NET, natomiast VS Code był naturalnym wyborem do pracy nad frontendem w React. Elastyczność i rozszerzalność tych środowisk umożliwiła sprawną pracę zespołową oraz efektywne wdrażanie zmian w całym cyklu życia aplikacji.
 
-
-
-
 \section{Projektowanie interfejsu użytkownika - Figma (Karina Wołoszyn)}
 
-W celu zbudowania wspólnej i klarownej wizji interfejsu użytkownika, została wykorzystana Figma, czyli aplikacja webowa pozwalająca na projektowanie prototypów UI/UX (ang. User Interface/User Experience). Narzędzie to umożliwia pracę zespołową w czasie rzeczywistym, czyniąc komunikację i wprowadzanie szybsz, i prostsze. W projekcie \textit{UniGuesser} szczególny nacisk położono na minimalizm i prostotę zaprojektowanego interfejsu. Jednocześnie uwzględniono Księgę Identyfikacji Wizualnej Politechniki Gdańskiej, aby właściwie odwzorować kolorystykę oraz rozmieszczenie elementów zgodnie z przyjętymi standardami.
+W celu zbudowania wspólnej i klarownej wizji interfejsu użytkownika, została wykorzystana Figma, czyli aplikacja webowa pozwalająca na projektowanie prototypów UI/UX (ang. \textit{User Interface/User Experience}). Narzędzie to umożliwia pracę zespołową w czasie rzeczywistym, czyniąc komunikację i wprowadzanie szybsz, i prostsze. W projekcie \textit{UniGuesser} szczególny nacisk położono na minimalizm i prostotę zaprojektowanego interfejsu. Jednocześnie uwzględniono Księgę Identyfikacji Wizualnej Politechniki Gdańskiej, aby właściwie odwzorować kolorystykę oraz rozmieszczenie elementów zgodnie z przyjętymi standardami.
 Figma posiada szeroki wachlarz funkcjonalności, które w dużym stopniu usprawniają prace zespołu. Do najważniejszych z nich należą:
 
 \begin{itemize}
