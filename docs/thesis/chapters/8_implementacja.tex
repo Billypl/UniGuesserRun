@@ -355,11 +355,12 @@ Komponenty interfejsu gry są odpowiedzialne za prezentację danych i interakcj�
 
 \section{Implementacja backendu i logiki aplikacji}
 
-W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, rozgrywki  mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy, które napotkano podczas implementacji.
+W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, rozgrywki, mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy, które napotkano podczas implementacji.
+
 
 \subsection{Implementacja rozgrywki}
 
-Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku \ref{fig:sequence-diagram}. 
+Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku \ref{fig:sequence-diagram}.
 
 Proces rozpoczęcia rozgrywki inicjuje wywołanie kontrolera \texttt{api/game/start}, który odpowiada za utworzenie nowej \textit{Sesji Rozgrywki} (\ref{tab:game-sessions}).
 W ramach tego etapu backend generuje odpowiednią liczbę rund, przypisuje im losowe miejsca do zgadnięcia, nadaje sesji status \texttt{InProgress}, a następnie zwraca unikalny identyfikator gry w postaci GUID.
@@ -377,7 +378,7 @@ Aplikacja weryfikuje lokalizację podaną przez użytkownika, oblicza odległoś
 Po zakończeniu wszystkich rund gracz wywołuje endpoint
 \texttt{api/game/{gameId}/finish},
 który finalizuje rozgrywkę. Backend podsumowuje wyniki, aktualizuje status sesji na \texttt{Completed} i zwraca końcowy rezultat użytkownikowi.
-Dla użytkowników zalogowanych rezultat jest trwale zapisywany w bazie, natomiast dla użytkowników niezalogowanych sesja jest automatycznie usuwana po upływie jednej godziny.
+Dla użytkowników zalogowanych rezultat jest trwale zapisywany w bazie, natomiast dla użytkowników niezalogowanych sesja jest automatycznie usuwana po upływie jednej godziny, by także oni mogli przeglądać swoje wyniki przez krótki czas po zakończeniu gry.
 
 
 \subsection{Autoryzacja i uwierzytelnianie użytkowników}
@@ -541,7 +542,7 @@ Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
     throw new UserNotFoundException(userGuid);
     \end{lstlisting}
 
-    Dzięki takiemu podejściu możliwe jest precyzyjne zarządzanie typerami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
+    Dzięki temu możliwe jest precyzyjne zarządzanie typami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
 
 
 \section{Baza danych i zarządzanie danymi}
@@ -559,17 +560,16 @@ Wykorzystując Entity Framework jako ORM (Object-Relational Mapping), w pierwsze
 Chcąc zaktualizować bazę danych, stosujemy migracje, które pozwalają na dodawanie, usuwanie i modyfikowanie istniejących już definicji obiektów. Ponadto dzięki nim możemy wersjonować stan bazy, aby w razie błędu cofnąć się do poprzedniej definicji. Za pomocą polecenia \texttt{add-migration \textless nazwa\_migracji\textgreater} tworzymy nową migrację, a następnie poleceniem \texttt{update-database} stosujemy zmiany w bazie danych.
 W folderze \texttt{Migrations} przechowywane są pliki migracji, które zawierają instrukcje dotyczące zmian w strukturze bazy danych. Są one generowane automatycznie i mają strukturę nazwy \texttt{\textless timestamp\textgreater\_\textless nazwa\_migracji\textgreater.cs}.
 
-\subsection{Adminer}
+\subsection{Adminer i PGAdmin}
 
-W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzie Adminer. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej.
+W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzia Adminer i  PGAdmin. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej. Natomiast z PGadmina korzystano z wersji desktopowej, która umożliwia bardziej zaawansowane zarządzanie bazą danych, w tym tworzenie zapytań SQL, monitorowanie wydajności oraz zarządzanie użytkownikami i uprawnieniami~\cite{pgadmin-docs}.  
 
-
-\subsection{Problemy napotkane przy implementacji backendu}
-    -Eager loading vs lazy loading w EF Core
-    -Konflikty migracji bazy danych
-    -Obsługa błędów w aplikacji ASP .NET Core
-    -Debuggowanie aplikacji w kontenerze Docker
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./images/pgadmin.png}
+    \caption{Zrzut ekranu przedstawiający interfejs narzędzia PGAdmin z widokiem na strukturę bazy danych aplikacji UniGuesser.}
+    \label{fig:use-case-diagram}
+\end{figure}
 
 
 \section{Devops i wdrożenie aplikacji}
@@ -595,8 +595,8 @@ W środowisku produkcyjnym nacisk położono na izolację usług, bezpieczeństw
 \begin{itemize}
     \item Użycie pliku \texttt{docker-compose.prod.yaml} z obrazami już zbudowanymi (bez mountowania kodu źródłowego).
     \item Wprowadzenie reverse proxy Nginx jako pojedynczego punktu wejścia (terminacja TLS, routing do usług wewnętrznych).
-    \item Minimalizacja rozmiaru obrazów przez wykorzystanie wieloetapowych buildów (multi-stage) w Dockerfile backendu i frontendu.
-    \item Brak narzędzi administracyjnych (np. Adminer) w docelowym środowisku - uruchamiane jedynie tymczasowo przy potrzebie migracji lub analizy.
+    \item Minimalizacja rozmiaru obrazów przez wykorzystanie wieloetapowych buildów (ang. \textit{multi-stage}) w Dockerfile backendu i frontendu.
+    \item Brak narzędzi administracyjnych (np. Adminer) w docelowym środowisku — uruchamiane jedynie tymczasowo przy potrzebie migracji lub analizy.
 \end{itemize}
 
 \subsection{Pliki docker-compose i ich role}
@@ -604,20 +604,20 @@ W środowisku produkcyjnym nacisk położono na izolację usług, bezpieczeństw
 W projekcie zastosowano kilka wariantów plików \texttt{docker-compose}. Mają one strukturę kaskadową:
 \begin{description}
     \item[\texttt{docker-compose.infra.yaml}] Definicje infrastrukturalne (baza danych, narzędzia pomocnicze). Pozwala odseparować warstwę aplikacyjną od zasobów zewnętrznych.
-    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną, umożliwia uruchomienie backendu poza kontenerem. 
-    \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe rzeczy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
-    \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji, brak wolumenów źródłowych, zmienne środowiskowe wczytywane z plików \texttt{.env}, integracja z Nginx.
+    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną; umożliwia uruchomienie backendu poza kontenerem. 
+    \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe elementy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
+    \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji; brak wolumenów źródłowych; zmienne środowiskowe wczytywane z plików \texttt{.env}; integracja z Nginx.
 \end{description}
 
-co pozwala na nadpisywanie sekcji (\textit{override}) dla danego środowiska.
+Struktura ta pozwala na nadpisywanie sekcji (\textit{override}) dla danego środowiska.
 
 \subsection{Decyzja o użyciu reverse proxy Nginx}
 
 Pierwotnie rozważano generowanie i instalację certyfikatów HTTPS w każdej części aplikacji osobno (frontend i backend). Takie rozwiązanie zwiększało złożoność utrzymania (odnawianie, dystrybucja, synchronizacja dat ważności). Zamiast tego wprowadzono warstwę \texttt{Nginx} jako reverse proxy z terminacją TLS:
 \begin{itemize}
     \item Jeden certyfikat (np. Let's Encrypt) dla domeny głównej.
-    \item Uproszczona konfiguracja \texttt{appsettings.json} - backend może działać na HTTP wewnątrz sieci Docker.
-    \item Brak potrzeby modyfikowania konfiguracji frontendu przy odnowieniu certyfikatu - zmiana dotyczy wyłącznie proxy.
+    \item Uproszczona konfiguracja \texttt{appsettings.json} — backend może działać na HTTP wewnątrz sieci Docker.
+    \item Brak potrzeby modyfikowania konfiguracji frontendu przy odnowieniu certyfikatu — zmiana dotyczy wyłącznie proxy.
     \item Możliwość dodania reguł bezpieczeństwa (rate limiting, nagłówki CSP, HSTS) w jednym miejscu.
 \end{itemize}
 
@@ -645,12 +645,11 @@ Multi-stage build pozwala oddzielić etap kompilacji (cięższy obraz z SDK) od 
 
 Konfiguracja jest rozproszona pomiędzy kilka plików i mechanizmów:
 \begin{itemize}
-    \item Pliki \texttt{.env} Zawierają wrażliwe lub zmienne środowiskowe (np. connection string do PostgreSQL, sekrety JWT). W plikach compose referencje przez \texttt{\$\{NAZWA\_ZMIENNEJ\}}.
-    \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} Warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
-    \item \texttt{launchSettings.json} Używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpione przez konfigurację kontenera + reverse proxy.
-    \item Frontend \texttt{Constants.ts} Zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
-    \item Zmienne środowiskowe kontenerów Nadawane w plikach compose lub w CI/CD 
-    (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
+    \item Pliki \texttt{.env} — zawierają wrażliwe lub zmienne środowiskowe (np. connection string do PostgreSQL, sekrety JWT). W plikach compose referencje przez \texttt{\$\{NAZWA\_ZMIENNEJ\}}.
+    \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} — warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
+    \item \texttt{launchSettings.json} — używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpiony przez konfigurację kontenera + reverse proxy.
+    \item Frontend \texttt{Constants.ts} — zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
+    \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
 \end{itemize}
 
 Mechanizm konfiguracji w ASP.NET Core scalający źródła (pliki, zmienne środowiskowe, sekrety użytkownika) umożliwia elastyczne przełączanie środowisk bez modyfikacji kodu.
