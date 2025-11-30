@@ -1,13 +1,15 @@
 \chapter{Wykorzystane technologie}
 \label{chap:technology}
 
+Niniejszy rozdział przedstawia technologie wykorzystane podczas implementacji aplikacji, zarówno po stronie frontendowej, jak i backendowej oraz bazodanowej. Opisano tutaj wybrane biblioteki, frameworki oraz narzędzia, które umożliwiły realizację założonych celów projektowych.
+
 \section{Frontendowe (Filip Jezierski)}
 
 Do implementacji frontendu zastosowano bibliotekę \textbf{React.js} z \textbf{TypeScriptem}, umożliwiającą tworzenie aplikacji w technologii \textbf{Progressive Web App}. Komunikację z backendem przez REST API zapewnia biblioteka \textbf{Axios}. Do obsługi map i lokalizacji użyto biblioteki \textbf{Leaflet}.
 
 \subsection{Progressive Web App}
 
-PWA (ang. \textit{Progressive Web App}) to podejście do tworzenia aplikacji webowych, które umożliwia działanie podobne do natywnej aplikacji mobilnej lub desktopowej. PWA można zarówno używać w przeglądarce, jak i zainstalować jako niezależną od przeglądarki aplikację na urządzeniu. Technologia ta zapewnia też działanie podstawowych funkcji aplikacji bez dostępu do internetu.
+PWA (ang. \textit{Progressive Web App}) to podejście do tworzenia aplikacji webowych, które umożliwia działanie podobne do natywnej aplikacji mobilnej lub desktopowej~\cite{pwa-docs}. PWA można używać zarówno w przeglądarce, jak i zainstalować jako niezależną od przeglądarki aplikację na urządzeniu. Technologia ta zapewnia też działanie podstawowych funkcji aplikacji bez dostępu do internetu.
 
 Publikowanie PWA przez platformy dystrybucji cyfrowej takie jak Apple App Store czy Google Play jest możliwa, lecz opcjonalna - użytkownik może również zainstalować aplikację bezpośrednio z poziomu przeglądarki internetowej, wybierając opcję "Dodaj do ekranu głównego".
 
@@ -25,7 +27,7 @@ Aplikacja webowa musi spełniać poniżej wymienione wymagania aby mogła być z
 
 \subsection{React}
 
-React to popularna biblioteka JavaScript stworzona przez Facebooka, służąca do budowy nowoczesnych interfejsów użytkownika w oparciu o komponenty. Dzięki wykorzystaniu wirtualnego DOM-u (ang. \textit{Document Object Model}) React umożliwia szybkie i wydajne aktualizacje widoku bez potrzeby bezpośrednich manipulacji w strukturze HTML.
+React to popularna biblioteka JavaScript stworzona przez Facebooka, służąca do budowy nowoczesnych interfejsów użytkownika w oparciu o komponenty~\cite{react-docs}. Dzięki wykorzystaniu wirtualnego DOM-u (ang. \textit{Document Object Model}) React umożliwia szybkie i wydajne aktualizacje widoku bez potrzeby bezpośrednich manipulacji w strukturze HTML.
 
 Architektura komponentowa pozwala na dzielenie aplikacji na niezależne, łatwo testowalne i ponownie wykorzystywane elementy. W projekcie wykorzystano komponenty funkcyjne oraz hooki (\texttt{useState}, \texttt{useEffect}) do zarządzania stanem i cyklem życia komponentów.
 
@@ -35,13 +37,13 @@ W projekcie zdecydowaliśmy się również na użycie języka TypeScript - nadzb
 
 \subsection{Axios}
 
-Axios to biblioteka JavaScript służąca do wykonywania asynchronicznych zapytań HTTP. W projekcie została użyta do komunikacji pomiędzy frontendem i backendem poprzez REST API.
+Axios to biblioteka JavaScript służąca do wykonywania asynchronicznych zapytań HTTP~\cite{axios-docs}. W projekcie została użyta do komunikacji pomiędzy frontendem i backendem poprzez REST API.
 
 W porównaniu do natywnej funkcji \texttt{fetch}, Axios oferuje uproszczoną składnię, automatyczne przetwarzanie odpowiedzi w formacie JSON oraz bardziej zaawansowane możliwości konfiguracji — takie jak ustawianie domyślnych nagłówków, bazowego URL, timeoutów i łatwiejsze przechwytywanie błędów. W połączeniu z TypeScriptem, Axios umożliwia również bardziej precyzyjne typowanie odpowiedzi serwera.
 
 \subsection{Leaflet}
 
-Leaflet to otwartoźródłowa biblioteka JavaScript, służąca do tworzenia interaktywnych map. W projekcie użyliśmy jej w połączeniu z React Leaflet - wrapperem, który udostępnia funkcjonalność Leafleta w postaci gotowych komponentów React.
+Leaflet to otwartoźródłowa biblioteka JavaScript, służąca do tworzenia interaktywnych map~\cite{leaflet-docs}. W projekcie użyliśmy jej w połączeniu z React Leaflet - wrapperem, który udostępnia funkcjonalność Leafleta w postaci gotowych komponentów React~\cite{react-leaflet-docs}.
 
 Biblioteka Leaflet umożliwia wyświetlanie map z zewnętrznych źródeł (np. OpenStreetMap) oraz nanoszenie na nie dodatkowych elementów, takich jak znaczniki, warstwy czy lokalizacja użytkownika z wykorzystaniem geolokalizacji przeglądarki. Dodatkowo umożliwia wykrywanie interakcji z mapą, np. kliknięć, oraz zwracanie odpowiadających im współrzędnych geograficznych.
 
@@ -52,7 +54,7 @@ W backendzie zastosowano język \textbf{C\#} z frameworkiem \textbf{.NET} oraz p
 
 \subsection{C\# ASP .NET Core}
 
-ASP .NET Core od lat utrzymuje się w czołówce najchętniej wybieranych frameworków do tworzenia aplikacji webowych i API. Jego popularność wynika przede wszystkim z wysokiej modularności oraz niezwykłej elastyczności w adaptowaniu się do różnych scenariuszy projektowych.
+ASP .NET Core od lat utrzymuje się w czołówce najchętniej wybieranych frameworków do tworzenia aplikacji webowych i API. Jego popularność wynika przede wszystkim z wysokiej modularności oraz niezwykłej elastyczności w adaptowaniu się do różnych scenariuszy projektowych.
 
 Atutem ASP.NET Core jest jego pełna wieloplatformowość — aplikacje mogą być uruchamiane na systemach Windows, Linux oraz macOS bez konieczności wprowadzania zmian w kodzie. To znacząco ułatwia wdrażanie aplikacji w różnorodnych środowiskach, w tym także w kontenerach Docker czy chmurze. Aktualnie w trakcie procesu wytwarzania oprogramowania wykorzystywany jest system Windows, WSL, a także aplikacja odpalana jest w kontenerze Dockerowym.  
 
@@ -96,4 +98,4 @@ W projekcie zastosowano relacyjną bazę danych \textbf{PostgreSQL}, która jest
 
 Baza danych wyróżnia się zgodnością ze standardem SQL oraz obsługą zaawansowanych typów danych, takich jak \textbf{JSONB}, umożliwiając efektywne łączenie struktur relacyjnych z nierelacyjnymi.
 
-Do zarządzania bazą danych wykorzystano narzędzia administracyjne, takie jak \textbf{pgAdmin} i \textbf{DBeaver}, oferujące graficzne interfejsy ułatwiające pracę z bazą danych.
+Do zarządzania bazą danych wykorzystano narzędzia administracyjne, takie jak \textbf{pgAdmin} i \textbf{Adminer}, oferujące graficzne interfejsy ułatwiające pracę z bazą danych.

@@ -1,6 +1,8 @@
 \chapter{Analiza wymagań}
 \label{chap:algs}
 
+Analiza wymagań stanowi kluczowy etap w procesie projektowania i implementacji aplikacji UniGuesser. Celem tego rozdziału jest szczegółowe określenie funkcjonalności, jakie powinna spełniać aplikacja, a także zdefiniowanie kryteriów akceptacji, które pozwolą ocenić jej gotowość do wdrożenia i użytkowania. W ramach analizy wymagań uwzględniono zarówno potrzeby użytkowników końcowych, jak i aspekty techniczne związane z wyborem platformy oraz technologii implementacyjnych.
+
 \section{Koncepcja gry (Karina Wołoszyn) }
 
 UniGuesser to interaktywna aplikacja edukacyjno-rozrywkowa, której celem jest odgadywanie lokalizacji związanych z kampusem Politechniki Gdańskiej. Gra łączy elementy zabawy, edukacji oraz eksploracji przestrzeni uczelni, a dzięki technologii PWA użytkownicy mogą korzystać z niej na komputerach i urządzeniach mobilnych bez konieczności instalacji.
@@ -119,12 +121,12 @@ Wymagania niefunkcjonalne określają kryteria jakościowe, które aplikacja pow
 Wybór odpowiedniej platformy dla opracowywanej aplikacji mobilnej jest kluczowym elementem procesu projektowego, mającym istotny wpływ na jej funkcjonalność, dostępność oraz doświadczenie użytkownika, a także łatwość wdrożenia i utrzymania. Na etapie analizy wymagań podjęto decyzję o stworzeniu dwóch testowych wersji aplikacji: aplikacji webowej typu PWA (Progressive Web App) oraz natywnej aplikacji mobilnej wykorzystującej technologię .NET MAUI (Multi-platform App UI). Obie platformy oferują unikalne korzyści i wyzwania, które zostały dokładnie rozważone w kontekście specyfiki projektu.
 
 \subsection{Natywna aplikacja mobilna}
-Aplikacje natywne są tworzone z wykorzystaniem dedykowanych narzędzi i języków programowania przeznaczonych dla konkretnych systemów operacyjnych, takich jak Android czy iOS. W przypadku technologii .NET MAUI możliwe jest tworzenie aplikacji wieloplatformowych przy zachowaniu wspólnej bazy kodu, co znacząco skraca czas implementacji i ułatwia utrzymanie.
+Aplikacje natywne są tworzone z wykorzystaniem dedykowanych narzędzi i języków programowania przeznaczonych dla konkretnych systemów operacyjnych, takich jak Android czy iOS~\cite{dotnet-maui-docs}. W przypadku technologii .NET MAUI możliwe jest tworzenie aplikacji wieloplatformowych przy zachowaniu wspólnej bazy kodu, co znacząco skraca czas implementacji i ułatwia utrzymanie.
 
 Jednakże proces publikacji aplikacji natywnych w sklepach takich jak Google Play czy Apple App Store wiąże się z dodatkowymi wymaganiami i procedurami zatwierdzania, a także z koniecznością budowania i testowania aplikacji na różne systemy operacyjne, co może wydłużyć czas wdrożenia.
 
 \subsection{Aplikacja webowa PWA}
-Aplikacja webowa typu PWA (Progressive Web App) łączy cechy klasycznej strony internetowej z funkcjonalnością aplikacji mobilnej. Dzięki wykorzystaniu nowoczesnych technologii webowych, możliwe jest stworzenie aplikacji działającej w trybie offline, instalowanej bezpośrednio z przeglądarki oraz zapewniającej wrażenia zbliżone do aplikacji natywnej.
+Aplikacja webowa typu PWA (Progressive Web App) łączy cechy klasycznej strony internetowej z funkcjonalnością aplikacji mobilnej~\cite{pwa-docs}. Dzięki wykorzystaniu nowoczesnych technologii webowych, możliwe jest stworzenie aplikacji działającej w trybie offline, instalowanej bezpośrednio z przeglądarki oraz zapewniającej wrażenia zbliżone do aplikacji natywnej.
 
 Ze względu na łatwość dostępu (poprzez przeglądarkę internetową) oraz brak konieczności przechodzenia przez proces zatwierdzania w sklepach aplikacji, PWA stanowi atrakcyjną opcję dla naszego projektu. Jednakże, pewne ograniczenia związane z dostępem do funkcji urządzenia (takich jak geolokalizacja) oraz wydajnością w porównaniu do aplikacji natywnych muszą być uwzględnione podczas projektowania i implementacji.
 
@@ -142,6 +144,7 @@ W celu uproszczenia procesu pozyskiwania materiałów wizualnych oraz umożliwie
 Takie rozwiązanie zapewnia pełną kontrolę nad jakością i zgodnością materiałów z założeniami projektu, a jednocześnie pozwala na stopniowe rozszerzanie bazy lokalizacji o nowe zdjęcia, dostarczane zarówno przez zespół projektowy, jak i społeczność użytkowników.
 
 \section{Kryteria akceptacji (Filip Jezierski)}
+Kryteria akceptacji stanowią zestaw wymagań, które muszą zostać spełnione, aby aplikacja mogła zostać uznana za gotową do wdrożenia i użytkowania. Kryteria te obejmują zarówno aspekty funkcjonalne, jak i niefunkcjonalne, zapewniając kompleksową ocenę jakości i użyteczności opracowanego rozwiązania.
 \textbf{Ogólne kryteria:}
 \begin{itemize}
     \item Aplikacja działa na urządzeniach mobilnych z systemami Android i iOS, na komputerach stacjonarnych oraz w przeglądarkach internetowych

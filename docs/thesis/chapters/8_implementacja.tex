@@ -1,5 +1,8 @@
 \chapter{Implementacja}
 \label{chap:implementation}
+
+W niniejszym rozdziale przedstawiono szczegóły implementacji aplikacji UniGuesser, obejmujące zarówno frontend, jak i backend oraz bazę danych. Omówione zostaną kluczowe aspekty techniczne, wyzwania napotkane podczas realizacji projektu oraz zastosowane rozwiązania.
+
 \section{Implementacja wyglądu i funkcjonalności frontendu}
 W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikacji, w tym architektura, struktura UI i komponentów, warstwa wizualna, obsługa interakcji użytkownika, integracja z geolokalizacją, implementacja trybów gry, komunikacja z backendem oraz mechanizmy PWA.
 
@@ -13,9 +16,9 @@ W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikac
 
 \subsection{Integracja z geolokalizacją (Filip Jezierski)}
 
-Do implementacji funkcjonalności związanej z lokalizacją użytkownika wykorzystano wbudowane w przeglądarki Geolocation API. Mechanizm ten działa tylko w kontekście bezpiecznym (HTTPS / localhost) i wymaga jawnej zgody użytkownika. W aplikacji wykorzystano zarówno jednorazowe pobieranie pozycji (getCurrentPosition), jak i ciągłe śledzenie (watchPosition) dla trybów gry, które wymagają aktualizacji współrzędnych w czasie rzeczywistym.
+Do implementacji funkcjonalności związanej z lokalizacją użytkownika wykorzystano wbudowane w przeglądarki Geolocation API~\cite{geolocation-api}. Mechanizm ten działa tylko w kontekście bezpiecznym (HTTPS / localhost) i wymaga jawnej zgody użytkownika. W aplikacji wykorzystano zarówno jednorazowe pobieranie pozycji (getCurrentPosition), jak i ciągłe śledzenie (watchPosition) dla trybów gry, które wymagają aktualizacji współrzędnych w czasie rzeczywistym.
 
-Główne założenia implementacyjne:
+\textbf{Główne założenia implementacyjne:}
 \begin{itemize}
     \item Sprawdzenie uprawnień przez Permissions API przed żądaniem lokalizacji, by poprawnie obsłużyć przypadki odrzuconej zgody.
     \item Użycie opcji \texttt{enableHighAccuracy}, \texttt{timeout} i \texttt{maximumAge} do balansowania dokładności i zużycia baterii.
@@ -24,9 +27,9 @@ Główne założenia implementacyjne:
     \item W trybie PWA uwzględniono, że żądania lokalizacji mogą być ograniczone w tle — należy testować zachowanie na docelowych platformach.
 \end{itemize}
 
-Poniżej znajduje się przykładowy fragment kodu (TypeScript) użyty we frontendzie, ilustrujący sposób integracji z Geolocation API:
+W listingu \ref{lst:front-geolocation-watch} znajduje się przykładowy fragment kodu (TypeScript) użyty we frontendzie, ilustrujący sposób integracji z Geolocation API.
 
-\begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania Geolocation API do śledzenia pozycji użytkownika}]
+\begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania Geolocation API do śledzenia pozycji użytkownika}, label={lst:front-geolocation-watch}]
 const watchGeolocation = (): number | null => {
     if (!('geolocation' in navigator)) {
         console.error('Geolocation is not supported by your browser.')
@@ -62,9 +65,9 @@ const watchGeolocation = (): number | null => {
 
 Po uzyskaniu zgody użytkownika na dostęp do lokalizacji, funkcja \texttt{watchGeolocation} rozpoczyna śledzenie pozycji. W przypadku każdej aktualizacji pozycji wywoływana jest funkcja \texttt{selectLocation}, która aktualizuje stan aplikacji oraz widok mapy. W przypadku błędów odpowiednie komunikaty są wyświetlane użytkownikowi, aby poinformować go o problemach z lokalizacją.
 
-Poza rozgrywką, Geolocation API jest również wykorzystywane w formularzu dodawania nowych punktów gry, gdzie użytkownik może automatycznie wypełnić swoje współrzędne geograficzne. Aby ułatwić ponowne użycie kodu, stworzono dedykowany hook Reactowy \texttt{useGeolocation}, który zarządza stanem lokalizacji i błędów związanych z geolokalizacją:
+Poza rozgrywką, Geolocation API jest również wykorzystywane w formularzu dodawania nowych punktów gry, gdzie użytkownik może automatycznie wypełnić swoje współrzędne geograficzne. Aby ułatwić ponowne użycie kodu, stworzono dedykowany hook Reactowy \texttt{useGeolocation} (listing \ref{lst:use-geolocation-hook}), który zarządza stanem lokalizacji i błędów związanych z geolokalizacją.
 
-\begin{lstlisting}[language=JavaScript, caption={Przykład użycia Geolocation API we własnym hooku}]
+\begin{lstlisting}[language=JavaScript, caption={Przykład użycia Geolocation API we własnym hooku}, label={lst:use-geolocation-hook}]
 export const useGeolocation = () => {
 	const [coordinates, setCoordinates] = useState<Coordinates | null>(null)
 	const [geolocationError, setError] = useState<string | null>(null)
@@ -110,9 +113,9 @@ export const useGeolocation = () => {
 }
 \end{lstlisting}
 
-Powyższy kod definiuje hook \texttt{useGeolocation}, który umożliwia komponentom formularza łatwe pobieranie i zarządzanie współrzędnymi geograficznymi użytkownika. W przypadku błędów odpowiednie komunikaty są ustawiane w stanie, aby informować użytkownika o problemach z lokalizacją. Poniżej znajduje się przykład użycia tego hooka w komponencie formularza:
+Powyższy kod definiuje hook \texttt{useGeolocation}, który umożliwia komponentom formularza łatwe pobieranie i zarządzanie współrzędnymi geograficznymi użytkownika. W przypadku błędów odpowiednie komunikaty są ustawiane w stanie, aby informować użytkownika o problemach z lokalizacją. W listingu \ref{lst:front-add-place-geolocation} znajduje się przykład użycia tego hooka w komponencie formularza.
 
-\begin{lstlisting}[language=JavaScript, caption={Przykład użycia hooka useGeolocation w komponencie formularza}]
+\begin{lstlisting}[language=JavaScript, caption={Przykład użycia hooka useGeolocation w komponencie formularza}, label={lst:front-add-place-geolocation}]
 const AddPlace: React.FC = () => {
     const { coordinates, setCoordinates, readCoordinates, geolocationError } = useGeolocation();
 
@@ -140,9 +143,9 @@ Frontend komunikuje się z backendem za pomocą asynchronicznych wywołań API p
 
 Komunikacja została zrealizowana przez warstwę serwisów (ang. services). Każdy serwis odpowiada za jedną grupę zasobów (np. AccountService, PlaceService) i korzysta ze współdzielonego klienta HTTP, co umożliwia centralne zarządzanie konfiguracją połączenia, taką jak adres bazowy API, nagłówki czy obsługa błędów.
 
-Poniżej znajduje się przykładowy fragment kodu (TypeScript) przedstawiający implementację serwisu do zarządzania miejscami (PlaceService) z wykorzystaniem tokenu JWT do autoryzacji:
+W poniższym listingu \ref{lst:front-place-service} znajduje się przykładowy fragment kodu (TypeScript) przedstawiający implementację serwisu do zarządzania miejscami (PlaceService) z wykorzystaniem tokenu JWT do autoryzacji:
 
-\begin{lstlisting}[language=JavaScript, caption={Konfiguracja instancji Axios z tokenem JWT}]
+\begin{lstlisting}[language=JavaScript, caption={Konfiguracja instancji Axios z tokenem JWT}, label={lst:front-place-service}]
 export class PlaceService {
 	private axiosInstance: AxiosInstance
 
@@ -155,7 +158,7 @@ export class PlaceService {
 		})
 	}
 
-    // Metoda pobierająca wszystkie miejsca w kolejce do sprawdzenia, dostępna tylko dla autoryzowanych użytkowników
+    // Metoda pobierajaca wszystkie miejsca w kolejce do sprawdzenia, dostepna tylko dla autoryzowanych uzytkownikow
 	async getAllPlacesInQueue(): Promise<ShowPlaceDto[]> {
 		const result = await this.axiosInstance.get<ShowPlaceDto[]>('/to_check', {
 			headers: {
@@ -165,7 +168,7 @@ export class PlaceService {
 		return result.data
 	}
 
-    /* ... pozostałe metody komunikacji z backendem ... */
+    /* ... pozostale metody komunikacji z backendem ... */
 }
 
 export default new PlaceService()
@@ -174,16 +177,16 @@ export default new PlaceService()
 Stała \texttt{PLACE\_API\_URL} definiuje bazowy adres API dla zasobów związanych z miejscami. W każdej metodzie serwisu, takiej jak \texttt{getAllPlacesInQueue}, token JWT jest pobierany z \texttt{sessionStorage} i dołączany do nagłówka \texttt{Authorization} w formacie \texttt{Bearer <token>}. Dzięki temu backend może zweryfikować tożsamość użytkownika i jego uprawnienia do dostępu do żądanych zasobów.
 
 \subsection{Mechanizmy PWA (Filip Jezierski)}
-Aplikacja została zaprojektowana jako Progressive Web Application (PWA), co umożliwia użytkownikom instalację aplikacji na urządzeniach mobilnych oraz korzystanie z niej w trybie offline. Kluczowe mechanizmy PWA wymagane do poprawnego działania aplikacji to:
+Aplikacja została zaprojektowana jako Progressive Web Application (PWA)~\cite{pwa-docs}, co umożliwia użytkownikom instalację aplikacji na urządzeniach mobilnych oraz korzystanie z niej w trybie offline. Kluczowe mechanizmy PWA wymagane do poprawnego działania aplikacji to:
 \begin{itemize}
-    \item \textbf{Service Worker}: W bibliotece Vite wykorzystano wtyczkę \texttt{vite-plugin-pwa}, która automatycznie generuje i rejestruje Service Workera. Service Worker zarządza cache'owaniem zasobów statycznych (HTML, CSS, JavaScript, obrazy) oraz dynamicznych danych API, co pozwala na szybkie ładowanie aplikacji nawet przy braku połączenia z internetem.
-    \item \textbf{Manifest aplikacji}: Plik manifestu definiuje metadane aplikacji, takie jak nazwa, ikony, kolor motywu oraz sposób uruchamiania. Dzięki temu użytkownicy mogą dodać aplikację do ekranu głównego swoich urządzeń mobilnych, co zapewnia doświadczenie podobne do natywnej aplikacji. Manifest został zdefiniowany w pliku konfiguracyjnym Vite, gdzie określono podstawowe informacje o aplikacji oraz ikony w różnych rozmiarach.
+    \item \textbf{Service Worker}: W bibliotece Vite wykorzystano wtyczkę \texttt{vite-plugin-pwa}, która automatycznie generuje i rejestruje Service Workera. Service Worker zarządza cache'owaniem zasobów statycznych (HTML, CSS, JavaScript, obrazy) oraz dynamicznych danych API, co pozwala na szybkie ładowanie aplikacji nawet przy braku połączenia z internetem~\cite{service-worker-docs}.
+    \item \textbf{Manifest aplikacji}: Plik manifestu definiuje metadane aplikacji, takie jak nazwa, ikony, kolor motywu oraz sposób uruchamiania~\cite{web-app-manifest}. Dzięki temu użytkownicy mogą dodać aplikację do ekranu głównego swoich urządzeń mobilnych, co zapewnia doświadczenie podobne do natywnej aplikacji. Manifest został zdefiniowany w pliku konfiguracyjnym Vite, gdzie określono podstawowe informacje o aplikacji oraz ikony w różnych rozmiarach.
     \item \textbf{Responsywność}: Aplikacja została zaprojektowana z myślą o różnych rozmiarach ekranów, co zapewnia optymalne doświadczenie użytkownika zarówno na komputerach, jak i urządzeniach mobilnych.
 \end{itemize}
 
-Poniżej znajduje się użyta konfiguracja Vite, która zawiera zarówno rejestrację Service Workera, jak i definicję manifestu aplikacji:
+W listingu \ref{lst:vite-pwa-config} przedstawiono użytą konfiguracja Vite, która zawiera zarówno rejestrację Service Workera, jak i definicję manifestu aplikacji.
 
-\begin{lstlisting}[language=JavaScript, caption={Konfiguracja Vite do obsługi PWA}]
+\begin{lstlisting}[language=JavaScript, caption={Konfiguracja Vite do obsługi PWA}, label={lst:vite-pwa-config}]
 export default defineConfig({
 	plugins: [
 		react(),
@@ -240,9 +243,9 @@ Konfiguracja obejmuje definicję manifestu PWA, zawierającego podstawowe inform
 \subsection{Implementacja rozgrywki (Filip Jezierski)}
 Implementacja logiki rozgrywki opiera się na dwóch głównych komponentach: \texttt{GameSettings}, odpowiedzialnym za konfigurację nowej sesji gry, oraz \texttt{Game}, który obsługuje właściwy przebieg rund.
 
-W komponencie \texttt{GameSettings} realizowane jest zarządzanie ustawieniami gracza, obsługa trybu gościa i użytkownika zalogowanego, zapisywanie konfiguracji w \texttt{sessionStorage}, a także decyzja o kontynuowaniu istniejącej gry lub rozpoczęciu nowej. Komunikacja z API odbywa się poprzez metody serwisu \texttt{gameService}, które pozwalają m.in. sprawdzić bieżący stan gry, utworzyć nową sesję lub porzucić trwającą rozgrywkę. W przypadku wykrycia aktywnej gry użytkownik otrzymuje możliwość podjęcia działania poprzez wyświetlany modal.
+W komponencie \texttt{GameSettings} realizowane jest zarządzanie ustawieniami gracza, obsługa trybu gościa i użytkownika zalogowanego, zapisywanie konfiguracji w \texttt{sessionStorage}, a także decyzja o kontynuowaniu istniejącej gry lub rozpoczęciu nowej. Komunikacja z API odbywa się poprzez metody serwisu \texttt{gameService}, które pozwalają m.in. sprawdzić bieżący stan gry, utworzyć nową sesję lub porzucić trwającą rozgrywkę. W przypadku wykrycia aktywnej gry użytkownik otrzymuje możliwość podjęcia działania poprzez wyświetlany modal. Po zatwierdzeniu ustawień przez gracza, dane są zapisywane w \texttt{sessionStorage} (listing \ref{lst:front-save-game-settings}), co umożliwia ich późniejsze wykorzystanie podczas inicjalizacji sesji gry w komponencie \texttt{Game}.
 
-\begin{lstlisting}[language=JavaScript, caption={Metoda w komponencie \texttt{GameSettings} zapisująca ustawienia gry w \texttt{sessionStorage}}]
+\begin{lstlisting}[language=JavaScript, caption={Metoda w komponencie \texttt{GameSettings} zapisująca ustawienia gry w \texttt{sessionStorage}}, label={lst:front-save-game-settings}]
 const saveGameSettings = (data: StartGameData) => {
     window.sessionStorage.setItem(SELECTED_GAME_MODE, data.gameMode)
     window.sessionStorage.setItem(SELECTED_DIFFICULTY_KEY, data.difficulty)
@@ -253,9 +256,9 @@ const saveGameSettings = (data: StartGameData) => {
 }
 \end{lstlisting}
 
-Główny komponent \texttt{Game} odpowiada za przebieg sesji gry. Po załadowaniu sprawdzana jest możliwość wznowienia gry poprzez istniejący token lub inicjalizowana jest nowa rozgrywka.
+Główny komponent \texttt{Game} odpowiada za przebieg sesji gry. Po załadowaniu sprawdzana jest możliwość wznowienia gry poprzez istniejący token lub inicjalizowana jest nowa rozgrywka. Decyzja o wznowieniu lub rozpoczęciu nowej gry jest podejmowana w hooku \texttt{useEffect} przy pierwszym renderowaniu komponentu (listing \ref{lst:front-decision-resume-or-start}).
 
-\begin{lstlisting}[language=JavaScript, caption={Fragment kodu w komponencie \texttt{Game} odpowiedzialny za decyzję o wznowieniu lub rozpoczęciu nowej gry}]
+\begin{lstlisting}[language=JavaScript, caption={Fragment kodu w komponencie \texttt{Game} odpowiedzialny za decyzję o wznowieniu lub rozpoczęciu nowej gry}, label={lst:front-decision-resume-or-start}]
 useEffect(() => {
     const controller = new AbortController()
     const signal = controller.signal
@@ -272,9 +275,9 @@ useEffect(() => {
 }, [])
 \end{lstlisting}
 
-Następnie, jeśli rozgrywka z poprzedniej sesji ma być kontynuowana, wywoływana jest odpowiednia runda gry, na podstawie danych uzyskanych z serwera.
+Następnie, jeśli rozgrywka z poprzedniej sesji ma być kontynuowana, wywoływana jest odpowiednia runda gry, na podstawie danych uzyskanych z serwera. Funkcja odpowiedzialna za pobranie stanu gry znajduje się w listingu \ref{lst:front-get-game}.
 
-\begin{lstlisting}[language=JavaScript, caption={Funkcja pobierająca stan gry w komponencie \texttt{Game}}]
+\begin{lstlisting}[language=JavaScript, caption={Funkcja pobierająca stan gry w komponencie \texttt{Game}}, label={lst:front-get-game}]
 const getGame = async (signal: AbortSignal) => {
     setLoading(true)
     setError(null)
@@ -310,9 +313,9 @@ const getGame = async (signal: AbortSignal) => {
 }
 \end{lstlisting}
 
-W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}.
+W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu \ref{lst:front-start-new-game}.
 
-\begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczynająca nową grę w komponencie \texttt{Game}}]
+\begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczynająca nową grę w komponencie \texttt{Game}}, label={lst:front-start-new-game}]
 const startGame = async (signal: AbortSignal) => {
     setLoading(true)
     setError(null)
@@ -355,11 +358,12 @@ Komponenty interfejsu gry są odpowiedzialne za prezentację danych i interakcj�
 
 \section{Implementacja backendu i logiki aplikacji}
 
-W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, rozgrywki  mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy, które napotkano podczas implementacji.
+W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, rozgrywki, mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy, które napotkano podczas implementacji.
+
 
 \subsection{Implementacja rozgrywki}
 
-Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku \ref{fig:sequence-diagram}. 
+Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku \ref{fig:sequence-diagram}.
 
 Proces rozpoczęcia rozgrywki inicjuje wywołanie kontrolera \texttt{api/game/start}, który odpowiada za utworzenie nowej \textit{Sesji Rozgrywki} (\ref{tab:game-sessions}).
 W ramach tego etapu backend generuje odpowiednią liczbę rund, przypisuje im losowe miejsca do zgadnięcia, nadaje sesji status \texttt{InProgress}, a następnie zwraca unikalny identyfikator gry w postaci GUID.
@@ -377,7 +381,7 @@ Aplikacja weryfikuje lokalizację podaną przez użytkownika, oblicza odległoś
 Po zakończeniu wszystkich rund gracz wywołuje endpoint
 \texttt{api/game/{gameId}/finish},
 który finalizuje rozgrywkę. Backend podsumowuje wyniki, aktualizuje status sesji na \texttt{Completed} i zwraca końcowy rezultat użytkownikowi.
-Dla użytkowników zalogowanych rezultat jest trwale zapisywany w bazie, natomiast dla użytkowników niezalogowanych sesja jest automatycznie usuwana po upływie jednej godziny.
+Dla użytkowników zalogowanych rezultat jest trwale zapisywany w bazie, natomiast dla użytkowników niezalogowanych sesja jest automatycznie usuwana po upływie jednej godziny, by także oni mogli przeglądać swoje wyniki przez krótki czas po zakończeniu gry.
 
 
 \subsection{Autoryzacja i uwierzytelnianie użytkowników}
@@ -541,7 +545,7 @@ Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
     throw new UserNotFoundException(userGuid);
     \end{lstlisting}
 
-    Dzięki takiemu podejściu możliwe jest precyzyjne zarządzanie typerami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
+    Dzięki temu możliwe jest precyzyjne zarządzanie typami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
 
 
 \section{Baza danych i zarządzanie danymi}
@@ -559,17 +563,16 @@ Wykorzystując Entity Framework jako ORM (Object-Relational Mapping), w pierwsze
 Chcąc zaktualizować bazę danych, stosujemy migracje, które pozwalają na dodawanie, usuwanie i modyfikowanie istniejących już definicji obiektów. Ponadto dzięki nim możemy wersjonować stan bazy, aby w razie błędu cofnąć się do poprzedniej definicji. Za pomocą polecenia \texttt{add-migration \textless nazwa\_migracji\textgreater} tworzymy nową migrację, a następnie poleceniem \texttt{update-database} stosujemy zmiany w bazie danych.
 W folderze \texttt{Migrations} przechowywane są pliki migracji, które zawierają instrukcje dotyczące zmian w strukturze bazy danych. Są one generowane automatycznie i mają strukturę nazwy \texttt{\textless timestamp\textgreater\_\textless nazwa\_migracji\textgreater.cs}.
 
-\subsection{Adminer}
+\subsection{Adminer i PGAdmin}
 
-W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzie Adminer. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej.
+W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzia Adminer i  PGAdmin. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej. Natomiast z PGadmina korzystano z wersji desktopowej, która umożliwia bardziej zaawansowane zarządzanie bazą danych, w tym tworzenie zapytań SQL, monitorowanie wydajności oraz zarządzanie użytkownikami i uprawnieniami~\cite{pgadmin-docs}.  
 
-
-\subsection{Problemy napotkane przy implementacji backendu}
-    -Eager loading vs lazy loading w EF Core
-    -Konflikty migracji bazy danych
-    -Obsługa błędów w aplikacji ASP .NET Core
-    -Debuggowanie aplikacji w kontenerze Docker
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./images/pgadmin.png}
+    \caption{Zrzut ekranu przedstawiający interfejs narzędzia PGAdmin z widokiem na strukturę bazy danych aplikacji UniGuesser.}
+    \label{fig:use-case-diagram}
+\end{figure}
 
 
 \section{Devops i wdrożenie aplikacji}
@@ -595,8 +598,8 @@ W środowisku produkcyjnym nacisk położono na izolację usług, bezpieczeństw
 \begin{itemize}
     \item Użycie pliku \texttt{docker-compose.prod.yaml} z obrazami już zbudowanymi (bez mountowania kodu źródłowego).
     \item Wprowadzenie reverse proxy Nginx jako pojedynczego punktu wejścia (terminacja TLS, routing do usług wewnętrznych).
-    \item Minimalizacja rozmiaru obrazów przez wykorzystanie wieloetapowych buildów (multi-stage) w Dockerfile backendu i frontendu.
-    \item Brak narzędzi administracyjnych (np. Adminer) w docelowym środowisku - uruchamiane jedynie tymczasowo przy potrzebie migracji lub analizy.
+    \item Minimalizacja rozmiaru obrazów przez wykorzystanie wieloetapowych buildów (ang. \textit{multi-stage}) w Dockerfile backendu i frontendu.
+    \item Brak narzędzi administracyjnych (np. Adminer) w docelowym środowisku — uruchamiane jedynie tymczasowo przy potrzebie migracji lub analizy.
 \end{itemize}
 
 \subsection{Pliki docker-compose i ich role}
@@ -604,20 +607,20 @@ W środowisku produkcyjnym nacisk położono na izolację usług, bezpieczeństw
 W projekcie zastosowano kilka wariantów plików \texttt{docker-compose}. Mają one strukturę kaskadową:
 \begin{description}
     \item[\texttt{docker-compose.infra.yaml}] Definicje infrastrukturalne (baza danych, narzędzia pomocnicze). Pozwala odseparować warstwę aplikacyjną od zasobów zewnętrznych.
-    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną, umożliwia uruchomienie backendu poza kontenerem. 
-    \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe rzeczy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
-    \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji, brak wolumenów źródłowych, zmienne środowiskowe wczytywane z plików \texttt{.env}, integracja z Nginx.
+    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną; umożliwia uruchomienie backendu poza kontenerem. 
+    \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe elementy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
+    \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji; brak wolumenów źródłowych; zmienne środowiskowe wczytywane z plików \texttt{.env}; integracja z Nginx.
 \end{description}
 
-co pozwala na nadpisywanie sekcji (\textit{override}) dla danego środowiska.
+Struktura ta pozwala na nadpisywanie sekcji (\textit{override}) dla danego środowiska.
 
 \subsection{Decyzja o użyciu reverse proxy Nginx}
 
 Pierwotnie rozważano generowanie i instalację certyfikatów HTTPS w każdej części aplikacji osobno (frontend i backend). Takie rozwiązanie zwiększało złożoność utrzymania (odnawianie, dystrybucja, synchronizacja dat ważności). Zamiast tego wprowadzono warstwę \texttt{Nginx} jako reverse proxy z terminacją TLS:
 \begin{itemize}
     \item Jeden certyfikat (np. Let's Encrypt) dla domeny głównej.
-    \item Uproszczona konfiguracja \texttt{appsettings.json} - backend może działać na HTTP wewnątrz sieci Docker.
-    \item Brak potrzeby modyfikowania konfiguracji frontendu przy odnowieniu certyfikatu - zmiana dotyczy wyłącznie proxy.
+    \item Uproszczona konfiguracja \texttt{appsettings.json} — backend może działać na HTTP wewnątrz sieci Docker.
+    \item Brak potrzeby modyfikowania konfiguracji frontendu przy odnowieniu certyfikatu — zmiana dotyczy wyłącznie proxy.
     \item Możliwość dodania reguł bezpieczeństwa (rate limiting, nagłówki CSP, HSTS) w jednym miejscu.
 \end{itemize}
 
@@ -645,12 +648,11 @@ Multi-stage build pozwala oddzielić etap kompilacji (cięższy obraz z SDK) od 
 
 Konfiguracja jest rozproszona pomiędzy kilka plików i mechanizmów:
 \begin{itemize}
-    \item Pliki \texttt{.env} Zawierają wrażliwe lub zmienne środowiskowe (np. connection string do PostgreSQL, sekrety JWT). W plikach compose referencje przez \texttt{\$\{NAZWA\_ZMIENNEJ\}}.
-    \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} Warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
-    \item \texttt{launchSettings.json} Używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpione przez konfigurację kontenera + reverse proxy.
-    \item Frontend \texttt{Constants.ts} Zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
-    \item Zmienne środowiskowe kontenerów Nadawane w plikach compose lub w CI/CD 
-    (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
+    \item Pliki \texttt{.env} — zawierają wrażliwe lub zmienne środowiskowe (np. connection string do PostgreSQL, sekrety JWT). W plikach compose referencje przez \texttt{\$\{NAZWA\_ZMIENNEJ\}}.
+    \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} — warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
+    \item \texttt{launchSettings.json} — używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpiony przez konfigurację kontenera + reverse proxy.
+    \item Frontend \texttt{Constants.ts} — zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
+    \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
 \end{itemize}
 
 Mechanizm konfiguracji w ASP.NET Core scalający źródła (pliki, zmienne środowiskowe, sekrety użytkownika) umożliwia elastyczne przełączanie środowisk bez modyfikacji kodu.
