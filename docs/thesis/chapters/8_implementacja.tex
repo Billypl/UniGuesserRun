@@ -1,5 +1,8 @@
 \chapter{Implementacja}
 \label{chap:implementation}
+
+W niniejszym rozdziale przedstawiono szczegóły implementacji aplikacji UniGuesser, obejmujące zarówno frontend, jak i backend oraz bazę danych. Omówione zostaną kluczowe aspekty techniczne, wyzwania napotkane podczas realizacji projektu oraz zastosowane rozwiązania.
+
 \section{Implementacja wyglądu i funkcjonalności frontendu}
 W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikacji, w tym architektura, struktura UI i komponentów, warstwa wizualna, obsługa interakcji użytkownika, integracja z geolokalizacją, implementacja trybów gry, komunikacja z backendem oraz mechanizmy PWA.
 
@@ -15,7 +18,7 @@ W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikac
 
 Do implementacji funkcjonalności związanej z lokalizacją użytkownika wykorzystano wbudowane w przeglądarki Geolocation API~\cite{geolocation-api}. Mechanizm ten działa tylko w kontekście bezpiecznym (HTTPS / localhost) i wymaga jawnej zgody użytkownika. W aplikacji wykorzystano zarówno jednorazowe pobieranie pozycji (getCurrentPosition), jak i ciągłe śledzenie (watchPosition) dla trybów gry, które wymagają aktualizacji współrzędnych w czasie rzeczywistym.
 
-Główne założenia implementacyjne:
+\textbf{Główne założenia implementacyjne:}
 \begin{itemize}
     \item Sprawdzenie uprawnień przez Permissions API przed żądaniem lokalizacji, by poprawnie obsłużyć przypadki odrzuconej zgody.
     \item Użycie opcji \texttt{enableHighAccuracy}, \texttt{timeout} i \texttt{maximumAge} do balansowania dokładności i zużycia baterii.
