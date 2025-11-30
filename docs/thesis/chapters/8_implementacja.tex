@@ -13,7 +13,7 @@ W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikac
 
 \subsection{Integracja z geolokalizacją (Filip Jezierski)}
 
-Do implementacji funkcjonalności związanej z lokalizacją użytkownika wykorzystano wbudowane w przeglądarki Geolocation API. Mechanizm ten działa tylko w kontekście bezpiecznym (HTTPS / localhost) i wymaga jawnej zgody użytkownika. W aplikacji wykorzystano zarówno jednorazowe pobieranie pozycji (getCurrentPosition), jak i ciągłe śledzenie (watchPosition) dla trybów gry, które wymagają aktualizacji współrzędnych w czasie rzeczywistym.
+Do implementacji funkcjonalności związanej z lokalizacją użytkownika wykorzystano wbudowane w przeglądarki Geolocation API~\cite{geolocation-api}. Mechanizm ten działa tylko w kontekście bezpiecznym (HTTPS / localhost) i wymaga jawnej zgody użytkownika. W aplikacji wykorzystano zarówno jednorazowe pobieranie pozycji (getCurrentPosition), jak i ciągłe śledzenie (watchPosition) dla trybów gry, które wymagają aktualizacji współrzędnych w czasie rzeczywistym.
 
 Główne założenia implementacyjne:
 \begin{itemize}
@@ -24,9 +24,9 @@ Główne założenia implementacyjne:
     \item W trybie PWA uwzględniono, że żądania lokalizacji mogą być ograniczone w tle — należy testować zachowanie na docelowych platformach.
 \end{itemize}
 
-Poniżej znajduje się przykładowy fragment kodu (TypeScript) użyty we frontendzie, ilustrujący sposób integracji z Geolocation API:
+W listingu \ref{lst:front-geolocation-watch} znajduje się przykładowy fragment kodu (TypeScript) użyty we frontendzie, ilustrujący sposób integracji z Geolocation API.
 
-\begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania Geolocation API do śledzenia pozycji użytkownika}]
+\begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania Geolocation API do śledzenia pozycji użytkownika}, label={lst:front-geolocation-watch}]
 const watchGeolocation = (): number | null => {
     if (!('geolocation' in navigator)) {
         console.error('Geolocation is not supported by your browser.')
@@ -62,9 +62,9 @@ const watchGeolocation = (): number | null => {
 
 Po uzyskaniu zgody użytkownika na dostęp do lokalizacji, funkcja \texttt{watchGeolocation} rozpoczyna śledzenie pozycji. W przypadku każdej aktualizacji pozycji wywoływana jest funkcja \texttt{selectLocation}, która aktualizuje stan aplikacji oraz widok mapy. W przypadku błędów odpowiednie komunikaty są wyświetlane użytkownikowi, aby poinformować go o problemach z lokalizacją.
 
-Poza rozgrywką, Geolocation API jest również wykorzystywane w formularzu dodawania nowych punktów gry, gdzie użytkownik może automatycznie wypełnić swoje współrzędne geograficzne. Aby ułatwić ponowne użycie kodu, stworzono dedykowany hook Reactowy \texttt{useGeolocation}, który zarządza stanem lokalizacji i błędów związanych z geolokalizacją:
+Poza rozgrywką, Geolocation API jest również wykorzystywane w formularzu dodawania nowych punktów gry, gdzie użytkownik może automatycznie wypełnić swoje współrzędne geograficzne. Aby ułatwić ponowne użycie kodu, stworzono dedykowany hook Reactowy \texttt{useGeolocation} (listing \ref{lst:use-geolocation-hook}), który zarządza stanem lokalizacji i błędów związanych z geolokalizacją.
 
-\begin{lstlisting}[language=JavaScript, caption={Przykład użycia Geolocation API we własnym hooku}]
+\begin{lstlisting}[language=JavaScript, caption={Przykład użycia Geolocation API we własnym hooku}, label={lst:use-geolocation-hook}]
 export const useGeolocation = () => {
 	const [coordinates, setCoordinates] = useState<Coordinates | null>(null)
 	const [geolocationError, setError] = useState<string | null>(null)
@@ -110,9 +110,9 @@ export const useGeolocation = () => {
 }
 \end{lstlisting}
 
-Powyższy kod definiuje hook \texttt{useGeolocation}, który umożliwia komponentom formularza łatwe pobieranie i zarządzanie współrzędnymi geograficznymi użytkownika. W przypadku błędów odpowiednie komunikaty są ustawiane w stanie, aby informować użytkownika o problemach z lokalizacją. Poniżej znajduje się przykład użycia tego hooka w komponencie formularza:
+Powyższy kod definiuje hook \texttt{useGeolocation}, który umożliwia komponentom formularza łatwe pobieranie i zarządzanie współrzędnymi geograficznymi użytkownika. W przypadku błędów odpowiednie komunikaty są ustawiane w stanie, aby informować użytkownika o problemach z lokalizacją. W listingu \ref{lst:front-add-place-geolocation} znajduje się przykład użycia tego hooka w komponencie formularza.
 
-\begin{lstlisting}[language=JavaScript, caption={Przykład użycia hooka useGeolocation w komponencie formularza}]
+\begin{lstlisting}[language=JavaScript, caption={Przykład użycia hooka useGeolocation w komponencie formularza}, label={lst:front-add-place-geolocation}]
 const AddPlace: React.FC = () => {
     const { coordinates, setCoordinates, readCoordinates, geolocationError } = useGeolocation();
 
@@ -140,9 +140,9 @@ Frontend komunikuje się z backendem za pomocą asynchronicznych wywołań API p
 
 Komunikacja została zrealizowana przez warstwę serwisów (ang. services). Każdy serwis odpowiada za jedną grupę zasobów (np. AccountService, PlaceService) i korzysta ze współdzielonego klienta HTTP, co umożliwia centralne zarządzanie konfiguracją połączenia, taką jak adres bazowy API, nagłówki czy obsługa błędów.
 
-Poniżej znajduje się przykładowy fragment kodu (TypeScript) przedstawiający implementację serwisu do zarządzania miejscami (PlaceService) z wykorzystaniem tokenu JWT do autoryzacji:
+W poniższym listingu \ref{lst:front-place-service} znajduje się przykładowy fragment kodu (TypeScript) przedstawiający implementację serwisu do zarządzania miejscami (PlaceService) z wykorzystaniem tokenu JWT do autoryzacji:
 
-\begin{lstlisting}[language=JavaScript, caption={Konfiguracja instancji Axios z tokenem JWT}]
+\begin{lstlisting}[language=JavaScript, caption={Konfiguracja instancji Axios z tokenem JWT}, label={lst:front-place-service}]
 export class PlaceService {
 	private axiosInstance: AxiosInstance
 
@@ -155,7 +155,7 @@ export class PlaceService {
 		})
 	}
 
-    // Metoda pobierająca wszystkie miejsca w kolejce do sprawdzenia, dostępna tylko dla autoryzowanych użytkowników
+    // Metoda pobierajaca wszystkie miejsca w kolejce do sprawdzenia, dostepna tylko dla autoryzowanych uzytkownikow
 	async getAllPlacesInQueue(): Promise<ShowPlaceDto[]> {
 		const result = await this.axiosInstance.get<ShowPlaceDto[]>('/to_check', {
 			headers: {
@@ -165,7 +165,7 @@ export class PlaceService {
 		return result.data
 	}
 
-    /* ... pozostałe metody komunikacji z backendem ... */
+    /* ... pozostale metody komunikacji z backendem ... */
 }
 
 export default new PlaceService()
@@ -174,16 +174,16 @@ export default new PlaceService()
 Stała \texttt{PLACE\_API\_URL} definiuje bazowy adres API dla zasobów związanych z miejscami. W każdej metodzie serwisu, takiej jak \texttt{getAllPlacesInQueue}, token JWT jest pobierany z \texttt{sessionStorage} i dołączany do nagłówka \texttt{Authorization} w formacie \texttt{Bearer <token>}. Dzięki temu backend może zweryfikować tożsamość użytkownika i jego uprawnienia do dostępu do żądanych zasobów.
 
 \subsection{Mechanizmy PWA (Filip Jezierski)}
-Aplikacja została zaprojektowana jako Progressive Web Application (PWA), co umożliwia użytkownikom instalację aplikacji na urządzeniach mobilnych oraz korzystanie z niej w trybie offline. Kluczowe mechanizmy PWA wymagane do poprawnego działania aplikacji to:
+Aplikacja została zaprojektowana jako Progressive Web Application (PWA)~\cite{pwa-docs}, co umożliwia użytkownikom instalację aplikacji na urządzeniach mobilnych oraz korzystanie z niej w trybie offline. Kluczowe mechanizmy PWA wymagane do poprawnego działania aplikacji to:
 \begin{itemize}
-    \item \textbf{Service Worker}: W bibliotece Vite wykorzystano wtyczkę \texttt{vite-plugin-pwa}, która automatycznie generuje i rejestruje Service Workera. Service Worker zarządza cache'owaniem zasobów statycznych (HTML, CSS, JavaScript, obrazy) oraz dynamicznych danych API, co pozwala na szybkie ładowanie aplikacji nawet przy braku połączenia z internetem.
-    \item \textbf{Manifest aplikacji}: Plik manifestu definiuje metadane aplikacji, takie jak nazwa, ikony, kolor motywu oraz sposób uruchamiania. Dzięki temu użytkownicy mogą dodać aplikację do ekranu głównego swoich urządzeń mobilnych, co zapewnia doświadczenie podobne do natywnej aplikacji. Manifest został zdefiniowany w pliku konfiguracyjnym Vite, gdzie określono podstawowe informacje o aplikacji oraz ikony w różnych rozmiarach.
+    \item \textbf{Service Worker}: W bibliotece Vite wykorzystano wtyczkę \texttt{vite-plugin-pwa}, która automatycznie generuje i rejestruje Service Workera. Service Worker zarządza cache'owaniem zasobów statycznych (HTML, CSS, JavaScript, obrazy) oraz dynamicznych danych API, co pozwala na szybkie ładowanie aplikacji nawet przy braku połączenia z internetem~\cite{service-worker-docs}.
+    \item \textbf{Manifest aplikacji}: Plik manifestu definiuje metadane aplikacji, takie jak nazwa, ikony, kolor motywu oraz sposób uruchamiania~\cite{web-app-manifest}. Dzięki temu użytkownicy mogą dodać aplikację do ekranu głównego swoich urządzeń mobilnych, co zapewnia doświadczenie podobne do natywnej aplikacji. Manifest został zdefiniowany w pliku konfiguracyjnym Vite, gdzie określono podstawowe informacje o aplikacji oraz ikony w różnych rozmiarach.
     \item \textbf{Responsywność}: Aplikacja została zaprojektowana z myślą o różnych rozmiarach ekranów, co zapewnia optymalne doświadczenie użytkownika zarówno na komputerach, jak i urządzeniach mobilnych.
 \end{itemize}
 
-Poniżej znajduje się użyta konfiguracja Vite, która zawiera zarówno rejestrację Service Workera, jak i definicję manifestu aplikacji:
+W listingu \ref{lst:vite-pwa-config} przedstawiono użytą konfiguracja Vite, która zawiera zarówno rejestrację Service Workera, jak i definicję manifestu aplikacji.
 
-\begin{lstlisting}[language=JavaScript, caption={Konfiguracja Vite do obsługi PWA}]
+\begin{lstlisting}[language=JavaScript, caption={Konfiguracja Vite do obsługi PWA}, label={lst:vite-pwa-config}]
 export default defineConfig({
 	plugins: [
 		react(),
@@ -240,9 +240,9 @@ Konfiguracja obejmuje definicję manifestu PWA, zawierającego podstawowe inform
 \subsection{Implementacja rozgrywki (Filip Jezierski)}
 Implementacja logiki rozgrywki opiera się na dwóch głównych komponentach: \texttt{GameSettings}, odpowiedzialnym za konfigurację nowej sesji gry, oraz \texttt{Game}, który obsługuje właściwy przebieg rund.
 
-W komponencie \texttt{GameSettings} realizowane jest zarządzanie ustawieniami gracza, obsługa trybu gościa i użytkownika zalogowanego, zapisywanie konfiguracji w \texttt{sessionStorage}, a także decyzja o kontynuowaniu istniejącej gry lub rozpoczęciu nowej. Komunikacja z API odbywa się poprzez metody serwisu \texttt{gameService}, które pozwalają m.in. sprawdzić bieżący stan gry, utworzyć nową sesję lub porzucić trwającą rozgrywkę. W przypadku wykrycia aktywnej gry użytkownik otrzymuje możliwość podjęcia działania poprzez wyświetlany modal.
+W komponencie \texttt{GameSettings} realizowane jest zarządzanie ustawieniami gracza, obsługa trybu gościa i użytkownika zalogowanego, zapisywanie konfiguracji w \texttt{sessionStorage}, a także decyzja o kontynuowaniu istniejącej gry lub rozpoczęciu nowej. Komunikacja z API odbywa się poprzez metody serwisu \texttt{gameService}, które pozwalają m.in. sprawdzić bieżący stan gry, utworzyć nową sesję lub porzucić trwającą rozgrywkę. W przypadku wykrycia aktywnej gry użytkownik otrzymuje możliwość podjęcia działania poprzez wyświetlany modal. Po zatwierdzeniu ustawień przez gracza, dane są zapisywane w \texttt{sessionStorage} (listing \ref{lst:front-save-game-settings}), co umożliwia ich późniejsze wykorzystanie podczas inicjalizacji sesji gry w komponencie \texttt{Game}.
 
-\begin{lstlisting}[language=JavaScript, caption={Metoda w komponencie \texttt{GameSettings} zapisująca ustawienia gry w \texttt{sessionStorage}}]
+\begin{lstlisting}[language=JavaScript, caption={Metoda w komponencie \texttt{GameSettings} zapisująca ustawienia gry w \texttt{sessionStorage}}, label={lst:front-save-game-settings}]
 const saveGameSettings = (data: StartGameData) => {
     window.sessionStorage.setItem(SELECTED_GAME_MODE, data.gameMode)
     window.sessionStorage.setItem(SELECTED_DIFFICULTY_KEY, data.difficulty)
@@ -253,9 +253,9 @@ const saveGameSettings = (data: StartGameData) => {
 }
 \end{lstlisting}
 
-Główny komponent \texttt{Game} odpowiada za przebieg sesji gry. Po załadowaniu sprawdzana jest możliwość wznowienia gry poprzez istniejący token lub inicjalizowana jest nowa rozgrywka.
+Główny komponent \texttt{Game} odpowiada za przebieg sesji gry. Po załadowaniu sprawdzana jest możliwość wznowienia gry poprzez istniejący token lub inicjalizowana jest nowa rozgrywka. Decyzja o wznowieniu lub rozpoczęciu nowej gry jest podejmowana w hooku \texttt{useEffect} przy pierwszym renderowaniu komponentu (listing \ref{lst:front-decision-resume-or-start}).
 
-\begin{lstlisting}[language=JavaScript, caption={Fragment kodu w komponencie \texttt{Game} odpowiedzialny za decyzję o wznowieniu lub rozpoczęciu nowej gry}]
+\begin{lstlisting}[language=JavaScript, caption={Fragment kodu w komponencie \texttt{Game} odpowiedzialny za decyzję o wznowieniu lub rozpoczęciu nowej gry}, label={lst:front-decision-resume-or-start}]
 useEffect(() => {
     const controller = new AbortController()
     const signal = controller.signal
@@ -272,9 +272,9 @@ useEffect(() => {
 }, [])
 \end{lstlisting}
 
-Następnie, jeśli rozgrywka z poprzedniej sesji ma być kontynuowana, wywoływana jest odpowiednia runda gry, na podstawie danych uzyskanych z serwera.
+Następnie, jeśli rozgrywka z poprzedniej sesji ma być kontynuowana, wywoływana jest odpowiednia runda gry, na podstawie danych uzyskanych z serwera. Funkcja odpowiedzialna za pobranie stanu gry znajduje się w listingu \ref{lst:front-get-game}.
 
-\begin{lstlisting}[language=JavaScript, caption={Funkcja pobierająca stan gry w komponencie \texttt{Game}}]
+\begin{lstlisting}[language=JavaScript, caption={Funkcja pobierająca stan gry w komponencie \texttt{Game}}, label={lst:front-get-game}]
 const getGame = async (signal: AbortSignal) => {
     setLoading(true)
     setError(null)
@@ -310,9 +310,9 @@ const getGame = async (signal: AbortSignal) => {
 }
 \end{lstlisting}
 
-W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}.
+W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu \ref{lst:front-start-new-game}.
 
-\begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczynająca nową grę w komponencie \texttt{Game}}]
+\begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczynająca nową grę w komponencie \texttt{Game}}, label={lst:front-start-new-game}]
 const startGame = async (signal: AbortSignal) => {
     setLoading(true)
     setError(null)
