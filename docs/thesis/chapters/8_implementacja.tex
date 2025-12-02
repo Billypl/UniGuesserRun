@@ -563,7 +563,7 @@ Dla użytkowników zalogowanych rezultat jest trwale zapisywany w bazie, natomia
 
 \textbf{Generowanie i struktura tokenu JWT służącego do autoryzacji użytkowników}
 
-W celu autoryzacji wykorzystany został JSON Web Token. Jest to standard wymiany informacji między dwoma stronami w formie obiektu JSON, który jest bezpiecznie podpisany cyfrowo. 
+W celu autoryzacji wykorzystany został JSON Web Token. Jest to standard wymiany informacji między dwoma stronami w formie obiektu JSON, który jest bezpiecznie podpisany cyfrowo.
 
 Składa się on z trzech niezależnych części zakodowanych w formacie Base64: nagłówka (header), ładunku (payload) oraz podpisu (signature). Nagłówek zawiera informacje o algorytmie podpisu i typie tokenu, ładunek zawiera dane użytkownika i inne informacje, a podpis służy do weryfikacji integralności tokenu i autentyczności nadawcy.
 
@@ -597,7 +597,7 @@ Payload zawiera zakodowane informacje, które chcemy przekazać, jak np. identyf
 
 Podpis jest generowany przez zakodowanie nagłówka i payloadu oraz podpisanie ich kluczem prywatnym przy użyciu algorytmu określonego w nagłówku.
 
-W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji. 
+W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Generowanie tokenu JWT w warstwie backendu}, label={lst:jwt-generation}]
 var claims = new List<Claim>
@@ -633,13 +633,13 @@ var token = new JwtSecurityToken(
 
 \textbf{Identyfikowanie użytkowników i autoryzacja dostępu do zasobów}
 
-W aplikacji wykorzystano mechanizm autoryzacji oparty na atrybutach \texttt{[Authorize]} dostępnych w ASP.NET Core. Atrybut ten pozwala na zabezpieczenie kontrolerów lub konkretnych akcji, wymagając od użytkownika posiadania ważnego tokenu JWT oraz odpowiednich uprawnień (ról) do dostępu do zasobów. 
+W aplikacji wykorzystano mechanizm autoryzacji oparty na atrybutach \texttt{[Authorize]} dostępnych w ASP.NET Core. Atrybut ten pozwala na zabezpieczenie kontrolerów lub konkretnych akcji, wymagając od użytkownika posiadania ważnego tokenu JWT oraz odpowiednich uprawnień (ról) do dostępu do zasobów.
 Na etapie przetwarzania żądania, middleware uwierzytelniające sprawdza obecność i ważność tokenu JWT w nagłówku autoryzacji. Jeśli token jest poprawny, użytkownik zostaje zidentyfikowany, a jego rola jest sprawdzana w kontekście żądanej akcji.
 
 
 \textbf{Hashowanie haseł użytkowników i uwierzytelnianie}
 
-Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano mechanizm \texttt{PasswordHasher<TUser>} udostępniony przez .NET Core Identity. Hasher ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu. 
+Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano mechanizm \texttt{PasswordHasher<TUser>} udostępniony przez .NET Core Identity. Hasher ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu.
 W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Hashowanie i weryfikacja hasła użytkownika}]
@@ -658,11 +658,11 @@ var result = passwordHasher.VerifyHashedPassword(
 \end{lstlisting}
 
 \subsection{Walidacja danych}
-    W celu zapewnienia poprawności danych wejściowych w aplikacji zastosowano bibliotekę FluentValidation. Umożliwia ona definiowanie reguł walidacyjnych w sposób deklaratywny, czytelny i łatwy w utrzymaniu. Przykładowo, podczas rejestracji użytkownika można zdefiniować reguły dotyczące minimalnej i maksymalnej długości hasła, prawidłowego formatu adresu e-mail oraz unikalności nazwy użytkownika w systemie. Dzięki temu możliwe jest centralne zarządzanie walidacją oraz zapewnienie spójności danych w całej aplikacji. 
-    
-    Biblioteka FluentValidation jest zintegrowana z mechanizmem wiązania modeli (model binding) w ASP.NET Core, co umożliwia automatyczne wywoływanie walidacji podczas przetwarzania żądań HTTP. W przypadku wykrycia błędów walidacji framework automatycznie zwraca odpowiedź HTTP 400 (Bad Request) wraz ze szczegółowym opisem napotkanych problemów, co znacząco ułatwia debugowanie i poprawia komunikację z klientem API.
+W celu zapewnienia poprawności danych wejściowych w aplikacji zastosowano bibliotekę FluentValidation. Umożliwia ona definiowanie reguł walidacyjnych w sposób deklaratywny, czytelny i łatwy w utrzymaniu. Przykładowo, podczas rejestracji użytkownika można zdefiniować reguły dotyczące minimalnej i maksymalnej długości hasła, prawidłowego formatu adresu e-mail oraz unikalności nazwy użytkownika w systemie. Dzięki temu możliwe jest centralne zarządzanie walidacją oraz zapewnienie spójności danych w całej aplikacji.
 
-    Niektóre reguły walidacyjne wymagają dostępu do warstwy persystencji, na przykład w celu sprawdzenia, czy w bazie danych nie istnieje już użytkownik o podanym adresie e-mail lub nazwie. W takich przypadkach do konstruktora walidatora wstrzykiwane są odpowiednie repozytoria poprzez mechanizm wstrzykiwania zależności (Dependency Injection). 
+Biblioteka FluentValidation jest zintegrowana z mechanizmem wiązania modeli (model binding) w ASP.NET Core, co umożliwia automatyczne wywoływanie walidacji podczas przetwarzania żądań HTTP. W przypadku wykrycia błędów walidacji framework automatycznie zwraca odpowiedź HTTP 400 (Bad Request) wraz ze szczegółowym opisem napotkanych problemów, co znacząco ułatwia debugowanie i poprawia komunikację z klientem API.
+
+Niektóre reguły walidacyjne wymagają dostępu do warstwy persystencji, na przykład w celu sprawdzenia, czy w bazie danych nie istnieje już użytkownik o podanym adresie e-mail lub nazwie. W takich przypadkach do konstruktora walidatora wstrzykiwane są odpowiednie repozytoria poprzez mechanizm wstrzykiwania zależności (Dependency Injection).
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Przykład walidacji danych użytkownika podczas rejestracji}, label={lst:fluent-validation}]
 public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
@@ -694,19 +694,19 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
 \end{lstlisting}
 
 
- Dzięki takiemu podejściu walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przekłada się na wyższą jakość oraz bezpieczeństwo aplikacji. Każda reguła walidacyjna znajduje się w osobnej klasie, co pozwala zachować zasadę pojedynczej odpowiedzialności, zwiększa modularność kodu oraz umożliwia łatwe testowanie poszczególnych walidatorów w izolacji od pozostałych komponentów systemu.
+Dzięki takiemu podejściu walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przekłada się na wyższą jakość oraz bezpieczeństwo aplikacji. Każda reguła walidacyjna znajduje się w osobnej klasie, co pozwala zachować zasadę pojedynczej odpowiedzialności, zwiększa modularność kodu oraz umożliwia łatwe testowanie poszczególnych walidatorów w izolacji od pozostałych komponentów systemu.
 
 
 % potencjalnie napisze moze cos o mediator i flunet validation tutaj
 
 \subsection{Obsługa błędów w aplikacji}
-    W aplikacji wykorzystano globalne middleware w ASP.NET Core, odpowiedzialne za przechwytywanie wyjątków w dowolnym miejscu w kodzie. Middleware konwertuje je na spójne odpowiedzi HTTP z odpowiednim kodem statusu oraz komunikatem błędu — dzięki temu użytkownik otrzymuje czytelne informacje, bez ujawniania stosu wywołań ani szczegółów serwera. Cały mechanizm dostępny jest w jednym miejscu, co ułatwia zarządzanie błędami i poprawia doświadczenie użytkownika.
+W aplikacji wykorzystano globalne middleware w ASP.NET Core, odpowiedzialne za przechwytywanie wyjątków w dowolnym miejscu w kodzie. Middleware konwertuje je na spójne odpowiedzi HTTP z odpowiednim kodem statusu oraz komunikatem błędu — dzięki temu użytkownik otrzymuje czytelne informacje, bez ujawniania stosu wywołań ani szczegółów serwera. Cały mechanizm dostępny jest w jednym miejscu, co ułatwia zarządzanie błędami i poprawia doświadczenie użytkownika.
 
 Dodatkowo, dla każdej encji w warstwie domeny zdefiniowano osobny plik z wyjątkami specyficznymi dla danej encji.
 Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
 
 
-    Przykład definicji wyjątku domenowego dla encji użytkownika przedstawiono poniżej:
+Przykład definicji wyjątku domenowego dla encji użytkownika przedstawiono poniżej:
 \begin{lstlisting}[language={[Sharp]C}, caption={Przykład definicji wyjątku domenowego dla encji użytkownika}]
 
     // Definicja przykladowego wyjatku 
@@ -719,7 +719,7 @@ Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
     throw new UserNotFoundException(userGuid);
     \end{lstlisting}
 
-    Dzięki temu możliwe jest precyzyjne zarządzanie typami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
+Dzięki temu możliwe jest precyzyjne zarządzanie typami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
 
 \section{Baza danych i zarządzanie danymi}
 
@@ -728,6 +728,29 @@ Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
 W celu oddzielenia logiki biznesowej od warstwy dostępu do danych zastosowano wzorzec repozytorium. Jeśli obiekt chce uzyskać dostęp do danych, zamiast komunikować się bezpośrednio z bazą danych, korzysta z interfejsu repozytorium. Repozytorium udostępnia metody do wykonywania operacji CRUD (Create, Read, Update, Delete) na encjach, ukrywając szczegóły implementacji dostępu do danych. Dzięki temu logika biznesowa pozostaje niezależna od konkretnej technologii bazy danych, co ułatwia testowanie i utrzymanie kodu.
 
 W aplikacji wszystkie repozytoria dziedziczą po wspólnym interfejsie bazowym \texttt{IRepository<T>}, który definiuje podstawowe operacje CRUD. Każde repozytorium specyficzne dla danej encji rozszerza ten interfejs, dodając metody charakterystyczne dla konkretnej domeny. Przykładowo, repozytorium użytkowników może zawierać dodatkowe metody do wyszukiwania użytkowników według adresu e-mail lub nazwy użytkownika.
+
+\subsection{Wybór bazy danych}
+Początkowo w projekcie UniGuesserRun wykorzystywana była nierelacyjna baza danych MongoDB. Decyzja ta wynikała z prostego modelu danych na wczesnym etapie projektu: przechowywane były głównie informacje o zdjęciach, wynikach oraz podstawowe metadane związane z rozgrywką. Dokumentowy charakter MongoDB pozwalał szybko iterować nad strukturą danych bez konieczności projektowania złożonych schematów.
+
+Wraz z rozwojem projektu pojawiły się jednak bardziej złożone zależności między encjami. Do systemu wprowadzono m.in.:
+\begin{itemize}
+    \item odwzorowanie powiązań między użytkownikami a ich grami i wynikami,
+    \item modele opisujące konkretne lokalizacje oraz zestawy punktów do odgadnięcia,
+    \item tryby gry, w których wiele danych wymagało spójnego współdzielenia — na przykład historia rozgrywek, przebieg sesji czy relacje między elementami mapy.
+\end{itemize}
+
+W takim środowisku relacyjny model danych okazał się bardziej naturalny i korzystny. Konieczność odpytywania o zależności, łączenia informacji z wielu źródeł oraz zapewnienia spójności referencyjnej była trudna do osiągnięcia w MongoDB bez dodatkowej logiki aplikacyjnej. Z czasem coraz wyraźniej było widać, że struktura dokumentowa prowadzi do duplikacji danych, a utrzymanie integralności wymaga dodatkowego wysiłku.
+
+Z tego powodu podjęto decyzję o migracji na relacyjną bazę danych. Model relacyjny ułatwił:
+\begin{itemize}
+    \item odwzorowanie powiązań typu \textit{jeden-do-wielu} i \textit{wiele-do-wielu},
+    \item zachowanie integralności dzięki kluczom obcym,
+    \item wykonywanie złożonych zapytań analitycznych,
+    \item spójne przechowywanie danych użytkowników oraz historii rozgrywek.
+\end{itemize}
+
+Zmiana przyniosła również pozytywny efekt długoterminowy: architektura backendu stała się bardziej przewidywalna, łatwiejsza do rozwijania oraz zgodna z dobrymi praktykami projektowania systemów grywalizacyjnych, w których dane użytkowników i stan gry odgrywają kluczową rolę.
+
 
 \subsection{Warstwa persystencji — Entity Framework Core}
 
@@ -738,7 +761,7 @@ W folderze \texttt{Migrations} przechowywane są pliki migracji, które zawieraj
 
 \subsection{Adminer i PGAdmin}
 
-W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzia Adminer i  PGAdmin. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej. Natomiast z PGadmina korzystano z wersji desktopowej, która umożliwia bardziej zaawansowane zarządzanie bazą danych, w tym tworzenie zapytań SQL, monitorowanie wydajności oraz zarządzanie użytkownikami i uprawnieniami~\cite{pgadmin-docs}.  
+W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzia Adminer i  PGAdmin. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej. Natomiast z PGadmina korzystano z wersji desktopowej, która umożliwia bardziej zaawansowane zarządzanie bazą danych, w tym tworzenie zapytań SQL, monitorowanie wydajności oraz zarządzanie użytkownikami i uprawnieniami~\cite{pgadmin-docs}.
 
 \begin{figure}[H]
     \centering
@@ -779,7 +802,7 @@ W środowisku produkcyjnym nacisk położono na izolację usług, bezpieczeństw
 W projekcie zastosowano kilka wariantów plików \texttt{docker-compose}. Mają one strukturę kaskadową:
 \begin{description}
     \item[\texttt{docker-compose.infra.yaml}] Definicje infrastrukturalne (baza danych, narzędzia pomocnicze). Pozwala odseparować warstwę aplikacyjną od zasobów zewnętrznych.
-    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną; umożliwia uruchomienie backendu poza kontenerem. 
+    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną; umożliwia uruchomienie backendu poza kontenerem.
     \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe elementy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
     \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji; brak wolumenów źródłowych; zmienne środowiskowe wczytywane z plików \texttt{.env}; integracja z Nginx.
 \end{description}
