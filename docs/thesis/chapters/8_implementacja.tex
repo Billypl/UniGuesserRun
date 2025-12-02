@@ -4,15 +4,191 @@
 W niniejszym rozdziale przedstawiono szczegóły implementacji aplikacji UniGuesser, obejmujące zarówno frontend, jak i backend oraz bazę danych. Omówione zostaną kluczowe aspekty techniczne, wyzwania napotkane podczas realizacji projektu oraz zastosowane rozwiązania.
 
 \section{Implementacja wyglądu i funkcjonalności frontendu}
+
 W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikacji, w tym architektura, struktura UI i komponentów, warstwa wizualna, obsługa interakcji użytkownika, integracja z geolokalizacją, implementacja trybów gry, komunikacja z backendem oraz mechanizmy PWA.
 
 \subsection{Architektura frontendu (Karina Wołoszyn)}
 
+Opis struktury aplikacji po stronie klienta:
+	sposób organizacji komponentów,
+	podział na moduły (np. ekrany gry, profil użytkownika, ranking),
+	podejście do routingu,
+	sposób komunikacji z backendem poprzez API.
+
+Możliwy jest dodatek w formie diagramu lub schematu przepływu danych.
+
 \subsection{Struktura UI i komponentów (Karina Wołoszyn)}
+
+Opis implementacji interfejsu:
+	główne komponenty (mapa, panel gry, formularze),
+	ich logika działania,
+	podział na komponenty prezentacyjne i funkcyjne.
+
+Można omówić także mechanizm nawigacji pomiędzy ekranami.
+----
+
+W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej struktury frontendowej, która wygląda następująco:
+
+\dirtree{%
+	.1 frontend/. 
+	.2 node\_modules/ - przechowywanie zainstalowanych zależności przez npm.
+	.2 public/        - zasoby publiczne części frontendu projektu.
+	.3 index.html     - korzeń html całej aplikacji.
+	.3 favicon.ico    - ikona aplikacji wyświetlana w karcie przeglądarki.
+	.3 manifest.json  - metadane aplikacji, przydatne szczególnie w PWA.
+	.2 src/           - źródło danych, w którym przechowywane jest większość plików.
+	.3 assets/        - statyczne assety typu obrazki, fonty.
+	.4 images/.
+	.4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej aplikacji, załączone  w readme w repozytorium na githubie.
+	.3 components/    - elementy interfejsu.	
+	.3 css/           - pliki css służące za nadanie odpowiedniego wyglądu, automatyczne wygenerowane podczas stawiania aplikacji.
+	.3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu i efektów.
+	.3 models/        - definicje interfejsów danych wykorzystywanych w innych częściach aplikacji.
+	.4 account/       - interfejsy związane z logowaniem i rejestracją użytkowników.
+	.4 game/          - interfejsy związane z rozgrywką.
+	.4 place/         - interfejsy związane z lokalizacjami.
+	.4 scoreboard/    - interfejsy związane z rankingiem graczy.
+	.3 pages/         - strony łączące elementy interfejsu (strona główna, strona logowania).
+	.3 services/      - requesty do API (własnych i zewnętrznych).
+	.4 api/           - requesty do własnych API.
+	.3 styles/        - elementy interfejsu.			
+	.4 utils/         - małe funkcje pomocnicze.			
+}
+
+Pozwoliła ona nam zadbać o porządek implementowanych funkcjonalności i ułatwić odnajdywanie odpowiednich fragmentów kodu, w krótkim czasie. Miało to szczególne znaczenie przy implementacji głównych komponentów takich jak mapa, panel rozgrywki czy formularze rejestracji i logowania.
 
 \subsection{Warstwa wizualna (Karina Wołoszyn)}
 
+Przez dużą liczbę osobnych podstron i widoków istniejących w aplikacji, zostały one rozdzielone na osobne pliki w folderze styles, z nazwą opisującą dany widok. Każdy z nich posiada rozszerzecznie .module.scss, zapewniający nie tylko izolację stylów (.module - przesyła informację dla bundlera, że plik ten ma być traktowany jako moduł css) przez lokalne zscope'owanie unikalnych nazwa klasy, aby nie kolidowały z innymi stylami w projekcie o tych samych nazwach, ale również daje możliwość importu modułu bezpośrednio w komponencie:
+
+\begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania importu pliku GameSettings.module.scss jako moduł do komponentu ustawień gry}, label={lst:front-game-settings-module}]
+import styles from '../styles/GameSettings.module.scss'
+\end{lstlisting}
+
+Dodatkowo, rozszerzenie .scss pozwala na zagnieżdżanie stylów scss, tworzenia zmiennych i mixinów. Plik mixin zawiera w sobie własne ustawienia stylu dla często powtarzających się elementów aplikacji, jak jasny przycisk, ciemny przycisk, linki, element klikalny. 
+
+Ważną rolę w wytwarzaniu aplikacji UniGuesser grała jego kolorstyka, ze względu na jego inspirację Politechniką Gdańską. Dlatego też kluczowe było aby na całej przestrzeni aplikacji, użyte kolory były nie tylko jednakowe, ale również zgadzały się z podanymi wytycznymi zawartych w Księdze Identyfikacji Wizualnej politechniki \cite{visual-book-pg}. W tym celu powstał plik \texttt{\_Colors.scss}, odpowiedzialny za definicję niestandardowych kolorów użytych w elementach interfejsu w całej aplikacji.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/visual_colors_pg.png} 
+    \caption{Kolorystyka Politechniki Gdańskiej według Księgi Identyfikacji Wizualnej \cite{visual-book-pg}}
+    \label{fig:colouring-pg}
+\end{figure}
+
+\begin{lstlisting}[language=JavaScript, caption={Plik \_Colors.scss ze zdefiniowanymi kolorami interfejsu}, label={lst:front-colors}]
+	$black: #000000;
+
+	$grey: #272727;
+	$dark-grey: #1f1f1f;
+	$light-grey: #929292;
+	$lighter-grey: #bdbdbd;
+
+	$dark-blue: #003865;
+	$darker-blue: #002d51;
+
+	$dark-red: #c10a27;
+	$darker-red: #a40a23;
+
+	$white: #ffffff;
+\end{lstlisting}
+
+Tworząc aplikację PWA, zadbaliśmy o to, aby była ona responsywna i dostosowywała swój wygląd do różnych rozmiarów ekranów. Wykorzystaliśmy techniki takie jak media queries, ale również technikę "mobile first", czyli projektowanie interfejsu z myślą o urządzeniach mobilnych jako pierwszych, a następnie dostosowywanie go do większych ekranów. Dzięki temu użytkownicy mogą korzystać z aplikacji na różnych urządzeniach, takich jak smartfony, tablety czy komputery stacjonarne, bez utraty funkcjonalności czy estetyki. Wprowadziliśmy również istotne zmiany w układze elementów interfejsu, takie jak przeniesienie menu nawigacyjnego do hamburger menu w widoku mobilnym, co pozwoliło na zaoszczędzenie miejsca na ekranie i zaprezentowanie wszystkich opcji w czytelny sposób.Do hamburger menu dodaliśmy subtelną animację, która sprawia, że menu wysuwa się płynnie po kliknięciu ikony hamburgera.
+
+% Dodanie zdjęcia hamburger menu%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/kawunia.png} 
+    \caption{Hamburger menu w widoku mobilnym aplikacji UniGuesser}
+    \label{fig:hamburger-menu}
+\end{figure}
+
 \subsection{Obsługa interakcji użytkownika (Karina Wołoszyn)}
+
+W Reactcie interaktywność powstaje dzięki wykorzystaniu funkcji useState, która przedtrzymuje dynamicznie wartości w komponencie. W momencie zmiany wartości, komponent jest ponownie renderowany z nową wartością. Istnieje też możliwość wykorzystania useForm, który jest specjalnym hookiem do obsługi formularzy, oferującym walidację, zarządzanie stanem i obsługę zdarzeń, co znacznie upraściło tworzenie i obsługę formularzy \cite{react-hook-form}.
+
+W UniGuesser interakcja użytkownika z formularzami pojawia się w 5 miejscach:
+\begin{itemize}
+    \item logowaniu,
+    \item rejestracji,
+    \item wyborze ustawień gry,
+    \item dodawaniu nowych miejsc,
+    \item edycji miejsc z kolejki,
+    \item edycji dodanych miejsc.
+\end{itemize}
+
+Zasadę mechaniki działania obsługi formularzy przedstawia listingi \ref{lst:front-form-field} oraz \ref{lst:front-form-login}. W pierwszym z nich znajduje się implementacja uniwersalnego pola formularza. Uniwersalne pole formularza przyjmuję jako parametry takie jak etykieta, nazwa pola, typ, domyślna wartość, funkcja rejestrująca pole w useForm, funkcja obsługująca zmianę wartości, komunikat o błędzie oraz akceptowane typy plików (w przypadku pola typu file). Dzięki temu możliwe jest wielokrotne wykorzystanie tego samego komponentu w różnych formularzach, co zwiększa spójność i ułatwia utrzymanie kodu.
+
+\begin{lstlisting}[language=JavaScript, caption={Przykład implementacji uniwersalnego pola FormField}, label={lst:front-form-field}]
+interface FormFieldProps<T extends FieldValues> {
+    label: string;
+    name: string;
+    type?: string;
+    defaultValue?: string;
+    register: UseFormRegister<T>;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    error?: string;
+    accept?: string;
+}
+
+const FormField = <T extends FieldValues>({ label, name, type = "text", defaultValue = "", register, onChange, error, accept }: FormFieldProps<T>) => {
+    return (
+        <div className={styles.field}>
+            <label>{label}</label>
+            <input type={type} {...register(name as any, {onChange: onChange})} accept={accept} defaultValue={defaultValue}/>
+            {error && <p className={styles.hint}>{error}</p>}
+        </div>
+    );
+};
+\end{lstlisting}
+
+Przykładem zastosowania uniwersalnego pola formularza jest formularz logowania przedstawiony w listingu \ref{lst:front-form-login}. W tym przypadku komponent \texttt{FormField} jest wykorzystywany do tworzenia pól dla nazwy użytkownika lub e-maila oraz hasła. Obsługa walidacji i błędów jest również zintegrowana, co pozwala na wyświetlanie odpowiednich komunikatów w przypadku nieprawidłowych danych wejściowych.
+
+\begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania uniwersalnych pól formularza}, label={lst:front-form-login}]
+ <div className={styles.form_container}>
+      <div className={styles.logo_container}>
+        <Logo />
+      </div>
+      <h2 className={styles.header}>Sign in to UniGuesser</h2>
+      <form onSubmit={handleSubmit(loginUser)} className={styles.form}>
+        <FormField
+          label="Nickname or Email"
+          name="nicknameOrEmail"
+          type="text"
+          register={login}
+          error={errors.nicknameOrEmail?.message}
+        />
+
+        <FormField label="Password" name="password" type="password" register={login} error={errors.password?.message} />
+
+        {error && <p className={styles.error}>{error}</p>}
+
+        <button type="submit" className={styles.button}>
+          Login
+        </button>
+      </form>
+      <p onClick={() => navigate(REGISTER_ROUTE)} className={styles.link}>
+        New to UniGuesser? Sign up
+      </p>
+    </div>
+\end{lstlisting}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/kawunia.png} 
+    \caption{Formularz logowania w aplikacji UniGuesser}
+    \label{fig:login-form}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/kawunia.png} 
+    \caption{Formularz rejestracji w aplikacji UniGuesser}
+    \label{fig:register-form}
+\end{figure}
+
+Na takiej samej zasadzie działają pozostałe formularze w aplikacji, co zapewnia spójność interfejsu i ułatwia zarządzanie stanem oraz walidacją danych wejściowych od użytkownika.
 
 \subsection{Integracja z geolokalizacją (Filip Jezierski)}
 
@@ -239,7 +415,6 @@ export default defineConfig({
 
 Konfiguracja obejmuje definicję manifestu PWA, zawierającego podstawowe informacje o aplikacji, parametry wyświetlania oraz zestaw ikon wykorzystywanych podczas instalacji na urządzeniu. Dodatkowo zdefiniowano ustawienia service workera generowanego przez \texttt{vite-plugin-pwa}. Obejmują one cache'owanie plików statycznych, określone w sekcji \texttt{globPatterns} oraz zasobów mapowych pobieranych z OpenStreetMap, zdefiniowanych w sekcji \texttt{runtimeCaching}, co poprawia szybkość działania aplikacji i umożliwia jej podstawowe funkcjonowanie przy ograniczonym dostępie do sieci.
 
-
 \subsection{Implementacja rozgrywki (Filip Jezierski)}
 Implementacja logiki rozgrywki opiera się na dwóch głównych komponentach: \texttt{GameSettings}, odpowiedzialnym za konfigurację nowej sesji gry, oraz \texttt{Game}, który obsługuje właściwy przebieg rund.
 
@@ -354,7 +529,6 @@ Komponent pobiera dane dotyczące miejsca do odgadnięcia, wyświetla je użytko
 Ze względu na podobieństwo logiki między trybami komponent \texttt{Game} obsługuje zarówno tryb klasyczny, jak i geolokalizacyjny. Wybór interfejsu jest dokonywany przez komponent, renderując odpowiedni wariant (\texttt{ClassicGameInterface} lub \texttt{GeolocationGameInterface}) w zależności od wybranego trybu. Każda runda kończy się przejściem do kolejnej lub, w przypadku ostatniej, zakończeniem gry i przekierowaniem użytkownika do ekranu wyników. State komponentu zarządza takimi elementami jak numer rundy, wczytany obraz, współrzędne celów, wynik punktowy oraz informacje o błędzie.
 
 Komponenty interfejsu gry są odpowiedzialne za prezentację danych i interakcję z użytkownikiem. W trybie klasycznym użytkownik może wskazać lokalizację na mapie poprzez kliknięcie, natomiast w trybie geolokalizacyjnym aplikacja automatycznie pobiera aktualną pozycję użytkownika i umożliwia jej zatwierdzenie jako odpowiedź. Oba interfejsy obsługują wyświetlanie informacji o rundzie, takie jak numer rundy, aktualny wynik oraz komunikaty o błędach.
-
 
 \section{Implementacja backendu i logiki aplikacji}
 
@@ -547,7 +721,6 @@ Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
 
     Dzięki temu możliwe jest precyzyjne zarządzanie typami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
 
-
 \section{Baza danych i zarządzanie danymi}
 
 \subsection{Repozytoria — komunikacja z bazą danych}
@@ -573,7 +746,6 @@ W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku dewelopers
     \caption{Zrzut ekranu przedstawiający interfejs narzędzia PGAdmin z widokiem na strukturę bazy danych aplikacji UniGuesser.}
     \label{fig:use-case-diagram}
 \end{figure}
-
 
 \section{Devops i wdrożenie aplikacji}
 
@@ -672,8 +844,3 @@ Cały proces startu w produkcji można streścić następująco:
 \subsection{Podsumowanie sekcji DevOps}
 
 Zastosowana architektura DevOps upraszcza cykl życia aplikacji: deweloperzy otrzymują szybkie iteracje dzięki mountowaniu kodu, produkcja korzysta z odchudzonych i bezpiecznych obrazów oraz centralnego zarządzania TLS. Decyzja o użyciu reverse proxy Nginx z jednym certyfikatem poprawiła bezpieczeństwo i zmniejszyła nakład operacyjny, tworząc solidną bazę pod dalsze skalowanie i obserwowalność.
-
-
-
-\section{Integracja komponentów systemu}
-
