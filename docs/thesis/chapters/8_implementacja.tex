@@ -530,12 +530,14 @@ Ze względu na podobieństwo logiki między trybami komponent \texttt{Game} obs�
 
 Komponenty interfejsu gry są odpowiedzialne za prezentację danych i interakcję z użytkownikiem. W trybie klasycznym użytkownik może wskazać lokalizację na mapie poprzez kliknięcie, natomiast w trybie geolokalizacyjnym aplikacja automatycznie pobiera aktualną pozycję użytkownika i umożliwia jej zatwierdzenie jako odpowiedź. Oba interfejsy obsługują wyświetlanie informacji o rundzie, takie jak numer rundy, aktualny wynik oraz komunikaty o błędach.
 
-\section{Implementacja backendu i logiki aplikacji}
+\section{Implementacja backendu i logiki aplikacji (Michał Turski)}
 
 W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacji, rozgrywki, mechanizmy autoryzacji i uwierzytelniania użytkowników, zarządzanie danymi oraz obsługa błędów, a także problemy, które napotkano podczas implementacji.
 
+% tu sie doda
 
 \subsection{Implementacja rozgrywki}
+
 
 Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku \ref{fig:sequence-diagram}.
 
@@ -547,6 +549,9 @@ Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
 \texttt{api/game/{gameId}/round/{roundNumber}},
 gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} – numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
 
+W przypadku trybu geolokalizacyjnego również możliwe jest wywołanie 
+ \texttt{api/game/{gameId}/round/distance},
+ gdzie dla frontendu wysyłamy aktualna odległość od miejsca do zgadniecią (czyli w które musi dojść). Na tej podstawie frontend może wyświetlić potencjalna Podpowiedź dla użytkownika. 
 
 Odpowiedź użytkownika jest obsługiwana przez endpoint
 \texttt{api/game/{gameId}/round/{roundNumber}/check}.
@@ -556,6 +561,7 @@ Po zakończeniu wszystkich rund gracz wywołuje endpoint
 \texttt{api/game/{gameId}/finish},
 który finalizuje rozgrywkę. Backend podsumowuje wyniki, aktualizuje status sesji na \texttt{Completed} i zwraca końcowy rezultat użytkownikowi.
 Dla użytkowników zalogowanych rezultat jest trwale zapisywany w bazie, natomiast dla użytkowników niezalogowanych sesja jest automatycznie usuwana po upływie jednej godziny, by także oni mogli przeglądać swoje wyniki przez krótki czas po zakończeniu gry.
+
 
 
 \subsection{Autoryzacja i uwierzytelnianie użytkowników}
@@ -609,15 +615,15 @@ var claims = new List<Claim>
     new("token_type", "user")
 };
 
-// Klucz podpisujący token (HMAC SHA-256)
+// Klucz podpisujacy token (HMAC SHA-256)
 var key = new SymmetricSecurityKey(
     Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
 
-// Poświadczenia podpisu
+// Poswiadczenia podpisu
 var credentials = new SigningCredentials(
     key, SecurityAlgorithms.HmacSha256);
 
-// Czas wygaśnięcia tokenu
+// Czas wygasniecia tokenu
 var expires = DateTime.Now.AddMinutes(
     _authenticationSettings.JwtExpireAccount);
 
@@ -643,13 +649,13 @@ Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano 
 W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
 
 \begin{lstlisting}[language={[Sharp]C}, caption={Hashowanie i weryfikacja hasła użytkownika}]
-// Hashowanie hasła podczas rejestracji
+// Hashowanie hasla podczas rejestracji
 var passwordHash = passwordHasher.HashPassword(
     newUser, 
     registerAccountCommand.Password
 );
 
-// Weryfikacja hasła podczas logowania
+// Weryfikacja hasla podczas logowania
 var result = passwordHasher.VerifyHashedPassword(
     user, 
     user.PasswordHash, 
@@ -743,7 +749,7 @@ W takim środowisku relacyjny model danych okazał się bardziej naturalny i kor
 
 Z tego powodu podjęto decyzję o migracji na relacyjną bazę danych. Model relacyjny ułatwił:
 \begin{itemize}
-    \item odwzorowanie powiązań typu \textit{jeden-do-wielu} i \textit{wiele-do-wielu},
+    \item odwzorowanie powiązań typu \textit{jeden-do-wielu},
     \item zachowanie integralności dzięki kluczom obcym,
     \item wykonywanie złożonych zapytań analitycznych,
     \item spójne przechowywanie danych użytkowników oraz historii rozgrywek.
@@ -752,12 +758,13 @@ Z tego powodu podjęto decyzję o migracji na relacyjną bazę danych. Model rel
 Zmiana przyniosła również pozytywny efekt długoterminowy: architektura backendu stała się bardziej przewidywalna, łatwiejsza do rozwijania oraz zgodna z dobrymi praktykami projektowania systemów grywalizacyjnych, w których dane użytkowników i stan gry odgrywają kluczową rolę.
 
 
-\subsection{Warstwa persystencji — Entity Framework Core}
+\subsection{Warstwa persystencji}
 
 Wykorzystując Entity Framework jako ORM (Object-Relational Mapping), w pierwszej kolejności zaimplementowano modele encji odpowiadające tabelom w bazie danych. Następnie została zdefiniowana klasa dziedzicząca po \texttt{DbContext} — klasie, w której definiujemy związki i relacje wykorzystywane przy mapowaniu, ustalając przy tym zasady działania kaskadowego usuwania powiązanych encji.
 
 Chcąc zaktualizować bazę danych, stosujemy migracje, które pozwalają na dodawanie, usuwanie i modyfikowanie istniejących już definicji obiektów. Ponadto dzięki nim możemy wersjonować stan bazy, aby w razie błędu cofnąć się do poprzedniej definicji. Za pomocą polecenia \texttt{add-migration \textless nazwa\_migracji\textgreater} tworzymy nową migrację, a następnie poleceniem \texttt{update-database} stosujemy zmiany w bazie danych.
-W folderze \texttt{Migrations} przechowywane są pliki migracji, które zawierają instrukcje dotyczące zmian w strukturze bazy danych. Są one generowane automatycznie i mają strukturę nazwy \texttt{\textless timestamp\textgreater\_\textless nazwa\_migracji\textgreater.cs}.
+W folderze \texttt{Migrations} przechowywane są pliki migracji, które zawierają instrukcje dotyczące zmian w strukturze bazy danych. Są one generowane automatycznie i mają strukturę nazwy \texttt{\textless timestamp\textgreater\_\textless nazwa\_migracji\textgreater.cs}~\cite{ef-core-migrations}.
+
 
 \subsection{Adminer i PGAdmin}
 

@@ -15,7 +15,7 @@ W aplikacji zastosowano architekturę warstwową, której szczegółowa implemen
 
 \section{Architektura logiki biznesowej (Michał Turski)}
 Architektura w aplikacji \textbf{UniGuesser} została zbudowana w oparciu o CQRS (ang. \textit{Command Query Responsibility Segregation}) oraz DDD (ang. \textit{Domain-Driven Design}), które
-są obecnie standardem w wytwarzaniu oprogramowania. [dodać źródło na potwierdznie słów]
+są obecnie standardem w wytwarzaniu oprogramowania.
 Ponadto zdecydowaliśmy na wybór architektury monolitycznej ze względu na szybkość rozwoju i łatwość wdrożenia, co pomogło skupić się nam na aspekcie funkcjonalnym aplikacji w początkowej fazie jej tworzenia.
 
 \subsection{Wzorzec CQRS}
@@ -47,6 +47,8 @@ W rezultacie aplikacja została podzielona na cztery główne warstwy:
     \item Domeny -  serce aplikacji, zawierająca modele domenowe, encje, agregaty oraz logikę biznesową.
     \item Infrastruktury - warstwa techniczna odpowiedzialna za zapis i odczyt danych (baza, pliki, integracje), implementująca repozytoria i usługi potrzebne aplikacji.
 \end{itemize}
+
+Warstwa prezentacji (frontend) komunikuje się wyłącznie z warstwą API. Warstwa API deleguje logikę do warstwy Application, ta korzysta z modelu domenowego (Domain), który z kolei używa Infrastructure do dostępu do bazy danych PostgreSQL.
 
 \begin{figure}[h]
     \centering
