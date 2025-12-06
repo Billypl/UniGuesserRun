@@ -1,4 +1,4 @@
-\chapter{Projekt systemu (Michał Turski i Filip Jezierski)}
+\chapter{Projekt systemu}
 \label{chap:system_project}
 
 Niniejszy rozdział przedstawia szczegółowy projekt systemu aplikacji webowej \textbf{UniGuesser}. Opisane zostaną kluczowe elementy architektury systemu, w tym warstwy aplikacji, baza danych oraz najbardziej kluczowe interakcje użytkownika z systemem. Zaczynając od ogólnego przeglądu architektury, przejdziemy do szczegółowego omówienia poszczególnych komponentów i ich wzajemnych relacji.
@@ -187,25 +187,25 @@ Diagram sekwencji przedstawiony na rysunku \ref{fig:sequence-diagram} ilustruje 
 \section{Estetyka i design (Filip Jezierski) }
 Wygląd aplikacji został zaprojektowany z myślą o prostocie, intuicyjności oraz atrakcyjności wizualnej. Poniżej przedstawiono kluczowe elementy designu interfejsu użytkownika.
 
-\subsection{Ogólny projekt interfejsu}
+\subsection{Ogólny design interfejsu użytkownika}
 Design interfejsu użytkownika naszej aplikacji skupia się na minimalizmie i czytelności. Stosowane są przyjęte jako standardowe układy elementów, takie jak menu nawigacji w górnej części ekranu, co ułatwia poruszanie się po aplikacji, nawet dla nowych użytkowników. Podstrony są zaprojektowane tak, aby unikać nadmiaru informacji, co pozwala użytkownikom skupić się na kluczowych funkcjonalnościach. W trakcie rozgrywki centralnym elementem interfejsu jest interaktywna mapa, która umożliwia użytkownikom łatwe wskazywanie lokalizacji, a pozostałe elementy interfejsu są rozmieszczone w sposób intuicyjny wokół niej.
 
+\subsection{Responsywność}
+
+Aplikacja została zaprojektowana z myślą o responsywności, co oznacza, że dostosowuje się do różnych rozmiarów ekranów i urządzeń. Dzięki temu użytkownicy mogą korzystać z aplikacji zarówno na komputerach stacjonarnych, jak i urządzeniach mobilnych, bez utraty funkcjonalności czy estetyki. Elementy interfejsu, takie jak przyciski, formularze czy mapy, automatycznie dostosowują swoje rozmiary i układ w zależności od dostępnej przestrzeni ekranowej. Na mniejszych ekranach, takich jak smartfony, menu nawigacyjne jest ukryte za ikoną hamburgera, co pozwala zaoszczędzić miejsce i utrzymać przejrzystość interfejsu. Ponadto, kluczowe funkcje pozostają łatwo dostępne, a tekst i grafiki są skalowane odpowiednio do rozdzielczości ekranu, zapewniając optymalne doświadczenie użytkownika niezależnie od urządzenia.
+
 \subsection{Kolorystyka}
-% todo: screen z aplikacji
-Aplikacja wykorzystuje dwukolorową paletę barw, opartą na odcieniach białego i ciemnoniebieskiego, inspirowaną kolorystyką Politechniki Gdańskiej. Biały kolor dominuje w tle, co zapewnia czystość i przejrzystość interfejsu, natomiast niebieskie akcenty są używane do wyróżnienia kluczowych elementów, takich jak przyciski, nagłówki czy linki. Przykładowe zastosowanie palety kolorów przedstawia rysunek \ref{fig:register-form}. Taka kolorystyka zapewnia odpowiedni kontrast i ułatwia czytelność tekstu, zwłaszcza przy korzystaniu z aplikacji w różnych warunkach oświetleniowych, co jest szczególnie istotne ze względu na terenowy charakter gry.
+Aplikacja wykorzystuje dwukolorową paletę barw, opartą na odcieniach białego i ciemnoniebieskiego, inspirowaną kolorystyką Politechniki Gdańskiej. Biały kolor dominuje w tle, co zapewnia czystość i przejrzystość interfejsu, natomiast niebieskie akcenty są używane do wyróżnienia kluczowych elementów, takich jak przyciski, nagłówki czy linki. Przykładowe zastosowanie palety kolorów przedstawia rysunek \ref{fig:color-palette-example}. Taka kolorystyka zapewnia odpowiedni kontrast i ułatwia czytelność tekstu, zwłaszcza przy korzystaniu z aplikacji w różnych warunkach oświetleniowych, co jest szczególnie istotne ze względu na terenowy charakter gry.
 
 \begin{figure}[H]
     \centering
     \makebox[\textwidth]{\includegraphics[width=0.5\textwidth]{./images/registerForm.png}}
     \caption{Przykładowy ekran rejestracji użytkownika w aplikacji UniGuesser, ilustrujący zastosowaną kolorystykę}
-    \label{fig:register-form}
+    \label{fig:color-palette-example}
 \end{figure}
 
-\subsection{Typografia}
-Aplikacja wykorzystuje czcionkę Roboto, która jest nowoczesna, czytelna i estetyczna. Czcionka ta jest szeroko stosowana w projektach webowych ze względu na swoją uniwersalność i dobrą czytelność na ekranach o różnych rozdzielczościach.
+\subsection{Typografia i ikony}
 
-\subsection{Ikony}
+Aplikacja wykorzystuje czcionkę Roboto, która jest nowoczesna, czytelna i estetyczna. Czcionka ta jest szeroko stosowana w projektach webowych ze względu na swoją uniwersalność i dobrą czytelność na ekranach o różnych rozdzielczościach. Roboto oferuje różne grubości i style, co pozwala na efektywne wyróżnianie nagłówków, przycisków oraz tekstu akapitowego. Dzięki temu interfejs pozostaje spójny wizualnie, a użytkownicy mogą łatwo odróżnić różne sekcje i elementy interaktywne.
+
 W interfejsie użytkownika wykorzystano zestaw prostych i intuicyjnych ikon, pochodzących z biblioteki Google Icons. Ikony te są spójne stylistycznie i pomagają użytkownikom szybko zidentyfikować funkcje oraz akcje dostępne w aplikacji. Dzięki zastosowaniu powszechnie rozpoznawalnych symboli, nawigacja staje się bardziej intuicyjna, co przekłada się na lepsze doświadczenie użytkownika.
-
-\subsection{Responsywność}
-Aplikacja została zaprojektowana z myślą o responsywności, co oznacza, że dostosowuje się do różnych rozmiarów ekranów i urządzeń. Dzięki temu użytkownicy mogą korzystać z aplikacji zarówno na komputerach stacjonarnych, jak i urządzeniach mobilnych, bez utraty funkcjonalności czy estetyki. Elementy interfejsu, takie jak przyciski, formularze czy mapy, automatycznie dostosowują swoje rozmiary i układ w zależności od dostępnej przestrzeni ekranowej. Na mniejszych ekranach, takich jak smartfony, menu nawigacyjne jest ukryte za ikoną hamburgera, co pozwala zaoszczędzić miejsce i utrzymać przejrzystość interfejsu. Ponadto, kluczowe funkcje pozostają łatwo dostępne, a tekst i grafiki są skalowane odpowiednio do rozdzielczości ekranu, zapewniając optymalne doświadczenie użytkownika niezależnie od urządzenia.
