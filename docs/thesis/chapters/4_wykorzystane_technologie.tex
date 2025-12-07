@@ -17,12 +17,12 @@ Aplikacja webowa musi spełniać poniżej wymienione wymagania aby mogła być z
 
 \begin{itemize}
 
-    \item \textbf{Bezpieczne źródło} - aplikacja musi być serwowana przez HTTPS (ang. \textit{Hypertext Transfer Protocol Secure}), aby zapewnić bezpieczeństwo i autentyczność danych.
-    
-    \item \textbf{Service Worker} - dzięki zastosowaniu tego mechanizmu aplikacja może ładować do pamięci podręcznej fragmenty, które jeszcze nie zostały użyte, co sprawia że można ją później uruchomić w trybie offline.
-    
-    \item \textbf{Plik manifestu} - w aplikacji powinien być zawarty plik JSON (ang. \textit{JavaScript Object Notation}) zawierający następujące informacje: \texttt{name} lub \texttt{short\_name}, zestaw ikon (w szczególności w rozdzielczościach 192 px i 512 px), \texttt{start\_url} oraz parametr \texttt{display} (z jedną z wartości: \texttt{fullscreen}, \texttt{standalone}, \texttt{minimal-ui} lub \texttt{window-controls-overlay}).
-    
+  \item \textbf{Bezpieczne źródło} - aplikacja musi być serwowana przez HTTPS (ang. \textit{Hypertext Transfer Protocol Secure}), aby zapewnić bezpieczeństwo i autentyczność danych.
+
+  \item \textbf{Service Worker} - dzięki zastosowaniu tego mechanizmu aplikacja może ładować do pamięci podręcznej fragmenty, które jeszcze nie zostały użyte, co sprawia że można ją później uruchomić w trybie offline.
+
+  \item \textbf{Plik manifestu} - w aplikacji powinien być zawarty plik JSON (ang. \textit{JavaScript Object Notation}) zawierający następujące informacje: \texttt{name} lub \texttt{short\_name}, zestaw ikon (w szczególności w rozdzielczościach 192 px i 512 px), \texttt{start\_url} oraz parametr \texttt{display} (z jedną z wartości: \texttt{fullscreen}, \texttt{standalone}, \texttt{minimal-ui} lub \texttt{window-controls-overlay}).
+
 \end{itemize}
 
 \subsection{React}
@@ -56,9 +56,9 @@ W backendzie zastosowano język \textbf{C\#} z frameworkiem \textbf{.NET} oraz p
 
 ASP .NET Core od lat utrzymuje się w czołówce najchętniej wybieranych frameworków do tworzenia aplikacji webowych i API. Jego popularność wynika przede wszystkim z wysokiej modularności oraz niezwykłej elastyczności w adaptowaniu się do różnych scenariuszy projektowych.
 
-Atutem ASP.NET Core jest jego pełna wieloplatformowość — aplikacje mogą być uruchamiane na systemach Windows, Linux oraz macOS bez konieczności wprowadzania zmian w kodzie. To znacząco ułatwia wdrażanie aplikacji w różnorodnych środowiskach, w tym także w kontenerach Docker czy chmurze. Aktualnie w trakcie procesu wytwarzania oprogramowania wykorzystywany jest system Windows, WSL, a także aplikacja odpalana jest w kontenerze Dockerowym.  
+Atutem ASP.NET Core jest jego pełna wieloplatformowość — aplikacje mogą być uruchamiane na systemach Windows, Linux oraz macOS bez konieczności wprowadzania zmian w kodzie. To znacząco ułatwia wdrażanie aplikacji w różnorodnych środowiskach, w tym także w kontenerach Docker czy chmurze. Aktualnie w trakcie procesu wytwarzania oprogramowania wykorzystywany jest system Windows, WSL, a także aplikacja odpalana jest w kontenerze Dockerowym.
 
-Ponadto środowisko to w znacznym stopniu wspiera rozwój oprogramowania zgodnie z zasadami SOLID. Dzięki wbudowanemu mechanizmowi wstrzykiwania zależności (dependency injection), ułatwione jest tworzenie spójnych i jednoznacznie zdefiniowanych interfejsów, a także separacja odpowiedzialności pomiędzy warstwami aplikacji. 
+Ponadto środowisko to w znacznym stopniu wspiera rozwój oprogramowania zgodnie z zasadami SOLID. Dzięki wbudowanemu mechanizmowi wstrzykiwania zależności (dependency injection), ułatwione jest tworzenie spójnych i jednoznacznie zdefiniowanych interfejsów, a także separacja odpowiedzialności pomiędzy warstwami aplikacji.
 
 
 \subsection{Wykorzystane pakiety NuGet}
@@ -68,24 +68,24 @@ W projekcie wykorzystano szereg pakietów NuGet, które usprawniają implementac
 Wykorzystano następujące pakiety NuGet w aplikacji wraz z krótkim opisem:
 
 \begin{itemize}
-    \item \textbf{AutoMapper} – Ułatwia przekształcanie danych pomiędzy klasami, co jest szczególnie przydatne przy mapowaniu obiektów domenowych na klasy DTO (ang. \textit{Data Transfer Object}) oraz odwrotnie. Redukuje potrzebę ręcznego kopiowania właściwości, co przekłada się na większą czytelność i spójność kodu.
+  \item \textbf{AutoMapper} - Ułatwia przekształcanie danych pomiędzy klasami, co jest szczególnie przydatne przy mapowaniu obiektów domenowych na klasy DTO (ang. \textit{Data Transfer Object}) oraz odwrotnie. Redukuje potrzebę ręcznego kopiowania właściwości, co przekłada się na większą czytelność i spójność kodu.
 
-    \item \textbf{FluentValidation} – Usprawnia proces walidacji danych, wprowadzając dedykowaną warstwę odpowiedzialną za sprawdzanie poprawności obiektów wejściowych. Pozwala na definiowanie reguł walidacyjnych w sposób deklaratywny, oddzielając je od logiki aplikacji.
+  \item \textbf{FluentValidation} - Usprawnia proces walidacji danych, wprowadzając dedykowaną warstwę odpowiedzialną za sprawdzanie poprawności obiektów wejściowych. Pozwala na definiowanie reguł walidacyjnych w sposób deklaratywny, oddzielając je od logiki aplikacji.
 
-    \item \textbf{Microsoft.EntityFrameworkCore} – Biblioteka ORM umożliwiająca odwzorowywanie klas C\# na struktury relacyjnej bazy danych. Umożliwia pracę z bazą danych z użyciem LINQ (ang. \textit{Language Integrated Query}) oraz migracji, eliminując potrzebę pisania zapytań SQL (ang. \textit{Structured Query Language}).
+  \item \textbf{Microsoft.EntityFrameworkCore} - Biblioteka ORM umożliwiająca odwzorowywanie klas C\# na struktury relacyjnej bazy danych. Umożliwia pracę z bazą danych z użyciem LINQ (ang. \textit{Language Integrated Query}) oraz migracji, eliminując potrzebę pisania zapytań SQL (ang. \textit{Structured Query Language}).
 
-    \item \textbf{Npgsql.EntityFrameworkCore.PostgreSQL} – Dostarcza integrację Entity Framework Core z bazą danych PostgreSQL, umożliwiając pełne wsparcie dla tej platformy w środowisku .NET.
+  \item \textbf{Npgsql.EntityFrameworkCore.PostgreSQL} - Dostarcza integrację Entity Framework Core z bazą danych PostgreSQL, umożliwiając pełne wsparcie dla tej platformy w środowisku .NET.
 
-    \item \textbf{Swashbuckle.AspNetCore.Swagger} – Narzędzie generujące dokumentację API w formacie OpenAPI (Swagger). Umożliwia wygodne testowanie endpointów poprzez interaktywny interfejs webowy oraz automatyczne tworzenie opisów metod HTTP.
+  \item \textbf{Swashbuckle.AspNetCore.Swagger} - Narzędzie generujące dokumentację API w formacie OpenAPI (Swagger). Umożliwia wygodne testowanie endpointów poprzez interaktywny interfejs webowy oraz automatyczne tworzenie opisów metod HTTP.
 
-    \item \textbf{Microsoft.AspNetCore.Authentication.JwtBearer} – Zapewnia obsługę uwierzytelniania z użyciem tokenów JWT (ang. \textit{JSON Web Token}), które są powszechnym rozwiązaniem przy autoryzacji użytkowników w aplikacjach webowych typu REST API.
+  \item \textbf{Microsoft.AspNetCore.Authentication.JwtBearer} - Zapewnia obsługę uwierzytelniania z użyciem tokenów JWT (ang. \textit{JSON Web Token}), które są powszechnym rozwiązaniem przy autoryzacji użytkowników w aplikacjach webowych typu REST API.
 
-    \item \textbf{xUnit} – Framework służący do tworzenia testów jednostkowych, umożliwiający automatyczne sprawdzanie poprawności działania kodu aplikacji.  
-    
-    \item \textbf{Moq} – Biblioteka wspierająca testowanie poprzez łatwe tworzenie atrap (mocków) i symulowanie zachowań obiektów, co pozwala izolować testowane elementy od zależności.
+  \item \textbf{xUnit} - Framework służący do tworzenia testów jednostkowych, umożliwiający automatyczne sprawdzanie poprawności działania kodu aplikacji.
 
-    \item \textbf{MediatR} - Biblioteka implementująca wzorzec Mediator, który ułatwia komunikacje między komponentami aplikacji poprzez pośrednika. Pomaga uporządkować przepływ komunikacji i usunąć bezpośrednie zależności między warstwami lub klasami.
-    
+  \item \textbf{Moq} - Biblioteka wspierająca testowanie poprzez łatwe tworzenie atrap (mocków) i symulowanie zachowań obiektów, co pozwala izolować testowane elementy od zależności.
+
+  \item \textbf{MediatR} - Biblioteka implementująca wzorzec Mediator, który ułatwia komunikacje między komponentami aplikacji poprzez pośrednika. Pomaga uporządkować przepływ komunikacji i usunąć bezpośrednie zależności między warstwami lub klasami.
+
 \end{itemize}
 
 
