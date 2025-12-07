@@ -40,7 +40,7 @@ W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej
 
 Pozwoliła ona nam zadbać o porządek implementowanych funkcjonalności i ułatwić odnajdywanie odpowiednich fragmentów kodu, w krótkim czasie. Miało to szczególne znaczenie przy implementacji głównych komponentów takich jak mapa, panel rozgrywki czy formularze rejestracji i logowania.
 
-Kluczowym elementem implementacji frontendu jest podział na komponenty. W projekcie UniGuesser zostało to zrealizowane poprzez wykorzystanie technologii React oraz TypeScript, z wykorzystaniem bibliotek takich jak Leaflet do obsługi map. Architektura warstwy prezentacji została rozdzielona od logiki biznesowej, która została umieszczona w odpowiednich serwisach i hookach. 
+Kluczowym elementem implementacji frontendu jest podział na komponenty. W projekcie UniGuesser zostało to zrealizowane poprzez wykorzystanie technologii React oraz TypeScript, z wykorzystaniem bibliotek takich jak Leaflet do obsługi map. Architektura warstwy prezentacji została rozdzielona od logiki biznesowej, która została umieszczona w odpowiednich serwisach i hookach.
 
 \bigskip
 \noindent
@@ -252,20 +252,21 @@ Przykładem zastosowania uniwersalnego pola formularza jest formularz logowania 
 </div>
 \end{lstlisting}
 
-
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/loginForm.png}
-    \caption{Formularz logowania w aplikacji UniGuesser}
-    \label{fig:login-form}
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/loginForm.png}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/registerForm.png}
+    \end{minipage}
+    \caption{Formularz logowania i rejestracji w aplikacji UniGuesser}
+    \label{fig:auth-forms}
 \end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/registerForm.png}
-    \caption{Formularz rejestracji w aplikacji UniGuesser}
-    \label{fig:register-form}
-\end{figure}
+\newpage %TODO: fix%
 
 Na takiej samej zasadzie działają pozostałe formularze w aplikacji, co zapewnia spójność interfejsu i ułatwia zarządzanie stanem oraz walidacją danych wejściowych od użytkownika.
 
@@ -809,7 +810,6 @@ Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
 Przykład definicji wyjątku domenowego dla encji użytkownika przedstawiono poniżej:
 \smallskip
 \begin{lstlisting}[language={[Sharp]C}, caption={Przykład definicji wyjątku domenowego dla encji użytkownika}]
-
 // Definicja przykladowego wyjatku 
 public class UserNotFoundException(Guid userGuid) :
 BaseException($"User with GUID {userGuid} was not found")
