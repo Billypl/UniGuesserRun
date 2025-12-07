@@ -5,27 +5,9 @@ W niniejszym rozdziale przedstawiono szczegóły implementacji aplikacji UniGues
 
 \section{Implementacja wyglądu i funkcjonalności frontendu}
 
-W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikacji, w tym architektura, struktura UI i komponentów, warstwa wizualna, obsługa interakcji użytkownika, integracja z geolokalizacją, implementacja trybów gry, komunikacja z backendem oraz mechanizmy PWA.
-
-\subsection{Architektura frontendu (Karina Wołoszyn)}
-
-Opis struktury aplikacji po stronie klienta:
-	sposób organizacji komponentów,
-	podział na moduły (np. ekrany gry, profil użytkownika, ranking),
-	podejście do routingu,
-	sposób komunikacji z backendem poprzez API.
-
-Możliwy jest dodatek w formie diagramu lub schematu przepływu danych.
+W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikacji, w tym struktura UI i komponentów, warstwa wizualna, obsługa interakcji użytkownika, integracja z geolokalizacją, implementacja trybów gry, komunikacja z backendem oraz mechanizmy PWA.
 
 \subsection{Struktura UI i komponentów (Karina Wołoszyn)}
-
-Opis implementacji interfejsu:
-	główne komponenty (mapa, panel gry, formularze),
-	ich logika działania,
-	podział na komponenty prezentacyjne i funkcyjne.
-
-Można omówić także mechanizm nawigacji pomiędzy ekranami.
-----
 
 W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej struktury frontendowej, która wygląda następująco:
 
@@ -56,6 +38,92 @@ W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej
 }
 
 Pozwoliła ona nam zadbać o porządek implementowanych funkcjonalności i ułatwić odnajdywanie odpowiednich fragmentów kodu, w krótkim czasie. Miało to szczególne znaczenie przy implementacji głównych komponentów takich jak mapa, panel rozgrywki czy formularze rejestracji i logowania.
+
+Kluczowym elementem implementacji frontendu jest podział na komponenty. W projekcie UniGuesser zostało to zrealizowane poprzez wykorzystanie technologii React oraz TypeScript, z wykorzystaniem bibliotek takich jak Leaflet do obsługi map. Architektura warstwy prezentacji została rozdzielona od logiki biznesowej, ktora została umieszczona w odpowiednich serwisach i hookach. 
+
+Głównymi komponentami interfejsu są:
+\begin{itemize}
+	\item Panel gry - wyświetlanie rundy, mapy, aktualnego wyniku i przycisków sterujących rozgrywką
+	\item Mapa - wyświetlanie lokalizacji, wyświetlanie wybranego miejsca, interakcja z mapą
+	\item Formularze - logowanie, rejestracja, dodawanie nowych miejsc, edycja miejsc
+\end{itemize}
+
+Panel gry jest fokalnym punktem interakcji użytkownika z aplikacją, dlatego posłuży jako przykład implementacji komponentów. To właśnie tutaj użytkownik spędzi najwięcej czasu, dlatego istotne było, aby nie tylko był on intuicyjny i łatwy w obsłudze, ale również kod był czytelny i łatwy do utrzymania.
+
+Komponent \texttt{game} pełni rolę centralnego modułu odpowiedzialnego za stworzenie i rozpoczęcie rozgrywki, w tym ustawienie wybranych przez użytkownika trybu gry, trudności, również za pobranie informacji o ewentualnej istniejącej rozgrywce do wznowienia. 
+
+\begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczęcia procesu rozpoczęcia rozgrywki}, label={lst:front-game-start}]
+const startGame = async (signal: AbortSignal) => {
+		setLoading(true)
+		setError(null)
+
+		try {
+			const nickname = window.sessionStorage.getItem(USER_NICKNAME_KEY)
+			const difficulty = window.sessionStorage.getItem(SELECTED_DIFFICULTY_KEY)
+			const gameMode = window.sessionStorage.getItem(SELECTED_GAME_MODE)
+			if (!difficulty) {
+				throw new Error('Difficulty not selected')
+			}
+			if (!nickname) {
+				throw new Error('User not logged in')
+			}
+			await gameService.startNewGameSession(nickname ?? '', difficulty ?? '', gameMode ?? '', signal)
+			startRound(0)
+		} catch (err: any) {
+			if (err.name === 'CanceledError') {
+				console.error('Request aborted by the abort conttoler (2nd fetch prevention')
+			} else {
+				setError('Failed to fetch data. Please try again later.')
+				console.error('Error fetching data:', err)
+			}
+		} finally {
+			setLoading(false)
+		}
+	}
+\end{lstlisting}
+
+\begin{lstlisting}[language=JavaScript, caption={Funkcja pobrania informacji o lokalizacji w danej rundzie}, label={lst:front-fetch-place}]
+const fetchGuessingPlace = async () => {
+		setError(null)
+
+		try {
+			const guessingPlace = await gameService.getGuessingPlace(currentRoundNumber!)
+			setImage(guessingPlace.imageUrl)
+		} catch (err: any) {
+			setError('Failed to fetch data. Please try again later.')
+			console.error('Error fetching data:', err)
+		} finally {
+			setLoading(false)
+		}
+	}
+\end{lstlisting}
+
+Wysyła żądania do backendu poprzez serwis \texttt{gameService}, który zarządza komunikacją z API, m.in. prosząc o numer danej rundy, zdjęcie jej lokacji oraz współrzędne lokalizacji. Po uzyskaniu danych gra jest zainicjowalizowana, runda jest rozpoczęta, a gracz może przystąpić do zabawy. Komponent \texttt{game} zarządza również stanem gry, obsługując przejścia między rundami, aktualizację wyniku oraz zakończenie gry. Po zakończeniu gry, komponent ten przekierowuje użytkownika do osobnego komponentu \texttt{gameResults}.
+
+Wyświetlenie panelu rozgrywki jest realizowane za pomocą kompontentu do wyświetlania UI o nazwie \texttt{GameInterface}. Funkcja w \texttt{game} zwraca strukturę HTML panelu gry, zawierającą główny komponent GameInterface z odpowiednimi właściwościami przekazywanymi jako propsy. 
+
+\begin{lstlisting}[language=JavaScript, caption={Proces przekazania danych ze strony rozgrywki do komponentu odpowiadającego za jego UI - GameInterface}, label={lst:front-game-return-interface}]
+return (
+		<div>
+			{loading && <h1>Loading...</h1>}
+			{imageUrl && currentRoundNumber != null && (
+				<GameInterface
+					error={error}
+					currentRoundNumber={currentRoundNumber}
+					isLastRound={isLastRound(currentRoundNumber)}
+					imageUrl={imageUrl}
+					guessDistance={guessDistance}
+					targetLatLng={targetLatLng}
+					onConfirmPlayerChoice={confirmPlayerChoice}
+					onNextRound={nextRound}
+					onFinishGame={finishGame}
+				/>
+			)}
+		</div>
+	)
+\end{lstlisting}
+
+W jego wnętrzu znajdują się inne komponenty, takie jak \texttt{SelectMapLocation}, odpowiedzialny za ustawianie koordynatów na mapie i wycentrowanie oraz \texttt{TargetMarker}, ustawiający docelową "pinezkę" odgadywanej lokacji.
 
 \subsection{Warstwa wizualna (Karina Wołoszyn)}
 
