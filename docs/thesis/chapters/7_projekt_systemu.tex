@@ -23,7 +23,7 @@ Wykorzystany został również wzorzec CQRS. Zakłada on rozdzielenie operacji m
 
 \begin{itemize}
   \item Przewidywane obciążenie do 50 zapytań na sekundę, co nie wymagało zastosowania osobnych baz danych do odczytu i zapisu.
-  \item Jedno źródło danych - uproszczenie architektury i zmniejszenie kosztów utrzymania systemu.
+  \item Jedno źródło danych zapewnia uproszczenie architektury i zmniejszenie kosztów utrzymania systemu.
   \item Przy implementacji nowej funkcjonalności, można łatwo dodać nowe komendy i zapytania bez wpływu na istniejące funkcjonalności.
 \end{itemize}
 
@@ -38,15 +38,14 @@ Dodatkowo CQRS pełni rolę organizacyjną. Wszystkie zapytania i komendy znajdu
 
 \subsection{Zastosowanie Domain-Driven Design z Czystą Architekturą}
 
-Model systemu zaprojektowano zgodnie z podejściem \textbf{Domain-Driven Design} (DDD), które koncentruje się na odwzorowaniu rzeczywistych reguł biznesowych w postaci niezależnego modelu domenowego. W połączeniu z zasadami \textbf{Czystej Architektury} (Clean Architecture) uzyskano wyraźny kierunek zależności: warstwy zewnętrzne zależą od wewnętrznych, natomiast rdzeń domeny pozostaje izolowany od szczegółów technicznych.
-
-W rezultacie aplikacja została podzielona na cztery główne warstwy:
+Model systemu zaprojektowano zgodnie z podejściem \textbf{Domain-Driven Design} (DDD), które koncentruje się na odwzorowaniu rzeczywistych reguł biznesowych w postaci niezależnego modelu domenowego. W połączeniu z zasadami \textbf{Czystej Architektury} (Clean Architecture) uzyskano wyraźny kierunek zależności: warstwy zewnętrzne zależą od wewnętrznych, natomiast rdzeń domeny pozostaje izolowany od szczegółów technicznych. W rezultacie aplikacja została podzielona na cztery główne warstwy:
 \begin{itemize}
-  \item Warstwa API - punkt wejściowy systemu, który odbiera żądania użytkowników (HTTP), mapuje je na komendy/zapytania i przekazuje do warstwy Application.
-  \item Aplikacji - warstwa zarządzająca przypadkami użycia: waliduje żądania, koordynuje operacje i wywołuje logikę domenową.
-  \item Domeny -  serce aplikacji, zawierająca modele domenowe, encje, agregaty oraz logikę biznesową.
-  \item Infrastruktury - warstwa techniczna odpowiedzialna za zapis i odczyt danych (baza, pliki, integracje), implementująca repozytoria i usługi potrzebne aplikacji.
+  \item \textbf{Warstwa API} - punkt wejściowy systemu, który odbiera żądania użytkowników (HTTP), mapuje je na komendy/zapytania i przekazuje do warstwy Application.
+  \item \textbf{Aplikacji} - warstwa zarządzająca przypadkami użycia: waliduje żądania, koordynuje operacje i wywołuje logikę domenową.
+  \item \textbf{Domeny} - serce aplikacji, zawierająca modele domenowe, encje, agregaty oraz logikę biznesową.
+  \item \textbf{Infrastruktury} - warstwa techniczna odpowiedzialna za zapis i odczyt danych (baza, pliki, integracje), implementująca repozytoria i usługi potrzebne aplikacji.
 \end{itemize}
+\smallskip
 
 Warstwa prezentacji (frontend) komunikuje się wyłącznie z warstwą API. Warstwa API deleguje logikę do warstwy Application, ta korzysta z modelu domenowego (Domain), który z kolei używa Infrastructure do dostępu do bazy danych PostgreSQL.
 
@@ -78,7 +77,9 @@ Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-
 \newpage %TODO: fix%
 
 \subsection{Opis głównych tabel i związków}
+W niniejszej sekcji przedstawiono kluczowe elementy modelu danych zastosowanego w projekcie. Omówiono najważniejsze tabele, ich strukturę oraz wzajemne powiązania, które umożliwiają poprawne odwzorowanie logiki aplikacji. Zaprezentowane zależności ilustrują, w jaki sposób dane dotyczące użytkowników, rozgrywek oraz lokalizacji łączą się w spójną całość, wspierając zarówno działanie systemu, jak i późniejszą analizę informacji.
 
+\bigskip
 \textbf{Users (Użytkownicy)} - tabela przechowująca informacje o użytkownikach aplikacji.
 
 \begin{table}[H]
