@@ -27,7 +27,7 @@ Wykorzystany został również wzorzec CQRS. Zakłada on rozdzielenie operacji m
     \item Przy implementacji nowej funkcjonalności, można łatwo dodać nowe komendy i zapytania bez wpływu na istniejące funkcjonalności.
 \end{itemize}
 
-Dodatkowo CQRS pełni rolę organizacyjną. Wszystkie zapytania i komendy znajdują się w osobnych folderach, co ułatwia nawigację i zrozumienie logiki aplikacji. 
+Dodatkowo CQRS pełni rolę organizacyjną. Wszystkie zapytania i komendy znajdują się w osobnych folderach, co ułatwia nawigację i zrozumienie logiki aplikacji.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\textwidth]{./images/cqrs-communication.png}
@@ -43,7 +43,7 @@ Model systemu zaprojektowano zgodnie z podejściem \textbf{Domain-Driven Design}
 W rezultacie aplikacja została podzielona na cztery główne warstwy:
 \begin{itemize}
     \item Warstwa API – punkt wejściowy systemu, który odbiera żądania użytkowników (HTTP), mapuje je na komendy/zapytania i przekazuje do warstwy Application.
-    \item Aplikacji - warstwa zarządzająca przypadkami użycia: waliduje żądania, koordynuje operacje i wywołuje logikę domenową. 
+    \item Aplikacji - warstwa zarządzająca przypadkami użycia: waliduje żądania, koordynuje operacje i wywołuje logikę domenową.
     \item Domeny -  serce aplikacji, zawierająca modele domenowe, encje, agregaty oraz logikę biznesową.
     \item Infrastruktury - warstwa techniczna odpowiedzialna za zapis i odczyt danych (baza, pliki, integracje), implementująca repozytoria i usługi potrzebne aplikacji.
 \end{itemize}
@@ -64,10 +64,10 @@ Dzięki zastosowaniu DDD, Clean Architecture i CQRS aplikacja UniGuesser zyskał
 
 \section{Baza danych (Michał Turski)}
 
-W aplikacji zastosowano relacyjną bazę danych do przechowywania informacji o aktualnych i przeszłych sesjach gier, użytkownikach, lokalizacjach oraz wynikach. Zdecydowano się na wykorzystanie relacyjnej bazy danych ze względu na dużą ilość powiązań między encjami oraz potrzebę zapewnienia integralności danych między nimi. Relacyjne bazy danych zapewniają ACID (Atomicity, Consistency, Isolation, Durability), co jest kluczowe dla zachowania spójności danych w rozgrywce. 
+W aplikacji zastosowano relacyjną bazę danych do przechowywania informacji o aktualnych i przeszłych sesjach gier, użytkownikach, lokalizacjach oraz wynikach. Zdecydowano się na wykorzystanie relacyjnej bazy danych ze względu na dużą ilość powiązań między encjami oraz potrzebę zapewnienia integralności danych między nimi. Relacyjne bazy danych zapewniają ACID (Atomicity, Consistency, Isolation, Durability), co jest kluczowe dla zachowania spójności danych w rozgrywce.
 
 \subsection{Diagram ERD}
-Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-Relationship Diagram}) ilustruje strukturę bazy danych aplikacji UniGuesser, pokazując główne tabele oraz relacje między nimi. Użytkownik może posiadać wiele sesji gier, a każda sesja ma określoną liczbę rund, z których każda posiada przypisaną do siebie lokację. Ponadto każde miejsce może mieć swojego autora (użytkownika), który dodał je do bazy danych. 
+Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-Relationship Diagram}) ilustruje strukturę bazy danych aplikacji UniGuesser, pokazując główne tabele oraz relacje między nimi. Użytkownik może posiadać wiele sesji gier, a każda sesja ma określoną liczbę rund, z których każda posiada przypisaną do siebie lokację. Ponadto każde miejsce może mieć swojego autora (użytkownika), który dodał je do bazy danych.
 
 \begin{figure}[h]
     \centering
@@ -83,81 +83,81 @@ Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-
 \end{itemize}
 
 \begin{table}[H]
-\caption{Tabela \texttt{Users}}
-\centering
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
-\hline
-\textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
-ID & Unikalny identyfikator użytkownika. & Klucz główny \\ \hline
-Nickname & Unikalna nazwa użytkownika. & Tekst \\ \hline
-Email & Unikalny adres e-mail użytkownika. & Tekst \\ \hline
-PasswordHash & Zaszyfrowane hasło użytkownika. & Tekst \\ \hline
-CreatedAt & Data i czas utworzenia konta. & Data/Czas \\ \hline
-Role & Rola użytkownika w systemie (np. użytkownik, administrator). & Enumeracja \\ \hline
-\end{tabular}
+    \caption{Tabela \texttt{Users}}
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
+        \hline
+        \textbf{Atrybut} & \textbf{Opis}                                                & \textbf{Typ / Uwagi} \\ \hline
+        ID               & Unikalny identyfikator użytkownika.                          & Klucz główny         \\ \hline
+        Nickname         & Unikalna nazwa użytkownika.                                  & Tekst                \\ \hline
+        Email            & Unikalny adres e-mail użytkownika.                           & Tekst                \\ \hline
+        PasswordHash     & Zaszyfrowane hasło użytkownika.                              & Tekst                \\ \hline
+        CreatedAt        & Data i czas utworzenia konta.                                & Data/Czas            \\ \hline
+        Role             & Rola użytkownika w systemie (np. użytkownik, administrator). & Enumeracja           \\ \hline
+    \end{tabular}
 \end{table}
 
 \textbf{GameSessions (Sesje gier)} – tabela przechowująca informacje o aktywnych i zakończonych rozgrywkach.
 
 \begin{table}[H]
-\centering
-\caption{Tabela \texttt{GameSessions}}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{2.8cm}|p{8.5cm}|p{2cm}|}
-\hline
-\textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
-ID & Unikalny identyfikator sesji gry. & Klucz główny \\ \hline
-GameMode & Tryb gry w danej sesji. & Enumeracja \\ \hline
-GameEndDate & Data, do której rozgrywka jest aktywna. & Data/Czas \\ \hline
-RoundNumber & Aktualnie rozgrywana runda. & Liczba \\ \hline
-GameScore & Łączna liczba punktów zdobytych. & Liczba całkowita \\ \hline
-Difficulty & Poziom trudności sesji. & Enumeracja \\ \hline
-FinishedTime & Data zakończenia rozgrywki. & Data/Czas \\ \hline
-UserID & Identyfikator użytkownika. & Klucz obcy → Users \\ \hline
-\end{tabular}
-\label{tab:game-sessions}
+    \centering
+    \caption{Tabela \texttt{GameSessions}}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|p{2.5cm}|p{7cm}|p{2cm}|}
+        \hline
+        \textbf{Atrybut} & \textbf{Opis}                           & \textbf{Typ / Uwagi} \\ \hline
+        ID               & Unikalny identyfikator sesji gry.       & Klucz główny         \\ \hline
+        GameMode         & Tryb gry w danej sesji.                 & Enumeracja           \\ \hline
+        GameEndDate      & Data, do której rozgrywka jest aktywna. & Data/Czas            \\ \hline
+        RoundNumber      & Aktualnie rozgrywana runda.             & Liczba               \\ \hline
+        GameScore        & Łączna liczba punktów zdobytych.        & Liczba całkowita     \\ \hline
+        Difficulty       & Poziom trudności sesji.                 & Enumeracja           \\ \hline
+        FinishedTime     & Data zakończenia rozgrywki.             & Data/Czas            \\ \hline
+        UserID           & Identyfikator użytkownika.              & Klucz obcy → Users   \\ \hline
+    \end{tabular}
+    \label{tab:game-sessions}
 \end{table}
 
 \textbf{Rounds (Rundy)} – tabela przechowująca informacje o poszczególnych rundach w sesji gry.
 
 \begin{table}[H]
-\centering
-\caption{Tabela \texttt{Rounds}} 
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{3cm}|p{8.5cm}|p{1.8cm}|}
-\hline
-\textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
-ID & Unikalny identyfikator rundy. & Klucz główny \\ \hline
-GuessedLatitude & Szerokość geograficzna wskazana przez użytkownika. & Liczba zmiennoprzecinkowa \\ \hline
-GuessedLongitude & Długość geograficzna wskazana przez użytkownika. & Liczba zmiennoprzecinkowa \\ \hline
-Score & Punkty zdobyte w rundzie. & Liczba całkowita \\ \hline
-GameSessionID & Identyfikator sesji gry. & Klucz obcy → GameSessions \\ \hline
-LocationID & Identyfikator lokacji. & Klucz obcy → Places \\ \hline
-\end{tabular}
-\label{tab:rounds}
+    \centering
+    \caption{Tabela \texttt{Rounds}}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|p{3cm}|p{7cm}|p{3cm}|}
+        \hline
+        \textbf{Atrybut} & \textbf{Opis}                                      & \textbf{Typ / Uwagi}      \\ \hline
+        ID               & Unikalny identyfikator rundy.                      & Klucz główny              \\ \hline
+        GuessedLatitude  & Szerokość geograficzna wskazana przez użytkownika. & Liczba zmiennoprzecinkowa \\ \hline
+        GuessedLongitude & Długość geograficzna wskazana przez użytkownika.   & Liczba zmiennoprzecinkowa \\ \hline
+        Score            & Punkty zdobyte w rundzie.                          & Liczba całkowita          \\ \hline
+        GameSessionID    & Identyfikator sesji gry.                           & Klucz obcy → GameSessions \\ \hline
+        LocationID       & Identyfikator lokacji.                             & Klucz obcy → Places       \\ \hline
+    \end{tabular}
+    \label{tab:rounds}
 \end{table}
 
 \textbf{Places (Lokacje)} – tabela przechowująca informacje o lokacjach dostępnych w grze.
 
 \begin{table}[H]
-\centering
-\caption{Tabela \texttt{Places}}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
-\hline
-\textbf{Atrybut} & \textbf{Opis} & \textbf{Typ / Uwagi} \\ \hline
-ID & Unikalny identyfikator lokacji. & Klucz główny \\ \hline
-Name & Nazwa lokacji. & Tekst \\ \hline
-Description & Opis lokacji. & Tekst \\ \hline
-Latitude & Szerokość geograficzna lokacji. & Liczba zmiennoprzecinkowa \\ \hline
-Longitude & Długość geograficzna lokacji. & Liczba zmiennoprzecinkowa \\ \hline
-Difficulty & Poziom trudności lokacji. & Enumeracja \\ \hline
-ImageUrl & Adres URL obrazu lokacji. & Tekst \\ \hline
-AltImage & Tekst alternatywny dla obrazu lokacji. & Tekst \\ \hline
-CreationTime & Data i czas dodania lokacji. & Data/Czas \\ \hline
-AuthorID & Identyfikator autora lokacji. & Klucz obcy → Users \\ \hline
-\end{tabular}
+    \centering
+    \caption{Tabela \texttt{Places}}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
+        \hline
+        \textbf{Atrybut} & \textbf{Opis}                          & \textbf{Typ / Uwagi}      \\ \hline
+        ID               & Unikalny identyfikator lokacji.        & Klucz główny              \\ \hline
+        Name             & Nazwa lokacji.                         & Tekst                     \\ \hline
+        Description      & Opis lokacji.                          & Tekst                     \\ \hline
+        Latitude         & Szerokość geograficzna lokacji.        & Liczba zmiennoprzecinkowa \\ \hline
+        Longitude        & Długość geograficzna lokacji.          & Liczba zmiennoprzecinkowa \\ \hline
+        Difficulty       & Poziom trudności lokacji.              & Enumeracja                \\ \hline
+        ImageUrl         & Adres URL obrazu lokacji.              & Tekst                     \\ \hline
+        AltImage         & Tekst alternatywny dla obrazu lokacji. & Tekst                     \\ \hline
+        CreationTime     & Data i czas dodania lokacji.           & Data/Czas                 \\ \hline
+        AuthorID         & Identyfikator autora lokacji.          & Klucz obcy → Users        \\ \hline
+    \end{tabular}
 \end{table}
 
 \section{Analiza interakcji użytkownika z systemem (Michał Turski)}
