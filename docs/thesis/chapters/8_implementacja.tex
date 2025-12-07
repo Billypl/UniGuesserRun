@@ -12,45 +12,45 @@ W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikac
 W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej struktury frontendowej, która wygląda następująco:
 
 \dirtree{%
-    .1 frontend/.
-    .2 node\_modules/ - przechowywanie zainstalowanych zależności przez npm.
-    .2 public/        - zasoby publiczne części frontendu projektu.
-    .3 index.html     - korzeń html całej aplikacji.
-    .3 favicon.ico    - ikona aplikacji wyświetlana w karcie przeglądarki.
-    .3 manifest.json  - metadane aplikacji, przydatne szczególnie w PWA.
-    .2 src/           - źródło danych, w którym przechowywane jest większość plików.
-    .3 assets/        - statyczne assety typu obrazki, fonty.
-    .4 images/.
-    .4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej aplikacji,\\ załączone  w readme w repozytorium na githubie.
-    .3 components/    - elementy interfejsu.
-    .3 css/           - pliki css służące za nadanie odpowiedniego wyglądu, automatyczne wygenerowane podczas stawiania aplikacji.
-    .3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu i efektów.
-    .3 models/        - definicje interfejsów danych wykorzystywanych w innych częściach aplikacji.
-    .4 account/       - interfejsy związane z logowaniem i rejestracją użytkowników.
-    .4 game/          - interfejsy związane z rozgrywką.
-    .4 place/         - interfejsy związane z lokalizacjami.
-    .4 scoreboard/    - interfejsy związane z rankingiem graczy.
-    .3 pages/         - strony łączące elementy interfejsu (strona główna, strona logowania).
-    .3 services/      - requesty do API (własnych i zewnętrznych).
-    .4 api/           - requesty do własnych API.
-    .3 styles/        - elementy interfejsu.
-    .4 utils/         - małe funkcje pomocnicze.
+  .1 frontend/.
+  .2 node\_modules/ - przechowywanie zainstalowanych zależności przez npm.
+  .2 public/        - zasoby publiczne części frontendu projektu.
+  .3 index.html     - korzeń html całej aplikacji.
+  .3 favicon.ico    - ikona aplikacji wyświetlana w karcie przeglądarki.
+  .3 manifest.json  - metadane aplikacji, przydatne szczególnie w PWA.
+  .2 src/           - źródło danych, w którym przechowywane jest większość plików.
+  .3 assets/        - statyczne assety typu obrazki, fonty.
+  .4 images/.
+  .4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej aplikacji,\\ załączone  w readme w repozytorium na githubie.
+  .3 components/    - elementy interfejsu.
+  .3 css/           - pliki css służące za nadanie odpowiedniego wyglądu, automatyczne wygenerowane podczas stawiania aplikacji.
+  .3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu i efektów.
+  .3 models/        - definicje interfejsów danych wykorzystywanych w innych częściach aplikacji.
+  .4 account/       - interfejsy związane z logowaniem i rejestracją użytkowników.
+  .4 game/          - interfejsy związane z rozgrywką.
+  .4 place/         - interfejsy związane z lokalizacjami.
+  .4 scoreboard/    - interfejsy związane z rankingiem graczy.
+  .3 pages/         - strony łączące elementy interfejsu (strona główna, strona logowania).
+  .3 services/      - requesty do API (własnych i zewnętrznych).
+  .4 api/           - requesty do własnych API.
+  .3 styles/        - elementy interfejsu.
+  .4 utils/         - małe funkcje pomocnicze.
 }
 
 Pozwoliła ona nam zadbać o porządek implementowanych funkcjonalności i ułatwić odnajdywanie odpowiednich fragmentów kodu, w krótkim czasie. Miało to szczególne znaczenie przy implementacji głównych komponentów takich jak mapa, panel rozgrywki czy formularze rejestracji i logowania.
 
-Kluczowym elementem implementacji frontendu jest podział na komponenty. W projekcie UniGuesser zostało to zrealizowane poprzez wykorzystanie technologii React oraz TypeScript, z wykorzystaniem bibliotek takich jak Leaflet do obsługi map. Architektura warstwy prezentacji została rozdzielona od logiki biznesowej, ktora została umieszczona w odpowiednich serwisach i hookach. 
+Kluczowym elementem implementacji frontendu jest podział na komponenty. W projekcie UniGuesser zostało to zrealizowane poprzez wykorzystanie technologii React oraz TypeScript, z wykorzystaniem bibliotek takich jak Leaflet do obsługi map. Architektura warstwy prezentacji została rozdzielona od logiki biznesowej, ktora została umieszczona w odpowiednich serwisach i hookach.
 
 Głównymi komponentami interfejsu są:
 \begin{itemize}
-	\item Panel gry - wyświetlanie rundy, mapy, aktualnego wyniku i przycisków sterujących rozgrywką
-	\item Mapa - wyświetlanie lokalizacji, wyświetlanie wybranego miejsca, interakcja z mapą
-	\item Formularze - logowanie, rejestracja, dodawanie nowych miejsc, edycja miejsc
+  \item Panel gry - wyświetlanie rundy, mapy, aktualnego wyniku i przycisków sterujących rozgrywką
+  \item Mapa - wyświetlanie lokalizacji, wyświetlanie wybranego miejsca, interakcja z mapą
+  \item Formularze - logowanie, rejestracja, dodawanie nowych miejsc, edycja miejsc
 \end{itemize}
 
 Panel gry jest fokalnym punktem interakcji użytkownika z aplikacją, dlatego posłuży jako przykład implementacji komponentów. To właśnie tutaj użytkownik spędzi najwięcej czasu, dlatego istotne było, aby nie tylko był on intuicyjny i łatwy w obsłudze, ale również kod był czytelny i łatwy do utrzymania.
 
-Komponent \texttt{game} pełni rolę centralnego modułu odpowiedzialnego za stworzenie i rozpoczęcie rozgrywki, w tym ustawienie wybranych przez użytkownika trybu gry, trudności, również za pobranie informacji o ewentualnej istniejącej rozgrywce do wznowienia. 
+Komponent \texttt{game} pełni rolę centralnego modułu odpowiedzialnego za stworzenie i rozpoczęcie rozgrywki, w tym ustawienie wybranych przez użytkownika trybu gry, trudności, również za pobranie informacji o ewentualnej istniejącej rozgrywce do wznowienia.
 
 \begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczęcia procesu rozpoczęcia rozgrywki}, label={lst:front-game-start}]
 const startGame = async (signal: AbortSignal) => {
@@ -100,7 +100,7 @@ const fetchGuessingPlace = async () => {
 
 Wysyła żądania do backendu poprzez serwis \texttt{gameService}, który zarządza komunikacją z API, m.in. prosząc o numer danej rundy, zdjęcie jej lokacji oraz współrzędne lokalizacji. Po uzyskaniu danych gra jest zainicjowalizowana, runda jest rozpoczęta, a gracz może przystąpić do zabawy. Komponent \texttt{game} zarządza również stanem gry, obsługując przejścia między rundami, aktualizację wyniku oraz zakończenie gry. Po zakończeniu gry, komponent ten przekierowuje użytkownika do osobnego komponentu \texttt{gameResults}.
 
-Wyświetlenie panelu rozgrywki jest realizowane za pomocą kompontentu do wyświetlania UI o nazwie \texttt{GameInterface}. Funkcja w \texttt{game} zwraca strukturę HTML panelu gry, zawierającą główny komponent GameInterface z odpowiednimi właściwościami przekazywanymi jako propsy. 
+Wyświetlenie panelu rozgrywki jest realizowane za pomocą kompontentu do wyświetlania UI o nazwie \texttt{GameInterface}. Funkcja w \texttt{game} zwraca strukturę HTML panelu gry, zawierającą główny komponent GameInterface z odpowiednimi właściwościami przekazywanymi jako propsy.
 
 \begin{lstlisting}[language=JavaScript, caption={Proces przekazania danych ze strony rozgrywki do komponentu odpowiadającego za jego UI - GameInterface}, label={lst:front-game-return-interface}]
 return (
@@ -138,10 +138,10 @@ Dodatkowo, rozszerzenie .scss pozwala na zagnieżdżanie stylów scss, tworzenia
 Ważną rolę w wytwarzaniu aplikacji UniGuesser grała jego kolorstyka, ze względu na jego inspirację Politechniką Gdańską. Dlatego też kluczowe było aby na całej przestrzeni aplikacji, użyte kolory były nie tylko jednakowe, ale również zgadzały się z podanymi wytycznymi zawartych w Księdze Identyfikacji Wizualnej politechniki \cite{visual-book-pg}. W tym celu powstał plik \texttt{\_Colors.scss}, odpowiedzialny za definicję niestandardowych kolorów użytych w elementach interfejsu w całej aplikacji.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/visual_colors_pg.png}
-    \caption{Kolorystyka Politechniki Gdańskiej według Księgi Identyfikacji Wizualnej \cite{visual-book-pg}}
-    \label{fig:colouring-pg}
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/visual_colors_pg.png}
+  \caption{Kolorystyka Politechniki Gdańskiej według Księgi Identyfikacji Wizualnej \cite{visual-book-pg}}
+  \label{fig:colouring-pg}
 \end{figure}
 
 \begin{lstlisting}[language=JavaScript, caption={Plik \_Colors.scss ze zdefiniowanymi kolorami interfejsu}, label={lst:front-colors}]
@@ -165,10 +165,10 @@ Tworząc aplikację PWA, zadbaliśmy o to, aby była ona responsywna i dostosowy
 
 % Dodanie zdjęcia hamburger menu%
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
-    \caption{Hamburger menu w widoku mobilnym aplikacji UniGuesser}
-    \label{fig:hamburger-menu}
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/kawunia.png}
+  \caption{Hamburger menu w widoku mobilnym aplikacji UniGuesser}
+  \label{fig:hamburger-menu}
 \end{figure}
 
 \subsection{Obsługa interakcji użytkownika (Karina Wołoszyn)}
@@ -177,12 +177,12 @@ W Reactcie interaktywność powstaje dzięki wykorzystaniu funkcji useState, kt�
 
 W UniGuesser interakcja użytkownika z formularzami pojawia się w 5 miejscach:
 \begin{itemize}
-    \item logowaniu,
-    \item rejestracji,
-    \item wyborze ustawień gry,
-    \item dodawaniu nowych miejsc,
-    \item edycji miejsc z kolejki,
-    \item edycji dodanych miejsc.
+  \item logowaniu,
+  \item rejestracji,
+  \item wyborze ustawień gry,
+  \item dodawaniu nowych miejsc,
+  \item edycji miejsc z kolejki,
+  \item edycji dodanych miejsc.
 \end{itemize}
 
 Zasadę mechaniki działania obsługi formularzy przedstawia listingi \ref{lst:front-form-field} oraz \ref{lst:front-form-login}. W pierwszym z nich znajduje się implementacja uniwersalnego pola formularza. Uniwersalne pole formularza przyjmuję jako parametry takie jak etykieta, nazwa pola, typ, domyślna wartość, funkcja rejestrująca pole w useForm, funkcja obsługująca zmianę wartości, komunikat o błędzie oraz akceptowane typy plików (w przypadku pola typu file). Dzięki temu możliwe jest wielokrotne wykorzystanie tego samego komponentu w różnych formularzach, co zwiększa spójność i ułatwia utrzymanie kodu.
@@ -243,17 +243,17 @@ Przykładem zastosowania uniwersalnego pola formularza jest formularz logowania 
 
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
-    \caption{Formularz logowania w aplikacji UniGuesser}
-    \label{fig:login-form}
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/kawunia.png}
+  \caption{Formularz logowania w aplikacji UniGuesser}
+  \label{fig:login-form}
 \end{figure}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
-    \caption{Formularz rejestracji w aplikacji UniGuesser}
-    \label{fig:register-form}
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/kawunia.png}
+  \caption{Formularz rejestracji w aplikacji UniGuesser}
+  \label{fig:register-form}
 \end{figure}
 
 Na takiej samej zasadzie działają pozostałe formularze w aplikacji, co zapewnia spójność interfejsu i ułatwia zarządzanie stanem oraz walidacją danych wejściowych od użytkownika.
@@ -264,11 +264,11 @@ Do implementacji funkcjonalności związanej z lokalizacją użytkownika wykorzy
 
 \textbf{Główne założenia implementacyjne:}
 \begin{itemize}
-    \item Sprawdzenie uprawnień przez Permissions API przed żądaniem lokalizacji, by poprawnie obsłużyć przypadki odrzuconej zgody.
-    \item Użycie opcji \texttt{enableHighAccuracy}, \texttt{timeout} i \texttt{maximumAge} do balansowania dokładności i zużycia baterii.
-    \item Obsługa błędów (brak zgody, timeout, niedostępność) oraz mechanizm fallback — ręczne wprowadzenie lokalizacji przez użytkownika.
-    \item Wysyłanie zaktualizowanej pozycji na backend przez bezpieczne wywołanie API (z autoryzacją JWT) oraz aktualizacja widoku mapy (np. Leaflet / Mapbox).
-    \item W trybie PWA uwzględniono, że żądania lokalizacji mogą być ograniczone w tle — należy testować zachowanie na docelowych platformach.
+  \item Sprawdzenie uprawnień przez Permissions API przed żądaniem lokalizacji, by poprawnie obsłużyć przypadki odrzuconej zgody.
+  \item Użycie opcji \texttt{enableHighAccuracy}, \texttt{timeout} i \texttt{maximumAge} do balansowania dokładności i zużycia baterii.
+  \item Obsługa błędów (brak zgody, timeout, niedostępność) oraz mechanizm fallback — ręczne wprowadzenie lokalizacji przez użytkownika.
+  \item Wysyłanie zaktualizowanej pozycji na backend przez bezpieczne wywołanie API (z autoryzacją JWT) oraz aktualizacja widoku mapy (np. Leaflet / Mapbox).
+  \item W trybie PWA uwzględniono, że żądania lokalizacji mogą być ograniczone w tle — należy testować zachowanie na docelowych platformach.
 \end{itemize}
 
 W listingu \ref{lst:front-geolocation-watch} znajduje się przykładowy fragment kodu (TypeScript) użyty we frontendzie, ilustrujący sposób integracji z Geolocation API.
@@ -423,9 +423,9 @@ Stała \texttt{PLACE\_API\_URL} definiuje bazowy adres API dla zasobów związan
 \subsection{Mechanizmy PWA (Filip Jezierski)}
 Aplikacja została zaprojektowana jako Progressive Web Application (PWA)~\cite{pwa-docs}, co umożliwia użytkownikom instalację aplikacji na urządzeniach mobilnych oraz korzystanie z niej w trybie offline. Kluczowe mechanizmy PWA wymagane do poprawnego działania aplikacji to:
 \begin{itemize}
-    \item \textbf{Service Worker}: W bibliotece Vite wykorzystano wtyczkę \texttt{vite-plugin-pwa}, która automatycznie generuje i rejestruje Service Workera. Service Worker zarządza cache'owaniem zasobów statycznych (HTML, CSS, JavaScript, obrazy) oraz dynamicznych danych API, co pozwala na szybkie ładowanie aplikacji nawet przy braku połączenia z internetem~\cite{service-worker-docs}.
-    \item \textbf{Manifest aplikacji}: Plik manifestu definiuje metadane aplikacji, takie jak nazwa, ikony, kolor motywu oraz sposób uruchamiania~\cite{web-app-manifest}. Dzięki temu użytkownicy mogą dodać aplikację do ekranu głównego swoich urządzeń mobilnych, co zapewnia doświadczenie podobne do natywnej aplikacji. Manifest został zdefiniowany w pliku konfiguracyjnym Vite, gdzie określono podstawowe informacje o aplikacji oraz ikony w różnych rozmiarach.
-    \item \textbf{Responsywność}: Aplikacja została zaprojektowana z myślą o różnych rozmiarach ekranów, co zapewnia optymalne doświadczenie użytkownika zarówno na komputerach, jak i urządzeniach mobilnych.
+  \item \textbf{Service Worker}: W bibliotece Vite wykorzystano wtyczkę \texttt{vite-plugin-pwa}, która automatycznie generuje i rejestruje Service Workera. Service Worker zarządza cache'owaniem zasobów statycznych (HTML, CSS, JavaScript, obrazy) oraz dynamicznych danych API, co pozwala na szybkie ładowanie aplikacji nawet przy braku połączenia z internetem~\cite{service-worker-docs}.
+  \item \textbf{Manifest aplikacji}: Plik manifestu definiuje metadane aplikacji, takie jak nazwa, ikony, kolor motywu oraz sposób uruchamiania~\cite{web-app-manifest}. Dzięki temu użytkownicy mogą dodać aplikację do ekranu głównego swoich urządzeń mobilnych, co zapewnia doświadczenie podobne do natywnej aplikacji. Manifest został zdefiniowany w pliku konfiguracyjnym Vite, gdzie określono podstawowe informacje o aplikacji oraz ikony w różnych rozmiarach.
+  \item \textbf{Responsywność}: Aplikacja została zaprojektowana z myślą o różnych rozmiarach ekranów, co zapewnia optymalne doświadczenie użytkownika zarówno na komputerach, jak i urządzeniach mobilnych.
 \end{itemize}
 
 W listingu \ref{lst:vite-pwa-config} przedstawiono użytą konfiguracja Vite, która zawiera zarówno rejestrację Service Workera, jak i definicję manifestu aplikacji.
@@ -615,7 +615,7 @@ W przypadku użytkownika niezalogowanego aplikacja dodatkowo generuje i zwraca t
 
 Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
 \texttt{api/game/{gameId}/round/{roundNumber}},
-gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} – numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
+gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} - numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
 
 W przypadku trybu geolokalizacyjnego również możliwe jest wywołanie
 \texttt{api/game/{gameId}/round/distance},
@@ -808,19 +808,19 @@ Początkowo w projekcie UniGuesserRun wykorzystywana była nierelacyjna baza dan
 
 Wraz z rozwojem projektu pojawiły się jednak bardziej złożone zależności między encjami. Do systemu wprowadzono m.in.:
 \begin{itemize}
-    \item odwzorowanie powiązań między użytkownikami a ich grami i wynikami,
-    \item modele opisujące konkretne lokalizacje oraz zestawy punktów do odgadnięcia,
-    \item tryby gry, w których wiele danych wymagało spójnego współdzielenia — na przykład historia rozgrywek, przebieg sesji czy relacje między elementami mapy.
+  \item odwzorowanie powiązań między użytkownikami a ich grami i wynikami,
+  \item modele opisujące konkretne lokalizacje oraz zestawy punktów do odgadnięcia,
+  \item tryby gry, w których wiele danych wymagało spójnego współdzielenia — na przykład historia rozgrywek, przebieg sesji czy relacje między elementami mapy.
 \end{itemize}
 
 W takim środowisku relacyjny model danych okazał się bardziej naturalny i korzystny. Konieczność odpytywania o zależności, łączenia informacji z wielu źródeł oraz zapewnienia spójności referencyjnej była trudna do osiągnięcia w MongoDB bez dodatkowej logiki aplikacyjnej. Z czasem coraz wyraźniej było widać, że struktura dokumentowa prowadzi do duplikacji danych, a utrzymanie integralności wymaga dodatkowego wysiłku.
 
 Z tego powodu podjęto decyzję o migracji na relacyjną bazę danych. Model relacyjny ułatwił:
 \begin{itemize}
-    \item odwzorowanie powiązań typu \textit{jeden-do-wielu},
-    \item zachowanie integralności dzięki kluczom obcym,
-    \item wykonywanie złożonych zapytań analitycznych,
-    \item spójne przechowywanie danych użytkowników oraz historii rozgrywek.
+  \item odwzorowanie powiązań typu \textit{jeden-do-wielu},
+  \item zachowanie integralności dzięki kluczom obcym,
+  \item wykonywanie złożonych zapytań analitycznych,
+  \item spójne przechowywanie danych użytkowników oraz historii rozgrywek.
 \end{itemize}
 
 Zmiana przyniosła również pozytywny efekt długoterminowy: architektura backendu stała się bardziej przewidywalna, łatwiejsza do rozwijania oraz zgodna z dobrymi praktykami projektowania systemów grywalizacyjnych, w których dane użytkowników i stan gry odgrywają kluczową rolę.
@@ -839,10 +839,10 @@ W folderze \texttt{Migrations} przechowywane są pliki migracji, które zawieraj
 W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku deweloperskim wykorzystano narzędzia Adminer i  PGAdmin. Adminer to lekka aplikacja webowa napisana w PHP, która umożliwia łatwe przeglądanie, edytowanie i zarządzanie bazami danych poprzez interfejs przeglądarki internetowej. Natomiast z PGadmina korzystano z wersji desktopowej, która umożliwia bardziej zaawansowane zarządzanie bazą danych, w tym tworzenie zapytań SQL, monitorowanie wydajności oraz zarządzanie użytkownikami i uprawnieniami~\cite{pgadmin-docs}.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./images/pgadmin.png}
-    \caption{Zrzut ekranu przedstawiający interfejs narzędzia PGAdmin z widokiem na strukturę bazy danych aplikacji UniGuesser.}
-    \label{fig:use-case-diagram}
+  \centering
+  \includegraphics[width=1.0\textwidth]{./images/pgadmin.png}
+  \caption{Zrzut ekranu przedstawiający interfejs narzędzia PGAdmin z widokiem na strukturę bazy danych aplikacji UniGuesser.}
+  \label{fig:use-case-diagram}
 \end{figure}
 
 \section{Devops i wdrożenie aplikacji}
@@ -853,9 +853,9 @@ W tej sekcji opisano proces przygotowania, uruchamiania oraz wdrażania aplikacj
 
 Środowisko deweloperskie zostało zaprojektowane tak, aby umożliwić szybkie iteracje oraz łatwe debugowanie. Kluczowe założenia:
 \begin{itemize}
-    \item Oddzielne kontenery dla frontendu (React/TypeScript) i backendu (ASP.NET Core) uruchamiane w trybie \texttt{watch/hot reload}.
-    \item Kontener bazy danych PostgreSQL oraz (opcjonalnie) narzędzie \texttt{Adminer} do inspekcji danych.
-    \item Użycie pliku \texttt{docker-compose.dev.yaml} do orkiestracji wielokontenerowego środowiska.
+  \item Oddzielne kontenery dla frontendu (React/TypeScript) i backendu (ASP.NET Core) uruchamiane w trybie \texttt{watch/hot reload}.
+  \item Kontener bazy danych PostgreSQL oraz (opcjonalnie) narzędzie \texttt{Adminer} do inspekcji danych.
+  \item Użycie pliku \texttt{docker-compose.dev.yaml} do orkiestracji wielokontenerowego środowiska.
 \end{itemize}
 
 Konfiguracja usług w pliku compose dla środowiska deweloperskiego może zawierać sekcje z wolumenami mapowanymi na katalogi źródłowe, aby kod był automatycznie odświeżany. Backend korzysta z \texttt{dotnet watch run}, frontend z \texttt{npm start}. Daje to krótki cykl: edycja $\rightarrow$ zapis $\rightarrow$ natychmiastowy efekt. Eliminuje to długie czasy rekompilacji całej aplikacji.
@@ -866,20 +866,20 @@ Konfiguracja usług w pliku compose dla środowiska deweloperskiego może zawier
 
 W środowisku produkcyjnym nacisk położono na izolację usług, bezpieczeństwo i skalowalność. Kluczowe elementy:
 \begin{itemize}
-    \item Użycie pliku \texttt{docker-compose.prod.yaml} z obrazami już zbudowanymi (bez mountowania kodu źródłowego).
-    \item Wprowadzenie reverse proxy Nginx jako pojedynczego punktu wejścia (terminacja TLS, routing do usług wewnętrznych).
-    \item Minimalizacja rozmiaru obrazów przez wykorzystanie wieloetapowych buildów (ang. \textit{multi-stage}) w Dockerfile backendu i frontendu.
-    \item Brak narzędzi administracyjnych (np. Adminer) w docelowym środowisku — uruchamiane jedynie tymczasowo przy potrzebie migracji lub analizy.
+  \item Użycie pliku \texttt{docker-compose.prod.yaml} z obrazami już zbudowanymi (bez mountowania kodu źródłowego).
+  \item Wprowadzenie reverse proxy Nginx jako pojedynczego punktu wejścia (terminacja TLS, routing do usług wewnętrznych).
+  \item Minimalizacja rozmiaru obrazów przez wykorzystanie wieloetapowych buildów (ang. \textit{multi-stage}) w Dockerfile backendu i frontendu.
+  \item Brak narzędzi administracyjnych (np. Adminer) w docelowym środowisku — uruchamiane jedynie tymczasowo przy potrzebie migracji lub analizy.
 \end{itemize}
 
 \subsection{Pliki docker-compose i ich role}
 
 W projekcie zastosowano kilka wariantów plików \texttt{docker-compose}. Mają one strukturę kaskadową:
 \begin{description}
-    \item[\texttt{docker-compose.infra.yaml}] Definicje infrastrukturalne (baza danych, narzędzia pomocnicze). Pozwala odseparować warstwę aplikacyjną od zasobów zewnętrznych.
-    \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną; umożliwia uruchomienie backendu poza kontenerem.
-    \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe elementy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
-    \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji; brak wolumenów źródłowych; zmienne środowiskowe wczytywane z plików \texttt{.env}; integracja z Nginx.
+  \item[\texttt{docker-compose.infra.yaml}] Definicje infrastrukturalne (baza danych, narzędzia pomocnicze). Pozwala odseparować warstwę aplikacyjną od zasobów zewnętrznych.
+  \item[\texttt{docker-compose.dev.yaml}] Konfiguracja zawierająca część frontendową oraz infrastrukturalną; umożliwia uruchomienie backendu poza kontenerem.
+  \item[\texttt{docker-compose.yaml}] Plik zawierający wszystkie powyższe elementy, gotowy do uruchomienia przez członków zespołu bez zbędnej konfiguracji.
+  \item[\texttt{docker-compose.prod.yaml}] Uporządkowane obrazy z tagami wersji; brak wolumenów źródłowych; zmienne środowiskowe wczytywane z plików \texttt{.env}; integracja z Nginx.
 \end{description}
 
 Struktura ta pozwala na nadpisywanie sekcji (\textit{override}) dla danego środowiska.
@@ -888,10 +888,10 @@ Struktura ta pozwala na nadpisywanie sekcji (\textit{override}) dla danego środ
 
 Pierwotnie rozważano generowanie i instalację certyfikatów HTTPS w każdej części aplikacji osobno (frontend i backend). Takie rozwiązanie zwiększało złożoność utrzymania (odnawianie, dystrybucja, synchronizacja dat ważności). Zamiast tego wprowadzono warstwę \texttt{Nginx} jako reverse proxy z terminacją TLS:
 \begin{itemize}
-    \item Jeden certyfikat (np. Let's Encrypt) dla domeny głównej.
-    \item Uproszczona konfiguracja \texttt{appsettings.json} — backend może działać na HTTP wewnątrz sieci Docker.
-    \item Brak potrzeby modyfikowania konfiguracji frontendu przy odnowieniu certyfikatu — zmiana dotyczy wyłącznie proxy.
-    \item Możliwość dodania reguł bezpieczeństwa (rate limiting, nagłówki CSP, HSTS) w jednym miejscu.
+  \item Jeden certyfikat (np. Let's Encrypt) dla domeny głównej.
+  \item Uproszczona konfiguracja \texttt{appsettings.json} — backend może działać na HTTP wewnątrz sieci Docker.
+  \item Brak potrzeby modyfikowania konfiguracji frontendu przy odnowieniu certyfikatu — zmiana dotyczy wyłącznie proxy.
+  \item Możliwość dodania reguł bezpieczeństwa (rate limiting, nagłówki CSP, HSTS) w jednym miejscu.
 \end{itemize}
 
 \paragraph{Korzyści architektoniczne} Centralizacja TLS redukuje liczbę punktów potencjalnych błędów i przyspiesza automatyzację (skrypt odnawiający certyfikat uruchamiany cyklicznie w kontenerze \texttt{certbot}).
@@ -904,10 +904,10 @@ W katalogu \texttt{https/} znajdował się lokalny certyfikat deweloperski \text
 
 Proces publikacji obrazu na \texttt{Docker Hub} obejmuje kroki:
 \begin{enumerate}
-    \item Budowa obrazu (np. \texttt{docker build -t użytkownik/nazwa:tag .}).
-    \item Logowanie do rejestru (\texttt{docker login}).
-    \item Wysłanie obrazu (\texttt{docker push użytkownik/nazwa:tag}).
-    \item Opcjonalne użycie wersjonowania semantycznego (\texttt{1.2.0}, \texttt{latest}).
+  \item Budowa obrazu (np. \texttt{docker build -t użytkownik/nazwa:tag .}).
+  \item Logowanie do rejestru (\texttt{docker login}).
+  \item Wysłanie obrazu (\texttt{docker push użytkownik/nazwa:tag}).
+  \item Opcjonalne użycie wersjonowania semantycznego (\texttt{1.2.0}, \texttt{latest}).
 \end{enumerate}
 
 Multi-stage build pozwala oddzielić etap kompilacji (cięższy obraz z SDK) od etapu wykonawczego (lżejszy runtime). Zmniejsza to czas pobierania i powierzchnię ataku.
@@ -918,11 +918,11 @@ Multi-stage build pozwala oddzielić etap kompilacji (cięższy obraz z SDK) od 
 
 Konfiguracja jest rozproszona pomiędzy kilka plików i mechanizmów:
 \begin{itemize}
-    \item Pliki \texttt{.env} — zawierają wrażliwe lub zmienne środowiskowe (np. connection string do PostgreSQL, sekrety JWT). W plikach compose referencje przez \texttt{\$\{NAZWA\_ZMIENNEJ\}}.
-    \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} — warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
-    \item \texttt{launchSettings.json} — używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpiony przez konfigurację kontenera + reverse proxy.
-    \item Frontend \texttt{Constants.ts} — zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
-    \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
+  \item Pliki \texttt{.env} — zawierają wrażliwe lub zmienne środowiskowe (np. connection string do PostgreSQL, sekrety JWT). W plikach compose referencje przez \texttt{\$\{NAZWA\_ZMIENNEJ\}}.
+  \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} — warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
+  \item \texttt{launchSettings.json} — używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpiony przez konfigurację kontenera + reverse proxy.
+  \item Frontend \texttt{Constants.ts} — zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
+  \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
 \end{itemize}
 
 Mechanizm konfiguracji w ASP.NET Core scalający źródła (pliki, zmienne środowiskowe, sekrety użytkownika) umożliwia elastyczne przełączanie środowisk bez modyfikacji kodu.
@@ -933,10 +933,10 @@ Mechanizm konfiguracji w ASP.NET Core scalający źródła (pliki, zmienne środ
 
 Cały proces startu w produkcji można streścić następująco:
 \begin{enumerate}
-    \item Nginx startuje i ładuje certyfikat TLS.
-    \item Backend uruchamia się w trybie HTTP wewnątrz sieci Docker, migracje bazy wykonywane automatycznie na starcie (opcjonalnie sterowane flagą).
-    \item Frontend serwowany jako statyczne pliki (np. z \texttt{nginx}) lub z dedykowanego kontenera serwera plików.
-    \item Nginx przekazuje żądania \texttt{/api} do backendu, a pozostałe ścieżki obsługuje przez serwowanie SPA.
+  \item Nginx startuje i ładuje certyfikat TLS.
+  \item Backend uruchamia się w trybie HTTP wewnątrz sieci Docker, migracje bazy wykonywane automatycznie na starcie (opcjonalnie sterowane flagą).
+  \item Frontend serwowany jako statyczne pliki (np. z \texttt{nginx}) lub z dedykowanego kontenera serwera plików.
+  \item Nginx przekazuje żądania \texttt{/api} do backendu, a pozostałe ścieżki obsługuje przez serwowanie SPA.
 \end{enumerate}
 
 \subsection{Podsumowanie sekcji DevOps}

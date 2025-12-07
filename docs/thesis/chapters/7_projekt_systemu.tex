@@ -6,10 +6,10 @@ Niniejszy rozdział przedstawia szczegółowy projekt systemu aplikacji webowej 
 W aplikacji zastosowano architekturę warstwową, której szczegółowa implementacja zostanie opisana w niniejszym rozdziale. Na najwyższym poziomie abstrakcji system można podzielić na trzy główne warstwy: warstwę prezentacji (frontend), warstwę logiki biznesowej (backend) oraz warstwę persystencji danych (baza danych). Podział ten odzwierciedla sposób izolowania odpowiedzialności poszczególnych komponentów. Dzięki temu użytkownik komunikuje się z aplikacją poprzez interfejs użytkownika, który następnie przekazuje żądania do warstwy logiki biznesowej. Ta z kolei przetwarza żądania, wykonuje odpowiednie operacje i komunikuje się z bazą danych w celu przechowywania lub pobierania danych.
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./images/architecture-overview.png}
-    \caption{Uproszczony schemat architektury systemu UniGuesser – ogólny podział na warstwy}
-    \label{fig:architecture-overview}
+  \centering
+  \includegraphics[width=1.0\textwidth]{./images/architecture-overview.png}
+  \caption{Uproszczony schemat architektury systemu UniGuesser - ogólny podział na warstwy}
+  \label{fig:architecture-overview}
 \end{figure}
 
 
@@ -22,17 +22,17 @@ Ponadto zdecydowaliśmy na wybór architektury monolitycznej ze względu na szyb
 Wykorzystany został również wzorzec CQRS. Zakłada on rozdzielenie operacji modyfikujących stan systemu (komendy) od operacji, które odczytują dane (zapytania). Pozwala to na lepsze skalowanie i rozdzielenie logiki aplikacji. Dzięki temu można optymalizować każdą z tych operacji niezależnie, co przekłada się na wydajność i czytelność kodu. ~\cite{microsoft-cqrs} W kontekście skalowalności systemu zastosowano uproszczoną implementację wzorca CQRS z pojedynczą bazą danych ze względu na:
 
 \begin{itemize}
-    \item Przewidywane obciążenie do 50 zapytań na sekundę, co nie wymagało zastosowania osobnych baz danych do odczytu i zapisu.
-    \item Jedno źródło danych - uproszczenie architektury i zmniejszenie kosztów utrzymania systemu.
-    \item Przy implementacji nowej funkcjonalności, można łatwo dodać nowe komendy i zapytania bez wpływu na istniejące funkcjonalności.
+  \item Przewidywane obciążenie do 50 zapytań na sekundę, co nie wymagało zastosowania osobnych baz danych do odczytu i zapisu.
+  \item Jedno źródło danych - uproszczenie architektury i zmniejszenie kosztów utrzymania systemu.
+  \item Przy implementacji nowej funkcjonalności, można łatwo dodać nowe komendy i zapytania bez wpływu na istniejące funkcjonalności.
 \end{itemize}
 
 Dodatkowo CQRS pełni rolę organizacyjną. Wszystkie zapytania i komendy znajdują się w osobnych folderach, co ułatwia nawigację i zrozumienie logiki aplikacji.
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./images/cqrs-communication.png}
-    \caption{Schemat komunikacji przy zastosowaniu wzorca CQRS}
-    \label{fig:cqrs-communication}
+  \centering
+  \includegraphics[width=1.0\textwidth]{./images/cqrs-communication.png}
+  \caption{Schemat komunikacji przy zastosowaniu wzorca CQRS}
+  \label{fig:cqrs-communication}
 \end{figure}
 
 
@@ -42,19 +42,19 @@ Model systemu zaprojektowano zgodnie z podejściem \textbf{Domain-Driven Design}
 
 W rezultacie aplikacja została podzielona na cztery główne warstwy:
 \begin{itemize}
-    \item Warstwa API – punkt wejściowy systemu, który odbiera żądania użytkowników (HTTP), mapuje je na komendy/zapytania i przekazuje do warstwy Application.
-    \item Aplikacji - warstwa zarządzająca przypadkami użycia: waliduje żądania, koordynuje operacje i wywołuje logikę domenową.
-    \item Domeny -  serce aplikacji, zawierająca modele domenowe, encje, agregaty oraz logikę biznesową.
-    \item Infrastruktury - warstwa techniczna odpowiedzialna za zapis i odczyt danych (baza, pliki, integracje), implementująca repozytoria i usługi potrzebne aplikacji.
+  \item Warstwa API - punkt wejściowy systemu, który odbiera żądania użytkowników (HTTP), mapuje je na komendy/zapytania i przekazuje do warstwy Application.
+  \item Aplikacji - warstwa zarządzająca przypadkami użycia: waliduje żądania, koordynuje operacje i wywołuje logikę domenową.
+  \item Domeny -  serce aplikacji, zawierająca modele domenowe, encje, agregaty oraz logikę biznesową.
+  \item Infrastruktury - warstwa techniczna odpowiedzialna za zapis i odczyt danych (baza, pliki, integracje), implementująca repozytoria i usługi potrzebne aplikacji.
 \end{itemize}
 
 Warstwa prezentacji (frontend) komunikuje się wyłącznie z warstwą API. Warstwa API deleguje logikę do warstwy Application, ta korzysta z modelu domenowego (Domain), który z kolei używa Infrastructure do dostępu do bazy danych PostgreSQL.
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=.6\textwidth]{./images/ddd-model.drawio.png}
-    \caption{Warstwowy model aplikacji UniGuesser oparty na DDD i Czystej Architekturze}
-    \label{fig:erd-diagram}
+  \centering
+  \includegraphics[width=.6\textwidth]{./images/ddd-model.drawio.png}
+  \caption{Warstwowy model aplikacji UniGuesser oparty na DDD i Czystej Architekturze}
+  \label{fig:ddd-diagram}
 \end{figure}
 
 
@@ -70,94 +70,93 @@ W aplikacji zastosowano relacyjną bazę danych do przechowywania informacji o a
 Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-Relationship Diagram}) ilustruje strukturę bazy danych aplikacji UniGuesser, pokazując główne tabele oraz relacje między nimi. Użytkownik może posiadać wiele sesji gier, a każda sesja ma określoną liczbę rund, z których każda posiada przypisaną do siebie lokację. Ponadto każde miejsce może mieć swojego autora (użytkownika), który dodał je do bazy danych.
 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./images/erdDiagram.png}
-    \caption{Diagram ERD dla bazy danych aplikacji UniGuesser}
-    \label{fig:erd-diagram}
+  \centering
+  \includegraphics[width=1.0\textwidth]{./images/erdDiagram.png}
+  \caption{Diagram ERD dla bazy danych aplikacji UniGuesser}
+  \label{fig:erd-diagram}
 \end{figure}
+\newpage %TODO: fix%
 
 \subsection{Opis głównych tabel i związków}
 
-\begin{itemize}
-    \item \textbf{Users (Użytkownicy)} – tabela przechowująca informacje o użytkownikach aplikacji.
-\end{itemize}
+\textbf{Users (Użytkownicy)} - tabela przechowująca informacje o użytkownikach aplikacji.
 
 \begin{table}[H]
-    \caption{Tabela \texttt{Users}}
-    \centering
-    \renewcommand{\arraystretch}{1.2}
-    \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
-        \hline
-        \textbf{Atrybut} & \textbf{Opis}                                                & \textbf{Typ / Uwagi} \\ \hline
-        ID               & Unikalny identyfikator użytkownika.                          & Klucz główny         \\ \hline
-        Nickname         & Unikalna nazwa użytkownika.                                  & Tekst                \\ \hline
-        Email            & Unikalny adres e-mail użytkownika.                           & Tekst                \\ \hline
-        PasswordHash     & Zaszyfrowane hasło użytkownika.                              & Tekst                \\ \hline
-        CreatedAt        & Data i czas utworzenia konta.                                & Data/Czas            \\ \hline
-        Role             & Rola użytkownika w systemie (np. użytkownik, administrator). & Enumeracja           \\ \hline
-    \end{tabular}
+  \caption{Tabela \texttt{Users}}
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
+    \hline
+    \textbf{Atrybut} & \textbf{Opis}                                                & \textbf{Typ / Uwagi} \\ \hline
+    ID               & Unikalny identyfikator użytkownika.                          & Klucz główny         \\ \hline
+    Nickname         & Unikalna nazwa użytkownika.                                  & Tekst                \\ \hline
+    Email            & Unikalny adres e-mail użytkownika.                           & Tekst                \\ \hline
+    PasswordHash     & Zaszyfrowane hasło użytkownika.                              & Tekst                \\ \hline
+    CreatedAt        & Data i czas utworzenia konta.                                & Data/Czas            \\ \hline
+    Role             & Rola użytkownika w systemie (np. użytkownik, administrator). & Enumeracja           \\ \hline
+  \end{tabular}
 \end{table}
 
-\textbf{GameSessions (Sesje gier)} – tabela przechowująca informacje o aktywnych i zakończonych rozgrywkach.
+\textbf{GameSessions (Sesje gier)} - tabela przechowująca informacje o aktywnych i zakończonych rozgrywkach.
 
 \begin{table}[H]
-    \centering
-    \caption{Tabela \texttt{GameSessions}}
-    \renewcommand{\arraystretch}{1.2}
-    \begin{tabular}{|p{2.5cm}|p{7cm}|p{2cm}|}
-        \hline
-        \textbf{Atrybut} & \textbf{Opis}                           & \textbf{Typ / Uwagi} \\ \hline
-        ID               & Unikalny identyfikator sesji gry.       & Klucz główny         \\ \hline
-        GameMode         & Tryb gry w danej sesji.                 & Enumeracja           \\ \hline
-        GameEndDate      & Data, do której rozgrywka jest aktywna. & Data/Czas            \\ \hline
-        RoundNumber      & Aktualnie rozgrywana runda.             & Liczba               \\ \hline
-        GameScore        & Łączna liczba punktów zdobytych.        & Liczba całkowita     \\ \hline
-        Difficulty       & Poziom trudności sesji.                 & Enumeracja           \\ \hline
-        FinishedTime     & Data zakończenia rozgrywki.             & Data/Czas            \\ \hline
-        UserID           & Identyfikator użytkownika.              & Klucz obcy → Users   \\ \hline
-    \end{tabular}
-    \label{tab:game-sessions}
+  \centering
+  \caption{Tabela \texttt{GameSessions}}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|p{2.5cm}|p{7cm}|p{3cm}|}
+    \hline
+    \textbf{Atrybut} & \textbf{Opis}                           & \textbf{Typ / Uwagi} \\ \hline
+    ID               & Unikalny identyfikator sesji gry.       & Klucz główny         \\ \hline
+    GameMode         & Tryb gry w danej sesji.                 & Enumeracja           \\ \hline
+    GameEndDate      & Data, do której rozgrywka jest aktywna. & Data/Czas            \\ \hline
+    RoundNumber      & Aktualnie rozgrywana runda.             & Liczba               \\ \hline
+    GameScore        & Łączna liczba punktów zdobytych.        & Liczba całkowita     \\ \hline
+    Difficulty       & Poziom trudności sesji.                 & Enumeracja           \\ \hline
+    FinishedTime     & Data zakończenia rozgrywki.             & Data/Czas            \\ \hline
+    UserID           & Identyfikator użytkownika.              & Klucz obcy → Users   \\ \hline
+  \end{tabular}
+  \label{tab:game-sessions}
 \end{table}
 
-\textbf{Rounds (Rundy)} – tabela przechowująca informacje o poszczególnych rundach w sesji gry.
+\textbf{Rounds (Rundy)} - tabela przechowująca informacje o poszczególnych rundach w sesji gry.
 
 \begin{table}[H]
-    \centering
-    \caption{Tabela \texttt{Rounds}}
-    \renewcommand{\arraystretch}{1.2}
-    \begin{tabular}{|p{3cm}|p{7cm}|p{3cm}|}
-        \hline
-        \textbf{Atrybut} & \textbf{Opis}                                      & \textbf{Typ / Uwagi}      \\ \hline
-        ID               & Unikalny identyfikator rundy.                      & Klucz główny              \\ \hline
-        GuessedLatitude  & Szerokość geograficzna wskazana przez użytkownika. & Liczba zmiennoprzecinkowa \\ \hline
-        GuessedLongitude & Długość geograficzna wskazana przez użytkownika.   & Liczba zmiennoprzecinkowa \\ \hline
-        Score            & Punkty zdobyte w rundzie.                          & Liczba całkowita          \\ \hline
-        GameSessionID    & Identyfikator sesji gry.                           & Klucz obcy → GameSessions \\ \hline
-        LocationID       & Identyfikator lokacji.                             & Klucz obcy → Places       \\ \hline
-    \end{tabular}
-    \label{tab:rounds}
+  \centering
+  \caption{Tabela \texttt{Rounds}}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|p{2.5cm}|p{5cm}|p{5cm}|}
+    \hline
+    \textbf{Atrybut} & \textbf{Opis}                                      & \textbf{Typ / Uwagi}      \\ \hline
+    ID               & Unikalny identyfikator rundy.                      & Klucz główny              \\ \hline
+    GuessedLatitude  & Szerokość geograficzna wskazana przez użytkownika. & Liczba zmiennoprzecinkowa \\ \hline
+    GuessedLongitude & Długość geograficzna wskazana przez użytkownika.   & Liczba zmiennoprzecinkowa \\ \hline
+    Score            & Punkty zdobyte w rundzie.                          & Liczba całkowita          \\ \hline
+    GameSessionID    & Identyfikator sesji gry.                           & Klucz obcy → GameSessions \\ \hline
+    LocationID       & Identyfikator lokacji.                             & Klucz obcy → Places       \\ \hline
+  \end{tabular}
+  \label{tab:rounds}
 \end{table}
 
-\textbf{Places (Lokacje)} – tabela przechowująca informacje o lokacjach dostępnych w grze.
+\textbf{Places (Lokacje)} - tabela przechowująca informacje o lokacjach dostępnych w grze.
 
 \begin{table}[H]
-    \centering
-    \caption{Tabela \texttt{Places}}
-    \renewcommand{\arraystretch}{1.2}
-    \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
-        \hline
-        \textbf{Atrybut} & \textbf{Opis}                          & \textbf{Typ / Uwagi}      \\ \hline
-        ID               & Unikalny identyfikator lokacji.        & Klucz główny              \\ \hline
-        Name             & Nazwa lokacji.                         & Tekst                     \\ \hline
-        Description      & Opis lokacji.                          & Tekst                     \\ \hline
-        Latitude         & Szerokość geograficzna lokacji.        & Liczba zmiennoprzecinkowa \\ \hline
-        Longitude        & Długość geograficzna lokacji.          & Liczba zmiennoprzecinkowa \\ \hline
-        Difficulty       & Poziom trudności lokacji.              & Enumeracja                \\ \hline
-        ImageUrl         & Adres URL obrazu lokacji.              & Tekst                     \\ \hline
-        AltImage         & Tekst alternatywny dla obrazu lokacji. & Tekst                     \\ \hline
-        CreationTime     & Data i czas dodania lokacji.           & Data/Czas                 \\ \hline
-        AuthorID         & Identyfikator autora lokacji.          & Klucz obcy → Users        \\ \hline
-    \end{tabular}
+  \centering
+  \caption{Tabela \texttt{Places}}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
+    \hline
+    \textbf{Atrybut} & \textbf{Opis}                          & \textbf{Typ / Uwagi}      \\ \hline
+    ID               & Unikalny identyfikator lokacji.        & Klucz główny              \\ \hline
+    Name             & Nazwa lokacji.                         & Tekst                     \\ \hline
+    Description      & Opis lokacji.                          & Tekst                     \\ \hline
+    Latitude         & Szerokość geograficzna lokacji.        & Liczba zmiennoprzecinkowa \\ \hline
+    Longitude        & Długość geograficzna lokacji.          & Liczba zmiennoprzecinkowa \\ \hline
+    Difficulty       & Poziom trudności lokacji.              & Enumeracja                \\ \hline
+    ImageUrl         & Adres URL obrazu lokacji.              & Tekst                     \\ \hline
+    AltImage         & Tekst alternatywny dla obrazu lokacji. & Tekst                     \\ \hline
+    CreationTime     & Data i czas dodania lokacji.           & Data/Czas                 \\ \hline
+    AuthorID         & Identyfikator autora lokacji.          & Klucz obcy → Users        \\ \hline
+  \end{tabular}
 \end{table}
 
 \section{Analiza interakcji użytkownika z systemem (Michał Turski)}
@@ -167,10 +166,10 @@ W rozdziale przedstawione zostaną możliwości i przebieg kluczowych funkcjonal
 Przedstawiony na rysunku \ref{fig:use-case-diagram} diagram przypadków użycia ilustruje główne funkcjonalności aplikacji UniGuesser z perspektywy użytkownika, moderatora i administratora. Użytkownik może rejestrować się i logować do systemu, rozpoczynać nowe sesje gier, uczestniczyć w rozgrywkach, przeglądać wyniki innych użytkowników oraz proponować nowe lokacje. Moderator dodatkowo może zatwierdzać lub odrzucać proponowane lokacje, natomiast administrator ma uprawnienia do zarządzania użytkownikami.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./images/useCaseDiagram.png}
-    \caption{Diagram przypadków użycia aplikacji UniGuesser}
-    \label{fig:use-case-diagram}
+  \centering
+  \includegraphics[width=1.0\textwidth]{./images/useCaseDiagram.png}
+  \caption{Diagram przypadków użycia aplikacji UniGuesser}
+  \label{fig:use-case-diagram}
 \end{figure}
 
 \subsection{Diagram sekwencji rozgrywki}
@@ -178,10 +177,10 @@ Przedstawiony na rysunku \ref{fig:use-case-diagram} diagram przypadków użycia 
 Diagram sekwencji przedstawiony na rysunku \ref{fig:sequence-diagram} ilustruje przebieg interakcji między użytkownikiem a systemem podczas typowej rozgrywki w aplikacji UniGuesser. Proces rozpoczyna się od momentu, gdy użytkownik uruchamia nową grę, poprzez kolejne rundy, aż do momentu zakończenia sesji i wyświetlenia wyników końcowych.
 
 \begin{figure}[H]
-    \centering
-    \makebox[\textwidth]{\includegraphics[width=1.2\textwidth]{./images/standardGameplaySequenceDiagram.png}}
-    \caption{Diagram sekwencji przedstawiający przebieg rozgrywki w aplikacji UniGuesser}
-    \label{fig:sequence-diagram}
+  \centering
+  \makebox[\textwidth]{\includegraphics[width=1.2\textwidth]{./images/standardGameplaySequenceDiagram.png}}
+  \caption{Diagram sekwencji przedstawiający przebieg rozgrywki w aplikacji UniGuesser}
+  \label{fig:sequence-diagram}
 \end{figure}
 
 \section{Estetyka i design (Filip Jezierski) }
@@ -198,10 +197,10 @@ Aplikacja została zaprojektowana z myślą o responsywności, co oznacza, że d
 Aplikacja wykorzystuje dwukolorową paletę barw, opartą na odcieniach białego i ciemnoniebieskiego, inspirowaną kolorystyką Politechniki Gdańskiej. Biały kolor dominuje w tle, co zapewnia czystość i przejrzystość interfejsu, natomiast niebieskie akcenty są używane do wyróżnienia kluczowych elementów, takich jak przyciski, nagłówki czy linki. Przykładowe zastosowanie palety kolorów przedstawia rysunek \ref{fig:color-palette-example}. Taka kolorystyka zapewnia odpowiedni kontrast i ułatwia czytelność tekstu, zwłaszcza przy korzystaniu z aplikacji w różnych warunkach oświetleniowych, co jest szczególnie istotne ze względu na terenowy charakter gry.
 
 \begin{figure}[H]
-    \centering
-    \makebox[\textwidth]{\includegraphics[width=0.5\textwidth]{./images/registerForm.png}}
-    \caption{Przykładowy ekran rejestracji użytkownika w aplikacji UniGuesser, ilustrujący zastosowaną kolorystykę}
-    \label{fig:color-palette-example}
+  \centering
+  \makebox[\textwidth]{\includegraphics[width=0.5\textwidth]{./images/registerForm.png}}
+  \caption{Przykładowy ekran rejestracji użytkownika w aplikacji UniGuesser, ilustrujący zastosowaną kolorystykę}
+  \label{fig:color-palette-example}
 \end{figure}
 
 \subsection{Typografia i ikony}
