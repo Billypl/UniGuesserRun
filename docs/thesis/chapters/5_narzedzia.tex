@@ -10,12 +10,12 @@ Git to rozproszony system kontroli wersji VCS (ang. \textit{Version Control Syst
 Do podstawowych operacji należą:
 
 \begin{itemize}
-    \item \texttt{git init} – inicjalizacja nowego repozytorium,
-    \item \texttt{git add} – dodanie zmian do indeksu (staging area),
-    \item \texttt{git commit} – zapisanie zmian w historii projektu,
-    \item \texttt{git branch} – zarządzanie gałęziami (np. tworzenie odgałęzień na nowe funkcjonalności),
-    \item \texttt{git merge} – scalanie gałęzi,
-    \item \texttt{git log} – przegląd historii commitów.
+  \item \texttt{git init} – inicjalizacja nowego repozytorium,
+  \item \texttt{git add} – dodanie zmian do indeksu (staging area),
+  \item \texttt{git commit} – zapisanie zmian w historii projektu,
+  \item \texttt{git branch} – zarządzanie gałęziami (np. tworzenie odgałęzień na nowe funkcjonalności),
+  \item \texttt{git merge} – scalanie gałęzi,
+  \item \texttt{git log} – przegląd historii commitów.
 \end{itemize}
 
 Stosowanie Gita pozwala na łatwe śledzenie błędów, eksperymentowanie z nowymi funkcjonalnościami bez wpływu na główny kod oraz pracę równoległą wielu osób. W przypadku zmian powodujących błąd powrót do działającej wersji jest praktycznie bezkosztowy.
@@ -23,10 +23,10 @@ Stosowanie Gita pozwala na łatwe śledzenie błędów, eksperymentowanie z nowy
 Natomiast GitHub to jedna z najpopularniejszych platform umożliwiających przechowywanie zdalnych repozytoriów Git. Oferuje dodatkowe funkcje, takie jak:
 
 \begin{itemize}
-    \item pull requesty (prośby o połączenie zmian z główną gałęzią projektu),
-    \item code review (wzajemna kontrola kodu w zespole),
-    \item zarządzanie zgłoszeniami (issues),
-    \item integracja z narzędziami CI/CD (ang. \textit{Continuous Integration/Continuous Delivery lub Deployment}) jak GitHub Actions.
+  \item pull requesty (prośby o połączenie zmian z główną gałęzią projektu),
+  \item code review (wzajemna kontrola kodu w zespole),
+  \item zarządzanie zgłoszeniami (issues),
+  \item integracja z narzędziami CI/CD (ang. \textit{Continuous Integration/Continuous Delivery lub Deployment}) jak GitHub Actions.
 \end{itemize}
 
 W projekcie \textit{UniGuesser} GitHub pełnił rolę centralnego punktu współpracy, umożliwiając m.in. zgłaszanie błędów, przeglądanie zmian oraz automatyczne uruchamianie testów jednostkowych i wdrożeń (CI/CD).
@@ -96,17 +96,17 @@ Pomimo tych wyzwań, konteneryzacja odegrała kluczową rolę w sukcesie projekt
 
 Do zarządzania projektem wykorzystany został Youtrack, który jest narzędziem typu ITS (ang. \textit{Issue Tracker System}) stworzonym przez firmę JetBrains. Opiera się on na technologii Ajax i wspiera szeroki zakres metodyk zarządzania projektem, w tym podejść zwinnych, które również zostało wykonane do realizacji tego projektu.
 
-System Youtrack umożliwia m.in. planowanie i organizacje zadań, przypisywanie ich do konkretnych członków, ustalanie priorytetów, śledzenia postępów prac, dodawanie tagów, załączników czy tworzenie raportów. Dzięki rozbudowanym możliwościom filtrowania, szacowania i określania ilości spędzonego czasu, personalizacji widoków możliwe było bieżące monitorowanie i reagowanie na pojawiające się ewentualne problemy. 
+System Youtrack umożliwia m.in. planowanie i organizacje zadań, przypisywanie ich do konkretnych członków, ustalanie priorytetów, śledzenia postępów prac, dodawanie tagów, załączników czy tworzenie raportów. Dzięki rozbudowanym możliwościom filtrowania, szacowania i określania ilości spędzonego czasu, personalizacji widoków możliwe było bieżące monitorowanie i reagowanie na pojawiające się ewentualne problemy.
 
 W ramach projektu przyjęto podejście oparte na zmodyfikowanej wersji metodyki Kanban, dostosowanej do potrzeb zespołu i charakteru realizowanego zadania. Tablica Kanban została podzielona na sześć głównych etapów:
 
 \begin{itemize}
-    \item \textbf{Backlog} - przeznaczony do przechowywania wszystkich potrzebnych zadań do zrealizowania projektu. Te zadania obejmują duży zakres obowiązków, które są w następnym etapie rozdzielane na mniejsze, bardziej precyzyjne zadania, jeżeli są wybrane do realizacji w najbliższym sprincie.
-    \item \textbf{Backlog sprintu} - zbierane są tu zadania do bieżącego sprintu. Dokładnie jest określany zakres wymagań, który musi spełnić, aby w pełni je zrealizować.
-    \item \textbf{Wykonanie} - aktualnie wykonywane zadania. Przydzielone są one do konkretnego członka zespołu i maja ustawiony priorytet oraz liczbę ustalonych story points'ów.
-    \item \textbf{Testowanie} - zbierane są tutaj wykonane zadania oczekujące na przetestowanie przez innego członka zespołu albo osobę wykonującą dane zadanie. W przypadku błędów lub niespełnienia wymagań, zadanie zostaje zwrócone do poprzedniego etapu w celu wprowadzenia poprawek.
-    \item \textbf{Recenzja} - wykonane zadania oczekują na recenzję przez innego członka zespołu niż ten, który go wykonywał. Pozwala to na lepszą identyfikację błędów lub potencjalnych błędów. Podobnie jak w przypadku testowania, w przypadku niespełnienia kryteriów zadanie wraca do etapu 'Wykonanie'.
-    \item \textbf{Zrobione} - przeznaczony do przechowywania wykonanych, przetestowanych i zrecenzowanych zadań.
+  \item \textbf{Backlog} - przeznaczony do przechowywania wszystkich potrzebnych zadań do zrealizowania projektu. Te zadania obejmują duży zakres obowiązków, które są w następnym etapie rozdzielane na mniejsze, bardziej precyzyjne zadania, jeżeli są wybrane do realizacji w najbliższym sprincie.
+  \item \textbf{Backlog sprintu} - zbierane są tu zadania do bieżącego sprintu. Dokładnie jest określany zakres wymagań, który musi spełnić, aby w pełni je zrealizować.
+  \item \textbf{Wykonanie} - aktualnie wykonywane zadania. Przydzielone są one do konkretnego członka zespołu i maja ustawiony priorytet oraz liczbę ustalonych story points'ów.
+  \item \textbf{Testowanie} - zbierane są tutaj wykonane zadania oczekujące na przetestowanie przez innego członka zespołu albo osobę wykonującą dane zadanie. W przypadku błędów lub niespełnienia wymagań, zadanie zostaje zwrócone do poprzedniego etapu w celu wprowadzenia poprawek.
+  \item \textbf{Recenzja} - wykonane zadania oczekują na recenzję przez innego członka zespołu niż ten, który go wykonywał. Pozwala to na lepszą identyfikację błędów lub potencjalnych błędów. Podobnie jak w przypadku testowania, w przypadku niespełnienia kryteriów zadanie wraca do etapu 'Wykonanie'.
+  \item \textbf{Zrobione} - przeznaczony do przechowywania wykonanych, przetestowanych i zrecenzowanych zadań.
 \end{itemize}
 
 \section{Zintegrowane środowisko programistyczne - VSC, VS, Rider (Michał Pawiłojć)}
@@ -159,11 +159,11 @@ W celu zbudowania wspólnej i klarownej wizji interfejsu użytkownika, została 
 Figma posiada szeroki wachlarz funkcjonalności, które w dużym stopniu usprawniają prace zespołu. Do najważniejszych z nich należą:
 
 \begin{itemize}
-    \item \textbf{Zarządzanie warstwami i grupami} - pozwala na precyzyjną organizację elementów, co jest szczególnie ważne przy tworzeniu skomplikowanej aplikacji, aby zachować jej spójność wizualną.
-    \item \textbf{Tworzenie komponentów i wariantów} - umożliwia tworzenie wielu wariantów wykorzystywanych elementów UI, co pozwala na testowanie różnych rozwiązań bez konieczności zmiany kodu.
-    \item \textbf{Integracje z narzędziami deweloperskimi} - wspierają płynne przejście od fazy projektowej do wdrożenia. Jednym z takich narzędzi jest GitHub, który oferuje łatwą konfigurację, możliwość dodawania zgłoszeń oraz pull requestów, wspomagając kontrolę wersji całego projektu.
-    \item \textbf{Eksport zasobów i generowanie fragmentów kodu CSS} - przyspiesza implementację zaprojektowanych widoków.
-    \item \textbf{Biblioteki stylów i zasobów} - pozwala na utrzymanie spójności wizualnej przechowując zestaw fontów, kolorów, efektów i rozmiarów elementów dostępnych dla całego zespołu.
+  \item \textbf{Zarządzanie warstwami i grupami} - pozwala na precyzyjną organizację elementów, co jest szczególnie ważne przy tworzeniu skomplikowanej aplikacji, aby zachować jej spójność wizualną.
+  \item \textbf{Tworzenie komponentów i wariantów} - umożliwia tworzenie wielu wariantów wykorzystywanych elementów UI, co pozwala na testowanie różnych rozwiązań bez konieczności zmiany kodu.
+  \item \textbf{Integracje z narzędziami deweloperskimi} - wspierają płynne przejście od fazy projektowej do wdrożenia. Jednym z takich narzędzi jest GitHub, który oferuje łatwą konfigurację, możliwość dodawania zgłoszeń oraz pull requestów, wspomagając kontrolę wersji całego projektu.
+  \item \textbf{Eksport zasobów i generowanie fragmentów kodu CSS} - przyspiesza implementację zaprojektowanych widoków.
+  \item \textbf{Biblioteki stylów i zasobów} - pozwala na utrzymanie spójności wizualnej przechowując zestaw fontów, kolorów, efektów i rozmiarów elementów dostępnych dla całego zespołu.
 \end{itemize}
 
 Dzięki tym zaawansowanym funkcjom Figma stała się kluczowym elementem w realizacji procesu projektowania interfejsu użytkownika \textit{UniGuesser}.
