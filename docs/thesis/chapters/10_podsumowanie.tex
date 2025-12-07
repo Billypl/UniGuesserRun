@@ -1,2 +1,120 @@
 \chapter{Podsumowanie (Michał Pawiłojć)}
 \label{chap:summary}
+Wszystkie założenia przyjęte na etapie projektowania zostały zrealizowane, co umożliwiło stworzenie kompletnej, działającej aplikacji geograficzno-geolokalizacyjnej zgodnej z pierwotną wizją. Użytkownik może odgadywać lokalizacje związane z Politechniką Gdańską na podstawie zdjęć, a także korzystać z trybu terenowego, wymagającego fizycznego dotarcia w wybrane miejsce. Aby zwiększyć interakcję i zaangażowanie graczy, zaimplementowany został publiczny ranking oraz funkcjonalności związane z rywalizacją wieloosobową, umożliwiające porównywanie wyników i konkurowanie w czasie rzeczywistym.
+
+Zastosowane rozwiązania technologiczne pozwoliły uzyskać stabilną i nowoczesną architekturę. Aplikacja została przygotowana jako progresywna aplikacja webowa, dzięki czemu jest dostępna na szerokiej gamie urządzeń — również w formie instalowalnej na telefonach. Interfejs użytkownika powstał z wykorzystaniem biblioteki React, co umożliwiło stworzenie responsywnego i intuicyjnego środowiska gry. Logika serwerowa została zaimplementowana w technologii .NET, co zapewniło wysoką wydajność oraz łatwość rozwijania kolejnych funkcjonalności. W trakcie prac projektowych podjęta została również decyzja o zmianie bazy danych z MongoDB na PostgreSQL, co pozwoliło lepiej odwzorować relacyjne powiązania między użytkownikami, rozgrywkami i lokalizacjami. Całość środowiska została zintegrowana z wykorzystaniem Dockera, ułatwiając proces wdrażania oraz zachowanie spójności konfiguracji na różnych etapach rozwoju projektu.
+
+Powstały produkt umożliwia interaktywne poznawanie terenów kampusu Politechniki Gdańskiej szerokiemu gronu odbiorców — od osób niezwiązanych z uczelnią, po nowych studentów i pracowników. Aplikacja stanowi nowoczesne narzędzie wspierające orientację w przestrzeni akademickiej, jednocześnie oferując formę grywalnej aktywności i zdrowej rywalizacji. Uzyskany rezultat jest solidną podstawą do dalszego rozwoju, zarówno pod względem funkcjonalnym, jak i technicznym, oraz realizuje wszystkie cele założone na początku pracy.
+
+\section{Możliwość dalszego rozwoju}
+\label{chap:enhancements}
+
+Projekt \textit{UniGuesserRun} został zaprojektowany w sposób umożliwiający jego stopniowe rozszerzanie oraz dostosowywanie do nowych potrzeb użytkowników i instytucji akademickich. Obecna wersja stanowi solidną bazę, jednak potencjał systemu pozwala na wdrożenie szeregu funkcjonalności, które mogą znacząco zwiększyć atrakcyjność aplikacji, jej skalowalność oraz zakres zastosowań. Wprowadzenie nowych modułów nie tylko wpłynęłoby na poszerzenie grona odbiorców, ale również umożliwiłoby wykorzystanie \textit{UniGuesserRun} w szerszym kontekście -- od integracji środowiska studenckiego, przez grywalizację aktywności fizycznej, aż po edukację kampusową.
+
+Poniżej przedstawiono najważniejsze kierunki rozwoju systemu, które mogą zostać zrealizowane w kolejnych etapach prac nad projektem.
+
+\subsection{Tryb multiplayer}
+
+Jednym z najbardziej naturalnych kroków rozwoju \textit{UniGuesserRun} jest dodanie trybu multiplayer. Obecnie gra koncentruje się na rywalizacji indywidualnej, w której użytkownik wykonuje zadania samodzielnie, porównując wynik z ogólną tabelą punktacji. Rozszerzenie aplikacji o elementy rozgrywki wieloosobowej mogłoby radykalnie zwiększyć jej atrakcyjność i zaangażowanie użytkowników.
+
+Tryb multiplayer może zostać zrealizowany na dwóch poziomach. Pierwszy to rozgrywka asynchroniczna, w której gracze porównują rezultaty swoich rund rozgrywanych w dowolnym czasie. Można zaimplementować mechanizm tworzenia pokojów wyzwań, gdzie jeden użytkownik definiuje rundę, a inni podejmują próbę w ustalonym czasie. Taki model wymaga niewielkiej rozbudowy istniejącego API oraz zmian w warstwie frontendowej.
+
+Drugim kierunkiem jest multiplayer w czasie rzeczywistym. W tym wariancie kilku użytkowników wykonuje te same zadania równocześnie, a system aktualizuje wyniki na bieżąco. Wymaga to wdrożenia komunikacji opartej o WebSockety, mechanizmu sesji synchronicznych oraz odpowiedniej infrastruktury serwerowej. Takie rozwiązanie może być wykorzystywane podczas wydarzeń integracyjnych, zawodów sportowych lub festiwali studenckich.
+
+Dzięki trybowi multiplayer aplikacja mogłaby stać się narzędziem społecznej rywalizacji i współpracy, zachęcając użytkowników do aktywności fizycznej i eksplorowania kampusu.
+
+\subsection{Integracja z samorządem studenckim}
+
+Kolejnym kierunkiem rozwoju jest integracja z samorządami studenckimi, które regularnie organizują wydarzenia, inicjatywy integracyjne oraz akcje promocyjne. \textit{UniGuesserRun} może stanowić narzędzie wspierające takie projekty.
+
+Współpraca mogłaby obejmować:
+\begin{itemize}
+    \item organizację cyklicznych turniejów międzywydziałowych,
+    \item przygotowywanie tematycznych gier terenowych,
+    \item wdrażanie tras dostępnych tylko podczas konkretnych wydarzeń,
+    \item promowanie infrastruktury uczelni poprzez interaktywne trasy.
+\end{itemize}
+
+Samorząd może pełnić rolę moderatora treści tworzonych przez użytkowników oraz koordynować wydarzenia związane z aplikacją. Dodatkowo aplikacja może służyć jako narzędzie dla studentów pierwszego roku, wprowadzając ich w przestrzeń kampusu poprzez trasy typu „poznaj uczelnię”.
+
+Integracja z samorządem wzmacnia powiązanie aplikacji ze środowiskiem akademickim oraz zwiększa jej użyteczność.
+
+\subsection{Rozszerzenie na inne uczelnie}
+
+Aktualnie aplikacja została przygotowana z myślą o jednym kampusie, jednak architektura projektu sprzyja jego skalowalności. Rozszerzenie na inne uczelnie jest naturalnym krokiem rozwoju, pozwalającym przekształcić \textit{UniGuesserRun} w platformę ogólnopolską.
+
+Wdrożenie wielokampusowe wymaga stworzenia warstwy abstrakcji dla danych geograficznych, lokacji oraz zdjęć. Każda uczelnia powinna posiadać własny zestaw danych, oddzielony od baz pozostałych jednostek. Użytkownik mógłby wybierać kampus podczas pierwszego uruchomienia lub na podstawie geolokalizacji.
+
+Rozszerzenie na kolejne uczelnie otwiera możliwości współpracy między ośrodkami akademickimi. Można wprowadzić rankingi międzyuczelniane, konkursy ogólnokrajowe oraz system wspólnego tworzenia tras.
+
+\subsection{Rozszerzenie o tryb AR}
+
+Rozszerzona rzeczywistość (AR) pozwala na nakładanie elementów cyfrowych na obraz z kamery urządzenia mobilnego, co znacząco zwiększa immersję rozgrywki. W kontekście \textit{UniGuesserRun} tryb AR wzbogaciłby szczególnie część biegową, w której użytkownik musi dotrzeć do konkretnego punktu.
+
+Potencjalne zastosowania AR obejmują:
+\begin{itemize}
+    \item wyświetlanie wskazówek i strzałek prowadzących do celu,
+    \item prezentowanie informacji o mijanych obiektach,
+    \item generowanie wirtualnych punktów kontrolnych,
+    \item tworzenie dodatkowych elementów grywalizacji podczas wydarzeń.
+\end{itemize}
+
+Implementacja AR wymaga integracji z technologiami ARCore lub ARKit oraz rozbudowy aplikacji o moduły przetwarzania obrazu i śledzenia pozycji urządzenia. Tryb ten pełniłby również funkcję atrakcyjnego narzędzia marketingowego dla uczelni.
+
+\subsection{Tryb edukacyjny / informacyjny}
+
+Poza funkcją rozrywkową aplikacja może pełnić także rolę narzędzia edukacyjnego. Kampusy uczelni posiadają bogatą historię, charakterystyczne budynki oraz interesujące miejsca. Tryb edukacyjny umożliwiłby prezentowanie treści informacyjnych po dotarciu do konkretnej lokalizacji lub rozpoznaniu jej na zdjęciu.
+
+Treści te mogą zawierać:
+\begin{itemize}
+    \item informacje historyczne,
+    \item ciekawostki dotyczące budynków,
+    \item opisy działalności kół naukowych,
+    \item elementy przewodnika dla nowych studentów.
+\end{itemize}
+
+Dzięki temu aplikacja stałaby się przydatnym narzędziem zarówno dla studentów, jak i osób odwiedzających kampus, oferując wartościowe treści w przystępnej i interaktywnej formie.
+
+\subsection{Obsługa tras tematycznych}
+
+Trasy tematyczne umożliwiają grupowanie punktów lub zdjęć według określonego motywu. Mogą pełnić funkcję zarówno edukacyjną, jak i rozrywkową.
+
+Przykładowe trasy tematyczne to:
+\begin{itemize}
+    \item trasy dla studentów pierwszego roku,
+    \item ścieżki przyrodnicze,
+    \item trasy sportowe,
+    \item ścieżki historyczne,
+    \item trasy związane z infrastrukturą uczelni.
+\end{itemize}
+
+Aplikacja może umożliwiać tworzenie tras zarówno administratorom, jak i użytkownikom. Wymaga to jednak systemu moderacji oraz weryfikacji danych. Trasy tematyczne mogą również wspierać wydarzenia studenckie -- np. gry terenowe podczas festiwali lub dni adaptacyjnych.
+
+\subsection{Skalowanie backendu i modularizacja}
+
+Wraz ze wzrostem liczby użytkowników konieczne stanie się zwiększenie wydajności i skalowalności systemu. Backend może zostać podzielony na moduły odpowiedzialne za różne funkcje, takie jak:
+\begin{itemize}
+    \item generowanie punktów i zdjęć,
+    \item obsługa lokalizacji i trybu biegowego,
+    \item rankingi i statystyki,
+    \item autoryzacja,
+    \item zarządzanie trasami.
+\end{itemize}
+
+Takie podejście ułatwia skalowanie komponentów o największym obciążeniu. W przyszłości system może zostać przekształcony w zestaw mikroserwisów uruchamianych w środowisku chmurowym, z wykorzystaniem automatycznego skalowania, mechanizmów cache'owania oraz load balancingu.
+
+\subsection{Gamifikacja społeczna}
+
+Gamifikacja jest skutecznym narzędziem zwiększania zaangażowania użytkowników poprzez wykorzystanie mechanizmów znanych z gier. Wprowadzenie systemu odznak, osiągnięć, poziomów doświadczenia czy quizów środowiskowych może znacząco podnieść motywację do regularnej aktywności.
+
+Przykładowe elementy gamifikacji społecznej:
+\begin{itemize}
+    \item odznaki za aktywność, odwiedzone miejsca, liczbę wykonanych tras,
+    \item rankingi wydziałowe i uczelniane,
+    \item system wyzwań dziennych i tygodniowych,
+    \item możliwość porównywania wyników ze znajomymi,
+    \item tworzenie drużyn i rywalizacji grupowych.
+\end{itemize}
+
+Mechanizmy grywalizacyjne w połączeniu z elementami społecznymi mogą sprawić, że aplikacja stanie się integralnym elementem życia studenckiego.
+

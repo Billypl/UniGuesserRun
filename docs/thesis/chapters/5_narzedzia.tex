@@ -41,13 +41,15 @@ Współczesne aplikacje webowe, takie jak \textit{UniGuesser}, składają się z
 
 Konteneryzacja to proces pakowania aplikacji wraz z całym jej środowiskiem uruchomieniowym (zależnościami, bibliotekami, konfiguracją, itd.) do jednego, samodzielnego pakietu zwanego \textbf{kontenerem}. Taki kontener może być uruchomiony na dowolnym systemie operacyjnym, który obsługuje kontenery, bez potrzeby rekonfiguracji lub instalacji dodatkowego oprogramowania.
 
-Kontenery są lekką alternatywą dla maszyn wirtualnych. W odróżnieniu od VM-ek, nie zawierają pełnego systemu operacyjnego, a współdzielą jądro systemu hosta. Dzięki temu zużywają mniej zasobów, szybciej się uruchamiają i łatwiej się nimi zarządza.
+Kontenery są lekką alternatywą dla maszyn wirtualnych i w odróżnieniu od nich nie zawierają pełnego systemu operacyjnego, a współdzielą jądro systemu hosta. Dzięki temu zużywają mniej zasobów, szybciej się uruchamiają i łatwiej się nimi zarządza.
 
 Dzięki konteneryzacji możliwe jest podejście \textit{„build once, run anywhere”} - czyli raz zbudowany obraz aplikacji może działać tak samo na komputerze deweloperskim, serwerze testowym i w środowisku produkcyjnym.
 
 \subsection{Docker}
 
-W naszym projekcie wykorzystaliśmy \textbf{Dockera} --- najpopularniejsze narzędzie do konteneryzacji. Docker umożliwia budowanie własnych obrazów aplikacji za pomocą plików konfiguracyjnych \texttt{Dockerfile}, a także zarządzanie kontenerami lokalnie lub w chmurze.
+Docker jest obecnie jednym z najpowszechniej stosowanych narzędzi do konteneryzacji aplikacji, umożliwiającym uruchamianie oprogramowania w odizolowanych, lekkich środowiskach zwanych kontenerami. Każdy kontener posiada własną warstwę systemową oraz zestaw zależności niezbędnych do działania aplikacji, co gwarantuje powtarzalność i niezależność od konfiguracji systemu gospodarza. Docker pozwala na definiowanie własnych obrazów aplikacji za pomocą plików \texttt{Dockerfile}, w których można określić wymagane biblioteki, sposób budowania projektu, zmienne środowiskowe oraz komendy uruchomieniowe. Dzięki temu proces tworzenia środowiska uruchomieniowego staje się w pełni automatyzowalny i możliwy do odtworzenia na dowolnym urządzeniu.
+
+Istotnym elementem ekosystemu narzędzia jest Docker Engine, odpowiedzialny za budowanie i zarządzanie kontenerami, oraz Docker Hub - publiczny rejestr obrazów, ułatwiający dystrybucję przygotowanych konfiguracji. W szerszym ujęciu Docker stanowi fundament dla nowoczesnych praktyk DevOps, umożliwiając szybkie wdrażanie aplikacji, ograniczenie problemów związanych z różnymi środowiskami developerskimi oraz poprawę skalowalności. Zarządzanie kontenerami może odbywać się zarówno lokalnie, jak i w środowiskach chmurowych, co otwiera możliwość integracji z systemami orkiestracji, takimi jak Kubernetes, gdy zajdzie potrzeba rozwinięcia projektu na większą skalę.
 
 \subsection{Docker Compose}
 
