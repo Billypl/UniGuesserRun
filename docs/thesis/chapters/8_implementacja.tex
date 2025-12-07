@@ -12,29 +12,29 @@ W tej sekcji omówione zostaną kluczowe aspekty implementacji frontendu aplikac
 W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej struktury frontendowej, która wygląda następująco:
 
 \dirtree{%
-	.1 frontend/. 
-	.2 node\_modules/ - przechowywanie zainstalowanych zależności przez npm.
-	.2 public/        - zasoby publiczne części frontendu projektu.
-	.3 index.html     - korzeń html całej aplikacji.
-	.3 favicon.ico    - ikona aplikacji wyświetlana w karcie przeglądarki.
-	.3 manifest.json  - metadane aplikacji, przydatne szczególnie w PWA.
-	.2 src/           - źródło danych, w którym przechowywane jest większość plików.
-	.3 assets/        - statyczne assety typu obrazki, fonty.
-	.4 images/.
-	.4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej aplikacji, załączone  w readme w repozytorium na githubie.
-	.3 components/    - elementy interfejsu.	
-	.3 css/           - pliki css służące za nadanie odpowiedniego wyglądu, automatyczne wygenerowane podczas stawiania aplikacji.
-	.3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu i efektów.
-	.3 models/        - definicje interfejsów danych wykorzystywanych w innych częściach aplikacji.
-	.4 account/       - interfejsy związane z logowaniem i rejestracją użytkowników.
-	.4 game/          - interfejsy związane z rozgrywką.
-	.4 place/         - interfejsy związane z lokalizacjami.
-	.4 scoreboard/    - interfejsy związane z rankingiem graczy.
-	.3 pages/         - strony łączące elementy interfejsu (strona główna, strona logowania).
-	.3 services/      - requesty do API (własnych i zewnętrznych).
-	.4 api/           - requesty do własnych API.
-	.3 styles/        - elementy interfejsu.			
-	.4 utils/         - małe funkcje pomocnicze.			
+    .1 frontend/.
+    .2 node\_modules/ - przechowywanie zainstalowanych zależności przez npm.
+    .2 public/        - zasoby publiczne części frontendu projektu.
+    .3 index.html     - korzeń html całej aplikacji.
+    .3 favicon.ico    - ikona aplikacji wyświetlana w karcie przeglądarki.
+    .3 manifest.json  - metadane aplikacji, przydatne szczególnie w PWA.
+    .2 src/           - źródło danych, w którym przechowywane jest większość plików.
+    .3 assets/        - statyczne assety typu obrazki, fonty.
+    .4 images/.
+    .4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej aplikacji, załączone  w readme w repozytorium na githubie.
+    .3 components/    - elementy interfejsu.
+    .3 css/           - pliki css służące za nadanie odpowiedniego wyglądu, automatyczne wygenerowane podczas stawiania aplikacji.
+    .3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu i efektów.
+    .3 models/        - definicje interfejsów danych wykorzystywanych w innych częściach aplikacji.
+    .4 account/       - interfejsy związane z logowaniem i rejestracją użytkowników.
+    .4 game/          - interfejsy związane z rozgrywką.
+    .4 place/         - interfejsy związane z lokalizacjami.
+    .4 scoreboard/    - interfejsy związane z rankingiem graczy.
+    .3 pages/         - strony łączące elementy interfejsu (strona główna, strona logowania).
+    .3 services/      - requesty do API (własnych i zewnętrznych).
+    .4 api/           - requesty do własnych API.
+    .3 styles/        - elementy interfejsu.
+    .4 utils/         - małe funkcje pomocnicze.
 }
 
 Pozwoliła ona nam zadbać o porządek implementowanych funkcjonalności i ułatwić odnajdywanie odpowiednich fragmentów kodu, w krótkim czasie. Miało to szczególne znaczenie przy implementacji głównych komponentów takich jak mapa, panel rozgrywki czy formularze rejestracji i logowania.
@@ -133,13 +133,13 @@ Przez dużą liczbę osobnych podstron i widoków istniejących w aplikacji, zos
 import styles from '../styles/GameSettings.module.scss'
 \end{lstlisting}
 
-Dodatkowo, rozszerzenie .scss pozwala na zagnieżdżanie stylów scss, tworzenia zmiennych i mixinów. Plik mixin zawiera w sobie własne ustawienia stylu dla często powtarzających się elementów aplikacji, jak jasny przycisk, ciemny przycisk, linki, element klikalny. 
+Dodatkowo, rozszerzenie .scss pozwala na zagnieżdżanie stylów scss, tworzenia zmiennych i mixinów. Plik mixin zawiera w sobie własne ustawienia stylu dla często powtarzających się elementów aplikacji, jak jasny przycisk, ciemny przycisk, linki, element klikalny.
 
 Ważną rolę w wytwarzaniu aplikacji UniGuesser grała jego kolorstyka, ze względu na jego inspirację Politechniką Gdańską. Dlatego też kluczowe było aby na całej przestrzeni aplikacji, użyte kolory były nie tylko jednakowe, ale również zgadzały się z podanymi wytycznymi zawartych w Księdze Identyfikacji Wizualnej politechniki \cite{visual-book-pg}. W tym celu powstał plik \texttt{\_Colors.scss}, odpowiedzialny za definicję niestandardowych kolorów użytych w elementach interfejsu w całej aplikacji.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/visual_colors_pg.png} 
+    \includegraphics[width=0.5\textwidth]{images/visual_colors_pg.png}
     \caption{Kolorystyka Politechniki Gdańskiej według Księgi Identyfikacji Wizualnej \cite{visual-book-pg}}
     \label{fig:colouring-pg}
 \end{figure}
@@ -166,7 +166,7 @@ Tworząc aplikację PWA, zadbaliśmy o to, aby była ona responsywna i dostosowy
 % Dodanie zdjęcia hamburger menu%
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png} 
+    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
     \caption{Hamburger menu w widoku mobilnym aplikacji UniGuesser}
     \label{fig:hamburger-menu}
 \end{figure}
@@ -244,14 +244,14 @@ Przykładem zastosowania uniwersalnego pola formularza jest formularz logowania 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png} 
+    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
     \caption{Formularz logowania w aplikacji UniGuesser}
     \label{fig:login-form}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png} 
+    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
     \caption{Formularz rejestracji w aplikacji UniGuesser}
     \label{fig:register-form}
 \end{figure}
@@ -617,9 +617,9 @@ Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
 \texttt{api/game/{gameId}/round/{roundNumber}},
 gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} – numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
 
-W przypadku trybu geolokalizacyjnego również możliwe jest wywołanie 
- \texttt{api/game/{gameId}/round/distance},
- gdzie dla frontendu wysyłamy aktualna odległość od miejsca do zgadniecią (czyli w które musi dojść). Na tej podstawie frontend może wyświetlić potencjalna Podpowiedź dla użytkownika. 
+W przypadku trybu geolokalizacyjnego również możliwe jest wywołanie
+\texttt{api/game/{gameId}/round/distance},
+gdzie dla frontendu wysyłamy aktualna odległość od miejsca do zgadniecią (czyli w które musi dojść). Na tej podstawie frontend może wyświetlić potencjalna Podpowiedź dla użytkownika.
 
 Odpowiedź użytkownika jest obsługiwana przez endpoint
 \texttt{api/game/{gameId}/round/{roundNumber}/check}.
