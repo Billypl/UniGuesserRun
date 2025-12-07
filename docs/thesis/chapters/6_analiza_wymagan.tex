@@ -35,13 +35,8 @@ UniGuesser to interaktywna aplikacja edukacyjno-rozrywkowa, której celem jest o
     \item gry terenowej zachęcającej do aktywnego zwiedzania kampusu.
 \end{itemize}
 
-Podczas rozgrywki gracz otrzymuje losowo wybrane zdjęcie przedstawiające charakterystyczną lokalizację. Zadaniem użytkownika jest zaznaczenie jej na interaktywnej mapie. Po zatwierdzeniu odpowiedzi system:
-\begin{itemize}
-    \item oblicza odległość między wskazanym a faktycznym miejscem,
-    \item przyznaje punkty proporcjonalnie do dokładności,
-    \item pokazuje prawidłowe położenie lokalizacji na mapie.
-\end{itemize}
-
+\bigskip
+\noindent
 \textbf{Zaletami aplikacji UniGuesser są między innymi:}
 \begin{itemize}
     \item dostępność na różnych urządzeniach dzięki technologii PWA,
@@ -53,7 +48,6 @@ Podczas rozgrywki gracz otrzymuje losowo wybrane zdjęcie przedstawiające chara
 
 \section{Przebieg gry (Karina Wołoszyn)}
 
-\textbf{TODO: fix}
 Rozgrywka w UniGuesser przebiega w kilku etapach, które zapewniają płynność gry i umożliwiają graczowi śledzenie swoich wyników:
 
 \begin{enumerate}
@@ -108,6 +102,8 @@ Wymagania te stanowią podstawę do stworzenia aplikacji spełniającej główne
 \section{Wymagania niefunkcjonalne (Filip Jezierski)}
 Wymagania niefunkcjonalne określają kryteria jakościowe, które aplikacja powinna spełniać, aby zapewnić odpowiednie doświadczenie użytkownika oraz efektywne działanie systemu. W kontekście opracowywanej aplikacji mobilnej, kluczowe wymagania niefunkcjonalne obejmują aspekty takie jak wydajność, bezpieczeństwo oraz użyteczność.
 
+\bigskip
+\noindent
 \textbf{Wymagania jakościowe}
 \begin{itemize}
     \item obsługa różnych rozdzielczości ekranów i urządzeń mobilnych,
@@ -117,6 +113,8 @@ Wymagania niefunkcjonalne określają kryteria jakościowe, które aplikacja pow
     \item ochrona danych użytkowników poprzez implementację odpowiednich mechanizmów bezpieczeństwa - szyfrowanie danych, bezpieczne logowanie, ochrona przed atakami typu SQL Injection i XSS.
 \end{itemize}
 
+\bigskip
+\noindent
 \textbf{Wymagania wydajnościowe}
 \begin{itemize}
     \item szybkie (<2 s) ładowanie aplikacji i minimalny czas oczekiwania na reakcję interfejsu użytkownika,
@@ -152,7 +150,10 @@ Takie rozwiązanie zapewnia pełną kontrolę nad jakością i zgodnością mate
 
 \section{Kryteria akceptacji (Filip Jezierski)}
 Kryteria akceptacji stanowią zestaw wymagań, które muszą zostać spełnione, aby aplikacja mogła zostać uznana za gotową do wdrożenia i użytkowania. Kryteria te obejmują zarówno aspekty funkcjonalne, jak i niefunkcjonalne, zapewniając kompleksową ocenę jakości i użyteczności opracowanego rozwiązania.
-\textbf{Ogólne kryteria:}
+
+\bigskip
+\noindent
+\textbf{Ogólne kryteria akceptacji:}
 \begin{itemize}
     \item Aplikacja działa na urządzeniach mobilnych z systemami Android i iOS, na komputerach stacjonarnych oraz w przeglądarkach internetowych
     \item Intuicyjny interfejs użytkownika umożliwiający łatwe korzystanie z aplikacji
@@ -161,15 +162,17 @@ Kryteria akceptacji stanowią zestaw wymagań, które muszą zostać spełnione,
     \item Testy manualne wszystkich zaplanowanych funkcjonalności przeprowadzone na wszystkich wspieranych platformach
 \end{itemize}
 
+\bigskip
+\noindent
 \textbf{Zaimplementowane funkcjonalności:}
 \begin{itemize}
     \item Rejestracja i logowanie użytkowników
     \item Wybór trybu rozgrywki i poziomu trudności
     \item Dwa tryby gry:
-    \begin{itemize}
-        \item odgadywanie lokalizacji na podstawie zdjęcia poprzez wskazanie jej na mapie
-        \item odnajdywanie lokalizacji na podstawie zdjęcia i potwierdzanie obecności poprzez geolokalizację
-    \end{itemize}
+          \begin{itemize}
+              \item odgadywanie lokalizacji na podstawie zdjęcia poprzez wskazanie jej na mapie
+              \item odnajdywanie lokalizacji na podstawie zdjęcia i potwierdzanie obecności poprzez geolokalizację
+          \end{itemize}
     \item Możliwość przerywania i kontynuowania rozgrywki
     \item Wyświetlanie podsumowania wyników każdej rundy gry
     \item Historia rozgrywek dostępna w profilu użytkownika
