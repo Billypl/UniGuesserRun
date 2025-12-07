@@ -40,7 +40,7 @@ W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej
 
 Pozwoliła ona nam zadbać o porządek implementowanych funkcjonalności i ułatwić odnajdywanie odpowiednich fragmentów kodu, w krótkim czasie. Miało to szczególne znaczenie przy implementacji głównych komponentów takich jak mapa, panel rozgrywki czy formularze rejestracji i logowania.
 
-Kluczowym elementem implementacji frontendu jest podział na komponenty. W projekcie UniGuesser zostało to zrealizowane poprzez wykorzystanie technologii React oraz TypeScript, z wykorzystaniem bibliotek takich jak Leaflet do obsługi map. Architektura warstwy prezentacji została rozdzielona od logiki biznesowej, która została umieszczona w odpowiednich serwisach i hookach. 
+Kluczowym elementem implementacji frontendu jest podział na komponenty. W projekcie UniGuesser zostało to zrealizowane poprzez wykorzystanie technologii React oraz TypeScript, z wykorzystaniem bibliotek takich jak Leaflet do obsługi map. Architektura warstwy prezentacji została rozdzielona od logiki biznesowej, która została umieszczona w odpowiednich serwisach i hookach.
 
 \bigskip
 \noindent
@@ -730,14 +730,14 @@ var token = new JwtSecurityToken(
 \noindent
 \textbf{Identyfikowanie użytkowników i autoryzacja dostępu do zasobów}
 
-W aplikacji wykorzystano mechanizm autoryzacji oparty na atrybutach \texttt{[Authorize]} dostępnych w ASP.NET Core. Atrybut ten pozwala na zabezpieczenie kontrolerów lub konkretnych akcji, wymagając od użytkownika posiadania ważnego tokenu JWT oraz odpowiednich uprawnień (ról) do dostępu do zasobów.
+W aplikacji wykorzystano mechanizm autoryzacji oparty na atrybutach \texttt{[Authorize]} dostępnych w \linebreak ASP.NET Core. Atrybut ten pozwala na zabezpieczenie kontrolerów lub konkretnych akcji, wymagając od użytkownika posiadania ważnego tokenu JWT oraz odpowiednich uprawnień (ról) do dostępu do zasobów.
 Na etapie przetwarzania żądania, middleware uwierzytelniające sprawdza obecność i ważność tokenu JWT w nagłówku autoryzacji. Jeśli token jest poprawny, użytkownik zostaje zidentyfikowany, a jego rola jest sprawdzana w kontekście żądanej akcji.
 
 \bigskip
 \noindent
 \textbf{Hashowanie haseł użytkowników i uwierzytelnianie}
 
-Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano mechanizm \texttt{PasswordHasher<TUser>} udostępniony przez .NET Core Identity. Hasher ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu.
+Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano mechanizm \linebreak \texttt{PasswordHasher<TUser>} udostępniony przez .NET Core Identity. Hasher ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu.
 W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
 
 \smallskip
@@ -794,7 +794,7 @@ public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
 \end{lstlisting}
 
 
-Dzięki takiemu podejściu walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przekłada się na wyższą jakość oraz bezpieczeństwo aplikacji. Każda reguła walidacyjna znajduje się w osobnej klasie, co pozwala zachować zasadę pojedynczej odpowiedzialności, zwiększa modularność kodu oraz umożliwia łatwe testowanie poszczególnych walidatorów w izolacji od pozostałych komponentów systemu.
+Dzięki takiemu podejściu walidacja danych jest centralnie zarządzana i łatwo rozszerzalna, co przekłada się na wyższą jakość oraz bezpieczeństwo aplikacji. Każda reguła walidacyjna znajduje się w osobnej klasie, co pozwala zachować zasadę pojedynczej odpowiedzialności, zwiększa modularność kodu oraz umożliwia łatwe testowanie poszczególnych walidatorów w izolacji od pozostałych komponentów systemu.x
 
 
 % potencjalnie napisze moze cos o mediator i flunet validation tutaj
