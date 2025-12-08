@@ -576,6 +576,8 @@ const getGame = async (signal: AbortSignal) => {
 }
 \end{lstlisting}
 
+\newpage
+
 W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu \ref{lst:front-start-new-game}.
 
 \smallskip
@@ -660,12 +662,18 @@ W celu autoryzacji wykorzystany został JSON Web Token. Jest to standard wymiany
 
 Składa się on z trzech niezależnych części zakodowanych w formacie Base64: nagłówka (header), ładunku (payload) oraz podpisu (signature). Nagłówek zawiera informacje o algorytmie podpisu i typie tokenu, ładunek zawiera dane użytkownika i inne informacje, a podpis służy do weryfikacji integralności tokenu i autentyczności nadawcy.
 
+\newpage
 Przykładowy token JWT:
 \smallskip
-\begin{lstlisting}
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI
-6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3n
-MiGM6H9FNFUROf3wh7SmqJp-QV30
+\begin{lstlisting}[breaklines=true, breakatwhitespace=false]
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA
+1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMyMDJlN2YxLTM3YjMtNDYyNS04OThmLT
+dkNGMzYWFkMTNmOCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY
+2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluQEFkbWluLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29md
+C5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiaHR0cDovL3NjaGVtYXMue
+G1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkFkbWluIiwidG9rZW5fdHlwZ
+SI6InVzZXIiLCJleHAiOjE3NjUxMzc2NjcsImlzcyI6Imh0dHA6Ly9wYXJ0eUdhbWVBcGkuY29tIiwiYXVkI
+joiaHR0cDovL3BhcnR5R2FtZUFwaS5jb20ifQ2h7aoZB80iwO-Cii-c5hPOW2CIQw8qlAKphduNdt8bk
 \end{lstlisting}
 
 Nagłówek przedstawia zakodowane informacje o algorytmie podpisu oraz typie tokenu (w tym przypadku HS256):

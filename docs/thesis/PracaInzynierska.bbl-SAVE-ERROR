@@ -1,0 +1,514 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{pwa-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2b5dc45895ee9e9bb566a39bf2f2166c}{%
+           family={{Mozilla Contributors}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{fullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{bibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorbibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authornamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorfullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{Progressive web apps (PWA)}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps
+      \endverb
+      \verb{url}
+      \verb https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps
+      \endverb
+    \endentry
+    \entry{react-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=cfc9e57ddc3c6c6dcd75a0dd1b768000}{%
+           family={{React Team}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{cfc9e57ddc3c6c6dcd75a0dd1b768000}
+      \strng{fullhash}{cfc9e57ddc3c6c6dcd75a0dd1b768000}
+      \strng{bibnamehash}{cfc9e57ddc3c6c6dcd75a0dd1b768000}
+      \strng{authorbibnamehash}{cfc9e57ddc3c6c6dcd75a0dd1b768000}
+      \strng{authornamehash}{cfc9e57ddc3c6c6dcd75a0dd1b768000}
+      \strng{authorfullhash}{cfc9e57ddc3c6c6dcd75a0dd1b768000}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{React - The library for web and native user interfaces}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://react.dev/
+      \endverb
+      \verb{url}
+      \verb https://react.dev/
+      \endverb
+    \endentry
+    \entry{axios-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=4fd931cbba9e4de1d4f35fc7b2b304ff}{%
+           family={{Axios Contributors}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{4fd931cbba9e4de1d4f35fc7b2b304ff}
+      \strng{fullhash}{4fd931cbba9e4de1d4f35fc7b2b304ff}
+      \strng{bibnamehash}{4fd931cbba9e4de1d4f35fc7b2b304ff}
+      \strng{authorbibnamehash}{4fd931cbba9e4de1d4f35fc7b2b304ff}
+      \strng{authornamehash}{4fd931cbba9e4de1d4f35fc7b2b304ff}
+      \strng{authorfullhash}{4fd931cbba9e4de1d4f35fc7b2b304ff}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{Axios - Promise based HTTP client for the browser and node.js}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://axios-http.com/docs/intro
+      \endverb
+      \verb{url}
+      \verb https://axios-http.com/docs/intro
+      \endverb
+    \endentry
+    \entry{leaflet-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=65286d997c9d3a0a7e2b4c8a147d430b}{%
+           family={{Volodymyr Agafonkin}},
+           familyi={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{65286d997c9d3a0a7e2b4c8a147d430b}
+      \strng{fullhash}{65286d997c9d3a0a7e2b4c8a147d430b}
+      \strng{bibnamehash}{65286d997c9d3a0a7e2b4c8a147d430b}
+      \strng{authorbibnamehash}{65286d997c9d3a0a7e2b4c8a147d430b}
+      \strng{authornamehash}{65286d997c9d3a0a7e2b4c8a147d430b}
+      \strng{authorfullhash}{65286d997c9d3a0a7e2b4c8a147d430b}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{Leaflet - an open-source JavaScript library for mobile-friendly interactive maps}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://leafletjs.com/
+      \endverb
+      \verb{url}
+      \verb https://leafletjs.com/
+      \endverb
+    \endentry
+    \entry{react-leaflet-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=f4752da77ca236f643db44771b608829}{%
+           family={{Paul Le Cam and contributors}},
+           familyi={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{f4752da77ca236f643db44771b608829}
+      \strng{fullhash}{f4752da77ca236f643db44771b608829}
+      \strng{bibnamehash}{f4752da77ca236f643db44771b608829}
+      \strng{authorbibnamehash}{f4752da77ca236f643db44771b608829}
+      \strng{authornamehash}{f4752da77ca236f643db44771b608829}
+      \strng{authorfullhash}{f4752da77ca236f643db44771b608829}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{React Leaflet - React components for Leaflet maps}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://react-leaflet.js.org/
+      \endverb
+      \verb{url}
+      \verb https://react-leaflet.js.org/
+      \endverb
+    \endentry
+    \entry{dotnet-maui-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={{Microsoft}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \field{extraname}{1}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{What is .NET MAUI?}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui
+      \endverb
+      \verb{url}
+      \verb https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui
+      \endverb
+    \endentry
+    \entry{microsoft-cqrs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={{Microsoft}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \field{extraname}{2}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 29.11.2025]}
+      \field{title}{Wzorzec CQRS}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://learn.microsoft.com/pl-pl/azure/architecture/patterns/cqrs
+      \endverb
+      \verb{url}
+      \verb https://learn.microsoft.com/pl-pl/azure/architecture/patterns/cqrs
+      \endverb
+    \endentry
+    \entry{microsoft-ddd}{online}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={{Microsoft}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \field{extraname}{3}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 29.11.2025]}
+      \field{title}{Projektowanie mikrousługi zorientowanej na DDD}
+      \field{urlday}{29}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice
+      \endverb
+      \verb{url}
+      \verb https://learn.microsoft.com/pl-pl/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice
+      \endverb
+    \endentry
+    \entry{visual-book-pg}{online}{}
+      \name{author}{1}{}{%
+        {{hash=ba554c09045348643b371e642649b503}{%
+           family={{Gdansk University of Technology}},
+           familyi={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{ba554c09045348643b371e642649b503}
+      \strng{fullhash}{ba554c09045348643b371e642649b503}
+      \strng{bibnamehash}{ba554c09045348643b371e642649b503}
+      \strng{authorbibnamehash}{ba554c09045348643b371e642649b503}
+      \strng{authornamehash}{ba554c09045348643b371e642649b503}
+      \strng{authorfullhash}{ba554c09045348643b371e642649b503}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{Księga Identyfikacji Wizualnej}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2013}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://cdn.files.pg.edu.pl/main/Dzia%C5%82%20Promocji/PDF%20-%20materia%C5%82y%20promocyjne/PG-SIW.pdf
+      \endverb
+      \verb{url}
+      \verb https://cdn.files.pg.edu.pl/main/Dzia%C5%82%20Promocji/PDF%20-%20materia%C5%82y%20promocyjne/PG-SIW.pdf
+      \endverb
+    \endentry
+    \entry{react-hook-form}{online}{}
+      \name{author}{1}{}{%
+        {{hash=18f6d828fe45c4496bb3b9bd45327577}{%
+           family={Team},
+           familyi={T\bibinitperiod},
+           given={React\bibnamedelimb Hook\bibnamedelima Form},
+           giveni={R\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{18f6d828fe45c4496bb3b9bd45327577}
+      \strng{fullhash}{18f6d828fe45c4496bb3b9bd45327577}
+      \strng{bibnamehash}{18f6d828fe45c4496bb3b9bd45327577}
+      \strng{authorbibnamehash}{18f6d828fe45c4496bb3b9bd45327577}
+      \strng{authornamehash}{18f6d828fe45c4496bb3b9bd45327577}
+      \strng{authorfullhash}{18f6d828fe45c4496bb3b9bd45327577}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{React Hook Form - dokumentacja useForm}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://react-hook-form.com/docs/useform
+      \endverb
+      \verb{url}
+      \verb https://react-hook-form.com/docs/useform
+      \endverb
+    \endentry
+    \entry{geolocation-api}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2b5dc45895ee9e9bb566a39bf2f2166c}{%
+           family={{Mozilla Contributors}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{fullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{bibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorbibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authornamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorfullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{Geolocation API}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API
+      \endverb
+      \verb{url}
+      \verb https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API
+      \endverb
+    \endentry
+    \entry{service-worker-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2b5dc45895ee9e9bb566a39bf2f2166c}{%
+           family={{Mozilla Contributors}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{fullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{bibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorbibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authornamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorfullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \field{extraname}{3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{Service Worker API}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API
+      \endverb
+      \verb{url}
+      \verb https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API
+      \endverb
+    \endentry
+    \entry{web-app-manifest}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2b5dc45895ee9e9bb566a39bf2f2166c}{%
+           family={{Mozilla Contributors}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{fullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{bibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorbibnamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authornamehash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \strng{authorfullhash}{2b5dc45895ee9e9bb566a39bf2f2166c}
+      \field{extraname}{4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 30.11.2025]}
+      \field{title}{Web application manifest}
+      \field{urlday}{30}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2025}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest
+      \endverb
+      \verb{url}
+      \verb https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest
+      \endverb
+    \endentry
+    \entry{ef-core-migrations}{online}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={{Microsoft}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \field{extraname}{4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 03.12.2025]}
+      \field{title}{Migrations Overview - EF Core}
+      \field{urlday}{3}
+      \field{urlmonth}{12}
+      \field{urlyear}{2025}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://learn.microsoft.com/pl-pl/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli
+      \endverb
+      \verb{url}
+      \verb https://learn.microsoft.com/pl-pl/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli
+      \endverb
+    \endentry
+    \entry{pgadmin-docs}{online}{}
+      \name{author}{1}{}{%
+        {{hash=ebfbb7d8966ef3044ee4a6c53b623698}{%
+           family={{pgAdmin Development Team}},
+           familyi={p\bibinitperiod}}}%
+      }
+      \strng{namehash}{ebfbb7d8966ef3044ee4a6c53b623698}
+      \strng{fullhash}{ebfbb7d8966ef3044ee4a6c53b623698}
+      \strng{bibnamehash}{ebfbb7d8966ef3044ee4a6c53b623698}
+      \strng{authorbibnamehash}{ebfbb7d8966ef3044ee4a6c53b623698}
+      \strng{authornamehash}{ebfbb7d8966ef3044ee4a6c53b623698}
+      \strng{authorfullhash}{ebfbb7d8966ef3044ee4a6c53b623698}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{[dostęp: 27.11.2025]}
+      \field{title}{pgAdmin 4 Documentation: Getting Started}
+      \field{urlday}{27}
+      \field{urlmonth}{11}
+      \field{urlyear}{2025}
+      \field{year}{2024}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.pgadmin.org/docs/pgadmin4/latest/getting_started.html
+      \endverb
+      \verb{url}
+      \verb https://www.pgadmin.org/docs/pgadmin4/latest/getting_started.html
+      \endverb
+    \endentry
+    \entry{baresipezze2006}{article}{}
+      \name{author}{1}{}{%
+        {{hash=7f4338c74de29a79d9affe3a42a94615}{%
+           family={Mauro\bibnamedelima Pezzè},
+           familyi={M\bibinitperiod\bibinitdelim P\bibinitperiod},
+           given={Luciano\bibnamedelima Baresi},
+           giveni={L\bibinitperiod\bibinitdelim B\bibinitperiod},
+           prefix={i},
+           prefixi={i\bibinitperiod}}}%
+      }
+      \strng{namehash}{7f4338c74de29a79d9affe3a42a94615}
+      \strng{fullhash}{7f4338c74de29a79d9affe3a42a94615}
+      \strng{bibnamehash}{7f4338c74de29a79d9affe3a42a94615}
+      \strng{authorbibnamehash}{7f4338c74de29a79d9affe3a42a94615}
+      \strng{authornamehash}{7f4338c74de29a79d9affe3a42a94615}
+      \strng{authorfullhash}{7f4338c74de29a79d9affe3a42a94615}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{An Introduction to Software Testing}
+      \field{year}{2006}
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1571066106000442
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1571066106000442
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
