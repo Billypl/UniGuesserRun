@@ -633,10 +633,10 @@ W ramach tego etapu backend generuje odpowiednią liczbę rund, przypisuje im lo
 W przypadku użytkownika niezalogowanego aplikacja dodatkowo generuje i zwraca tymczasowy token, który umożliwia jego uwierzytelnienie w kolejnych żądaniach.
 
 Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
-\texttt{api/game/{gameId}/round/{roundNumber}},
+\linebreak \texttt{api/game/{gameId}/round/{roundNumber}},
 gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} - numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
 
-W przypadku trybu geolokalizacyjnego również możliwe jest wywołanie
+W przypadku trybu geolokalizacyjnego możliwe też jest wywołanie
 \texttt{api/game/{gameId}/round/distance},
 gdzie dla frontendu wysyłamy aktualna odległość od miejsca do zgadniecią (czyli w które musi dojść). Na tej podstawie frontend może wyświetlić potencjalna Podpowiedź dla użytkownika.
 
@@ -693,7 +693,7 @@ Payload zawiera zakodowane informacje, które chcemy przekazać, jak np. identyf
 
 Podpis jest generowany przez zakodowanie nagłówka i payloadu oraz podpisanie ich kluczem prywatnym przy użyciu algorytmu określonego w nagłówku.
 
-W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.\-Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
+W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.\linebreak Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
 
 \smallskip
 \begin{lstlisting}[language={[Sharp]C}, caption={Generowanie tokenu JWT w warstwie backendu}, label={lst:jwt-generation}]
@@ -731,14 +731,14 @@ var token = new JwtSecurityToken(
 \noindent
 \textbf{Identyfikowanie użytkowników i autoryzacja dostępu do zasobów}
 
-W aplikacji wykorzystano mechanizm autoryzacji oparty na atrybutach \texttt{[Authorize]} dostępnych w ASP.NET Core. Atrybut ten pozwala na zabezpieczenie kontrolerów lub konkretnych akcji, wymagając od użytkownika posiadania ważnego tokenu JWT oraz odpowiednich uprawnień (ról) do dostępu do zasobów.
+W aplikacji wykorzystano mechanizm autoryzacji oparty na atrybutach \texttt{[Authorize]} dostępnych w \linebreak ASP.NET Core. Atrybut ten pozwala na zabezpieczenie kontrolerów lub konkretnych akcji, wymagając od użytkownika posiadania ważnego tokenu JWT oraz odpowiednich uprawnień (ról) do dostępu do zasobów.
 Na etapie przetwarzania żądania, middleware uwierzytelniające sprawdza obecność i ważność tokenu JWT w nagłówku autoryzacji. Jeśli token jest poprawny, użytkownik zostaje zidentyfikowany, a jego rola jest sprawdzana w kontekście żądanej akcji.
 
 \bigskip
 \noindent
 \textbf{Hashowanie haseł użytkowników i uwierzytelnianie}
 
-Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano mechanizm \texttt{PasswordHasher<TUser>} udostępniony przez .NET Core Identity. Hasher ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu.
+Do bezpiecznego generowania i przechowywania haseł użytkowników wykorzystano mechanizm \linebreak \texttt{PasswordHasher<TUser>} udostępniony przez .NET Core Identity. Hasher ten jest odporny na ataki brute-force dzięki zastosowaniu kosztownego obliczeniowo procesu hashowania oraz losowego saltingu.
 W procesie rejestracji hasło użytkownika jest hashowane przed zapisem do bazy danych, natomiast podczas logowania następuje weryfikacja hasła poprzez porównanie jego hasha z wartością przechowywaną w bazie.
 
 \smallskip
@@ -951,7 +951,7 @@ Konfiguracja jest rozproszona pomiędzy kilka plików i mechanizmów:
     \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} — warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
     \item \texttt{launchSettings.json} — używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpiony przez konfigurację kontenera + reverse proxy.
     \item Frontend \texttt{Constants.ts} — zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
-    \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
+    \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD \linebreak (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
 \end{itemize}
 \bigskip
 Mechanizm konfiguracji w ASP.NET Core scalający źródła (pliki, zmienne środowiskowe, sekrety użytkownika) umożliwia elastyczne przełączanie środowisk bez modyfikacji kodu.
