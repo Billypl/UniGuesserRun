@@ -22,7 +22,7 @@ W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej
         .2 src/           - źródło danych, w którym przechowywane jest większość plików.
         .3 assets/        - statyczne assety typu obrazki, fonty.
         .4 images/.
-        .4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej \\ aplikacji, załączone  w readme w repozytorium na githubie.
+        .4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej \\ aplikacji, załączone w pliku README w repozytorium na GitHubie.
         .3 components/    - elementy interfejsu.
         .3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu \\ i efektów.
         .3 models/        - definicje interfejsów danych.
@@ -76,7 +76,7 @@ const startGame = async (signal: AbortSignal) => {
         startRound(0)
     } catch (err: any) {
         if (err.name === 'CanceledError') {
-            console.error('Request aborted by the abort conttoler (2nd fetch prevention')
+            console.error('Request aborted by the abort controller (2nd fetch prevention')
         } else {
             setError('Failed to fetch data. Please try again later.')
             console.error('Error fetching data:', err)
@@ -104,9 +104,9 @@ const fetchGuessingPlace = async () => {
 }
 \end{lstlisting}
 
-Wysyła żądania do backendu poprzez serwis \texttt{gameService}, który zarządza komunikacją z API, m.in. prosząc o numer danej rundy, zdjęcie jej lokacji oraz współrzędne lokalizacji. Po uzyskaniu danych gra jest zainicjowalizowana, runda jest rozpoczęta, a gracz może przystąpić do zabawy. Komponent \texttt{game} zarządza również stanem gry, obsługując przejścia między rundami, aktualizację wyniku oraz zakończenie gry. Po zakończeniu gry, komponent ten przekierowuje użytkownika do osobnego komponentu \texttt{gameResults}.
+Wysyła żądania do backendu poprzez serwis \texttt{gameService}, który zarządza komunikacją z API, m.in. prosząc o numer danej rundy, zdjęcie jej lokacji oraz współrzędne lokalizacji. Po uzyskaniu danych gra jest zainicjalizowana, runda jest rozpoczęta, a gracz może przystąpić do zabawy. Komponent \texttt{game} zarządza również stanem gry, obsługując przejścia między rundami, aktualizację wyniku oraz zakończenie gry. Po zakończeniu gry, komponent ten przekierowuje użytkownika do osobnego komponentu \texttt{gameResults}.
 
-Wyświetlenie panelu rozgrywki jest realizowane za pomocą kompontentu do wyświetlania UI o nazwie \texttt{GameInterface}. Funkcja w \texttt{game} zwraca strukturę HTML panelu gry, zawierającą główny komponent GameInterface z odpowiednimi właściwościami przekazywanymi jako propsy.
+Wyświetlenie panelu rozgrywki jest realizowane za pomocą komponentu do wyświetlania UI o nazwie \texttt{GameInterface}. Funkcja w \texttt{game} zwraca strukturę HTML panelu gry, zawierającą główny komponent GameInterface z odpowiednimi właściwościami przekazywanymi jako propsy.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Proces przekazania danych ze strony rozgrywki do komponentu odpowiadającego za jego UI - GameInterface}, label={lst:front-game-return-interface}]
@@ -134,7 +134,7 @@ W jego wnętrzu znajdują się inne komponenty, takie jak \texttt{SelectMapLocat
 
 \subsection{Warstwa wizualna (Karina Wołoszyn)}
 
-Przez dużą liczbę osobnych podstron i widoków istniejących w aplikacji, zostały one rozdzielone na osobne pliki w folderze styles, z nazwą opisującą dany widok. Każdy z nich posiada rozszerzecznie .module.scss, zapewniający nie tylko izolację stylów (.module - przesyła informację dla bundlera, że plik ten ma być traktowany jako moduł css) przez lokalne zscope'owanie unikalnych nazwa klasy, aby nie kolidowały z innymi stylami w projekcie o tych samych nazwach, ale również daje możliwość importu modułu bezpośrednio w komponencie:
+Ze względu na dużą liczbę osobnych podstron i widoków istniejących w aplikacji zostały one rozdzielone na osobne pliki w folderze styles, z nazwą opisującą dany widok. Każdy z nich posiada rozszerzenie .module.scss, zapewniające nie tylko izolację stylów (.module — przesyła informację dla bundlera, że plik ten ma być traktowany jako moduł CSS) przez lokalne zasięgowanie unikalnych nazw klas, aby nie kolidowały z innymi stylami w projekcie o tych samych nazwach, ale również daje możliwość importu modułu bezpośrednio w komponencie:
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania importu pliku GameSettings.module.scss jako moduł do komponentu ustawień gry}, label={lst:front-game-settings-module}]
@@ -143,7 +143,7 @@ import styles from '../styles/GameSettings.module.scss'
 
 Dodatkowo, rozszerzenie .scss pozwala na zagnieżdżanie stylów scss, tworzenia zmiennych i mixinów. Plik mixin zawiera w sobie własne ustawienia stylu dla często powtarzających się elementów aplikacji, jak jasny przycisk, ciemny przycisk, linki, element klikalny.
 
-Ważną rolę w wytwarzaniu aplikacji UniGuesser grała jego kolorstyka, ze względu na jego inspirację Politechniką Gdańską. Dlatego też kluczowe było aby na całej przestrzeni aplikacji, użyte kolory były nie tylko jednakowe, ale również zgadzały się z podanymi wytycznymi zawartych w Księdze Identyfikacji Wizualnej politechniki \cite{visual-book-pg}. W tym celu powstał plik \texttt{\_Colors.scss}, odpowiedzialny za definicję niestandardowych kolorów użytych w elementach interfejsu w całej aplikacji.
+Ważną rolę w wytwarzaniu aplikacji UniGuesser grała jej kolorystyka, ze względu na inspirację Politechniką Gdańską. Dlatego też kluczowe było, aby na całej przestrzeni aplikacji użyte kolory były nie tylko jednakowe, ale również zgadzały się z wytycznymi zawartymi w Księdze Identyfikacji Wizualnej Politechniki Gdańskiej \cite{visual-book-pg}. W tym celu powstał plik \texttt{\_Colors.scss}, odpowiedzialny za definicję niestandardowych kolorów użytych w elementach interfejsu w całej aplikacji.
 
 \begin{figure}[H]
     \centering
@@ -182,7 +182,7 @@ Tworząc aplikację PWA, zadbaliśmy o to, aby była ona responsywna i dostosowy
 
 \subsection{Obsługa interakcji użytkownika (Karina Wołoszyn)}
 
-W Reactcie interaktywność powstaje dzięki wykorzystaniu funkcji useState, która przedtrzymuje dynamicznie wartości w komponencie. W momencie zmiany wartości, komponent jest ponownie renderowany z nową wartością. Istnieje też możliwość wykorzystania useForm, który jest specjalnym hookiem do obsługi formularzy, oferującym walidację, zarządzanie stanem i obsługę zdarzeń, co znacznie uprościło tworzenie i obsługę formularzy \cite{react-hook-form}.
+W Reactcie interaktywność powstaje dzięki wykorzystaniu funkcji \texttt{useState}, która przechowuje dynamiczne wartości w komponencie. W momencie zmiany wartości komponent jest ponownie renderowany z nową wartością. Istnieje też możliwość wykorzystania \texttt{useForm}, który jest specjalnym hookiem do obsługi formularzy, oferującym walidację, zarządzanie stanem i obsługę zdarzeń, co znacznie uprościło tworzenie i obsługę formularzy \cite{react-hook-form}.
 
 W UniGuesser interakcja użytkownika z formularzami pojawia się w 5 miejscach:
 \begin{itemize}
@@ -378,7 +378,7 @@ Powyższy kod definiuje hook \texttt{useGeolocation}, który umożliwia komponen
 const AddPlace: React.FC = () => {
     const { coordinates, setCoordinates, readCoordinates, geolocationError } = useGeolocation();
 
-    /* ... pozostala czesc komponentu ... */
+    /* ... pozostała część komponentu ... */
 
     return (
         <div>
@@ -428,7 +428,7 @@ export class PlaceService {
 		return result.data
 	}
 
-    /* ... pozostale metody komunikacji z backendem ... */
+    /* ... pozostałe metody komunikacji z backendem ... */
 }
 
 export default new PlaceService()
@@ -640,7 +640,7 @@ gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} - numer
 
 W przypadku trybu geolokalizacyjnego możliwe też jest wywołanie
 \texttt{api/game/{gameId}/round/distance},
-gdzie dla frontendu wysyłamy aktualna odległość od miejsca do zgadniecią (czyli w które musi dojść). Na tej podstawie frontend może wyświetlić potencjalna Podpowiedź dla użytkownika.
+gdzie dla frontendu wysyłana jest aktualna odległość od miejsca do zgadnięcia (czyli do którego musi dojść). Na tej podstawie frontend może wyświetlić potencjalną podpowiedź dla użytkownika.
 
 Odpowiedź użytkownika jest obsługiwana przez endpoint
 \texttt{api/game/{gameId}/round/{roundNumber}/check}.
