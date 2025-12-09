@@ -47,7 +47,7 @@
   a4paper,                      % see (g1)
 %   portrait,                     % see (g2), LaTeX default, no such option in report.cls
   10pt,                         % see (g4)
-  oneside,                      % see (g9)
+  twoside,                      % see (g9)
   notitlepage,                  % see (TP) !!!
 %  openright,                    % see (h1), this is common custom (start chapters on odd page)
 ]{report}
@@ -84,7 +84,7 @@
     margin=2.5cm,
     a4paper,
 %     includeheadfoot,
-    bindingoffset=0cm
+    bindingoffset=1cm
 ]{geometry}
 
 %--------------------------------------------------------------------

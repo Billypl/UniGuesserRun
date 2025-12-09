@@ -26,11 +26,11 @@ W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej
         .3 components/    - elementy interfejsu.
         .3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu \\ i efektów.
         .3 models/        - definicje interfejsów danych.
-        .4 account/       - interfejsy związane z logowaniem i rejestracją użytkowników.
+        .4 account/       - interfejsy związane z logowaniem i rejestracją \\ użytkowników.
         .4 game/          - interfejsy związane z rozgrywką.
         .4 place/         - interfejsy związane z lokalizacjami.
         .4 scoreboard/    - interfejsy związane z rankingiem graczy.
-        .3 pages/         - strony łączące elementy interfejsu (strona główna i logowania).
+        .3 pages/         - strony łączące elementy interfejsu.
         .3 services/      - żądania do API (własnych i zewnętrznych).
         .4 api/           - żądania do własnych API.
         .3 styles/        - elementy interfejsu.
@@ -578,7 +578,7 @@ const getGame = async (signal: AbortSignal) => {
 
 \newpage
 
-W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu \ref{lst:front-start-new-game}.
+W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \linebreak \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu \ref{lst:front-start-new-game}.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczynająca nową grę w komponencie \texttt{Game}}, label={lst:front-start-new-game}]
@@ -638,11 +638,10 @@ Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
 \linebreak \texttt{api/game/{gameId}/round/{roundNumber}},
 gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} - numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
 
-W przypadku trybu geolokalizacyjnego możliwe też jest wywołanie
+W przypadku trybu geolokalizacyjnego możliwe jest również wywołanie \linebreak
 \texttt{api/game/{gameId}/round/distance},
 gdzie dla frontendu wysyłana jest aktualna odległość od miejsca do zgadnięcia (czyli do którego musi dojść). Na tej podstawie frontend może wyświetlić potencjalną podpowiedź dla użytkownika.
-
-Odpowiedź użytkownika jest obsługiwana przez endpoint
+Odpowiedź użytkownika jest obsługiwana przez endpoint \linebreak
 \texttt{api/game/{gameId}/round/{roundNumber}/check}.
 Aplikacja weryfikuje lokalizację podaną przez użytkownika, oblicza odległość pomiędzy faktycznym miejscem a wskazanym punktem oraz na tej podstawie przyznaje punkty za daną rundę.
 
@@ -666,14 +665,15 @@ Składa się on z trzech niezależnych części zakodowanych w formacie Base64: 
 Przykładowy token JWT:
 \smallskip
 \begin{lstlisting}[breaklines=true, breakatwhitespace=false]
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA
-1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMyMDJlN2YxLTM3YjMtNDYyNS04OThmLT
-dkNGMzYWFkMTNmOCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY
-2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluQEFkbWluLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29md
-C5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiaHR0cDovL3NjaGVtYXMue
-G1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkFkbWluIiwidG9rZW5fdHlwZ
-SI6InVzZXIiLCJleHAiOjE3NjUxMzc2NjcsImlzcyI6Imh0dHA6Ly9wYXJ0eUdhbWVBcGkuY29tIiwiYXVkI
-joiaHR0cDovL3BhcnR5R2FtZUFwaS5jb20ifQ2h7aoZB80iwO-Cii-c5hPOW2CIQw8qlAKphduNdt8bk
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy
+8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMyMDJlN2YxLTM3YjMtNDYy
+NS04OThmLTdkNGMzYWFkMTNmOCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMD
+UvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluQEFkbWluLmNvbSIsImh0dHA6Ly9z
+Y2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbW
+luIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMv
+bmFtZSI6IkFkbWluIiwidG9rZW5fdHlwZSI6InVzZXIiLCJleHAiOjE3NjUxMzc2NjcsImlzcyI6Im
+h0dHA6Ly9wYXJ0eUdhbWVBcGkuY29tIiwiYXVkIjoiaHR0cDovL3BhcnR5R2FtZUFwaS5jb20ifQ2h
+7aoZB80iwO-Cii-c5hPOW2CIQw8qlAKphduNdt8bk
 \end{lstlisting}
 
 Nagłówek przedstawia zakodowane informacje o algorytmie podpisu oraz typie tokenu (w tym przypadku HS256):
@@ -701,7 +701,7 @@ Payload zawiera zakodowane informacje, które chcemy przekazać, jak np. identyf
 
 Podpis jest generowany przez zakodowanie nagłówka i payloadu oraz podpisanie ich kluczem prywatnym przy użyciu algorytmu określonego w nagłówku.
 
-W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.\linebreak Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
+W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \linebreak \texttt{Microsoft.AspNetCore.Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
 
 \smallskip
 \begin{lstlisting}[language={[Sharp]C}, caption={Generowanie tokenu JWT w warstwie backendu}, label={lst:jwt-generation}]
