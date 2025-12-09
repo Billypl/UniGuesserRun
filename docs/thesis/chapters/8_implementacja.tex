@@ -830,7 +830,9 @@ throw new UserNotFoundException(userGuid);
 
 Dzięki temu możliwe jest precyzyjne zarządzanie typami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
 
-\section{Baza danych i zarządzanie danymi}
+\section{Baza danych i zarządzanie danymi (Michał Turski)}
+
+W rozdziale omówione zostaną kluczowe aspekty związane z bazą danych oraz zarządzaniem danymi w aplikacji, w tym wybór odpowiedniego systemu zarządzania bazą danych, implementacja warstwy persystencji oraz wzorzec repozytorium.
 
 \subsection{Repozytoria — komunikacja z bazą danych}
 
@@ -880,7 +882,7 @@ W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku dewelopers
     \label{fig:pgadmin-screenshot}
 \end{figure}
 
-\section{Devops i wdrożenie aplikacji}
+\section{Devops i wdrożenie aplikacji (Michał Pawiłojć)}
 
 W tej sekcji opisano proces przygotowania, uruchamiania oraz wdrażania aplikacji w środowiskach deweloperskim i produkcyjnym z wykorzystaniem konteneryzacji Docker, plików konfiguracyjnych oraz reverse proxy Nginx. Przedstawiono również decyzje projektowe dotyczące zarządzania certyfikatami oraz publikacji obrazów w zewnętrznym rejestrze (Docker Hub).
 
