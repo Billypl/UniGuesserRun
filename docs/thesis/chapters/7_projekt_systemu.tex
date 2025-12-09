@@ -19,7 +19,7 @@ są obecnie standardem w wytwarzaniu oprogramowania.
 Ponadto zdecydowaliśmy na wybór architektury monolitycznej ze względu na szybkość rozwoju i łatwość wdrożenia, co pomogło skupić się nam na aspekcie funkcjonalnym aplikacji w początkowej fazie jej tworzenia.
 
 \subsection{Wzorzec CQRS}
-Wykorzystany został również wzorzec CQRS. Zakłada on rozdzielenie operacji modyfikujących stan systemu (komendy) od operacji, które odczytują dane (zapytania). Pozwala to na lepsze skalowanie i rozdzielenie logiki aplikacji. Dzięki temu można optymalizować każdą z tych operacji niezależnie, co przekłada się na wydajność i czytelność kodu. ~\cite{microsoft-cqrs} W kontekście skalowalności systemu zastosowano uproszczoną implementację wzorca CQRS z pojedynczą bazą danych ze względu na:
+Wykorzystany został również wzorzec CQRS. Zakłada on rozdzielenie operacji modyfikujących stan systemu (komendy) od operacji, które odczytują dane (zapytania). Pozwala to na lepsze skalowanie i rozdzielenie logiki aplikacji. Dzięki temu można optymalizować każdą z tych operacji niezależnie, co przekłada się na wydajność i czytelność kodu.~\cite{microsoft-cqrs} W kontekście skalowalności systemu zastosowano uproszczoną implementację wzorca CQRS z pojedynczą bazą danych ze względu na:
 
 \begin{itemize}
   \item Przewidywane obciążenie do 50 zapytań na sekundę, co nie wymagało zastosowania osobnych baz danych do odczytu i zapisu.
@@ -66,7 +66,7 @@ Dzięki zastosowaniu DDD, Clean Architecture i CQRS aplikacja UniGuesser zyskał
 W aplikacji zastosowano relacyjną bazę danych do przechowywania informacji o aktualnych i przeszłych sesjach gier, użytkownikach, lokalizacjach oraz wynikach. Zdecydowano się na wykorzystanie relacyjnej bazy danych ze względu na dużą ilość powiązań między encjami oraz potrzebę zapewnienia integralności danych między nimi. Relacyjne bazy danych zapewniają ACID (Atomicity, Consistency, Isolation, Durability), co jest kluczowe dla zachowania spójności danych w rozgrywce.
 
 \subsection{Diagram ERD}
-Przedstawiony na rysunku \ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-Relationship Diagram}) ilustruje strukturę bazy danych aplikacji UniGuesser, pokazując główne tabele oraz relacje między nimi. Użytkownik może posiadać wiele sesji gier, a każda sesja ma określoną liczbę rund, z których każda posiada przypisaną do siebie lokację. Ponadto każde miejsce może mieć swojego autora (użytkownika), który dodał je do bazy danych.
+Przedstawiony na rysunku~\ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-Relationship Diagram}) ilustruje strukturę bazy danych aplikacji UniGuesser, pokazując główne tabele oraz relacje między nimi. Użytkownik może posiadać wiele sesji gier, a każda sesja ma określoną liczbę rund, z których każda posiada przypisaną do siebie lokację. Ponadto każde miejsce może mieć swojego autora (użytkownika), który dodał je do bazy danych.
 
 \begin{figure}[h]
   \centering
@@ -164,7 +164,7 @@ W niniejszej sekcji przedstawiono kluczowe elementy modelu danych zastosowanego 
 W rozdziale przedstawione zostaną możliwości i przebieg kluczowych funkcjonalności aplikacji UniGuesser z perspektywy użytkownika końcowego. Opisane zostaną główne przypadki użycia oraz interakcje między użytkownikiem a systemem podczas typowej rozgrywki.
 
 \subsection{Przypadki użycia aplikacji}
-Przedstawiony na rysunku \ref{fig:use-case-diagram} diagram przypadków użycia ilustruje główne funkcjonalności aplikacji UniGuesser z perspektywy użytkownika, moderatora i administratora. Użytkownik może rejestrować się i logować do systemu, rozpoczynać nowe sesje gier, uczestniczyć w rozgrywkach, przeglądać wyniki innych użytkowników oraz proponować nowe lokacje. Moderator dodatkowo może zatwierdzać lub odrzucać proponowane lokacje, natomiast administrator ma uprawnienia do zarządzania użytkownikami.
+Przedstawiony na rysunku~\ref{fig:use-case-diagram} diagram przypadków użycia ilustruje główne funkcjonalności aplikacji UniGuesser z perspektywy użytkownika, moderatora i administratora. Użytkownik może rejestrować się i logować do systemu, rozpoczynać nowe sesje gier, uczestniczyć w rozgrywkach, przeglądać wyniki innych użytkowników oraz proponować nowe lokacje. Moderator dodatkowo może zatwierdzać lub odrzucać proponowane lokacje, natomiast administrator ma uprawnienia do zarządzania użytkownikami.
 
 \begin{figure}[H]
   \centering
@@ -175,7 +175,7 @@ Przedstawiony na rysunku \ref{fig:use-case-diagram} diagram przypadków użycia 
 
 \subsection{Diagram sekwencji rozgrywki}
 
-Diagram sekwencji przedstawiony na rysunku \ref{fig:sequence-diagram} ilustruje przebieg interakcji między użytkownikiem a systemem podczas typowej rozgrywki w aplikacji UniGuesser. Proces rozpoczyna się od momentu, gdy użytkownik uruchamia nową grę, poprzez kolejne rundy, aż do momentu zakończenia sesji i wyświetlenia wyników końcowych.
+Diagram sekwencji przedstawiony na rysunku~\ref{fig:sequence-diagram} ilustruje przebieg interakcji między użytkownikiem a systemem podczas typowej rozgrywki w aplikacji UniGuesser. Proces rozpoczyna się od momentu, gdy użytkownik uruchamia nową grę, poprzez kolejne rundy, aż do momentu zakończenia sesji i wyświetlenia wyników końcowych.
 
 \begin{figure}[H]
   \centering
@@ -195,7 +195,7 @@ Design interfejsu użytkownika naszej aplikacji skupia się na minimalizmie i cz
 Aplikacja została zaprojektowana z myślą o responsywności, co oznacza, że dostosowuje się do różnych rozmiarów ekranów i urządzeń. Dzięki temu użytkownicy mogą korzystać z aplikacji zarówno na komputerach stacjonarnych, jak i urządzeniach mobilnych, bez utraty funkcjonalności czy estetyki. Elementy interfejsu, takie jak przyciski, formularze czy mapy, automatycznie dostosowują swoje rozmiary i układ w zależności od dostępnej przestrzeni ekranowej. Na mniejszych ekranach, takich jak smartfony, menu nawigacyjne jest ukryte za ikoną hamburgera, co pozwala zaoszczędzić miejsce i utrzymać przejrzystość interfejsu. Ponadto, kluczowe funkcje pozostają łatwo dostępne, a tekst i grafiki są skalowane odpowiednio do rozdzielczości ekranu, zapewniając optymalne doświadczenie użytkownika niezależnie od urządzenia.
 
 \subsection{Kolorystyka}
-Aplikacja wykorzystuje dwukolorową paletę barw, opartą na odcieniach białego i ciemnoniebieskiego, inspirowaną kolorystyką Politechniki Gdańskiej. Biały kolor dominuje w tle, co zapewnia czystość i przejrzystość interfejsu, natomiast niebieskie akcenty są używane do wyróżnienia kluczowych elementów, takich jak przyciski, nagłówki czy linki. Przykładowe zastosowanie palety kolorów przedstawia rysunek \ref{fig:color-palette-example}. Taka kolorystyka zapewnia odpowiedni kontrast i ułatwia czytelność tekstu, zwłaszcza przy korzystaniu z aplikacji w różnych warunkach oświetleniowych, co jest szczególnie istotne ze względu na terenowy charakter gry.
+Aplikacja wykorzystuje dwukolorową paletę barw, opartą na odcieniach białego i ciemnoniebieskiego, inspirowaną kolorystyką Politechniki Gdańskiej. Biały kolor dominuje w tle, co zapewnia czystość i przejrzystość interfejsu, natomiast niebieskie akcenty są używane do wyróżnienia kluczowych elementów, takich jak przyciski, nagłówki czy linki. Przykładowe zastosowanie palety kolorów przedstawia rysunek~\ref{fig:color-palette-example}. Taka kolorystyka zapewnia odpowiedni kontrast i ułatwia czytelność tekstu, zwłaszcza przy korzystaniu z aplikacji w różnych warunkach oświetleniowych, co jest szczególnie istotne ze względu na terenowy charakter gry.
 
 \begin{figure}[H]
   \centering

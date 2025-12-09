@@ -22,15 +22,15 @@ W trakcie realizacji projektu zdecydowaliśmy się na zdefiniowanie odpowiedniej
         .2 src/           - źródło danych, w którym przechowywane jest większość plików.
         .3 assets/        - statyczne assety typu obrazki, fonty.
         .4 images/.
-        .4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej \\ aplikacji, załączone  w readme w repozytorium na githubie.
+        .4 promotion/     - zdjęcia służące tylko i wyłącznie do promocji naszej \\ aplikacji, załączone w pliku README w repozytorium na GitHubie.
         .3 components/    - elementy interfejsu.
         .3 hooks/         - niestandardowe hooki dla Reacta, wykorzystujące logikę stanu \\ i efektów.
         .3 models/        - definicje interfejsów danych.
-        .4 account/       - interfejsy związane z logowaniem i rejestracją użytkowników.
+        .4 account/       - interfejsy związane z logowaniem i rejestracją \\ użytkowników.
         .4 game/          - interfejsy związane z rozgrywką.
         .4 place/         - interfejsy związane z lokalizacjami.
         .4 scoreboard/    - interfejsy związane z rankingiem graczy.
-        .3 pages/         - strony łączące elementy interfejsu (strona główna i logowania).
+        .3 pages/         - strony łączące elementy interfejsu.
         .3 services/      - żądania do API (własnych i zewnętrznych).
         .4 api/           - żądania do własnych API.
         .3 styles/        - elementy interfejsu.
@@ -76,7 +76,7 @@ const startGame = async (signal: AbortSignal) => {
         startRound(0)
     } catch (err: any) {
         if (err.name === 'CanceledError') {
-            console.error('Request aborted by the abort conttoler (2nd fetch prevention')
+            console.error('Request aborted by the abort controller (2nd fetch prevention')
         } else {
             setError('Failed to fetch data. Please try again later.')
             console.error('Error fetching data:', err)
@@ -104,9 +104,9 @@ const fetchGuessingPlace = async () => {
 }
 \end{lstlisting}
 
-Wysyła żądania do backendu poprzez serwis \texttt{gameService}, który zarządza komunikacją z API, m.in. prosząc o numer danej rundy, zdjęcie jej lokacji oraz współrzędne lokalizacji. Po uzyskaniu danych gra jest zainicjowalizowana, runda jest rozpoczęta, a gracz może przystąpić do zabawy. Komponent \texttt{game} zarządza również stanem gry, obsługując przejścia między rundami, aktualizację wyniku oraz zakończenie gry. Po zakończeniu gry, komponent ten przekierowuje użytkownika do osobnego komponentu \texttt{gameResults}.
+Wysyła żądania do backendu poprzez serwis \texttt{gameService}, który zarządza komunikacją z API, m.in. prosząc o numer danej rundy, zdjęcie jej lokacji oraz współrzędne lokalizacji. Po uzyskaniu danych gra jest zainicjalizowana, runda jest rozpoczęta, a gracz może przystąpić do zabawy. Komponent \texttt{game} zarządza również stanem gry, obsługując przejścia między rundami, aktualizację wyniku oraz zakończenie gry. Po zakończeniu gry, komponent ten przekierowuje użytkownika do osobnego komponentu \texttt{gameResults}.
 
-Wyświetlenie panelu rozgrywki jest realizowane za pomocą kompontentu do wyświetlania UI o nazwie \texttt{GameInterface}. Funkcja w \texttt{game} zwraca strukturę HTML panelu gry, zawierającą główny komponent GameInterface z odpowiednimi właściwościami przekazywanymi jako propsy.
+Wyświetlenie panelu rozgrywki jest realizowane za pomocą komponentu do wyświetlania UI o nazwie \texttt{GameInterface}. Funkcja w \texttt{game} zwraca strukturę HTML panelu gry, zawierającą główny komponent GameInterface z odpowiednimi właściwościami przekazywanymi jako propsy.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Proces przekazania danych ze strony rozgrywki do komponentu odpowiadającego za jego UI - GameInterface}, label={lst:front-game-return-interface}]
@@ -134,7 +134,7 @@ W jego wnętrzu znajdują się inne komponenty, takie jak \texttt{SelectMapLocat
 
 \subsection{Warstwa wizualna (Karina Wołoszyn)}
 
-Przez dużą liczbę osobnych podstron i widoków istniejących w aplikacji, zostały one rozdzielone na osobne pliki w folderze styles, z nazwą opisującą dany widok. Każdy z nich posiada rozszerzecznie .module.scss, zapewniający nie tylko izolację stylów (.module - przesyła informację dla bundlera, że plik ten ma być traktowany jako moduł css) przez lokalne zscope'owanie unikalnych nazwa klasy, aby nie kolidowały z innymi stylami w projekcie o tych samych nazwach, ale również daje możliwość importu modułu bezpośrednio w komponencie:
+Ze względu na dużą liczbę osobnych podstron i widoków istniejących w aplikacji zostały one rozdzielone na osobne pliki w folderze styles, z nazwą opisującą dany widok. Każdy z nich posiada rozszerzenie .module.scss, zapewniające nie tylko izolację stylów (.module — przesyła informację dla bundlera, że plik ten ma być traktowany jako moduł CSS) przez lokalne zasięgowanie unikalnych nazw klas, aby nie kolidowały z innymi stylami w projekcie o tych samych nazwach, ale również daje możliwość importu modułu bezpośrednio w komponencie:
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania importu pliku GameSettings.module.scss jako moduł do komponentu ustawień gry}, label={lst:front-game-settings-module}]
@@ -143,12 +143,12 @@ import styles from '../styles/GameSettings.module.scss'
 
 Dodatkowo, rozszerzenie .scss pozwala na zagnieżdżanie stylów scss, tworzenia zmiennych i mixinów. Plik mixin zawiera w sobie własne ustawienia stylu dla często powtarzających się elementów aplikacji, jak jasny przycisk, ciemny przycisk, linki, element klikalny.
 
-Ważną rolę w wytwarzaniu aplikacji UniGuesser grała jego kolorstyka, ze względu na jego inspirację Politechniką Gdańską. Dlatego też kluczowe było aby na całej przestrzeni aplikacji, użyte kolory były nie tylko jednakowe, ale również zgadzały się z podanymi wytycznymi zawartych w Księdze Identyfikacji Wizualnej politechniki \cite{visual-book-pg}. W tym celu powstał plik \texttt{\_Colors.scss}, odpowiedzialny za definicję niestandardowych kolorów użytych w elementach interfejsu w całej aplikacji.
+Ważną rolę w wytwarzaniu aplikacji UniGuesser grała jej kolorystyka, ze względu na inspirację Politechniką Gdańską. Dlatego też kluczowe było, aby na całej przestrzeni aplikacji użyte kolory były nie tylko jednakowe, ale również zgadzały się z wytycznymi zawartymi w Księdze Identyfikacji Wizualnej Politechniki Gdańskiej~\cite{visual-book-pg}. W tym celu powstał plik \texttt{\_Colors.scss}, odpowiedzialny za definicję niestandardowych kolorów użytych w elementach interfejsu w całej aplikacji.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{images/visual_colors_pg.png}
-    \caption{Kolorystyka Politechniki Gdańskiej według Księgi Identyfikacji Wizualnej \cite{visual-book-pg}}
+    \caption{Kolorystyka Politechniki Gdańskiej według Księgi Identyfikacji Wizualnej~\cite{visual-book-pg}}
     \label{fig:colouring-pg}
 \end{figure}
 
@@ -182,7 +182,7 @@ Tworząc aplikację PWA, zadbaliśmy o to, aby była ona responsywna i dostosowy
 
 \subsection{Obsługa interakcji użytkownika (Karina Wołoszyn)}
 
-W Reactcie interaktywność powstaje dzięki wykorzystaniu funkcji useState, która przedtrzymuje dynamicznie wartości w komponencie. W momencie zmiany wartości, komponent jest ponownie renderowany z nową wartością. Istnieje też możliwość wykorzystania useForm, który jest specjalnym hookiem do obsługi formularzy, oferującym walidację, zarządzanie stanem i obsługę zdarzeń, co znacznie uprościło tworzenie i obsługę formularzy \cite{react-hook-form}.
+W Reactcie interaktywność powstaje dzięki wykorzystaniu funkcji \texttt{useState}, która przechowuje dynamiczne wartości w komponencie. W momencie zmiany wartości komponent jest ponownie renderowany z nową wartością. Istnieje też możliwość wykorzystania \texttt{useForm}, który jest specjalnym hookiem do obsługi formularzy, oferującym walidację, zarządzanie stanem i obsługę zdarzeń, co znacznie uprościło tworzenie i obsługę formularzy~\cite{react-hook-form}.
 
 W UniGuesser interakcja użytkownika z formularzami pojawia się w 5 miejscach:
 \begin{itemize}
@@ -194,7 +194,7 @@ W UniGuesser interakcja użytkownika z formularzami pojawia się w 5 miejscach:
     \item edycji dodanych miejsc.
 \end{itemize}
 
-Zasadę mechaniki działania obsługi formularzy przedstawia listingi \ref{lst:front-form-field} oraz \ref{lst:front-form-login}. W pierwszym z nich znajduje się implementacja uniwersalnego pola formularza. Uniwersalne pole formularza przyjmuję jako parametry takie jak etykieta, nazwa pola, typ, domyślna wartość, funkcja rejestrująca pole w useForm, funkcja obsługująca zmianę wartości, komunikat o błędzie oraz akceptowane typy plików (w przypadku pola typu file). Dzięki temu możliwe jest wielokrotne wykorzystanie tego samego komponentu w różnych formularzach, co zwiększa spójność i ułatwia utrzymanie kodu.
+Zasadę mechaniki działania obsługi formularzy przedstawia listingi~\ref{lst:front-form-field} oraz~\ref{lst:front-form-login}. W pierwszym z nich znajduje się implementacja uniwersalnego pola formularza. Uniwersalne pole formularza przyjmuję jako parametry takie jak etykieta, nazwa pola, typ, domyślna wartość, funkcja rejestrująca pole w useForm, funkcja obsługująca zmianę wartości, komunikat o błędzie oraz akceptowane typy plików (w przypadku pola typu file). Dzięki temu możliwe jest wielokrotne wykorzystanie tego samego komponentu w różnych formularzach, co zwiększa spójność i ułatwia utrzymanie kodu.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Przykład implementacji uniwersalnego pola FormField}, label={lst:front-form-field}]
@@ -220,7 +220,7 @@ const FormField = <T extends FieldValues>({ label, name, type = "text", defaultV
 };
 \end{lstlisting}
 
-Przykładem zastosowania uniwersalnego pola formularza jest formularz logowania przedstawiony w listingu \ref{lst:front-form-login}. W tym przypadku komponent \texttt{FormField} jest wykorzystywany do tworzenia pól dla nazwy użytkownika lub e-maila oraz hasła. Obsługa walidacji i błędów jest również zintegrowana, co pozwala na wyświetlanie odpowiednich komunikatów w przypadku nieprawidłowych danych wejściowych.
+Przykładem zastosowania uniwersalnego pola formularza jest formularz logowania przedstawiony w listingu~\ref{lst:front-form-login}. W tym przypadku komponent \texttt{FormField} jest wykorzystywany do tworzenia pól dla nazwy użytkownika lub e-maila oraz hasła. Obsługa walidacji i błędów jest również zintegrowana, co pozwala na wyświetlanie odpowiednich komunikatów w przypadku nieprawidłowych danych wejściowych.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania uniwersalnych pól formularza}, label={lst:front-form-login}]
@@ -283,7 +283,7 @@ Do implementacji funkcjonalności związanej z lokalizacją użytkownika wykorzy
     \item W trybie PWA uwzględniono, że żądania lokalizacji mogą być ograniczone w tle — należy testować zachowanie na docelowych platformach.
 \end{itemize}
 
-W listingu \ref{lst:front-geolocation-watch} znajduje się przykładowy fragment kodu (TypeScript) użyty we frontendzie, ilustrujący sposób integracji z Geolocation API.
+W listingu~\ref{lst:front-geolocation-watch} znajduje się przykładowy fragment kodu (TypeScript) użyty we frontendzie, ilustrujący sposób integracji z Geolocation API.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Przykład wykorzystania Geolocation API do śledzenia pozycji użytkownika}, label={lst:front-geolocation-watch}]
@@ -322,7 +322,7 @@ const watchGeolocation = (): number | null => {
 
 Po uzyskaniu zgody użytkownika na dostęp do lokalizacji, funkcja \texttt{watchGeolocation} rozpoczyna śledzenie pozycji. W przypadku każdej aktualizacji pozycji wywoływana jest funkcja \texttt{selectLocation}, która aktualizuje stan aplikacji oraz widok mapy. W przypadku błędów odpowiednie komunikaty są wyświetlane użytkownikowi, aby poinformować go o problemach z lokalizacją.
 
-Poza rozgrywką, Geolocation API jest również wykorzystywane w formularzu dodawania nowych punktów gry, gdzie użytkownik może automatycznie wypełnić swoje współrzędne geograficzne. Aby ułatwić ponowne użycie kodu, stworzono dedykowany hook Reactowy \texttt{useGeolocation} (listing \ref{lst:use-geolocation-hook}), który zarządza stanem lokalizacji i błędów związanych z geolokalizacją.
+Poza rozgrywką, Geolocation API jest również wykorzystywane w formularzu dodawania nowych punktów gry, gdzie użytkownik może automatycznie wypełnić swoje współrzędne geograficzne. Aby ułatwić ponowne użycie kodu, stworzono dedykowany hook Reactowy \texttt{useGeolocation} (listing~\ref{lst:use-geolocation-hook}), który zarządza stanem lokalizacji i błędów związanych z geolokalizacją.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Przykład użycia Geolocation API we własnym hooku}, label={lst:use-geolocation-hook}]
@@ -371,7 +371,7 @@ export const useGeolocation = () => {
 }
 \end{lstlisting}
 
-Powyższy kod definiuje hook \texttt{useGeolocation}, który umożliwia komponentom formularza łatwe pobieranie i zarządzanie współrzędnymi geograficznymi użytkownika. W przypadku błędów odpowiednie komunikaty są ustawiane w stanie, aby informować użytkownika o problemach z lokalizacją. W listingu \ref{lst:front-add-place-geolocation} znajduje się przykład użycia tego hooka w komponencie formularza.
+Powyższy kod definiuje hook \texttt{useGeolocation}, który umożliwia komponentom formularza łatwe pobieranie i zarządzanie współrzędnymi geograficznymi użytkownika. W przypadku błędów odpowiednie komunikaty są ustawiane w stanie, aby informować użytkownika o problemach z lokalizacją. W listingu~\ref{lst:front-add-place-geolocation} znajduje się przykład użycia tego hooka w komponencie formularza.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Przykład użycia hooka useGeolocation w komponencie formularza}, label={lst:front-add-place-geolocation}]
@@ -402,7 +402,7 @@ Frontend komunikuje się z backendem za pomocą asynchronicznych wywołań API p
 
 Komunikacja została zrealizowana przez warstwę serwisów (ang. services). Każdy serwis odpowiada za jedną grupę zasobów (np. AccountService, PlaceService) i korzysta ze współdzielonego klienta HTTP, co umożliwia centralne zarządzanie konfiguracją połączenia, taką jak adres bazowy API, nagłówki czy obsługa błędów.
 
-W poniższym listingu \ref{lst:front-place-service} znajduje się przykładowy fragment kodu (TypeScript) przedstawiający implementację serwisu do zarządzania miejscami (PlaceService) z wykorzystaniem tokenu JWT do autoryzacji:
+W poniższym listingu~\ref{lst:front-place-service} znajduje się przykładowy fragment kodu (TypeScript) przedstawiający implementację serwisu do zarządzania miejscami (PlaceService) z wykorzystaniem tokenu JWT do autoryzacji:
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Konfiguracja instancji Axios z tokenem JWT}, label={lst:front-place-service}]
@@ -444,7 +444,7 @@ Aplikacja została zaprojektowana jako Progressive Web Application (PWA)~\cite{p
     \item \textbf{Responsywność}: Aplikacja została zaprojektowana z myślą o różnych rozmiarach ekranów, co zapewnia optymalne doświadczenie użytkownika zarówno na komputerach, jak i urządzeniach mobilnych.
 \end{itemize}
 
-W listingu \ref{lst:vite-pwa-config} przedstawiono użytą konfiguracja Vite, która zawiera zarówno rejestrację Service Workera, jak i definicję manifestu aplikacji.
+W listingu~\ref{lst:vite-pwa-config} przedstawiono użytą konfiguracja Vite, która zawiera zarówno rejestrację Service Workera, jak i definicję manifestu aplikacji.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Konfiguracja Vite do obsługi PWA}, label={lst:vite-pwa-config}]
@@ -503,7 +503,7 @@ Konfiguracja obejmuje definicję manifestu PWA, zawierającego podstawowe inform
 \subsection{Implementacja rozgrywki (Filip Jezierski)}
 Implementacja logiki rozgrywki opiera się na dwóch głównych komponentach: \texttt{GameSettings}, odpowiedzialnym za konfigurację nowej sesji gry, oraz \texttt{Game}, który obsługuje właściwy przebieg rund.
 
-W komponencie \texttt{GameSettings} realizowane jest zarządzanie ustawieniami gracza, obsługa trybu gościa i użytkownika zalogowanego, zapisywanie konfiguracji w \texttt{sessionStorage}, a także decyzja o kontynuowaniu istniejącej gry lub rozpoczęciu nowej. Komunikacja z API odbywa się poprzez metody serwisu \texttt{gameService}, które pozwalają m.in. sprawdzić bieżący stan gry, utworzyć nową sesję lub porzucić trwającą rozgrywkę. W przypadku wykrycia aktywnej gry użytkownik otrzymuje możliwość podjęcia działania poprzez wyświetlany modal. Po zatwierdzeniu ustawień przez gracza, dane są zapisywane w \texttt{sessionStorage} (listing \ref{lst:front-save-game-settings}), co umożliwia ich późniejsze wykorzystanie podczas inicjalizacji sesji gry w komponencie \texttt{Game}.
+W komponencie \texttt{GameSettings} realizowane jest zarządzanie ustawieniami gracza, obsługa trybu gościa i użytkownika zalogowanego, zapisywanie konfiguracji w \texttt{sessionStorage}, a także decyzja o kontynuowaniu istniejącej gry lub rozpoczęciu nowej. Komunikacja z API odbywa się poprzez metody serwisu \texttt{gameService}, które pozwalają m.in. sprawdzić bieżący stan gry, utworzyć nową sesję lub porzucić trwającą rozgrywkę. W przypadku wykrycia aktywnej gry użytkownik otrzymuje możliwość podjęcia działania poprzez wyświetlany modal. Po zatwierdzeniu ustawień przez gracza, dane są zapisywane w \texttt{sessionStorage} (listing~\ref{lst:front-save-game-settings}), co umożliwia ich późniejsze wykorzystanie podczas inicjalizacji sesji gry w komponencie \texttt{Game}.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Metoda w komponencie \texttt{GameSettings} zapisująca ustawienia gry w \texttt{sessionStorage}}, label={lst:front-save-game-settings}]
@@ -517,7 +517,7 @@ const saveGameSettings = (data: StartGameData) => {
 }
 \end{lstlisting}
 
-Główny komponent \texttt{Game} odpowiada za przebieg sesji gry. Po załadowaniu sprawdzana jest możliwość wznowienia gry poprzez istniejący token lub inicjalizowana jest nowa rozgrywka. Decyzja o wznowieniu lub rozpoczęciu nowej gry jest podejmowana w hooku \texttt{useEffect} przy pierwszym renderowaniu komponentu (listing \ref{lst:front-decision-resume-or-start}).
+Główny komponent \texttt{Game} odpowiada za przebieg sesji gry. Po załadowaniu sprawdzana jest możliwość wznowienia gry poprzez istniejący token lub inicjalizowana jest nowa rozgrywka. Decyzja o wznowieniu lub rozpoczęciu nowej gry jest podejmowana w hooku \texttt{useEffect} przy pierwszym renderowaniu komponentu (listing~\ref{lst:front-decision-resume-or-start}).
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Fragment kodu w komponencie \texttt{Game} odpowiedzialny za decyzję o wznowieniu lub rozpoczęciu nowej gry}, label={lst:front-decision-resume-or-start}]
@@ -537,7 +537,7 @@ useEffect(() => {
 }, [])
 \end{lstlisting}
 
-Następnie, jeśli rozgrywka z poprzedniej sesji ma być kontynuowana, wywoływana jest odpowiednia runda gry, na podstawie danych uzyskanych z serwera. Funkcja odpowiedzialna za pobranie stanu gry znajduje się w listingu \ref{lst:front-get-game}.
+Następnie, jeśli rozgrywka z poprzedniej sesji ma być kontynuowana, wywoływana jest odpowiednia runda gry, na podstawie danych uzyskanych z serwera. Funkcja odpowiedzialna za pobranie stanu gry znajduje się w listingu~\ref{lst:front-get-game}.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Funkcja pobierająca stan gry w komponencie \texttt{Game}}, label={lst:front-get-game}]
@@ -578,7 +578,7 @@ const getGame = async (signal: AbortSignal) => {
 
 \newpage
 
-W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu \ref{lst:front-start-new-game}.
+W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \linebreak \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu~\ref{lst:front-start-new-game}.
 
 \smallskip
 \begin{lstlisting}[language=JavaScript, caption={Funkcja rozpoczynająca nową grę w komponencie \texttt{Game}}, label={lst:front-start-new-game}]
@@ -628,7 +628,7 @@ W tej sekcji omówione zostaną kluczowe aspekty implementacji backendu aplikacj
 \subsection{Implementacja rozgrywki}
 
 
-Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku \ref{fig:sequence-diagram}.
+Poniżej przedstawiono sposób implementacji przebiegu rozgrywki, zgodny z diagramem sekwencji pokazanym na rysunku~\ref{fig:sequence-diagram}.
 
 Proces rozpoczęcia rozgrywki inicjuje wywołanie kontrolera \texttt{api/game/start}, który odpowiada za utworzenie nowej \textit{Sesji Rozgrywki} (\ref{tab:game-sessions}).
 W ramach tego etapu backend generuje odpowiednią liczbę rund, przypisuje im losowe miejsca do zgadnięcia, nadaje sesji status \texttt{InProgress}, a następnie zwraca unikalny identyfikator gry w postaci GUID.
@@ -638,11 +638,10 @@ Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
 \linebreak \texttt{api/game/{gameId}/round/{roundNumber}},
 gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} - numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
 
-W przypadku trybu geolokalizacyjnego możliwe też jest wywołanie
+W przypadku trybu geolokalizacyjnego możliwe jest również wywołanie \linebreak
 \texttt{api/game/{gameId}/round/distance},
-gdzie dla frontendu wysyłamy aktualna odległość od miejsca do zgadniecią (czyli w które musi dojść). Na tej podstawie frontend może wyświetlić potencjalna Podpowiedź dla użytkownika.
-
-Odpowiedź użytkownika jest obsługiwana przez endpoint
+gdzie dla frontendu wysyłana jest aktualna odległość od miejsca do zgadnięcia (czyli do którego musi dojść). Na tej podstawie frontend może wyświetlić potencjalną podpowiedź dla użytkownika.
+Odpowiedź użytkownika jest obsługiwana przez endpoint \linebreak
 \texttt{api/game/{gameId}/round/{roundNumber}/check}.
 Aplikacja weryfikuje lokalizację podaną przez użytkownika, oblicza odległość pomiędzy faktycznym miejscem a wskazanym punktem oraz na tej podstawie przyznaje punkty za daną rundę.
 
@@ -666,14 +665,15 @@ Składa się on z trzech niezależnych części zakodowanych w formacie Base64: 
 Przykładowy token JWT:
 \smallskip
 \begin{lstlisting}[breaklines=true, breakatwhitespace=false]
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA
-1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMyMDJlN2YxLTM3YjMtNDYyNS04OThmLT
-dkNGMzYWFkMTNmOCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY
-2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluQEFkbWluLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29md
-C5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiaHR0cDovL3NjaGVtYXMue
-G1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkFkbWluIiwidG9rZW5fdHlwZ
-SI6InVzZXIiLCJleHAiOjE3NjUxMzc2NjcsImlzcyI6Imh0dHA6Ly9wYXJ0eUdhbWVBcGkuY29tIiwiYXVkI
-joiaHR0cDovL3BhcnR5R2FtZUFwaS5jb20ifQ2h7aoZB80iwO-Cii-c5hPOW2CIQw8qlAKphduNdt8bk
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy
+8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMyMDJlN2YxLTM3YjMtNDYy
+NS04OThmLTdkNGMzYWFkMTNmOCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMD
+UvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluQEFkbWluLmNvbSIsImh0dHA6Ly9z
+Y2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbW
+luIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMv
+bmFtZSI6IkFkbWluIiwidG9rZW5fdHlwZSI6InVzZXIiLCJleHAiOjE3NjUxMzc2NjcsImlzcyI6Im
+h0dHA6Ly9wYXJ0eUdhbWVBcGkuY29tIiwiYXVkIjoiaHR0cDovL3BhcnR5R2FtZUFwaS5jb20ifQ2h
+7aoZB80iwO-Cii-c5hPOW2CIQw8qlAKphduNdt8bk
 \end{lstlisting}
 
 Nagłówek przedstawia zakodowane informacje o algorytmie podpisu oraz typie tokenu (w tym przypadku HS256):
@@ -701,7 +701,7 @@ Payload zawiera zakodowane informacje, które chcemy przekazać, jak np. identyf
 
 Podpis jest generowany przez zakodowanie nagłówka i payloadu oraz podpisanie ich kluczem prywatnym przy użyciu algorytmu określonego w nagłówku.
 
-W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.\linebreak Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
+W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \linebreak \texttt{Microsoft.AspNetCore.Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
 
 \smallskip
 \begin{lstlisting}[language={[Sharp]C}, caption={Generowanie tokenu JWT w warstwie backendu}, label={lst:jwt-generation}]
@@ -830,7 +830,9 @@ throw new UserNotFoundException(userGuid);
 
 Dzięki temu możliwe jest precyzyjne zarządzanie typami błędów typowymi dla konkretnej encji, co ułatwia debugowanie i podnosi jakość obsługi wyjątków.
 
-\section{Baza danych i zarządzanie danymi}
+\section{Baza danych i zarządzanie danymi (Michał Turski)}
+
+W rozdziale omówione zostaną kluczowe aspekty związane z bazą danych oraz zarządzaniem danymi w aplikacji, w tym wybór odpowiedniego systemu zarządzania bazą danych, implementacja warstwy persystencji oraz wzorzec repozytorium.
 
 \subsection{Repozytoria — komunikacja z bazą danych}
 
@@ -877,10 +879,10 @@ W celu podglądu i zarządzania bazą danych PostgreSQL w środowisku dewelopers
     \centering
     \includegraphics[width=1.0\textwidth]{./images/pgadmin.png}
     \caption{Zrzut ekranu przedstawiający interfejs narzędzia PGAdmin z widokiem na strukturę bazy danych aplikacji UniGuesser.}
-    \label{fig:use-case-diagram}
+    \label{fig:pgadmin-screenshot}
 \end{figure}
 
-\section{Devops i wdrożenie aplikacji}
+\section{Devops i wdrożenie aplikacji (Michał Pawiłojć)}
 
 W tej sekcji opisano proces przygotowania, uruchamiania oraz wdrażania aplikacji w środowiskach deweloperskim i produkcyjnym z wykorzystaniem konteneryzacji Docker, plików konfiguracyjnych oraz reverse proxy Nginx. Przedstawiono również decyzje projektowe dotyczące zarządzania certyfikatami oraz publikacji obrazów w zewnętrznym rejestrze (Docker Hub).
 

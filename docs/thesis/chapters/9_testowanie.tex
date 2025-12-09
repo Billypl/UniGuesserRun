@@ -1,11 +1,11 @@
 \chapter{Testowanie (Karina Wołoszyn)}
 \label{chap:tests}
 
-Testowanie jest integralną częścią procesu tworzenia oprogramowania. Dzięki niemu, jesteśmy w stanie wyłapać defekty w kodzie i błędy w aplikacji, na które użytkownicy końcowi mogliby natrafić podczas korzystania z niej. Dodatkowo, pozwala ono zwiększyć satysfakcję i zaufanie użytkowników do aplikacji, i minimalizuje ryzyko ponoszenia większych nakładów czasowych i pracy związanych z naprawą błędów. W przypadku tworzenia aplikacji webowej, która nie tylko ma się sprawdzać na urządzeniach stacjonarnych, ale również urządzeniach przenośnych, testowanie staje się bardziej istotne. Różnorodność przeglądarek czy systemów operacyjnych może prwoadzić do problemów, których nie dałoby się napotkać w jednym środowisku. Prowadzi to do konieczności zdefiniowanej ścieżki testowej, która pozwoli na optymalne wykorzystanie zasobów, czasu jakim byliśmy w stanie poświęcić na projekt w trakcie jego tworzenia, a także zapewni odpowiednią jakość aplikacji.
+Testowanie jest integralną częścią procesu tworzenia oprogramowania. Dzięki niemu jesteśmy w stanie wyłapać defekty w kodzie i błędy w aplikacji, na które użytkownicy końcowi mogliby natrafić podczas korzystania z niej. Dodatkowo pozwala ono zwiększyć satysfakcję i zaufanie użytkowników do aplikacji i minimalizuje ryzyko ponoszenia większych nakładów czasowych i pracy związanych z naprawą błędów. W przypadku tworzenia aplikacji webowej, która nie tylko ma się sprawdzać na urządzeniach stacjonarnych, ale również urządzeniach przenośnych, testowanie staje się bardziej istotne. Różnorodność przeglądarek czy systemów operacyjnych może prowadzić do problemów, których nie dałoby się napotkać w jednym środowisku. Prowadzi to do konieczności zdefiniowanej ścieżki testowej, która pozwoli na optymalne wykorzystanie zasobów, czasu, jakim byliśmy w stanie poświęcić na projekt w trakcie jego tworzenia, a także zapewni odpowiednią jakość aplikacji.
 
 \section{Zapewnienie jakości}
 
-Jednym ze sposobów zapewnienie jakości oprogramowania - QA (ang. \textit{Quality Assurance}) jest testowanie. QA to proces, który ma na celu zapewnienie, że oprogramowanie spełnia określone standardy jakości i działa zgodnie z oczekiwaniami użytkowników. QA zawiera 5 rodzaji aktywności \cite{baresipezze2006}:
+Jednym ze sposobów zapewnienia jakości oprogramowania — QA (ang. \textit{Quality Assurance}) jest testowanie. QA to proces, który ma na celu zapewnienie, że oprogramowanie spełnia określone standardy jakości i działa zgodnie z oczekiwaniami użytkowników. QA zawiera 5 rodzajów aktywności~\cite{baresipezze2006}:
 
 \begin{itemize}
     \item planowanie i monitorowanie
@@ -19,15 +19,15 @@ W ramach projektu, skupiliśmy się na planowaniu i monitorowaniu, weryfikacji o
 
 \subsection{Planowanie i monitorowanie}
 
-Planowanie i monitorowanie ma na celu określenie strategii podejścia do działań związanych z zapewnieniem jakości, które zazwyczaj powinno być zdefiniowane we wczesnych fazach wytwarzania oprogramowania. W naszym przypadku, zdecydowaliśmy się na podejście manualne, ze względu na mały próg wejścia, co pozwalało, że każdy członek zespołu mógł uczestniczyć w procesie testowania aplikacji. Było to szczególne ważne, ponieważ biorąc pod uwagę stosunkowo krótki czas miedzy poszczególnymi sprintami oraz fakt, że podzieliliśmy się na dwa mniejsze podzespoly (backend i frontend), zależało nam na szybkim i efektywnym podejściu do testowania, które testy manualne pozwoliły nam osiągnąć. Kązdy zespół mógł przeprowadzać testy manualne na swoich częściach aplikacji, bez potrzeby angażowania pozostałych członków zespołu, którzy potrzebowaliby czasu na zapoznania się z daną częścią kodu i odejmując czas na wytwarzanie przydzielonych ich zadań oraz bez potrzeby tworzenia skomplikowanych skryptów testowych. Natomiast monitorowanie postępów odbywało się poprzez regularne przeglądy kodu i testowanie nowych funkcjonalności zaraz po ich wdrożeniu. Wykorzystaliśmy do tego narzędzia takie jak Youtrack do zarządzania zadaniami i śledzenia postępów prac oraz GitHub do przeglądów kodu i integracji zmian w repozytorium projektu. W przypadku wystąpienia nieprawidłowości, były one zgłaszane do osoby odpowiedzialnej za daną część aplikacji, gdzie następowało ich naprawienie i ponowne przetestowanie.
+Planowanie i monitorowanie ma na celu określenie strategii podejścia do działań związanych z zapewnieniem jakości, które zazwyczaj powinno być zdefiniowane we wczesnych fazach wytwarzania oprogramowania. W naszym przypadku zdecydowaliśmy się na podejście manualne ze względu na mały próg wejścia, co pozwalało, że każdy członek zespołu mógł uczestniczyć w procesie testowania aplikacji. Było to szczególnie ważne, ponieważ biorąc pod uwagę stosunkowo krótki czas między poszczególnymi sprintami oraz fakt, że podzieliliśmy się na dwa mniejsze podzespoły (backend i frontend), zależało nam na szybkim i efektywnym podejściu do testowania, które testy manualne pozwoliły nam osiągnąć. Każdy zespół mógł przeprowadzać testy manualne na swoich częściach aplikacji, bez potrzeby angażowania pozostałych członków zespołu, którzy potrzebowaliby czasu na zapoznanie się z daną częścią kodu i odejmując czas na wytwarzanie przydzielonych im zadań oraz bez potrzeby tworzenia skomplikowanych skryptów testowych. Natomiast monitorowanie postępów odbywało się poprzez regularne przeglądy kodu i testowanie nowych funkcjonalności zaraz po ich wdrożeniu. Wykorzystaliśmy do tego narzędzia takie jak YouTrack do zarządzania zadaniami i śledzenia postępów prac oraz GitHub do przeglądów kodu i integracji zmian w repozytorium projektu. W przypadku wystąpienia nieprawidłowości były one zgłaszane do osoby odpowiedzialnej za daną część aplikacji, gdzie następowało ich naprawienie i ponowne przetestowanie.
 
 \subsection{Weryfikacja specyfikacji wymagań}
 
-Proces weryfikacji specyfikacji wymagań przebiegł w formie spotkań zespołu i z klientem. Najpierw podczas spotkania z klientem, omawialiśmy wymagania i oczekiwania wobec aplikacji. Następnie podczas wewnętrznych spotkań zespołu, analizowaliśmy te wymagania pod kątem ich implementacji czy też potencjalnych problemów, które możemy napotkać. Weryfikacja wymagań była kluczowa, aby upewnić się, że wszyscy członkowie zespołu mieli tę samą wizję dalszego rozwoju aplikaacji i że prace nad projektem przebiegały zgodnie z oczekiwaniami klienta. W przypadku znalezienia niejasności lub sprzeczności w wymaganiach, były one omawiane z klientem na kolejnym spotkaniu w celu ich wyjaśnienia i dostosowania specyfikacji do rzeczywistych potrzeb i nadaniu im priorytetów.
+Proces weryfikacji specyfikacji wymagań przebiegł w formie spotkań zespołu i z klientem. Najpierw podczas spotkania z klientem omawialiśmy wymagania i oczekiwania wobec aplikacji. Następnie podczas wewnętrznych spotkań zespołu analizowaliśmy te wymagania pod kątem ich implementacji czy też potencjalnych problemów, które możemy napotkać. Weryfikacja wymagań była kluczowa, aby upewnić się, że wszyscy członkowie zespołu mieli tę samą wizję dalszego rozwoju aplikacji i że prace nad projektem przebiegały zgodnie z oczekiwaniami klienta. W przypadku znalezienia niejasności lub sprzeczności w wymaganiach były one omawiane z klientem na kolejnym spotkaniu w celu ich wyjaśnienia i dostosowania specyfikacji do rzeczywistych potrzeb i nadania im priorytetów.
 
 \subsection{Walidacja}
 
-Podobnie jak w przypadku weryfikacji wymgań, walidacja odbywała się poprzez regularne spotkania z klientem, na których przentowaliśmy aktualne postępy prac. Postęp był przedstawiany albo w postaci krótkiego dema aplikacji zwiększając transparentność prac, albo poprzez omówienie zrealizowanych zadań i ich wpływu na dalszy rozwój aplikacji. Walidacja była kluczowam, aby zapewnić, że nowa funkcjonalność została poprawnie przez nas zinterpretowana i zaimplementowana. W przypadku uwag lub sugestii ze strony klienta, były one brane pod uwagę i omawiane szczegółowo, na spotkaniu zespołu, aby zdecydować o dalszym kierunku rozwoju aplikacji.
+Podobnie jak w przypadku weryfikacji wymagań, walidacja odbywała się poprzez regularne spotkania z klientem, na których prezentowaliśmy aktualne postępy prac. Postęp był przedstawiany albo w postaci krótkiego dema aplikacji zwiększając transparentność prac, albo poprzez omówienie zrealizowanych zadań i ich wpływu na dalszy rozwój aplikacji. Walidacja była kluczowa, aby zapewnić, że nowa funkcjonalność została poprawnie przez nas zinterpretowana i zaimplementowana. W przypadku uwag lub sugestii ze strony klienta były one brane pod uwagę i omawiane szczegółowo na spotkaniu zespołu, aby zdecydować o dalszym kierunku rozwoju aplikacji.
 
 
 \section{Rodzaje testów manualnych}
@@ -62,21 +62,19 @@ W trakcie testowania aplikacji, skupiliśmy się na:
 			\item test responsywności aplikacji na różnych rozdzielczościach ekranu.
 		\end{itemize} 
 
-		\item \textbf{Testy sanity} przeprowadzane po każdej większej zmianie w kodzie, aby upewnić się czy podstawowe funkcje aplikacji działają poprawnie,
+		\item \textbf{Testy sanity} przeprowadzane po każdej większej zmianie w kodzie, aby upewnić się, czy podstawowe funkcje aplikacji działają poprawnie,
 
 		\item \textbf{Testy ad hoc} przeprowadzane bez określonego planu, w celu odkrycia nieoczekiwanych błędów,
 
 		\item \textbf{Testy eksploracyjne} przeprowadzane bez określonego planu, w celu odkrycia nieoczekiwanych błędów,
 
-		\item \textbf{Testy ad hoc} przeprowadzane bez określonego planu, w celu odkrycia nieoczekiwanych błędów,
-
 		\item \textbf{Testy e2e} przeprowadzane w celu sprawdzenia, czy wszystkie komponenty aplikacji działają poprawnie razem,
 		\begin{itemize}
 			\item test przebiegu gry od momentu wybrania trybu gry do wyświetlenia wyniku końcowego,
-			\item test dodania nowej lokalizacji, od momentu wypełnienia formularza do wyświetlenia lokalizacji na mapie w trakcji rozgrywki.
+			\item test dodania nowej lokalizacji, od momentu wypełnienia formularza do wyświetlenia lokalizacji na mapie w trakcie rozgrywki.
 		\end{itemize} 
 
-		\item \textbf{Testy GUI} przeprowadzane w celu sprawdzenia, czy interfejs użytkownika jest intuicyjny, działa poprawnie i nie jest zasłoniety przez inne elementy interfejsu.
+		\item \textbf{Testy GUI} przeprowadzane w celu sprawdzenia, czy interfejs użytkownika jest intuicyjny, działa poprawnie i nie jest zasłonięty przez inne elementy interfejsu.
 \end{itemize} 
 
 \section{Przykłady napotkanych błędów i ich naprawy}
@@ -93,7 +91,7 @@ Błąd CORS podczas logowania  & Poprawa konfiguracji serwera, dodanie odpowiedn
 Różne języki interfejsu & Ujednolicenie tłumaczeń i ustawienie domyślnego języka na angielski \\ \hline
 Nieprawidłowe wyświetlanie elementów interfejsu (nakładanie się elementów, napisy wyjeżdżają poza przyciski) & Poprawa CSS, responsywność i ograniczenie szerokości napisów \\ \hline
 Podwójne startowanie gry (podwójne wysyłanie żądania do backendu) & Blokada wielokrotnego wysyłania żądania, weryfikacja czy żądanie nie zostało już wysłane \\ \hline
-Niepotrzebne informacje w konsoli przeglądarki & Usunięcie debugów i logów developerskich \\ \hline
+Niepotrzebne informacje w konsoli przeglądarki & Usunięcie debugów i logów deweloperskich \\ \hline
 Niepotrzebne informacje w scoreboardzie & Usunięcie zbędnych informacji jak id użytkownika \\ \hline
 Przycisk \textit{register} widoczny dla zalogowanego użytkownika & Warunkowe wyświetlanie przycisku w zależności od stanu logowania \\ \hline
 Miejsca w kolejce wyświetlane razem z listą dodanych miejsc & Rozdzielenie listy na dwie osobne listy \\ \hline
