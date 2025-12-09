@@ -252,20 +252,21 @@ Przykładem zastosowania uniwersalnego pola formularza jest formularz logowania 
 </div>
 \end{lstlisting}
 
-
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
-    \caption{Formularz logowania w aplikacji UniGuesser}
-    \label{fig:login-form}
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/loginForm.png}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/registerForm.png}
+    \end{minipage}
+    \caption{Formularz logowania i rejestracji w aplikacji UniGuesser}
+    \label{fig:auth-forms}
 \end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/kawunia.png}
-    \caption{Formularz rejestracji w aplikacji UniGuesser}
-    \label{fig:register-form}
-\end{figure}
+\newpage %TODO: fix%
 
 Na takiej samej zasadzie działają pozostałe formularze w aplikacji, co zapewnia spójność interfejsu i ułatwia zarządzanie stanem oraz walidacją danych wejściowych od użytkownika.
 
@@ -575,6 +576,8 @@ const getGame = async (signal: AbortSignal) => {
 }
 \end{lstlisting}
 
+\newpage
+
 W przeciwnym wypadku, tworzona jest nowa sesja na podstawie ustawień zapisanych w \texttt{sessionStorage} przez \texttt{GameSettings}. Funkcja odpowiadająca za ten proces znajduje się w listingu \ref{lst:front-start-new-game}.
 
 \smallskip
@@ -632,10 +635,10 @@ W ramach tego etapu backend generuje odpowiednią liczbę rund, przypisuje im lo
 W przypadku użytkownika niezalogowanego aplikacja dodatkowo generuje i zwraca tymczasowy token, który umożliwia jego uwierzytelnienie w kolejnych żądaniach.
 
 Aby pobrać dane dotyczące danej rundy, frontend wywołuje endpoint
-\texttt{api/game/{gameId}/round/{roundNumber}},
+\linebreak \texttt{api/game/{gameId}/round/{roundNumber}},
 gdzie \texttt{gameId} jest identyfikatorem sesji, a \texttt{roundNumber} - numerem aktualnej rundy. Backend zwraca ścieżkę do obrazu przedstawiającego miejsce, które należy odgadnąć. Obraz może być przechowywany lokalnie na serwerze lub stanowić odnośnik do zewnętrznego źródła.
 
-W przypadku trybu geolokalizacyjnego również możliwe jest wywołanie
+W przypadku trybu geolokalizacyjnego możliwe też jest wywołanie
 \texttt{api/game/{gameId}/round/distance},
 gdzie dla frontendu wysyłamy aktualna odległość od miejsca do zgadniecią (czyli w które musi dojść). Na tej podstawie frontend może wyświetlić potencjalna Podpowiedź dla użytkownika.
 
@@ -659,12 +662,18 @@ W celu autoryzacji wykorzystany został JSON Web Token. Jest to standard wymiany
 
 Składa się on z trzech niezależnych części zakodowanych w formacie Base64: nagłówka (header), ładunku (payload) oraz podpisu (signature). Nagłówek zawiera informacje o algorytmie podpisu i typie tokenu, ładunek zawiera dane użytkownika i inne informacje, a podpis służy do weryfikacji integralności tokenu i autentyczności nadawcy.
 
+\newpage
 Przykładowy token JWT:
 \smallskip
-\begin{lstlisting}
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI
-6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3n
-MiGM6H9FNFUROf3wh7SmqJp-QV30
+\begin{lstlisting}[breaklines=true, breakatwhitespace=false]
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA
+1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImMyMDJlN2YxLTM3YjMtNDYyNS04OThmLT
+dkNGMzYWFkMTNmOCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY
+2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluQEFkbWluLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29md
+C5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiaHR0cDovL3NjaGVtYXMue
+G1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkFkbWluIiwidG9rZW5fdHlwZ
+SI6InVzZXIiLCJleHAiOjE3NjUxMzc2NjcsImlzcyI6Imh0dHA6Ly9wYXJ0eUdhbWVBcGkuY29tIiwiYXVkI
+joiaHR0cDovL3BhcnR5R2FtZUFwaS5jb20ifQ2h7aoZB80iwO-Cii-c5hPOW2CIQw8qlAKphduNdt8bk
 \end{lstlisting}
 
 Nagłówek przedstawia zakodowane informacje o algorytmie podpisu oraz typie tokenu (w tym przypadku HS256):
@@ -692,7 +701,7 @@ Payload zawiera zakodowane informacje, które chcemy przekazać, jak np. identyf
 
 Podpis jest generowany przez zakodowanie nagłówka i payloadu oraz podpisanie ich kluczem prywatnym przy użyciu algorytmu określonego w nagłówku.
 
-W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.\-Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
+W środowisku .NET mechanizm tokenów JWT jest wspierany przez bibliotekę \texttt{Microsoft.AspNetCore.\linebreak Authentication.JwtBearer}, która umożliwia łatwą integrację z mechanizmami uwierzytelniania i autoryzacji w aplikacjach ASP.NET Core. Dzięki temu jesteśmy w stanie generować w efektywny sposób tokeny, które wykorzystywane są do autoryzacji.
 
 \smallskip
 \begin{lstlisting}[language={[Sharp]C}, caption={Generowanie tokenu JWT w warstwie backendu}, label={lst:jwt-generation}]
@@ -809,7 +818,6 @@ Poniżej pokazano przykład wyjątku domenowego dla encji użytkownika:
 Przykład definicji wyjątku domenowego dla encji użytkownika przedstawiono poniżej:
 \smallskip
 \begin{lstlisting}[language={[Sharp]C}, caption={Przykład definicji wyjątku domenowego dla encji użytkownika}]
-
 // Definicja przykladowego wyjatku 
 public class UserNotFoundException(Guid userGuid) :
 BaseException($"User with GUID {userGuid} was not found")
@@ -951,7 +959,7 @@ Konfiguracja jest rozproszona pomiędzy kilka plików i mechanizmów:
     \item \texttt{appsettings.json}, \texttt{appsettings.Development.json}, \texttt{appsettings.Production.json} — warstwowe źródło konfiguracji backendu: logowanie, połączenie do bazy, parametry JWT (issuer, audience, czas życia), ustawienia CORS.
     \item \texttt{launchSettings.json} — używany lokalnie (poza Docker) do definiowania profili uruchomieniowych i portów (HTTPS/HTTP). W produkcji zastąpiony przez konfigurację kontenera + reverse proxy.
     \item Frontend \texttt{Constants.ts} — zawiera stałe takie jak URL API, nazwy eventów, parametry mapy. W produkcji wartości mogą być nadpisane przez zmienne środowiska przy budowie (np. \texttt{VITE\_API\_URL}).
-    \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
+    \item Zmienne środowiskowe kontenerów — nadawane w plikach compose lub w CI/CD \linebreak (np. \texttt{ASPNETCORE\_ENVIRONMENT=Production}).
 \end{itemize}
 \bigskip
 Mechanizm konfiguracji w ASP.NET Core scalający źródła (pliki, zmienne środowiskowe, sekrety użytkownika) umożliwia elastyczne przełączanie środowisk bez modyfikacji kodu.

@@ -93,3 +93,4 @@ latexmkrc
 .bak 
 .mtc
 build/
+*.xdv
