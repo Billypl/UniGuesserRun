@@ -1,6 +1,8 @@
 \chapter{Narzędzia}
 \label{chap:tools}
 
+Przy realizacji projektu \textit{UniGuesser} wykorzystano szereg narzędzi wspomagających zarządzanie kodem źródłowym, konteneryzację aplikacji, zarządzanie projektem, projektowanie interfejsu użytkownika oraz środowiska programistyczne. Poniżej przedstawiono omówienie najważniejszych z nich.
+
 \section{System kontroli wersji (Michał Pawiłojć)}
 
 W trakcie realizacji projektu \textit{UniGuesser} kluczową rolę odegrało zastosowanie systemu kontroli wersji Git oraz platformy GitHub. Ich wykorzystanie umożliwiło efektywne zarządzanie kodem źródłowym, koordynację pracy zespołu oraz utrzymanie przejrzystości i historii zmian w projekcie.
@@ -58,6 +60,7 @@ Projekt \textit{UniGuesser} składa się z kilku współdziałających usług:
     \item Baza danych (PostgreSQL).
 \end{itemize}
 
+\pagebreak
 Do zarządzania tymi usługami wykorzystano \textbf{Docker Compose}. Umożliwia ono deklaratywne opisanie całego środowiska w jednym pliku YAML. W ten sposób tworzona jest wewnętrzna sieć, w której poszczególne usługi są w stanie się komunikować.
 
 Całe środowisko można uruchomić jedną komendą:
@@ -128,6 +131,8 @@ Niektórzy członkowie zespołu korzystali również z alternatywnego IDE: \text
 
 Oba środowiska dobrze współpracowały z systemem kontroli wersji Git oraz pozwalały na łatwą konfigurację środowisk uruchomieniowych (launch profiles), co było kluczowe przy testowaniu aplikacji w kontenerach.
 
+\pagebreak
+
 \subsection{Frontend: Visual Studio Code}
 
 Do pracy nad frontendem, który został zaimplementowany w technologii \textbf{React} z wykorzystaniem \textbf{TypeScript}, wykorzystywano głównie \textbf{Visual Studio Code} (VS Code). Jest to lekkie, ale bardzo elastyczne narzędzie, które doskonale sprawdza się w projektach opartych na JavaScript, dzięki bogatemu ekosystemowi rozszerzeń.
@@ -158,6 +163,7 @@ Figma posiada szeroki wachlarz funkcjonalności, które w dużym stopniu usprawn
 \begin{itemize}
     \item \textbf{Zarządzanie warstwami i grupami} - pozwala na precyzyjną organizację elementów, co jest szczególnie ważne przy tworzeniu skomplikowanej aplikacji, aby zachować jej spójność wizualną.
     \item \textbf{Tworzenie komponentów i wariantów} - umożliwia tworzenie wielu wariantów wykorzystywanych elementów UI, co pozwala na testowanie różnych rozwiązań bez konieczności zmiany kodu.
+\pagebreak
     \item \textbf{Integracje z narzędziami deweloperskimi} - wspierają płynne przejście od fazy projektowej do wdrożenia. Jednym z takich narzędzi jest GitHub, który oferuje łatwą konfigurację, możliwość dodawania zgłoszeń oraz pull requestów, wspomagając kontrolę wersji całego projektu.
     \item \textbf{Eksport zasobów i generowanie fragmentów kodu CSS} - przyspiesza implementację zaprojektowanych widoków.
     \item \textbf{Biblioteki stylów i zasobów} - pozwala na utrzymanie spójności wizualnej przechowując zestaw fontów, kolorów, efektów i rozmiarów elementów dostępnych dla całego zespołu.

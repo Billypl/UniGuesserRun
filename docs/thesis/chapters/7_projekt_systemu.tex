@@ -49,6 +49,8 @@ Model systemu zaprojektowano zgodnie z podejściem \textbf{Domain-Driven Design}
 
 Warstwa prezentacji (frontend) komunikuje się wyłącznie z warstwą API. Warstwa API deleguje logikę do warstwy Application, ta korzysta z modelu domenowego (Domain), który z kolei używa Infrastructure do dostępu do bazy danych PostgreSQL.
 
+\newpage
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=.6\textwidth]{./images/ddd-model.drawio.png}
@@ -56,9 +58,6 @@ Warstwa prezentacji (frontend) komunikuje się wyłącznie z warstwą API. Warst
   \label{fig:ddd-diagram}
 \end{figure}
 
-
-
-\subsection{Korzyści wynikające z użycia DDD, Clean Architecture i CQRS}
 Dzięki zastosowaniu DDD, Clean Architecture i CQRS aplikacja UniGuesser zyskała lepszą skalowalność, czytelność i łatwość utrzymania. Dodatkowo odzwierciedlenie i uporządkowanie logiki biznesowej pozwala na szybsze wprowadzanie zmian i rozwój nowych funkcjonalności zgodnie z wymaganiami użytkowników. Standard, który zastosowano, ułatwia przyszłą współpracę z innymi programistami ze względu na powszechność tych wzorców w branży oprogramowania~\cite{microsoft-ddd}.
 
 \section{Baza danych (Michał Turski)}
@@ -79,11 +78,8 @@ Przedstawiony na rysunku~\ref{fig:erd-diagram} diagram ERD (ang. \textit{Entity-
 \subsection{Opis głównych tabel i związków}
 W niniejszej sekcji przedstawiono kluczowe elementy modelu danych zastosowanego w projekcie. Omówiono najważniejsze tabele, ich strukturę oraz wzajemne powiązania, które umożliwiają poprawne odwzorowanie logiki aplikacji. Zaprezentowane zależności ilustrują, w jaki sposób dane dotyczące użytkowników, rozgrywek oraz lokalizacji łączą się w spójną całość, wspierając zarówno działanie systemu, jak i późniejszą analizę informacji.
 
-\bigskip
-\textbf{Users (Użytkownicy)} - tabela przechowująca informacje o użytkownikach aplikacji.
-
 \begin{table}[H]
-  \caption{Tabela \texttt{Users}}
+  \caption{Tabela \texttt{Users} przechowująca informacje o użytkownikach aplikacji.}
   \centering
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
@@ -98,11 +94,29 @@ W niniejszej sekcji przedstawiono kluczowe elementy modelu danych zastosowanego 
   \end{tabular}
 \end{table}
 
-\textbf{GameSessions (Sesje gier)} - tabela przechowująca informacje o aktywnych i zakończonych rozgrywkach.
+\begin{table}[H]
+  \centering
+  \caption{Tabela \texttt{Places} przechowująca informacje o lokacjach dostępnych w grze.}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|p{2.5cm}|p{6cm}|p{4cm}|}
+    \hline
+    \textbf{Atrybut} & \textbf{Opis}                          & \textbf{Typ / Uwagi}      \\ \hline
+    ID               & Unikalny identyfikator lokacji.        & Klucz główny              \\ \hline
+    Name             & Nazwa lokacji.                         & Tekst                     \\ \hline
+    Description      & Opis lokacji.                          & Tekst                     \\ \hline
+    Latitude         & Szerokość geograficzna lokacji.        & Liczba zmiennoprzecinkowa \\ \hline
+    Longitude        & Długość geograficzna lokacji.          & Liczba zmiennoprzecinkowa \\ \hline
+    Difficulty       & Poziom trudności lokacji.              & Enumeracja                \\ \hline
+    ImageUrl         & Adres URL obrazu lokacji.              & Tekst                     \\ \hline
+    AltImage         & Tekst alternatywny dla obrazu lokacji. & Tekst                     \\ \hline
+    CreationTime     & Data i czas dodania lokacji.           & Data/Czas                 \\ \hline
+    AuthorID         & Identyfikator autora lokacji.          & Klucz obcy → Users        \\ \hline
+  \end{tabular}
+\end{table}
 
 \begin{table}[H]
   \centering
-  \caption{Tabela \texttt{GameSessions}}
+  \caption{Tabela \texttt{GameSessions} przechowująca informacje o aktywnych i zakończonych rozgrywkach.}
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{|p{2.5cm}|p{7cm}|p{3cm}|}
     \hline
@@ -119,11 +133,9 @@ W niniejszej sekcji przedstawiono kluczowe elementy modelu danych zastosowanego 
   \label{tab:game-sessions}
 \end{table}
 
-\textbf{Rounds (Rundy)} - tabela przechowująca informacje o poszczególnych rundach w sesji gry.
-
 \begin{table}[H]
   \centering
-  \caption{Tabela \texttt{Rounds}}
+  \caption{Tabela \texttt{Rounds} przechowująca informacje o poszczególnych rundach w sesji gry.}
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{|p{2.5cm}|p{5cm}|p{5cm}|}
     \hline
@@ -136,28 +148,6 @@ W niniejszej sekcji przedstawiono kluczowe elementy modelu danych zastosowanego 
     LocationID       & Identyfikator lokacji.                             & Klucz obcy → Places       \\ \hline
   \end{tabular}
   \label{tab:rounds}
-\end{table}
-
-\textbf{Places (Lokacje)} - tabela przechowująca informacje o lokacjach dostępnych w grze.
-
-\begin{table}[H]
-  \centering
-  \caption{Tabela \texttt{Places}}
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{|p{2.5cm}|p{8cm}|p{2.5cm}|}
-    \hline
-    \textbf{Atrybut} & \textbf{Opis}                          & \textbf{Typ / Uwagi}      \\ \hline
-    ID               & Unikalny identyfikator lokacji.        & Klucz główny              \\ \hline
-    Name             & Nazwa lokacji.                         & Tekst                     \\ \hline
-    Description      & Opis lokacji.                          & Tekst                     \\ \hline
-    Latitude         & Szerokość geograficzna lokacji.        & Liczba zmiennoprzecinkowa \\ \hline
-    Longitude        & Długość geograficzna lokacji.          & Liczba zmiennoprzecinkowa \\ \hline
-    Difficulty       & Poziom trudności lokacji.              & Enumeracja                \\ \hline
-    ImageUrl         & Adres URL obrazu lokacji.              & Tekst                     \\ \hline
-    AltImage         & Tekst alternatywny dla obrazu lokacji. & Tekst                     \\ \hline
-    CreationTime     & Data i czas dodania lokacji.           & Data/Czas                 \\ \hline
-    AuthorID         & Identyfikator autora lokacji.          & Klucz obcy → Users        \\ \hline
-  \end{tabular}
 \end{table}
 
 \section{Analiza interakcji użytkownika z systemem (Michał Turski)}
@@ -199,7 +189,7 @@ Aplikacja wykorzystuje dwukolorową paletę barw, opartą na odcieniach białego
 
 \begin{figure}[H]
   \centering
-  \makebox[\textwidth]{\includegraphics[width=0.5\textwidth]{./images/registerForm.png}}
+  \makebox[\textwidth]{\includegraphics[width=0.4\textwidth]{./images/registerForm.png}}
   \caption{Przykładowy ekran rejestracji użytkownika w aplikacji UniGuesser, ilustrujący zastosowaną kolorystykę}
   \label{fig:color-palette-example}
 \end{figure}
